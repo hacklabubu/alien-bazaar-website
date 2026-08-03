@@ -577,15 +577,7 @@ html[data-theme='light'] .hw26 {
      ships, and the glyphs already carry spacing, so the tracking comes
      down from the Orbitron setting. */
   font-family: var(--font-geist-pixel-circle), var(--font-orbitron), sans-serif;
-  /* Geist Pixel ships exactly one weight across all five cuts, so there is
-     no bold to ask for — `font-weight: 700` would only get a synthetic
-     smear, which on a dot-matrix face pulls the round dots into ovals.
-     Stroking grows every dot uniformly instead, which is what a heavier
-     cut of this face would actually look like. `paint-order` puts the
-     stroke under the fill so the counters do not close up. */
   font-weight: 500;
-  -webkit-text-stroke: 0.03em currentColor;
-  paint-order: stroke fill;
   font-size: clamp(1.05rem, 3.4vw, 2.8rem);
   line-height: 1;
   letter-spacing: 0.05em;
@@ -1462,24 +1454,54 @@ html[data-theme='light'] .hw26-sponsor-lead p {
 /* The band that runs the full width at the top of the plate — the one
    place the accent is laid on thick, so the plate closes the page in
    the same color that opened it. */
+/* The band scrolls by translating an oversized copy of the stripe pattern,
+   not by sliding `background-position`.
+
+   Two things were wrong with doing it on the background. A -45deg gradient
+   advances along its *own* axis, so a horizontal shift only counts for its
+   projection onto that axis: the pattern's horizontal period is the stripe
+   period over cos(45deg), about 36.8px for a 26px stripe — not 52px. The
+   loop was travelling 1.414 periods and snapping back a third of a stripe
+   on every reset. And `background-size: 200% 100%` re-tiled the gradient
+   against the element's own width, so the correct travel distance changed
+   with the viewport and no fixed value could have been right.
+
+   Deriving the travel from the stripe period means the two cannot drift
+   apart, and translating a pseudo-element keeps the work on the compositor
+   instead of repainting a gradient every frame. */
 .hw26-endplate-hazard {
+  --hazard-stripe: 26px;
+  /* One full pattern period measured horizontally. */
+  --hazard-travel: calc(var(--hazard-stripe) / 0.70710678);
+  position: relative;
   height: 22px;
   flex-shrink: 0;
+  overflow: hidden;
+}
+
+.hw26-endplate-hazard::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  /* Overhangs by exactly one travel, so sliding left never shows the tail. */
+  right: calc(-1 * var(--hazard-travel));
   background-image: repeating-linear-gradient(
     -45deg,
     var(--hw-pine) 0 12px,
-    var(--hw-pit) 12px 26px
+    var(--hw-pit) 12px var(--hazard-stripe)
   );
-  background-size: 200% 100%;
-  animation: hw26-band 3.2s linear infinite;
+  animation: hw26-band 2.4s linear infinite;
+  will-change: transform;
 }
 
 @keyframes hw26-band {
   from {
-    background-position-x: 0;
+    transform: translateX(0);
   }
   to {
-    background-position-x: -52px;
+    transform: translateX(calc(-1 * var(--hazard-travel)));
   }
 }
 
