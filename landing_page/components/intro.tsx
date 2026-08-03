@@ -5,13 +5,18 @@ import { useEffect, useRef, useState } from 'react'
 import './intro.css'
 
 /**
- * Intro sequence for the Warsaw 2026 lander.
+ * Cold start — the intro sequence for the Warsaw 2026 lander.
  *
- * One 2.5s run in three acts — handshake, arming, lock — inside a ruled
- * technical frame that never leaves. The acts escalate rather than simply
- * following one another: the terminal gets in, the lab arms itself, and the
- * event is sighted. A status rail along the bottom tracks all three, so the
- * frame and the rail are the constants and only the middle swaps.
+ * One composition rather than a run of scenes. The wordmark is on screen for
+ * the entire 2.5s, outlined from the first frame, and everything else happens
+ * *around* it at the same time: the frame rules itself in, a telemetry log
+ * streams down one side, the lab reports its subsystems down the other, a
+ * spectrum runs along the floor, a scan bar crosses and develops the letters,
+ * and a reticle closes on them. The sequence lives in where the emphasis
+ * moves, not in panels being swapped out.
+ *
+ * At the end the instruments retract and the mark is the only thing left, so
+ * the last frame of the intro is the first frame of the page.
  *
  * Press 1 or R to replay, Escape or click to skip.
  *
@@ -22,15 +27,8 @@ import './intro.css'
 
 export const INTRO_MS = 2500
 
-/** Act boundaries, in ms from mount. Everything below is keyed off these. */
-const ACT = {
-  handshakeIn: 0,
-  handshakeOut: 820,
-  armIn: 860,
-  armOut: 1620,
-  lockIn: 1660,
-  lockOut: 2400,
-} as const
+/** When the instruments start clearing out and the mark is left alone. */
+const RETRACT_MS = 2040
 
 /** Deterministic stand-in for noise, so a replay looks identical. */
 const noise = (i: number) => ((i * 9301 + 49297) % 233280) / 233280
@@ -68,146 +66,121 @@ function useScramble(text: string, delay: number, duration: number) {
   return out
 }
 
-/** Five, not eight: the act is 760ms and this has to read as a sweep. */
+/** Streams down the left. Machine chatter — atmosphere, not reading matter. */
+const LOG = [
+  'ACQ  52.2297N 21.0122E',
+  'NODE HACKER-HOUSE-01',
+  'LINK 10G  LAT 0.4MS',
+  'PWR  3-PHASE STABLE',
+  'CAGE VOL 6x6x4  ARMED',
+  'CELL 6DOF  HOMED',
+  'FARM 12 NODES  Q:0',
+  'WALL STOCK NOMINAL',
+  'TRK  04 ACTIVE',
+  'SEATS 200 / 200 HELD',
+]
+
+/** Reports down the right. Each flicks to OK on its own schedule. */
 const CHECKS = [
-  'DRONE CAGE',
-  'ARM CELL',
-  'PRINT FARM',
-  'PARTS WALL',
-  'SEATS 200',
+  { k: 'CAGE', at: 420 },
+  { k: 'ARM CELL', at: 560 },
+  { k: 'PRINT FARM', at: 700 },
+  { k: 'PARTS WALL', at: 840 },
+  { k: 'BENCHES', at: 980 },
+  { k: 'SEATS', at: 1120 },
 ]
 
 const STAGES = [
-  { label: 'Handshake', at: ACT.handshakeIn + 120 },
-  { label: 'Arming', at: ACT.armIn + 60 },
-  { label: 'Lock', at: ACT.lockIn + 60 },
+  { label: 'Link', at: 260 },
+  { label: 'Armed', at: 1180 },
+  { label: 'Lock', at: 1760 },
 ]
 
-/** The ruled frame and registration marks. Present for the whole run. */
-function Frame() {
-  return (
-    <div className='hw26-i-frame'>
-      <i className='hw26-i-frame-r hw26-i-frame-r--t' />
-      <i className='hw26-i-frame-r hw26-i-frame-r--b' />
-      <i className='hw26-i-frame-r hw26-i-frame-r--l' />
-      <i className='hw26-i-frame-r hw26-i-frame-r--r' />
-      {['tl', 'tr', 'bl', 'br'].map((c, i) => (
-        <i
-          className={`hw26-i-frame-x hw26-i-frame-x--${c}`}
-          key={c}
-          style={{ animationDelay: `${260 + i * 60}ms` }}
-        />
-      ))}
-    </div>
-  )
-}
-
-function Sequence() {
-  const host = useScramble('HACKER-HOUSE-WARSAW', 120, 420)
-  const key = useScramble('9F4C-A17E-002B-HWWAW26', 260, 480)
-  const coord = useScramble('52.2297N 21.0122E', ACT.lockIn, 600)
+function Hud() {
+  const key = useScramble('9F4C-A17E-002B-HWWAW26', 220, 620)
+  const coord = useScramble('52.2297N 21.0122E', 140, 520)
 
   return (
-    <div className='hw26-i-seq'>
-      <Frame />
+    <div className='hw26-i-hud'>
+      {/* ---- the ruled frame, drawn in from the edges ---- */}
+      <div className='hw26-i-frame'>
+        <i className='hw26-i-frame-r hw26-i-frame-r--t' />
+        <i className='hw26-i-frame-r hw26-i-frame-r--b' />
+        <i className='hw26-i-frame-r hw26-i-frame-r--l' />
+        <i className='hw26-i-frame-r hw26-i-frame-r--r' />
+        {['tl', 'tr', 'bl', 'br'].map((c, i) => (
+          <i
+            className={`hw26-i-frame-x hw26-i-frame-x--${c}`}
+            key={c}
+            style={{ animationDelay: `${240 + i * 55}ms` }}
+          />
+        ))}
+      </div>
 
-      {/* ---- ACT 1 — HANDSHAKE ---- */}
-      <div
-        className='hw26-i-act'
-        style={{
-          ['--in' as string]: `${ACT.handshakeIn}ms`,
-          ['--out' as string]: `${ACT.handshakeOut}ms`,
-        }}
-      >
-        <div className='hw26-i-term'>
-          <p className='hw26-i-term-line' style={{ animationDelay: '60ms' }}>
-            <span className='hw26-i-caret'>$</span> uplink --host <b>{host}</b>
+      {/* ---- the mark. On screen from the first frame to the last. ---- */}
+      <div className='hw26-i-core'>
+        <div className='hw26-i-reticle'>
+          {['tl', 'tr', 'bl', 'br'].map((c) => (
+            <i className={`hw26-i-ret hw26-i-ret--${c}`} key={c} />
+          ))}
+        </div>
+        {/* Two copies. The lit one is clipped to the scan bar's path, so the
+            letters are developed by the light crossing them rather than
+            faded in. */}
+        <span className='hw26-i-mark'>
+          <span className='hw26-i-mark-base'>Warsaw 26</span>
+          <span className='hw26-i-mark-lit'>Warsaw 26</span>
+        </span>
+        <p className='hw26-i-coord'>{coord}</p>
+      </div>
+
+      {/* ---- telemetry, left ---- */}
+      <div className='hw26-i-log'>
+        {LOG.map((l, i) => (
+          <p key={l} style={{ animationDelay: `${180 + i * 82}ms` }}>
+            {l}
           </p>
-          <p className='hw26-i-term-line' style={{ animationDelay: '260ms' }}>
-            <span className='hw26-i-caret'>$</span> negotiating cipher
-            <span className='hw26-i-ell' />
+        ))}
+      </div>
+
+      {/* ---- subsystems, right ---- */}
+      <div className='hw26-i-checks'>
+        <p className='hw26-i-checks-h'>Subsystems</p>
+        {CHECKS.map((c) => (
+          <p key={c.k} style={{ animationDelay: `${c.at - 180}ms` }}>
+            <span>{c.k}</span>
+            <i className='hw26-i-dots' />
+            <b style={{ animationDelay: `${c.at}ms` }}>OK</b>
           </p>
-          <div className='hw26-i-key'>
-            <span>KEY</span>
-            <b>{key}</b>
-          </div>
-          <div className='hw26-i-meter'>
-            <i />
-          </div>
-          <p className='hw26-i-grant'>Access granted</p>
+        ))}
+        <div className='hw26-i-keyline'>
+          <span>KEY</span>
+          <b>{key}</b>
         </div>
       </div>
 
-      {/* ---- ACT 2 — ARMING ---- */}
-      <div
-        className='hw26-i-act'
-        style={{
-          ['--in' as string]: `${ACT.armIn}ms`,
-          ['--out' as string]: `${ACT.armOut}ms`,
-        }}
-      >
-        <div className='hw26-i-arm'>
-          <div className='hw26-i-caution'>
-            <i />
-            <span>Master caution</span>
-          </div>
-          <div className='hw26-i-checks'>
-            {CHECKS.map((c, i) => (
-              <p
-                key={c}
-                style={{ animationDelay: `${ACT.armIn + 40 + i * 78}ms` }}
-              >
-                <span className='hw26-i-check-n'>
-                  {String(i + 1).padStart(2, '0')}
-                </span>
-                <span className='hw26-i-check-k'>{c}</span>
-                <span className='hw26-i-dots' />
-                <b style={{ animationDelay: `${ACT.armIn + 190 + i * 78}ms` }}>
-                  OK
-                </b>
-              </p>
-            ))}
-          </div>
-        </div>
+      {/* ---- spectrum along the floor ---- */}
+      <div className='hw26-i-spectrum'>
+        {Array.from({ length: 64 }, (_, i) => (
+          <i
+            key={`s${i}`}
+            style={{
+              animationDelay: `${140 + i * 12}ms`,
+              ['--h' as string]: `${10 + noise(i * 5) * 90}%`,
+            }}
+          />
+        ))}
       </div>
 
-      {/* ---- ACT 3 — LOCK ---- */}
-      <div
-        className='hw26-i-act'
-        style={{
-          ['--in' as string]: `${ACT.lockIn}ms`,
-          ['--out' as string]: `${ACT.lockOut}ms`,
-        }}
-      >
-        <div className='hw26-i-lock'>
-          <div className='hw26-i-lock-lines' />
-          <div className='hw26-i-hair hw26-i-hair--h' />
-          <div className='hw26-i-hair hw26-i-hair--v' />
+      {/* ---- the bar that crosses everything ---- */}
+      <div className='hw26-i-scan' />
+      <div className='hw26-i-scanlines' />
 
-          <div className='hw26-i-box'>
-            {['tl', 'tr', 'bl', 'br'].map((c) => (
-              <i className={`hw26-i-box-c hw26-i-box-c--${c}`} key={c} />
-            ))}
-            {/* Two copies: the lit one is clipped to the scan bar's path, so
-                the letters are developed by the light crossing them rather
-                than simply faded in. */}
-            <span className='hw26-i-mark'>
-              <span className='hw26-i-mark-base'>Warsaw 26</span>
-              <span className='hw26-i-mark-lit'>Warsaw 26</span>
-            </span>
-          </div>
-
-          <div className='hw26-i-scan' />
-          <p className='hw26-i-coord'>{coord}</p>
-          <p className='hw26-i-lockword'>Lock</p>
-        </div>
-      </div>
-
-      {/* ---- persistent status rail ---- */}
+      {/* ---- status rail ---- */}
       <div className='hw26-i-rail'>
         <span className='hw26-i-rail-id'>HW—WAW—26</span>
         <div className='hw26-i-rail-stages'>
-          {STAGES.map((s, i) => (
+          {STAGES.map((s) => (
             <span
               className='hw26-i-stage'
               key={s.label}
@@ -215,23 +188,10 @@ function Sequence() {
             >
               <i />
               {s.label}
-              {i < STAGES.length - 1 ? (
-                <em className='hw26-i-stage-sep' />
-              ) : null}
             </span>
           ))}
         </div>
-        <span className='hw26-i-rail-bars'>
-          {Array.from({ length: 12 }, (_, i) => (
-            <i
-              key={`r${i}`}
-              style={{
-                animationDelay: `${200 + i * 40}ms`,
-                ['--h' as string]: `${30 + noise(i) * 70}%`,
-              }}
-            />
-          ))}
-        </span>
+        <span className='hw26-i-lockword'>Lock</span>
       </div>
     </div>
   )
@@ -294,9 +254,12 @@ export function HardwareIntro() {
       className='hw26-intro'
       key={run.id}
       onClick={() => setRun(null)}
-      style={{ ['--hw-i-dur' as string]: `${INTRO_MS}ms` }}
+      style={{
+        ['--hw-i-dur' as string]: `${INTRO_MS}ms`,
+        ['--hw-i-retract' as string]: `${RETRACT_MS}ms`,
+      }}
     >
-      <Sequence />
+      <Hud />
     </div>
   )
 }
