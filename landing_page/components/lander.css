@@ -319,40 +319,65 @@ html[data-theme='light'] .hw26 {
 }
 
 /* -------------------------------------------------------------
-   Chromatic aberration + slice glitch — the name only.
+   CRT — the name only.
 
-   Two copies of the word sit *behind* the white original, one
-   pushed left in cyan and one right in magenta, so at rest all
-   you get is a colour fringe at the edges of the letters: a
-   display that is very slightly out of convergence.
+   Three artifacts of a cathode-ray tube, stacked:
 
-   Every ~6s they slip — different horizontal bands, different
-   offsets, for about a fifth of a second — and the word tears.
-   The rest of the time it is still, because a wordmark that
-   glitches continuously stops reading as a wordmark.
+   1. Scanlines. A repeating mask across the word, so the letters
+      are built out of bright lines with gaps between them. The
+      mask applies to the pseudo-element copies too, so the whole
+      emitted image is scanned rather than one layer of it. The
+      pitch is in `em`, so it scales with the wordmark instead of
+      turning into moiré on a phone.
 
-   Deliberately confined to `hw26-glitch`, which is only ever on
-   the two lines of the event name.
+   2. Convergence error. Cyan and magenta copies sit behind the
+      white original, one pushed left and one right, so the letters
+      carry a faint colour fringe at rest.
+
+   3. Vertical hold. Every ~6s the tube loses lock for about a
+      fifth of a second: the scan pattern jumps, the fringes tear
+      into bands, and the beam current spikes and dips. Then it
+      settles. It is still the rest of the time, because a wordmark
+      that glitches continuously stops reading as a wordmark.
+
+   Nothing here animates `transform` or `opacity` on the word
+   itself — those belong to the entrance animation, and a second
+   animation touching them would silently win and drop the
+   entrance. The roll rides on `mask-position` and the flicker on
+   `filter`, so all three can run at once.
+
+   Confined to `hw26-glitch`, which is only ever on the two lines
+   of the event name.
    ------------------------------------------------------------- */
 
 .hw26-glitch {
   position: relative;
   isolation: isolate;
   color: var(--hw-snow);
-  animation: hw26-glitch-base 6s steps(1) infinite;
+  /* Bright line, thin gap — the gap is what reads as a scanline. */
+  -webkit-mask-image: repeating-linear-gradient(
+    to bottom,
+    #000 0 0.032em,
+    rgba(0, 0, 0, 0.26) 0.032em 0.062em
+  );
+  mask-image: repeating-linear-gradient(
+    to bottom,
+    #000 0 0.032em,
+    rgba(0, 0, 0, 0.26) 0.032em 0.062em
+  );
+  animation:
+    hw26-crt-roll 6s steps(1) infinite,
+    hw26-crt-beam 4.7s steps(1) infinite;
 }
 
-/* Both classes land on the same element and both want the `animation`
-   shorthand, so whichever rule came second would silently drop the
-   other's animation — here that was the entrance winning and the glitch
-   never running on the white original. Declaring the pair together, at
-   higher specificity than either, keeps both. Note that the inline
-   animation-delay carrying the entrance stagger applies to the whole
-   list, which is harmless on a 6s infinite loop. */
+/* The entrance and the CRT run on the same element. They are declared
+   together, above the specificity of either on its own, so neither
+   drops the other. */
 .hw26-rise.hw26-glitch {
   animation:
     hw26-rise 900ms var(--hw-ease) both,
-    hw26-glitch-base 6s steps(1) infinite;
+    hw26-crt-roll 6s steps(1) infinite,
+    hw26-crt-beam 4.7s steps(1) infinite;
 }
 
 .hw26-glitch::before,
@@ -369,88 +394,137 @@ html[data-theme='light'] .hw26 {
 
 .hw26-glitch::before {
   color: #00e5ff;
-  animation: hw26-glitch-a 6s steps(1) infinite;
+  animation: hw26-crt-tear-a 6s steps(1) infinite;
 }
 
 .hw26-glitch::after {
   color: #ff2bd6;
-  animation: hw26-glitch-b 6s steps(1) infinite;
+  animation: hw26-crt-tear-b 6s steps(1) infinite;
 }
 
-/* The resting fringe is a hair under half a pixel at hero size; the
-   bursts are what you actually notice. */
-@keyframes hw26-glitch-a {
+/* Vertical hold. The scan pattern sits locked, then slips by a
+   fraction of a line and snaps back — the picture rolling. */
+@keyframes hw26-crt-roll {
   0%,
-  86%,
-  96%,
+  84%,
+  95%,
+  100% {
+    -webkit-mask-position: 0 0;
+    mask-position: 0 0;
+  }
+  85% {
+    -webkit-mask-position: 0 0.028em;
+    mask-position: 0 0.028em;
+  }
+  87% {
+    -webkit-mask-position: 0 -0.044em;
+    mask-position: 0 -0.044em;
+  }
+  89% {
+    -webkit-mask-position: 0 0.016em;
+    mask-position: 0 0.016em;
+  }
+  91% {
+    -webkit-mask-position: 0 -0.02em;
+    mask-position: 0 -0.02em;
+  }
+  93% {
+    -webkit-mask-position: 0 0.008em;
+    mask-position: 0 0.008em;
+  }
+}
+
+/* Beam current. A near-invisible idle flicker, then the spike and
+   brownout that go with losing lock. */
+@keyframes hw26-crt-beam {
+  0%,
+  30%,
+  34%,
+  74%,
+  100% {
+    filter: brightness(1);
+  }
+  32% {
+    filter: brightness(0.94);
+  }
+  76% {
+    filter: brightness(1.06);
+  }
+  85% {
+    filter: brightness(1.4) saturate(1.3);
+  }
+  88% {
+    filter: brightness(0.78);
+  }
+  91% {
+    filter: brightness(1.22);
+  }
+  94% {
+    filter: brightness(0.92);
+  }
+}
+
+/* Horizontal desync on the two fringes — bands of the picture
+   arriving early or late. */
+@keyframes hw26-crt-tear-a {
+  0%,
+  84%,
+  95%,
   100% {
     transform: translate(-0.008em, 0);
     clip-path: inset(0 0 0 0);
   }
+  85% {
+    transform: translate(-0.085em, 0);
+    clip-path: inset(12% 0 66% 0);
+  }
   87% {
-    transform: translate(-0.07em, -0.012em);
-    clip-path: inset(14% 0 63% 0);
+    transform: translate(0.055em, 0);
+    clip-path: inset(70% 0 9% 0);
   }
   89% {
-    transform: translate(0.05em, 0.008em);
-    clip-path: inset(68% 0 11% 0);
+    transform: translate(-0.05em, 0);
+    clip-path: inset(37% 0 46% 0);
   }
   91% {
-    transform: translate(-0.045em, 0);
-    clip-path: inset(38% 0 45% 0);
+    transform: translate(0.03em, 0);
+    clip-path: inset(3% 0 84% 0);
   }
   93% {
-    transform: translate(0.02em, -0.006em);
-    clip-path: inset(4% 0 82% 0);
+    transform: translate(-0.014em, 0);
+    clip-path: inset(52% 0 31% 0);
   }
 }
 
-@keyframes hw26-glitch-b {
+@keyframes hw26-crt-tear-b {
   0%,
-  86%,
-  96%,
+  84%,
+  95%,
   100% {
     transform: translate(0.008em, 0);
     clip-path: inset(0 0 0 0);
   }
+  85% {
+    transform: translate(0.072em, 0);
+    clip-path: inset(56% 0 24% 0);
+  }
   87% {
-    transform: translate(0.06em, 0.012em);
-    clip-path: inset(58% 0 22% 0);
+    transform: translate(-0.06em, 0);
+    clip-path: inset(6% 0 72% 0);
   }
   89% {
-    transform: translate(-0.055em, -0.008em);
-    clip-path: inset(9% 0 70% 0);
+    transform: translate(0.042em, 0);
+    clip-path: inset(44% 0 38% 0);
   }
   91% {
-    transform: translate(0.04em, 0);
-    clip-path: inset(46% 0 36% 0);
+    transform: translate(-0.028em, 0);
+    clip-path: inset(80% 0 4% 0);
   }
   93% {
-    transform: translate(-0.025em, 0.006em);
-    clip-path: inset(78% 0 6% 0);
+    transform: translate(0.012em, 0);
+    clip-path: inset(24% 0 58% 0);
   }
 }
-
-/* The white original barely moves — just enough that the tear reads
-   as the whole word slipping rather than only its fringes. */
-@keyframes hw26-glitch-base {
-  0%,
-  86%,
-  94%,
-  100% {
-    transform: none;
-  }
-  88% {
-    transform: translateX(0.012em);
-  }
-  90% {
-    transform: translateX(-0.009em);
-  }
-  92% {
-    transform: translateX(0.005em);
-  }
-}
-
 .hw26-title-rule {
   flex: 1;
   height: 1px;
