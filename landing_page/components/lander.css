@@ -140,7 +140,8 @@ html[data-theme='light'] .hw26 {
    typeset — a counter, a plate stamp, a data cell, a readout.
 
    One cut, one job, so the four never look interchangeable:
-     Circle → numerals that count (sections, tracks)
+     Circle → the dot-matrix readout — the hero descriptor, and the
+              numerals that count (sections, tracks)
      Grid   → title-block data cells
      Square → the plate number stamped huge
      Line   → the intro's terminal readout (matches shiplog)
@@ -310,9 +311,144 @@ html[data-theme='light'] .hw26 {
   white-space: nowrap;
 }
 
+/* "Warsaw 26" carries the green outline — the place line, drawn rather
+   than filled, so the name above it stays the solid thing. */
 .hw26-title-word--hollow {
   color: transparent;
   -webkit-text-stroke: 1.5px var(--hw-mint);
+}
+
+/* -------------------------------------------------------------
+   Chromatic aberration + slice glitch — the name only.
+
+   Two copies of the word sit *behind* the white original, one
+   pushed left in cyan and one right in magenta, so at rest all
+   you get is a colour fringe at the edges of the letters: a
+   display that is very slightly out of convergence.
+
+   Every ~6s they slip — different horizontal bands, different
+   offsets, for about a fifth of a second — and the word tears.
+   The rest of the time it is still, because a wordmark that
+   glitches continuously stops reading as a wordmark.
+
+   Deliberately confined to `hw26-glitch`, which is only ever on
+   the two lines of the event name.
+   ------------------------------------------------------------- */
+
+.hw26-glitch {
+  position: relative;
+  isolation: isolate;
+  color: var(--hw-snow);
+  animation: hw26-glitch-base 6s steps(1) infinite;
+}
+
+/* Both classes land on the same element and both want the `animation`
+   shorthand, so whichever rule came second would silently drop the
+   other's animation — here that was the entrance winning and the glitch
+   never running on the white original. Declaring the pair together, at
+   higher specificity than either, keeps both. Note that the inline
+   animation-delay carrying the entrance stagger applies to the whole
+   list, which is harmless on a 6s infinite loop. */
+.hw26-rise.hw26-glitch {
+  animation:
+    hw26-rise 900ms var(--hw-ease) both,
+    hw26-glitch-base 6s steps(1) infinite;
+}
+
+.hw26-glitch::before,
+.hw26-glitch::after {
+  content: attr(data-text);
+  position: absolute;
+  inset: 0;
+  /* Behind the white original. `isolation` above keeps the negative
+     index inside this word rather than punching through the hero. */
+  z-index: -1;
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+.hw26-glitch::before {
+  color: #00e5ff;
+  animation: hw26-glitch-a 6s steps(1) infinite;
+}
+
+.hw26-glitch::after {
+  color: #ff2bd6;
+  animation: hw26-glitch-b 6s steps(1) infinite;
+}
+
+/* The resting fringe is a hair under half a pixel at hero size; the
+   bursts are what you actually notice. */
+@keyframes hw26-glitch-a {
+  0%,
+  86%,
+  96%,
+  100% {
+    transform: translate(-0.008em, 0);
+    clip-path: inset(0 0 0 0);
+  }
+  87% {
+    transform: translate(-0.07em, -0.012em);
+    clip-path: inset(14% 0 63% 0);
+  }
+  89% {
+    transform: translate(0.05em, 0.008em);
+    clip-path: inset(68% 0 11% 0);
+  }
+  91% {
+    transform: translate(-0.045em, 0);
+    clip-path: inset(38% 0 45% 0);
+  }
+  93% {
+    transform: translate(0.02em, -0.006em);
+    clip-path: inset(4% 0 82% 0);
+  }
+}
+
+@keyframes hw26-glitch-b {
+  0%,
+  86%,
+  96%,
+  100% {
+    transform: translate(0.008em, 0);
+    clip-path: inset(0 0 0 0);
+  }
+  87% {
+    transform: translate(0.06em, 0.012em);
+    clip-path: inset(58% 0 22% 0);
+  }
+  89% {
+    transform: translate(-0.055em, -0.008em);
+    clip-path: inset(9% 0 70% 0);
+  }
+  91% {
+    transform: translate(0.04em, 0);
+    clip-path: inset(46% 0 36% 0);
+  }
+  93% {
+    transform: translate(-0.025em, 0.006em);
+    clip-path: inset(78% 0 6% 0);
+  }
+}
+
+/* The white original barely moves — just enough that the tear reads
+   as the whole word slipping rather than only its fringes. */
+@keyframes hw26-glitch-base {
+  0%,
+  86%,
+  94%,
+  100% {
+    transform: none;
+  }
+  88% {
+    transform: translateX(0.012em);
+  }
+  90% {
+    transform: translateX(-0.009em);
+  }
+  92% {
+    transform: translateX(0.005em);
+  }
 }
 
 .hw26-title-rule {
@@ -359,11 +495,17 @@ html[data-theme='light'] .hw26 {
   display: flex;
   align-items: center;
   gap: clamp(0.75rem, 2vw, 1.5rem);
-  font-family: var(--font-orbitron), sans-serif;
-  font-weight: 800;
-  font-size: clamp(1.15rem, 3.7vw, 3rem);
+  /* Circle — the dot-matrix cut, at display size. Its rounded dots give
+     the line a different texture from the hard geometric wordmark above
+     it, so the descriptor reads as a separate register rather than as a
+     smaller version of the name. Weight 500 is the only one the family
+     ships, and the glyphs already carry spacing, so the tracking comes
+     down from the Orbitron setting. */
+  font-family: var(--font-geist-pixel-circle), var(--font-orbitron), sans-serif;
+  font-weight: 500;
+  font-size: clamp(1.05rem, 3.4vw, 2.8rem);
   line-height: 1;
-  letter-spacing: 0.09em;
+  letter-spacing: 0.05em;
   text-transform: uppercase;
   color: var(--hw-snow);
 }

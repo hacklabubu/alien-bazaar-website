@@ -531,7 +531,8 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
           <h1 className='hw26-title'>
             <span className='hw26-title-row'>
               <span
-                className='hw26-title-word hw26-rise'
+                className='hw26-title-word hw26-glitch hw26-rise'
+                data-text='Alien'
                 style={{ animationDelay: '40ms' }}
               >
                 Alien
@@ -541,7 +542,8 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
             </span>
             <span className='hw26-title-row'>
               <span
-                className='hw26-title-word hw26-title-word--hollow hw26-rise'
+                className='hw26-title-word hw26-glitch hw26-rise'
+                data-text='Bazaar'
                 style={{ animationDelay: '140ms' }}
               >
                 Bazaar
@@ -549,7 +551,7 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
             </span>
             <span className='hw26-title-row'>
               <span
-                className='hw26-title-word hw26-rise'
+                className='hw26-title-word hw26-title-word--hollow hw26-rise'
                 style={{ animationDelay: '240ms' }}
               >
                 Warsaw 26
