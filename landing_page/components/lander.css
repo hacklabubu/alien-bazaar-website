@@ -324,11 +324,12 @@ html[data-theme='light'] .hw26 {
    Three artifacts of a cathode-ray tube, stacked:
 
    1. Scanlines. A repeating mask across the word, so the letters
-      are built out of bright lines with gaps between them. The
-      mask applies to the pseudo-element copies too, so the whole
-      emitted image is scanned rather than one layer of it. The
-      pitch is in `em`, so it scales with the wordmark instead of
-      turning into moiré on a phone.
+      are built out of bright lines with a hairline gap between
+      them. The mask applies to the pseudo-element copies too, so
+      the whole emitted image is scanned rather than one layer of
+      it. The pitch is in px, not em: scanlines are a property of
+      the tube, so they stay the same gauge whether the wordmark
+      is at hero size or wrapped onto a phone.
 
    2. Convergence error. Cyan and magenta copies sit behind the
       white original, one pushed left and one right, so the letters
@@ -357,13 +358,13 @@ html[data-theme='light'] .hw26 {
   /* Bright line, thin gap — the gap is what reads as a scanline. */
   -webkit-mask-image: repeating-linear-gradient(
     to bottom,
-    #000 0 0.032em,
-    rgba(0, 0, 0, 0.26) 0.032em 0.062em
+    #000 0 2px,
+    rgba(0, 0, 0, 0.3) 2px 3px
   );
   mask-image: repeating-linear-gradient(
     to bottom,
-    #000 0 0.032em,
-    rgba(0, 0, 0, 0.26) 0.032em 0.062em
+    #000 0 2px,
+    rgba(0, 0, 0, 0.3) 2px 3px
   );
   animation:
     hw26-crt-roll 6s steps(1) infinite,
@@ -413,24 +414,24 @@ html[data-theme='light'] .hw26 {
     mask-position: 0 0;
   }
   85% {
-    -webkit-mask-position: 0 0.028em;
-    mask-position: 0 0.028em;
+    -webkit-mask-position: 0 1px;
+    mask-position: 0 1px;
   }
   87% {
-    -webkit-mask-position: 0 -0.044em;
-    mask-position: 0 -0.044em;
+    -webkit-mask-position: 0 -2px;
+    mask-position: 0 -2px;
   }
   89% {
-    -webkit-mask-position: 0 0.016em;
-    mask-position: 0 0.016em;
+    -webkit-mask-position: 0 1px;
+    mask-position: 0 1px;
   }
   91% {
-    -webkit-mask-position: 0 -0.02em;
-    mask-position: 0 -0.02em;
+    -webkit-mask-position: 0 -1px;
+    mask-position: 0 -1px;
   }
   93% {
-    -webkit-mask-position: 0 0.008em;
-    mask-position: 0 0.008em;
+    -webkit-mask-position: 0 0.5px;
+    mask-position: 0 0.5px;
   }
 }
 
