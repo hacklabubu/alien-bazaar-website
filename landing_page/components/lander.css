@@ -1,0 +1,1406 @@
+/* =============================================================
+   HARDWARE HACKATHON WARSAW 2026 — scoped to .hw26
+
+   Neoindustrial: machine-shop signage read through a phosphor
+   terminal. The vocabulary is real industrial marking — stencil
+   plate numbers, tolerance callouts, hazard chevrons, part
+   designations, registration crosshairs — not cyberpunk costume.
+
+   Every variable and class is namespaced so this page cannot
+   leak into the product, and the palette is declared locally so
+   the page renders identically no matter which theme the visitor
+   has selected. A poster does not flip to light mode.
+   ============================================================= */
+
+.hw26 {
+  /* ---- Dark field (the page's default state) ---- */
+  --hw-void: #070707;
+  --hw-pit: #030303;
+  --hw-steel: #0f1110;
+  --hw-steel-hi: #171a18;
+  --hw-line: #242926;
+  --hw-line-hi: #39413c;
+
+  /* ---- Light field (spec-sheet sections) ---- */
+  --hw-paper: #e4e4df;
+  --hw-paper-deep: #d5d5ce;
+  --hw-paper-line: #bcbfb5;
+  --hw-ink: #0a0a0a;
+
+  /* ---- Type colors ---- */
+  --hw-snow: #ffffff;
+  --hw-bone: #c3c3c3;
+  --hw-silver: #8b928d;
+
+  /* ---- Signal ---- */
+  /* Phosphor Mint. The one interactive/accent color on the page. */
+  --hw-mint: #82f5c6;
+  /* Matrix Green is the arrival color. It appears in exactly one
+     place on this page — the UFO's beam — and nowhere else. */
+  --hw-matrix: #00ff41;
+  /* Burn Red. The second signal, and it means the same thing here as it
+     does everywhere else in the system: a point of no return. It marks
+     the three hard gates and stamps the end plate. It is never a
+     decorative accent — if it is red, a clock is running out. */
+  --hw-red: #fc3500;
+
+  --hw-ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --hw-gutter: clamp(1.25rem, 4vw, 4.5rem);
+
+  background: var(--hw-void);
+  color: var(--hw-bone);
+  font-family: var(--font-jetbrains-mono), ui-monospace, monospace;
+  font-size: 16px;
+  line-height: 1.6;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+.hw26 *,
+.hw26 *::before,
+.hw26 *::after {
+  box-sizing: border-box;
+}
+
+/* -------------------------------------------------------------
+   Primitives
+   ------------------------------------------------------------- */
+
+/* The hairline machine grid. Sits behind dark sections at low
+   opacity — the graph paper a part gets drawn on. */
+.hw26-grid {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(to right, var(--hw-line) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--hw-line) 1px, transparent 1px);
+  background-size: 88px 88px;
+  opacity: 0.5;
+  -webkit-mask-image: radial-gradient(
+    ellipse 100% 70% at 50% 40%,
+    #000 30%,
+    transparent 100%
+  );
+  mask-image: radial-gradient(
+    ellipse 100% 70% at 50% 40%,
+    #000 30%,
+    transparent 100%
+  );
+}
+
+.hw26-paper .hw26-grid {
+  background-image:
+    linear-gradient(to right, var(--hw-paper-line) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--hw-paper-line) 1px, transparent 1px);
+  opacity: 0.45;
+}
+
+/* Eyebrow / technical label. The smallest type on the page and
+   the one that carries the machine vernacular. */
+.hw26-label {
+  font-family: var(--font-jetbrains-mono), monospace;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--hw-silver);
+}
+
+.hw26-label--mint {
+  color: var(--hw-mint);
+}
+
+/* Reserved for dates that can still be missed. */
+.hw26-label--red {
+  color: var(--hw-red);
+}
+
+/* -------------------------------------------------------------
+   Geist Pixel — the third face, on a short leash.
+
+   DESIGN.md keeps the product to two fonts and scopes Geist Pixel
+   to the shiplog hero; this page is an approved exception. It
+   earns its place by being a dot-matrix face: every use below is
+   something a machine would have *displayed* rather than
+   typeset — a counter, a plate stamp, a data cell, a readout.
+
+   One cut, one job, so the four never look interchangeable:
+     Circle → numerals that count (sections, tracks)
+     Grid   → title-block data cells
+     Square → the plate number stamped huge
+     Line   → the intro's terminal readout (matches shiplog)
+   Triangle is unused.
+   ------------------------------------------------------------- */
+
+/* Circle — numerals that count. */
+.hw26-num {
+  font-family:
+    var(--font-geist-pixel-circle), var(--font-jetbrains-mono), monospace;
+  font-size: 13px;
+  letter-spacing: 0.12em;
+  color: var(--hw-mint);
+}
+
+.hw26-paper .hw26-num {
+  color: #005c39;
+}
+
+/* Darker than it looks like it needs to be: these labels are 10px with wide
+   tracking, and the lighter grey only just cleared 4.5:1 on the paper field. */
+.hw26-paper .hw26-label {
+  color: #4a504e;
+}
+
+/* Registration crosshair, as on a print plate. */
+.hw26-cross {
+  position: absolute;
+  width: 13px;
+  height: 13px;
+  pointer-events: none;
+  opacity: 0.55;
+}
+.hw26-cross::before,
+.hw26-cross::after {
+  content: "";
+  position: absolute;
+  background: var(--hw-mint);
+}
+.hw26-cross::before {
+  left: 50%;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  transform: translateX(-50%);
+}
+.hw26-cross::after {
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 1px;
+  transform: translateY(-50%);
+}
+
+/* -------------------------------------------------------------
+   Section frame
+   ------------------------------------------------------------- */
+
+.hw26-section {
+  position: relative;
+  padding-block: clamp(5rem, 11vh, 9rem);
+  padding-inline: var(--hw-gutter);
+}
+
+.hw26-inner {
+  position: relative;
+  margin-inline: auto;
+  width: 100%;
+  max-width: 1440px;
+}
+
+.hw26-paper {
+  background: var(--hw-paper);
+  color: #2b2f2c;
+}
+
+.hw26-paper .hw26-display {
+  color: var(--hw-ink);
+}
+
+/* Section heading block: a rule, a designation, then the title. */
+.hw26-head {
+  display: flex;
+  align-items: baseline;
+  gap: 1.25rem;
+  border-top: 1px solid var(--hw-line);
+  padding-top: 1rem;
+  margin-bottom: clamp(2.5rem, 5vw, 4rem);
+}
+
+.hw26-paper .hw26-head {
+  border-color: var(--hw-paper-line);
+}
+
+.hw26-head h2 {
+  font-family: var(--font-orbitron), sans-serif;
+  font-weight: 800;
+  text-transform: uppercase;
+  font-size: clamp(1.5rem, 4vw, 2.75rem);
+  line-height: 0.95;
+  letter-spacing: 0.01em;
+  color: var(--hw-snow);
+  margin: 0;
+}
+
+.hw26-paper .hw26-head h2 {
+  color: var(--hw-ink);
+}
+
+/* -------------------------------------------------------------
+   1. HERO
+   ------------------------------------------------------------- */
+
+.hw26-hero {
+  position: relative;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: clamp(6rem, 12vh, 9rem) var(--hw-gutter) clamp(3rem, 6vh, 5rem);
+  overflow: hidden;
+  background:
+    radial-gradient(
+      ellipse 80% 55% at 62% 8%,
+      rgba(130, 245, 198, 0.07),
+      transparent 62%
+    ),
+    var(--hw-void);
+}
+
+/* Corner designations, pinned to the viewport corners of the hero. */
+.hw26-hero-corner {
+  position: absolute;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+.hw26-hero-corner--tl {
+  top: 1.6rem;
+  left: var(--hw-gutter);
+}
+.hw26-hero-corner--tr {
+  top: 1.6rem;
+  right: var(--hw-gutter);
+}
+.hw26-hero-corner--bl {
+  bottom: 1.6rem;
+  left: var(--hw-gutter);
+}
+.hw26-hero-corner--br {
+  bottom: 1.6rem;
+  right: var(--hw-gutter);
+}
+
+.hw26-hero-inner {
+  position: relative;
+  z-index: 2;
+  margin-inline: auto;
+  width: 100%;
+  max-width: 1440px;
+}
+
+/* The stacked wordmark. Each line is its own flex row so the
+   trailing rule can fill whatever space the word leaves. */
+.hw26-title {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(0.1rem, 0.5vw, 0.4rem);
+  margin: 0;
+}
+
+.hw26-title-row {
+  display: flex;
+  align-items: center;
+  gap: clamp(0.75rem, 2vw, 1.75rem);
+}
+
+.hw26-title-word {
+  font-family: var(--font-orbitron), sans-serif;
+  font-weight: 900;
+  text-transform: uppercase;
+  color: var(--hw-snow);
+  line-height: 0.84;
+  letter-spacing: -0.01em;
+  font-size: clamp(2.6rem, 11.5vw, 10.5rem);
+  white-space: nowrap;
+}
+
+.hw26-title-word--hollow {
+  color: transparent;
+  -webkit-text-stroke: 1.5px var(--hw-mint);
+}
+
+.hw26-title-rule {
+  flex: 1;
+  height: 1px;
+  background: var(--hw-line-hi);
+  min-width: 1.5rem;
+}
+
+.hw26-title-tag {
+  font-family: var(--font-jetbrains-mono), monospace;
+  font-size: clamp(9px, 0.9vw, 11px);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--hw-silver);
+  white-space: nowrap;
+}
+
+/* Load sequence: each word rises and settles once. */
+.hw26-rise {
+  animation: hw26-rise 900ms var(--hw-ease) both;
+}
+@keyframes hw26-rise {
+  from {
+    opacity: 0;
+    transform: translateY(0.5em);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Powered-by lockup. Set at display weight directly under the title: this
+   is co-branding, not a caption, and the two names carry the venue. */
+.hw26-poweredby {
+  margin-top: clamp(1.5rem, 3.5vh, 2.5rem);
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: clamp(0.75rem, 2vw, 1.5rem);
+}
+
+.hw26-poweredby-names {
+  display: flex;
+  align-items: center;
+  gap: clamp(0.55rem, 1.4vw, 1.1rem);
+  font-family: var(--font-orbitron), sans-serif;
+  font-weight: 800;
+  text-transform: uppercase;
+  font-size: clamp(1.1rem, 2.7vw, 2.15rem);
+  line-height: 1;
+  letter-spacing: 0.02em;
+  color: var(--hw-snow);
+  white-space: nowrap;
+}
+
+/* The join, not a third name — mint keeps it reading as a mark rather than
+   as a letter in either word. */
+.hw26-poweredby-x {
+  color: var(--hw-mint);
+  font-weight: 500;
+}
+
+/* Underlined on hover from below the baseline, so the names sit as a lockup
+   at rest and only reveal themselves as links on approach. */
+.hw26-poweredby-link {
+  color: inherit;
+  text-decoration: none;
+  padding-bottom: 0.12em;
+  border-bottom: 2px solid transparent;
+  transition:
+    color 220ms var(--hw-ease),
+    border-color 220ms var(--hw-ease);
+}
+
+.hw26-poweredby-link:hover {
+  color: var(--hw-mint);
+  border-bottom-color: var(--hw-mint);
+}
+
+.hw26-poweredby-link:focus-visible {
+  outline: 2px solid var(--hw-mint);
+  outline-offset: 4px;
+}
+
+.hw26-poweredby-rule {
+  flex: 1;
+  min-width: 1.5rem;
+  height: 1px;
+  background: var(--hw-line-hi);
+}
+
+.hw26-hero-meta {
+  margin-top: clamp(2rem, 5vh, 3.5rem);
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1px;
+  background: var(--hw-line);
+  border: 1px solid var(--hw-line);
+  max-width: 940px;
+}
+
+.hw26-hero-meta > div {
+  background: var(--hw-void);
+  padding: 1.1rem 1.25rem;
+}
+
+.hw26-hero-meta dt {
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--hw-silver);
+  margin: 0 0 0.5rem;
+}
+
+.hw26-hero-meta dd {
+  margin: 0;
+  font-size: clamp(0.82rem, 1.1vw, 0.95rem);
+  color: var(--hw-snow);
+  line-height: 1.35;
+}
+
+.hw26-hero-actions {
+  margin-top: clamp(2rem, 4vh, 3rem);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+/* -------------------------------------------------------------
+   The one button. Everything else on the page is text.
+   ------------------------------------------------------------- */
+
+.hw26-apply {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.15rem 2.5rem;
+  background: var(--hw-mint);
+  color: #04120c;
+  font-family: var(--font-orbitron), sans-serif;
+  font-weight: 800;
+  font-size: clamp(0.8rem, 1.1vw, 0.95rem);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  text-decoration: none;
+  border: 0;
+  clip-path: polygon(
+    0 0,
+    calc(100% - 14px) 0,
+    100% 14px,
+    100% 100%,
+    14px 100%,
+    0 calc(100% - 14px)
+  );
+  transition:
+    transform 220ms var(--hw-ease),
+    box-shadow 220ms var(--hw-ease);
+}
+
+.hw26-apply::after {
+  content: "→";
+  font-family: var(--font-jetbrains-mono), monospace;
+  transition: transform 220ms var(--hw-ease);
+}
+
+.hw26-apply:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0 0 rgba(130, 245, 198, 0.28);
+}
+
+.hw26-apply:hover::after {
+  transform: translateX(5px);
+}
+
+.hw26-apply:focus-visible {
+  outline: 2px solid var(--hw-snow);
+  outline-offset: 4px;
+}
+
+.hw26-apply--ghost {
+  background: transparent;
+  color: var(--hw-mint);
+  border: 1px solid var(--hw-mint);
+}
+
+.hw26-apply--lg {
+  padding: 1.5rem 3.5rem;
+  font-size: clamp(0.95rem, 1.6vw, 1.35rem);
+}
+
+/* -------------------------------------------------------------
+   The UFO. The page's signature.
+
+   An ASCII craft hovering in the hero with a beam that actually
+   falls across the content beneath it. This is the only place
+   Matrix Green appears, which is what makes it read as arrival
+   rather than as another accent.
+   ------------------------------------------------------------- */
+
+.hw26-ufo {
+  position: absolute;
+  z-index: 1;
+  top: clamp(4rem, 11vh, 8rem);
+  right: clamp(1rem, 7vw, 8rem);
+  pointer-events: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: min(340px, 46vw);
+}
+
+.hw26-ufo-craft {
+  position: relative;
+  z-index: 2;
+  font-family: var(--font-terminess), ui-monospace, monospace;
+  font-size: clamp(7px, 1.35vw, 13px);
+  line-height: 1.02;
+  white-space: pre;
+  text-align: center;
+  color: var(--hw-mint);
+  text-shadow: 0 0 18px rgba(130, 245, 198, 0.5);
+  animation: hw26-hover 6s ease-in-out infinite;
+}
+
+.hw26-ufo-lights {
+  font-family: var(--font-terminess), ui-monospace, monospace;
+  font-size: clamp(7px, 1.35vw, 13px);
+  line-height: 1.02;
+  white-space: pre;
+  text-align: center;
+  color: var(--hw-matrix);
+  text-shadow: 0 0 12px var(--hw-matrix);
+}
+
+@keyframes hw26-hover {
+  0%,
+  100% {
+    transform: translateY(0) rotate(-0.4deg);
+  }
+  50% {
+    transform: translateY(-13px) rotate(0.4deg);
+  }
+}
+
+/* The beam: a cone of light widening downward, layered with a
+   scanning band so it reads as active rather than as a gradient. */
+.hw26-ufo-beam {
+  position: relative;
+  width: 100%;
+  height: clamp(200px, 40vh, 460px);
+  margin-top: -6px;
+  clip-path: polygon(38% 0, 62% 0, 100% 100%, 0 100%);
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 255, 65, 0.3),
+    rgba(0, 255, 65, 0.1) 42%,
+    rgba(0, 255, 65, 0)
+  );
+  mix-blend-mode: screen;
+  animation: hw26-beam 6s ease-in-out infinite;
+}
+
+.hw26-ufo-beam::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(0, 255, 65, 0.14) 0 2px,
+    transparent 2px 7px
+  );
+  animation: hw26-scan 2.6s linear infinite;
+}
+
+@keyframes hw26-beam {
+  0%,
+  100% {
+    opacity: 0.85;
+    transform: translateY(0) scaleX(1);
+  }
+  50% {
+    opacity: 1;
+    transform: translateY(-13px) scaleX(1.04);
+  }
+}
+
+@keyframes hw26-scan {
+  from {
+    background-position-y: 0;
+  }
+  to {
+    background-position-y: 36px;
+  }
+}
+
+/* -------------------------------------------------------------
+   2. TICKER
+   ------------------------------------------------------------- */
+
+.hw26-ticker {
+  position: relative;
+  border-block: 1px solid var(--hw-line);
+  background: var(--hw-pit);
+  padding-block: 0.85rem;
+  overflow: hidden;
+  display: flex;
+}
+
+.hw26-ticker-track {
+  display: flex;
+  flex-shrink: 0;
+  gap: 3rem;
+  padding-right: 3rem;
+  white-space: nowrap;
+  animation: hw26-marquee 42s linear infinite;
+}
+
+.hw26-ticker span {
+  font-size: 11px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--hw-silver);
+}
+
+.hw26-ticker span b {
+  color: var(--hw-mint);
+  font-weight: 500;
+}
+
+.hw26-ticker span b.hw26-tick-red {
+  color: var(--hw-red);
+}
+
+@keyframes hw26-marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-100%);
+  }
+}
+
+/* -------------------------------------------------------------
+   3. TRACKS — two enormous panels. Numbering is real here:
+   there are exactly two and you commit to one.
+   ------------------------------------------------------------- */
+
+/* Two up, deliberately, rather than auto-fit: four tracks across a 1440px
+   sheet would each be too narrow to carry a display-size name, and the 2×2
+   keeps the panels the size the design is built around. */
+.hw26-tracks {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(1rem, 2vw, 1.75rem);
+}
+
+@media (max-width: 780px) {
+  .hw26-tracks {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.hw26-track {
+  position: relative;
+  min-height: clamp(420px, 52vh, 580px);
+  padding: clamp(1.75rem, 3vw, 2.75rem);
+  overflow: hidden;
+  isolation: isolate;
+  background: var(--hw-steel);
+  border: 1px solid var(--hw-line);
+  clip-path: polygon(
+    0 0,
+    calc(100% - 34px) 0,
+    100% 34px,
+    100% 100%,
+    34px 100%,
+    0 calc(100% - 34px)
+  );
+  transition: border-color 400ms var(--hw-ease);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.hw26-track:hover {
+  border-color: var(--hw-mint);
+}
+
+.hw26-track-photo {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  opacity: 0.16;
+  filter: grayscale(1) contrast(1.25);
+  transition:
+    opacity 620ms var(--hw-ease),
+    filter 620ms var(--hw-ease),
+    transform 900ms var(--hw-ease);
+}
+
+.hw26-track:hover .hw26-track-photo {
+  opacity: 0.32;
+  filter: grayscale(0.35) contrast(1.1);
+  transform: scale(1.05);
+}
+
+.hw26-track-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Circle — the track number is a counter, so it gets the dot-matrix cut.
+   Filled rather than outlined here: the face is already open enough that a
+   stroke-only treatment reads as noise at this size. */
+.hw26-track-no {
+  font-family: var(--font-geist-pixel-circle), var(--font-orbitron), sans-serif;
+  font-weight: 500;
+  font-size: clamp(3rem, 7.5vw, 5.75rem);
+  line-height: 0.85;
+  letter-spacing: 0.02em;
+  color: var(--hw-line-hi);
+  transition: color 400ms var(--hw-ease);
+}
+
+.hw26-track:hover .hw26-track-no {
+  color: var(--hw-mint);
+}
+
+.hw26-track-name {
+  font-family: var(--font-orbitron), sans-serif;
+  font-weight: 900;
+  text-transform: uppercase;
+  font-size: clamp(2rem, 5.5vw, 4rem);
+  line-height: 0.9;
+  color: var(--hw-snow);
+  margin: 0.5rem 0 0;
+}
+
+.hw26-track-blurb {
+  margin: 1.25rem 0 0;
+  max-width: 42ch;
+  font-size: 0.9rem;
+  line-height: 1.7;
+  color: var(--hw-bone);
+}
+
+.hw26-track-sponsor {
+  margin-top: 1.75rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--hw-line);
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+/* Pushed to the far edge so the mark keeps clear space from the kit line
+   no matter how long that line runs. */
+.hw26-track-mark {
+  height: 26px;
+  width: auto;
+  margin-left: auto;
+}
+
+/* -------------------------------------------------------------
+   4. THE LAB — the light section. A parts catalogue page.
+   ------------------------------------------------------------- */
+
+.hw26-kit {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1px;
+  background: var(--hw-paper-line);
+  border: 1px solid var(--hw-paper-line);
+}
+
+.hw26-kit-item {
+  position: relative;
+  background: var(--hw-paper);
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  transition: background 300ms var(--hw-ease);
+}
+
+.hw26-kit-item:hover {
+  background: var(--hw-paper-deep);
+}
+
+.hw26-kit-item dt {
+  font-family: var(--font-orbitron), sans-serif;
+  font-weight: 800;
+  text-transform: uppercase;
+  font-size: 1rem;
+  letter-spacing: 0.02em;
+  color: var(--hw-ink);
+}
+
+.hw26-kit-item dd {
+  margin: 0;
+  font-size: 0.82rem;
+  line-height: 1.6;
+  color: #4c524e;
+}
+
+/* The mint has to go this dark to stay legible at 10px on paper — the
+   light-mode mint the product uses lands around 3:1 here, which is not
+   enough for text this small. */
+.hw26-kit-qty {
+  font-family: var(--font-jetbrains-mono), monospace;
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  color: #005c39;
+}
+
+/* Photo plates: a broken grid, each with a callout. */
+.hw26-plates {
+  margin-top: clamp(2.5rem, 5vw, 4rem);
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: clamp(0.75rem, 1.5vw, 1.25rem);
+}
+
+.hw26-plate {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--hw-paper-line);
+  background: var(--hw-paper-deep);
+}
+
+.hw26-plate img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: grayscale(1) contrast(1.15);
+  transition:
+    filter 700ms var(--hw-ease),
+    transform 900ms var(--hw-ease);
+}
+
+.hw26-plate:hover img {
+  filter: grayscale(0) contrast(1);
+  transform: scale(1.04);
+}
+
+.hw26-plate figcaption {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  padding: 0.5rem 0.75rem;
+  background: var(--hw-ink);
+  color: var(--hw-paper);
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+.hw26-plate--a {
+  grid-column: span 7;
+  aspect-ratio: 16 / 10;
+}
+.hw26-plate--b {
+  grid-column: span 5;
+  aspect-ratio: 4 / 3;
+}
+.hw26-plate--c {
+  grid-column: span 4;
+  aspect-ratio: 1;
+}
+.hw26-plate--d {
+  grid-column: span 4;
+  aspect-ratio: 1;
+}
+.hw26-plate--e {
+  grid-column: span 4;
+  aspect-ratio: 1;
+}
+
+/* -------------------------------------------------------------
+   5. SCHEDULE — a machine readout, not a marketing timeline.
+   ------------------------------------------------------------- */
+
+.hw26-days {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: clamp(1.5rem, 3vw, 3rem);
+}
+
+/* Room for the hazard rule, which hangs off the left edge of a gated slot
+   and would otherwise spill into the neighbouring column. */
+.hw26-day {
+  padding-left: 0.85rem;
+}
+
+.hw26-day h3 {
+  font-family: var(--font-orbitron), sans-serif;
+  font-weight: 800;
+  text-transform: uppercase;
+  font-size: clamp(1.1rem, 2vw, 1.5rem);
+  color: var(--hw-snow);
+  margin: 0 0 1.5rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--hw-line);
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 1rem;
+}
+
+.hw26-day h3 span {
+  font-family: var(--font-jetbrains-mono), monospace;
+  font-weight: 500;
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  color: var(--hw-silver);
+}
+
+.hw26-slot {
+  display: grid;
+  grid-template-columns: 4.5rem 1fr;
+  gap: 1.25rem;
+  padding: 0.7rem 0;
+  border-bottom: 1px solid rgba(36, 41, 38, 0.6);
+  transition: background 250ms var(--hw-ease);
+}
+
+.hw26-slot:hover {
+  background: rgba(130, 245, 198, 0.04);
+}
+
+.hw26-slot-time {
+  font-size: 0.8rem;
+  color: var(--hw-mint);
+  letter-spacing: 0.05em;
+}
+
+.hw26-slot-what {
+  font-size: 0.85rem;
+  color: var(--hw-bone);
+  line-height: 1.5;
+}
+
+/* A deadline is not an agenda item. It gets the hazard rule. */
+.hw26-slot--gate .hw26-slot-what {
+  color: var(--hw-snow);
+  font-weight: 500;
+}
+
+.hw26-slot--gate {
+  position: relative;
+}
+
+.hw26-slot--gate::before {
+  content: "";
+  position: absolute;
+  left: -0.85rem;
+  top: 0.7rem;
+  bottom: 0.7rem;
+  width: 3px;
+  background-image: repeating-linear-gradient(
+    -45deg,
+    var(--hw-red) 0 3px,
+    transparent 3px 7px
+  );
+}
+
+/* The time on a gate reads red too — it is the number that actually
+   costs you something if you miss it. */
+.hw26-slot--gate .hw26-slot-time {
+  color: var(--hw-red);
+}
+
+.hw26-slot--gate:hover {
+  background: rgba(252, 53, 0, 0.05);
+}
+
+/* -------------------------------------------------------------
+   6. SPONSORS — a logo garden with real clear space. NVIDIA's
+   guidelines require the mark be large, uncrowded, and
+   unmodified; the grid is sized around that, not around us.
+   ------------------------------------------------------------- */
+
+.hw26-sponsors-lead {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1px;
+  background: var(--hw-line);
+  border: 1px solid var(--hw-line);
+  margin-bottom: 1px;
+}
+
+.hw26-sponsor-lead {
+  background: var(--hw-steel);
+  padding: clamp(2.5rem, 5vw, 4rem);
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+  align-items: flex-start;
+  transition: background 300ms var(--hw-ease);
+}
+
+.hw26-sponsor-lead:hover {
+  background: var(--hw-steel-hi);
+}
+
+.hw26-sponsor-lead img {
+  height: clamp(38px, 5vw, 58px);
+  width: auto;
+}
+
+.hw26-sponsor-lead p {
+  margin: 0;
+  font-size: 0.85rem;
+  line-height: 1.7;
+  color: var(--hw-bone);
+  max-width: 40ch;
+}
+
+.hw26-sponsors-rest {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 1px;
+  background: var(--hw-line);
+  border: 1px solid var(--hw-line);
+}
+
+.hw26-sponsor {
+  background: var(--hw-steel);
+  padding: 2.25rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  min-height: 150px;
+  transition: background 300ms var(--hw-ease);
+}
+
+.hw26-sponsor:hover {
+  background: var(--hw-steel-hi);
+}
+
+.hw26-sponsor-name {
+  font-family: var(--font-orbitron), sans-serif;
+  font-weight: 800;
+  text-transform: uppercase;
+  font-size: 1.05rem;
+  letter-spacing: 0.04em;
+  color: var(--hw-bone);
+}
+
+/* -------------------------------------------------------------
+   7. CLOSER
+   ------------------------------------------------------------- */
+
+.hw26-closer {
+  position: relative;
+  text-align: center;
+  padding-block: clamp(6rem, 16vh, 12rem);
+  background:
+    radial-gradient(
+      ellipse 60% 50% at 50% 100%,
+      rgba(130, 245, 198, 0.1),
+      transparent 70%
+    ),
+    var(--hw-pit);
+  border-top: 1px solid var(--hw-line);
+}
+
+.hw26-closer h2 {
+  font-family: var(--font-orbitron), sans-serif;
+  font-weight: 900;
+  text-transform: uppercase;
+  font-size: clamp(2.2rem, 8vw, 6.5rem);
+  line-height: 0.88;
+  color: var(--hw-snow);
+  margin: 0 0 1.5rem;
+}
+
+.hw26-closer p {
+  max-width: 46ch;
+  margin: 0 auto clamp(2.5rem, 5vh, 3.5rem);
+  font-size: 0.95rem;
+  line-height: 1.75;
+  color: var(--hw-bone);
+}
+
+/* -------------------------------------------------------------
+   8. END PLATE
+
+   A drawing title block, which is what a footer on a technical
+   sheet actually is: the panel that says which drawing this is,
+   what revision, and whether it has been issued. Every cell holds
+   a real fact about the event, so the density is information
+   rather than texture.
+   ------------------------------------------------------------- */
+
+.hw26-endplate {
+  position: relative;
+  min-height: 50svh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow: hidden;
+  background: var(--hw-pit);
+  border-top: 1px solid var(--hw-line);
+  isolation: isolate;
+}
+
+/* The band that runs the full width at the top of the plate. Red,
+   because the only date on this page that can still be missed is
+   the one printed on it. */
+.hw26-endplate-hazard {
+  height: 22px;
+  flex-shrink: 0;
+  background-image: repeating-linear-gradient(
+    -45deg,
+    var(--hw-red) 0 12px,
+    #0d0300 12px 26px
+  );
+  background-size: 200% 100%;
+  animation: hw26-band 3.2s linear infinite;
+}
+
+@keyframes hw26-band {
+  from {
+    background-position-x: 0;
+  }
+  to {
+    background-position-x: -52px;
+  }
+}
+
+/* Giant outlined year bleeding off the bottom edge. Sits behind
+   everything and is cropped by the plate, the way a sheet number
+   runs off a drawing. */
+.hw26-endplate-bleed {
+  position: absolute;
+  z-index: -1;
+  left: 50%;
+  bottom: -0.28em;
+  transform: translateX(-50%);
+  margin: 0;
+  /* Square — the plate number stamped huge. The solid cut is the only one
+     that holds its shape when the glyphs are this big and outlined. */
+  font-family: var(--font-geist-pixel-square), var(--font-orbitron), sans-serif;
+  font-weight: 500;
+  font-size: clamp(8rem, 26vw, 22rem);
+  line-height: 0.78;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  color: transparent;
+  -webkit-text-stroke: 1px var(--hw-line-hi);
+  pointer-events: none;
+  user-select: none;
+  opacity: 0.85;
+}
+
+.hw26-endplate-body {
+  position: relative;
+  padding: clamp(2rem, 5vw, 3.5rem) var(--hw-gutter);
+  margin-inline: auto;
+  width: 100%;
+  max-width: 1440px;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(1.75rem, 4vw, 3rem);
+  flex: 1;
+  justify-content: center;
+}
+
+.hw26-endplate-top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1.5rem 2rem;
+}
+
+.hw26-endplate-mark {
+  font-family: var(--font-orbitron), sans-serif;
+  font-weight: 900;
+  text-transform: uppercase;
+  font-size: clamp(1.6rem, 4.5vw, 3.25rem);
+  line-height: 0.9;
+  color: var(--hw-snow);
+  margin: 0;
+}
+
+.hw26-endplate-mark em {
+  font-style: normal;
+  color: transparent;
+  -webkit-text-stroke: 1px var(--hw-red);
+}
+
+/* The issued stamp. Rotated and outlined, like something pressed
+   onto the sheet after the drawing was finished. */
+.hw26-stamp {
+  align-self: flex-start;
+  flex-shrink: 0;
+  padding: 0.7rem 1.1rem;
+  border: 2px solid var(--hw-red);
+  color: var(--hw-red);
+  font-family: var(--font-orbitron), sans-serif;
+  font-weight: 800;
+  font-size: clamp(0.7rem, 1.1vw, 0.9rem);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  transform: rotate(-3.5deg);
+  text-align: center;
+  line-height: 1.3;
+  box-shadow: 0 0 0 1px rgba(252, 53, 0, 0.25) inset;
+}
+
+.hw26-stamp span {
+  display: block;
+  font-family: var(--font-jetbrains-mono), monospace;
+  font-weight: 500;
+  font-size: 9px;
+  letter-spacing: 0.22em;
+  opacity: 0.75;
+  margin-top: 0.2rem;
+}
+
+/* The title block grid. Hairlines come from the gap showing the
+   container colour through, so every rule is exactly 1px. */
+.hw26-titleblock {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(148px, 1fr));
+  gap: 1px;
+  background: var(--hw-line);
+  border: 1px solid var(--hw-line);
+}
+
+.hw26-tb {
+  background: var(--hw-pit);
+  padding: 0.9rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  min-height: 78px;
+  transition: background 260ms var(--hw-ease);
+}
+
+.hw26-tb:hover {
+  background: #0b0d0c;
+}
+
+.hw26-tb dt {
+  font-size: 9px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--hw-silver);
+}
+
+/* Grid — the data cells of a drawing title block, which is exactly the
+   context this cut was drawn for. */
+.hw26-tb dd {
+  margin: 0;
+  font-family: var(--font-geist-pixel-grid), var(--font-orbitron), sans-serif;
+  font-weight: 500;
+  font-size: 0.88rem;
+  letter-spacing: 0.04em;
+  color: var(--hw-snow);
+  text-transform: uppercase;
+}
+
+/* One cell in the block is the deadline. It gets the red. */
+.hw26-tb--gate dd {
+  color: var(--hw-red);
+}
+
+.hw26-tb--mint dd {
+  color: var(--hw-mint);
+}
+
+.hw26-endplate-foot {
+  position: relative;
+  border-top: 1px solid var(--hw-line);
+  padding: 1.25rem var(--hw-gutter);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 2rem;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--hw-pit);
+}
+
+/* Red registration ticks along the bottom rule — the marks a plate
+   gets so it can be lined up. */
+.hw26-ticks {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.hw26-ticks i {
+  display: block;
+  width: 2px;
+  height: 11px;
+  background: var(--hw-red);
+  opacity: 0.55;
+}
+
+.hw26-ticks i:nth-child(4n) {
+  height: 17px;
+  opacity: 1;
+}
+
+/* -------------------------------------------------------------
+   Scroll reveal
+   ------------------------------------------------------------- */
+
+.hw26-reveal {
+  opacity: 0;
+  transform: translateY(26px);
+  transition:
+    opacity 800ms var(--hw-ease),
+    transform 800ms var(--hw-ease);
+}
+
+.hw26-reveal[data-shown="true"] {
+  opacity: 1;
+  transform: none;
+}
+
+/* Everything below the hero starts at opacity 0 and is revealed by script.
+   With scripting off that would be a blank page, so the hidden state is
+   withdrawn entirely rather than left to a reveal that will never fire. */
+@media (scripting: none) {
+  .hw26-reveal {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* -------------------------------------------------------------
+   Responsive + accessibility floor
+   ------------------------------------------------------------- */
+
+@media (max-width: 900px) {
+  .hw26-ufo {
+    top: auto;
+    bottom: 4rem;
+    right: -2rem;
+    width: min(230px, 58vw);
+    opacity: 0.75;
+  }
+  .hw26-ufo-beam {
+    height: clamp(120px, 22vh, 220px);
+  }
+  .hw26-plate--a,
+  .hw26-plate--b {
+    grid-column: span 12;
+  }
+  .hw26-plate--c,
+  .hw26-plate--d,
+  .hw26-plate--e {
+    grid-column: span 6;
+  }
+  .hw26-hero-corner--bl,
+  .hw26-hero-corner--br {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hw26 *,
+  .hw26 *::before,
+  .hw26 *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+  .hw26-reveal {
+    opacity: 1;
+    transform: none;
+  }
+}

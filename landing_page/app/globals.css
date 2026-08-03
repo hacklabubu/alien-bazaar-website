@@ -1,0 +1,25 @@
+/* Minimal reset. The lander declares its own palette and type scale, scoped
+   to .hw26, so there is deliberately nothing else global here. */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background: #070707;
+  color: #c3c3c3;
+}
+
+body {
+  -webkit-font-smoothing: antialiased;
+}
+
+/* The page owns its own dark field; never let the browser paint a light
+   scrollbar or form chrome over it. */
+:root {
+  color-scheme: dark;
+}
