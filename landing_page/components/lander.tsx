@@ -250,7 +250,9 @@ const HOUSE = [
 const ORGANIZERS = [
   {
     name: 'Hacklab',
-    src: null as string | null,
+    // White mark, drawn for the dark plate the organizer cells keep in
+    // both themes.
+    src: '/sponsors/hacklab.png' as string | null,
     href: 'https://hacklab.so',
     line: 'The platform the funnel runs on — registration, team matching, and hardware booking.',
   },
@@ -898,7 +900,9 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
             {ORGANIZERS.map((org) => (
               <div className='hw26-sponsor-lead' key={org.name}>
                 {org.src ? (
-                  <img alt={org.name} src={org.src} />
+                  <a className='hw26-org-logo' href={org.href}>
+                    <img alt={org.name} src={org.src} />
+                  </a>
                 ) : (
                   // Typographic mark until the real logo file lands.
                   <a className='hw26-org-mark' href={org.href}>

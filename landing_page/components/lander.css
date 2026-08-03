@@ -1005,6 +1005,22 @@ html[data-theme='light'] .hw26-ufo-beam {
   margin-top: 2.5rem;
 }
 
+/* Organizer logo. Slightly larger than the partner marks below — this is
+   the co-branding row, not the sponsor wall. */
+.hw26-org-logo {
+  display: inline-flex;
+}
+
+.hw26-org-logo:focus-visible {
+  outline: 2px solid #82f5c6;
+  outline-offset: 4px;
+}
+
+.hw26-sponsor-lead .hw26-org-logo img {
+  height: clamp(48px, 6vw, 72px);
+  width: auto;
+}
+
 /* Typographic organizer mark, standing in for a logo until the real file
    lands. Fixed white: the lead cells keep their dark plate in both themes. */
 .hw26-org-mark {
