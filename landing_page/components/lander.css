@@ -348,6 +348,30 @@ html[data-theme='light'] .hw26 {
 
 /* Powered-by lockup. Set at display weight directly under the title: this
    is co-branding, not a caption, and the two names carry the venue. */
+/* Descriptor. "Alien Bazaar" is a name, not a description — on its own it
+   tells a first-time visitor nothing about what this is. So the descriptor
+   is set at display weight directly under the wordmark, sized between the
+   name and the powered-by lockup: clearly subordinate to the one, clearly
+   ahead of everything else. The trailing rule is the same device the title
+   rows use, so it reads as another line of the wordmark block. */
+.hw26-subtitle {
+  margin: clamp(0.9rem, 2.4vh, 1.6rem) 0 0;
+  display: flex;
+  align-items: center;
+  gap: clamp(0.75rem, 2vw, 1.5rem);
+  font-family: var(--font-orbitron), sans-serif;
+  font-weight: 800;
+  font-size: clamp(1.15rem, 3.7vw, 3rem);
+  line-height: 1;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--hw-snow);
+}
+
+.hw26-subtitle span {
+  white-space: nowrap;
+}
+
 .hw26-poweredby {
   margin-top: clamp(1.5rem, 3.5vh, 2.5rem);
   display: flex;

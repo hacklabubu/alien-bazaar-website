@@ -558,12 +558,20 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
             </span>
           </h1>
 
+          {/* "Alien Bazaar" says nothing about what the event is, so the
+              descriptor has to carry it and sits immediately under the
+              wordmark at display weight — second only to the name itself. */}
+          <p className='hw26-subtitle hw26-rise' style={{ animationDelay: '310ms' }}>
+            <span>Hardware hackathon</span>
+            <i className='hw26-title-rule' />
+          </p>
+
           {/* The partnership is the reason the event has a lab at all, so it
               sits directly under the title at display weight rather than in
               the corner marks with the sheet numbers. */}
           <div
             className='hw26-poweredby hw26-rise'
-            style={{ animationDelay: '330ms' }}
+            style={{ animationDelay: '400ms' }}
           >
             <span className='hw26-label'>Powered by</span>
             <span className='hw26-poweredby-names'>
@@ -593,7 +601,7 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
 
           <dl
             className='hw26-hero-meta hw26-rise'
-            style={{ animationDelay: '430ms' }}
+            style={{ animationDelay: '490ms' }}
           >
             <div>
               <dt>Dates</dt>
@@ -621,7 +629,7 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
 
           <div
             className='hw26-hero-actions hw26-rise'
-            style={{ animationDelay: '530ms' }}
+            style={{ animationDelay: '580ms' }}
           >
             <a className='hw26-apply' href={applyHref}>
               Apply now
