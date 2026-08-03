@@ -273,6 +273,10 @@ const LEAD_SPONSORS = [
   {
     name: 'NVIDIA',
     src: '/sponsors/nvidia.svg',
+    // Their two-colour mark is the stacked lockup, so matching Red Hat's
+    // height would leave it reading half the size. Flagged for its own
+    // sizing rather than hard-coding a height per sponsor.
+    stacked: true,
     line: 'Compute, engineers on the floor, and the Drones category prize.',
   },
   {
@@ -932,7 +936,11 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
           <div className='hw26-sponsors-lead hw26-reveal'>
             {LEAD_SPONSORS.map((s) => (
               <div className='hw26-sponsor-lead' key={s.name}>
-                <img alt={s.name} src={s.src} />
+                <img
+                  alt={s.name}
+                  className={s.stacked ? 'hw26-mark--stacked' : undefined}
+                  src={s.src}
+                />
                 <p>{s.line}</p>
               </div>
             ))}

@@ -1023,9 +1023,12 @@ html[data-theme='light'] .hw26-ufo-beam {
 }
 
 /* Pushed to the far edge so the mark keeps clear space from the kit line
-   no matter how long that line runs. */
+   no matter how long that line runs. Taller than a wordmark would need:
+   the only mark that lands here is NVIDIA's stacked lockup, which is
+   roughly square, so equal height with a horizontal logo would read as
+   half the size. */
 .hw26-track-mark {
-  height: 26px;
+  height: 42px;
   width: auto;
   margin-left: auto;
 }
@@ -1339,6 +1342,13 @@ html[data-theme='light'] .hw26-sponsor-lead p {
 .hw26-sponsor-lead img {
   height: clamp(38px, 5vw, 58px);
   width: auto;
+}
+
+/* A stacked lockup carries its weight in two rows, so it needs about
+   1.7x the height of a horizontal mark to sit at the same optical size
+   beside one. */
+.hw26-sponsor-lead img.hw26-mark--stacked {
+  height: clamp(64px, 8.5vw, 98px);
 }
 
 .hw26-sponsor-lead p {
