@@ -14,13 +14,16 @@ import { HardwareIntro } from './intro'
 import { APPLY_URL, type HardwareEvent } from '../lib/event'
 
 /**
- * Hardware Hackathon Warsaw 2026 — the event's own landing page.
+ * Alien Bazaar — Warsaw 2026. The event's own landing page.
  *
  * Neoindustrial: machine-shop signage read through a phosphor terminal.
  * Structure carries meaning rather than decorating it — the four tracks are
- * numbered because you commit to exactly one, red marks only the three gates
- * that can actually cost you something, and the light section is a parts
- * catalogue because that is what the lab inventory actually is.
+ * numbered because you commit to exactly one, the mint accent marks both the
+ * interactive and the three gates that can cost you something, and the light
+ * section is a parts catalogue because that is what the lab inventory is.
+ *
+ * The page ships two themes, dark by default; the toggle stamps data-theme
+ * on <html> and the palette tokens in lander.css do the rest.
  *
  * Facts come from the event row, so the page cannot drift from
  * `/hackathons/<slug>`. Copy that is not in the database lives here.
@@ -43,29 +46,29 @@ const UFO_LIGHTS = [
 ]
 
 const TICKER = [
-  { label: '48 HOURS' },
-  { label: 'FOUR TRACKS — ONE CHOICE' },
+  { label: '48 WORK HOURS' },
+  { label: 'SIX HARDWARE CATEGORIES' },
   { label: 'HACKER HOUSE / WARSAW' },
-  { label: 'ROBOTS · DRONES · PRINTERS', mint: true },
-  { label: 'BOOKABLE LAB, ALL WEEKEND' },
-  { label: 'INVESTORS ON SUNDAY', mint: true },
-  { label: 'APPLICATIONS CLOSE 10 SEP', red: true },
+  { label: 'DRONES · HUMANOIDS · COBOTS · AR', mint: true },
+  { label: 'FULL PRINT FARM, ALL THREE DAYS' },
+  { label: 'PITCH DAY 28 SEP', mint: true },
+  { label: 'APPLICATIONS CLOSE 12 SEP', mint: true },
   { label: 'BUILD SOMETHING THAT MOVES' },
 ]
 
 /**
- * Four tracks, each pinned to a real part of the lab so the choice is about
- * which machine you want rather than which buzzword. Kept in step with the
- * `hackathon_tracks` rows the seed writes, so this page and the event page
- * never disagree about the lineup.
+ * Six hardware categories. Booking one by 12 September is what gets a team
+ * its machine, so the choice is about which hardware fits the idea rather
+ * than which buzzword. Teams are not limited to this list — the paragraph
+ * under the grid carries the bring-your-own-rig clause.
  */
 const TRACKS = [
   {
     no: '01',
-    name: 'Flight',
-    kit: 'Drone cage · tracking rig',
+    name: 'Drones',
+    kit: 'Flight · FPV · autonomy',
     blurb:
-      'Anything that leaves the ground. A netted volume, a tracking rig, and as many battery swaps as you can survive.',
+      'Anything that leaves the ground. Book a platform, strap your idea to it, and prove it flies before pitch day.',
     photo: '/photos/drone-01.jpg',
     alt: 'A quadcopter hovering in flight, its pilot on the controller behind it',
     sponsor: {
@@ -75,66 +78,91 @@ const TRACKS = [
   },
   {
     no: '02',
-    name: 'Manipulation',
-    kit: '6-axis arms · grippers',
+    name: 'Underwater Drones',
+    kit: 'Submersibles · ROV rigs',
     blurb:
-      'Teach an arm to do something useful. Six axes, a shared cell, and grippers that were never meant for what you are about to try.',
+      'The same problem with worse physics. Submersible platforms for teams whose product starts where the signal ends.',
+    photo: '/photos/workshop-01.jpg',
+    alt: 'A machine shop with lathes and tooling along the wall',
+    sponsor: null,
+  },
+  {
+    no: '03',
+    name: 'Humanoids',
+    kit: 'Bipeds · teleop · balance',
+    blurb:
+      'The hardest form factor in the building. Put hands, balance, and your software on a machine shaped like its operator.',
+    photo: '/photos/robot-arm-03.jpg',
+    alt: 'A robot arm at a welding station',
+    sponsor: null,
+  },
+  {
+    no: '04',
+    name: 'Cobots',
+    kit: 'Collaborative arms · grippers',
+    blurb:
+      'Teach an arm to do something useful. Collaborative cells, grippers, and 48 hours to make one earn its place on a line.',
     photo: '/photos/robot-arm-01.jpg',
     alt: 'A yellow industrial robot arm on a factory line',
     sponsor: null,
   },
   {
-    no: '03',
-    name: 'Fabrication',
-    kit: 'Print farm · resin · parts wall',
+    no: '05',
+    name: 'AR',
+    kit: 'Headsets · spatial interfaces',
     blurb:
-      'Design it Saturday, hold it Sunday. Ten printers, a resin station, and a parts wall for everything the printer cannot give you.',
-    photo: '/photos/printer-01.jpg',
-    alt: 'A 3D printer mid-print',
-    sponsor: null,
-  },
-  {
-    no: '04',
-    name: 'Wildcard',
-    kit: 'Whatever the lab has',
-    blurb:
-      'The track for the thing that fits nowhere else. Bring your own problem, take whatever the lab has, and justify it at the demo.',
+      'Hardware you look through instead of at. Build the layer between the machines in this house and the people running them.',
     photo: '/photos/hacker-01.jpg',
     alt: 'A person operating a workshop machine',
     sponsor: null,
   },
+  {
+    no: '06',
+    name: 'Mobile Platforms',
+    kit: 'Wheels · tracks · payloads',
+    blurb:
+      'Rovers, carts, and anything that carries a payload somewhere it should not go. Ground vehicles for products that move.',
+    photo: '/photos/printer-01.jpg',
+    alt: 'A 3D printer mid-print',
+    sponsor: null,
+  },
 ]
 
+/**
+ * The print farm. Available to every team for the whole hackathon, whatever
+ * category they booked — this is the one part of the inventory that is not
+ * a choice.
+ */
 const KIT = [
   {
-    name: '6-Axis Arms',
-    qty: 'QTY 04',
-    what: 'Industrial arms on a shared cell. Slot-booked, supervised, and yours for an hour at a time.',
-  },
-  {
-    name: 'FDM Printers',
-    qty: 'QTY 12',
-    what: 'The print farm. First come on the queue, so file early and iterate overnight.',
-  },
-  {
-    name: 'Resin + SLA',
-    qty: 'QTY 03',
-    what: 'For the parts an FDM head cannot hold tolerance on. Wash and cure station beside it.',
-  },
-  {
-    name: 'Drone Cage',
+    name: 'Formlabs 4L',
     qty: 'QTY 01',
-    what: 'Netted flight volume with a tracking rig. The only place anything flies.',
+    what: 'Large-format SLA for the parts that have to be right. Book it early — its jobs run long.',
   },
   {
-    name: 'Benches',
-    qty: 'QTY 20',
-    what: 'Soldering, rework, scopes, supplies. Power and network at every seat.',
+    name: 'BambuLab H2D',
+    qty: 'QTY 01',
+    what: 'Dual-extrusion printing: supports that dissolve, parts in two materials, one job.',
   },
   {
-    name: 'Parts Wall',
+    name: 'BambuLab P1S',
+    qty: 'QTY 01',
+    what: 'The enclosed workhorse. ABS and ASA without warping, fast enough to iterate between meals.',
+  },
+  {
+    name: 'Bambu A1',
+    qty: 'QTY 02',
+    what: 'Two of them, so the queue for quick brackets and enclosures never blocks a real job.',
+  },
+  {
+    name: 'Anycubic Resin',
+    qty: 'QTY 01',
+    what: 'For detail an FDM head cannot hold. Wash and cure station beside it.',
+  },
+  {
+    name: 'Your Own Rig',
     qty: 'OPEN',
-    what: 'Steppers, drivers, sensors, connectors, stock. Take what you need, log what you take.',
+    what: 'Not limited to the list. Bring your own equipment, or tell us what you need and we arrange delivery.',
   },
 ]
 
@@ -171,34 +199,67 @@ const PLATES = [
   },
 ]
 
-const SATURDAY = [
-  { t: '09:00', w: 'Doors open. Breakfast and badges.' },
-  { t: '10:00', w: 'Opening — Hacklab and Epikor.' },
+/**
+ * The two halves of the funnel: what happens on the platform before anyone
+ * gets a key, and what happens once the house opens. Dates, not clock times —
+ * the gates here are the ones that can actually cost a team its seat.
+ */
+const FUNNEL = [
+  { t: 'NOW', w: 'Join the wait-list on HackLab and pick the hackathon.' },
   {
-    t: '10:30',
-    w: 'Track briefings, then an NVIDIA session on edge autonomy.',
-  },
-  { t: '11:00', w: 'Hacking starts. Lab and booking board open.' },
-  {
-    t: '14:00',
-    w: 'Teams lock. No joining or switching after this.',
+    t: '12 SEP',
+    w: 'Book the hardware your project needs.',
     gate: true,
   },
-  { t: '16:00', w: 'Track choices lock.', gate: true },
   {
-    t: '18:00',
-    w: 'Mentor rounds — lab leads and track mentors on the floor.',
+    t: '12 SEP',
+    w: 'No team? Find 3–5 teammates on the platform, with an AI assistant doing the matchmaking.',
   },
-  { t: '23:00', w: 'Night hacking. The lab stays open.' },
+  {
+    t: '12 SEP',
+    w: 'Submit the startup idea you will prototype on the booked hardware.',
+    gate: true,
+  },
+  { t: '19 SEP', w: 'Organizers accept teams. Results go out.' },
 ]
 
-const SUNDAY = [
-  { t: '08:00', w: 'Breakfast.' },
-  { t: '10:00', w: 'Investors start walking the floor.' },
-  { t: '14:00', w: 'Submissions due. Hard deadline.', gate: true },
-  { t: '15:00', w: 'Demos and judging.' },
-  { t: '18:00', w: 'Awards.' },
-  { t: '19:00', w: 'Closing and afterparty.' },
+const HOUSE = [
+  {
+    t: '26 SEP',
+    w: 'Move into the house. The clock starts — 48 work hours.',
+  },
+  {
+    t: '27 SEP',
+    w: 'Build. The lab, the print farm, and the media floor run all day.',
+  },
+  {
+    t: '28 SEP',
+    w: 'Pitch day — private investors and venture fund partners.',
+    gate: true,
+  },
+  {
+    t: '28 SEP',
+    w: 'The ecosystem chat opens, and the house keeps running as a hacker house.',
+  },
+]
+
+/**
+ * The two organizers. Rendered as typographic marks until the real logo
+ * files land — drop an SVG in /public/sponsors and set `src` to swap one in.
+ */
+const ORGANIZERS = [
+  {
+    name: 'Hacklab',
+    src: null as string | null,
+    href: 'https://hacklab.so',
+    line: 'The platform the funnel runs on — registration, team matching, and hardware booking.',
+  },
+  {
+    name: 'Epikor',
+    src: null as string | null,
+    href: 'https://epikor.eu',
+    line: 'The house itself: four floors and a courtyard turned into a hub for building, content, and networking.',
+  },
 ]
 
 /**
@@ -210,12 +271,39 @@ const LEAD_SPONSORS = [
   {
     name: 'NVIDIA',
     src: '/sponsors/nvidia.svg',
-    line: 'Compute, engineers on the floor, and the Flight track prize.',
+    line: 'Compute, engineers on the floor, and the Drones category prize.',
   },
   {
     name: 'Red Hat',
     src: '/sponsors/redhat-on-dark.svg',
-    line: 'Infrastructure for every team, and the platform workshops on Saturday.',
+    line: 'Infrastructure for every team, and the platform workshops on day one.',
+  },
+]
+
+/**
+ * The four forces the event puts in one building. This is the ecosystem
+ * pitch in grid form — the hackathon is the entry point, not the product.
+ */
+const FORCES = [
+  {
+    name: 'Founders',
+    tag: 'BUILD',
+    what: 'Build a product with their hands, not on slides. The strongest teams are invited to stay in the house after the weekend.',
+  },
+  {
+    name: 'Investors',
+    tag: 'WATCH',
+    what: 'Private investors and venture fund partners see teams in action all weekend, not in a deck after the fact.',
+  },
+  {
+    name: 'Factories',
+    tag: 'SUPPLY',
+    what: 'Hardware partners provide the machines, watch real use cases of their products, and meet their next long-term founders.',
+  },
+  {
+    name: 'Media',
+    tag: 'RECORD',
+    what: 'On the floor for the whole run — filming builders, talking to guests, documenting products being born in real time.',
   },
 ]
 
@@ -224,28 +312,29 @@ const LEAD_SPONSORS = [
  * event row are rendered beside these so both halves stay one grid.
  */
 const TITLE_BLOCK = [
-  { k: 'Project', v: 'HW—WAW—26' },
+  { k: 'Project', v: 'AB—WAW—26' },
   { k: 'Sheet', v: '07 / 07' },
   { k: 'Rev', v: '03' },
   { k: 'Status', v: 'Issued', tone: 'mint' },
-  { k: 'Tracks', v: '04' },
+  { k: 'Categories', v: '06' },
   { k: 'Venue', v: 'Hacker House' },
   { k: 'Coord', v: '52.2297°N 21.0122°E' },
-  { k: 'Duration', v: '48 H' },
+  { k: 'Duration', v: '48 WORK H' },
 ]
 
 /**
- * Placeholders for this prototype — invented names, not companies we have
- * signed. Each is marked TBC on the page so a draft can never read as a
- * claim that they are on board. Replace with real marks as they confirm.
+ * The rest of the partner wall. IntelliJ is confirmed and shown as a named
+ * partner (official mark to follow); the remaining names are placeholders
+ * for this prototype, marked TBC so a draft can never read as a claim.
  */
-const PENDING_SPONSORS = [
-  'Voltbend',
-  'Meridian Robotics',
-  'Nordhaus Systems',
-  'Partwall',
-  'Sigma Forge',
-  'Kraków Motion',
+const REST_PARTNERS = [
+  { name: 'IntelliJ', tag: 'Partner' },
+  { name: 'Voltbend', tag: 'TBC' },
+  { name: 'Meridian Robotics', tag: 'TBC' },
+  { name: 'Nordhaus Systems', tag: 'TBC' },
+  { name: 'Partwall', tag: 'TBC' },
+  { name: 'Sigma Forge', tag: 'TBC' },
+  { name: 'Kraków Motion', tag: 'TBC' },
 ]
 
 function useReveal() {
@@ -302,6 +391,41 @@ function Ufo() {
       <pre className='hw26-ufo-lights'>{UFO_LIGHTS[frame]}</pre>
       <div className='hw26-ufo-beam' />
     </div>
+  )
+}
+
+/**
+ * Dark is the default; the inline script in the layout applies any stored
+ * choice before paint, so this only has to read what is already on <html>
+ * and flip it. The state exists purely to relabel the button.
+ */
+function ThemeToggle() {
+  const [theme, setTheme] = useState<'dark' | 'light'>('dark')
+
+  useEffect(() => {
+    if (document.documentElement.dataset.theme === 'light') setTheme('light')
+  }, [])
+
+  const toggle = () => {
+    const next = theme === 'dark' ? 'light' : 'dark'
+    setTheme(next)
+    document.documentElement.dataset.theme = next
+    try {
+      window.localStorage.setItem('hw26-theme', next)
+    } catch {
+      // Storage can be blocked; the theme still applies for this visit.
+    }
+  }
+
+  return (
+    <button
+      className='hw26-theme'
+      onClick={toggle}
+      type='button'
+    >
+      <i aria-hidden='true' />
+      {theme === 'dark' ? 'Light mode' : 'Dark mode'}
+    </button>
   )
 }
 
@@ -387,7 +511,7 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
               positioned against it, and a static box would hand them the
               corner wrapper instead and stretch them across it. */}
           <span className='hw26-cross' style={{ position: 'relative' }} />
-          <span className='hw26-label hw26-label--mint'>HW—WAW—26</span>
+          <span className='hw26-label hw26-label--mint'>AB—WAW—26</span>
         </div>
         <div className='hw26-hero-corner hw26-hero-corner--tr'>
           <span className='hw26-label'>52.2297°N 21.0122°E</span>
@@ -408,7 +532,7 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
                 className='hw26-title-word hw26-rise'
                 style={{ animationDelay: '40ms' }}
               >
-                Hardware
+                Alien
               </span>
               <span className='hw26-title-rule' />
               <span className='hw26-title-tag'>48H / BUILD</span>
@@ -418,7 +542,7 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
                 className='hw26-title-word hw26-title-word--hollow hw26-rise'
                 style={{ animationDelay: '140ms' }}
               >
-                Hackathon
+                Bazaar
               </span>
             </span>
             <span className='hw26-title-row'>
@@ -478,8 +602,8 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
               <dd>Hacker House, Warsaw</dd>
             </div>
             <div>
-              <dt>Tracks</dt>
-              <dd>Four, hardware only</dd>
+              <dt>Hardware</dt>
+              <dd>Six categories + print farm</dd>
             </div>
             <div>
               <dt>Teams</dt>
@@ -500,8 +624,8 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
             <a className='hw26-apply' href={applyHref}>
               Apply now
             </a>
-            <span className='hw26-label hw26-label--red'>
-              Registration closes 10 September
+            <span className='hw26-label hw26-label--mint'>
+              Applications close 12 September
             </span>
           </div>
         </div>
@@ -517,11 +641,7 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
           >
             {TICKER.map((item) => (
               <span key={item.label}>
-                {item.mint ? <b>{item.label}</b> : null}
-                {item.red ? (
-                  <b className='hw26-tick-red'>{item.label}</b>
-                ) : null}
-                {!item.mint && !item.red ? item.label : null}
+                {item.mint ? <b>{item.label}</b> : item.label}
                 <span style={{ opacity: 0.4 }}>{' ///'}</span>
               </span>
             ))}
@@ -534,12 +654,12 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
         <div className='hw26-inner'>
           <div className='hw26-head hw26-reveal'>
             <span className='hw26-num'>02</span>
-            <h2>Pick a track</h2>
+            <h2>Pick your hardware</h2>
             <span
-              className='hw26-label hw26-label--red'
+              className='hw26-label hw26-label--mint'
               style={{ marginLeft: 'auto' }}
             >
-              Locked Saturday 16:00
+              Booked by 12 SEP
             </span>
           </div>
 
@@ -582,16 +702,31 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
               </article>
             ))}
           </div>
+
+          <p
+            className='hw26-reveal'
+            style={{
+              marginTop: '2.5rem',
+              maxWidth: '60ch',
+              fontSize: '0.9rem',
+              lineHeight: 1.8,
+              color: 'var(--hw-bone)',
+            }}
+          >
+            Not on the list? Teams are not limited to these categories. Propose
+            your own idea with your own equipment — we will help you build it
+            with what the house has, or arrange delivery of what it does not.
+          </p>
         </div>
       </section>
 
-      {/* ---------------- THE LAB (light) ---------------- */}
+      {/* ---------------- THE LAB ---------------- */}
       <section className='hw26-section hw26-paper'>
         <div className='hw26-grid' />
         <div className='hw26-inner'>
           <div className='hw26-head hw26-reveal'>
             <span className='hw26-num'>03</span>
-            <h2>The lab is bookable</h2>
+            <h2>The print farm</h2>
             <span className='hw26-label' style={{ marginLeft: 'auto' }}>
               Inventory / Hacker House
             </span>
@@ -604,12 +739,12 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
               margin: '0 0 2.5rem',
               fontSize: '0.95rem',
               lineHeight: 1.75,
-              color: '#4c524e',
+              color: 'var(--hw-bone)',
             }}
           >
-            The reason to run this in the Hacker House is that the equipment is
-            yours for the weekend, not a demo behind a rope. Everything below is
-            on the booking board when hacking starts. The printers go first.
+            Whatever category you booked, the full fleet below is available to
+            every team for the entire hackathon — not a demo behind a rope.
+            Design it one day, hold it the next. The printers go first.
           </p>
 
           <dl className='hw26-kit hw26-reveal'>
@@ -648,18 +783,18 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
         <div className='hw26-inner'>
           <div className='hw26-head hw26-reveal'>
             <span className='hw26-num'>04</span>
-            <h2>48 hours</h2>
+            <h2>How it works</h2>
             <span className='hw26-label' style={{ marginLeft: 'auto' }}>
-              All times Europe/Warsaw
+              All dates 2026
             </span>
           </div>
 
           <div className='hw26-days'>
             <div className='hw26-day hw26-reveal'>
               <h3>
-                Saturday <span>12 SEP</span>
+                The funnel <span>NOW — 19 SEP</span>
               </h3>
-              {SATURDAY.map((slot) => (
+              {FUNNEL.map((slot) => (
                 <div
                   className={`hw26-slot${slot.gate ? ' hw26-slot--gate' : ''}`}
                   key={slot.t + slot.w}
@@ -675,9 +810,9 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
               style={{ transitionDelay: '110ms' }}
             >
               <h3>
-                Sunday <span>13 SEP</span>
+                The house <span>26—28 SEP</span>
               </h3>
-              {SUNDAY.map((slot) => (
+              {HOUSE.map((slot) => (
                 <div
                   className={`hw26-slot${slot.gate ? ' hw26-slot--gate' : ''}`}
                   key={slot.t + slot.w}
@@ -699,20 +834,85 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
               color: 'var(--hw-bone)',
             }}
           >
-            Sunday morning, investors walk the floor and talk to teams at their
-            benches. No pitch slots and no sign-up sheet — they come to you
-            while you are still building. Have something you can show in two
-            minutes.
+            Investors and venture partners walk the floor for the whole run,
+            not just on pitch day — they see teams in action, at their benches,
+            while the product is still being born. Have something you can show
+            in two minutes.
           </p>
         </div>
       </section>
 
-      {/* ---------------- SPONSORS ---------------- */}
+      {/* ---------------- FOUR FORCES ---------------- */}
       <section className='hw26-section'>
         <div className='hw26-inner'>
           <div className='hw26-head hw26-reveal'>
             <span className='hw26-num'>05</span>
-            <h2>Who is behind it</h2>
+            <h2>One house, four forces</h2>
+            <span className='hw26-label' style={{ marginLeft: 'auto' }}>
+              The ecosystem
+            </span>
+          </div>
+
+          <dl className='hw26-kit hw26-reveal'>
+            {FORCES.map((force) => (
+              <div className='hw26-kit-item' key={force.name}>
+                <span className='hw26-kit-qty'>{force.tag}</span>
+                <dt>{force.name}</dt>
+                <dd>{force.what}</dd>
+              </div>
+            ))}
+          </dl>
+
+          <p
+            className='hw26-reveal'
+            style={{
+              marginTop: '2.5rem',
+              maxWidth: '60ch',
+              fontSize: '0.9rem',
+              lineHeight: 1.8,
+              color: 'var(--hw-bone)',
+            }}
+          >
+            The hackathon is the entry point, not the product. When it ends,
+            everyone — participants, partners, investors, media — joins one
+            open ecosystem chat, and the strongest founders are invited to
+            keep building in the same house.
+          </p>
+        </div>
+      </section>
+
+      {/* ---------------- ORGANIZERS & SPONSORS ---------------- */}
+      <section className='hw26-section'>
+        <div className='hw26-inner'>
+          <div className='hw26-head hw26-reveal'>
+            <span className='hw26-num'>06</span>
+            <h2>Organizers &amp; Sponsors</h2>
+          </div>
+
+          <div className='hw26-subhead hw26-reveal'>
+            <span className='hw26-label hw26-label--mint'>Organizers</span>
+            <span className='hw26-poweredby-rule' />
+          </div>
+
+          <div className='hw26-sponsors-lead hw26-reveal'>
+            {ORGANIZERS.map((org) => (
+              <div className='hw26-sponsor-lead' key={org.name}>
+                {org.src ? (
+                  <img alt={org.name} src={org.src} />
+                ) : (
+                  // Typographic mark until the real logo file lands.
+                  <a className='hw26-org-mark' href={org.href}>
+                    {org.name}
+                  </a>
+                )}
+                <p>{org.line}</p>
+              </div>
+            ))}
+          </div>
+
+          <div className='hw26-subhead hw26-reveal'>
+            <span className='hw26-label hw26-label--mint'>Partners</span>
+            <span className='hw26-poweredby-rule' />
           </div>
 
           <div className='hw26-sponsors-lead hw26-reveal'>
@@ -725,10 +925,10 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
           </div>
 
           <div className='hw26-sponsors-rest hw26-reveal'>
-            {PENDING_SPONSORS.map((name) => (
-              <div className='hw26-sponsor' key={name}>
-                <span className='hw26-sponsor-name'>{name}</span>
-                <span className='hw26-label'>TBC</span>
+            {REST_PARTNERS.map((partner) => (
+              <div className='hw26-sponsor' key={partner.name}>
+                <span className='hw26-sponsor-name'>{partner.name}</span>
+                <span className='hw26-label'>{partner.tag}</span>
               </div>
             ))}
           </div>
@@ -745,8 +945,8 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
           </h2>
           <p className='hw26-reveal'>
             {hackathon.capacity ? `${hackathon.capacity} seats. ` : ''}
-            Two days, four tracks, and a lab you can actually book. Applications
-            close on 10 September.
+            Three days, six hardware categories, a full print farm, and a pitch
+            day in front of investors. Applications close on 12 September.
           </p>
           <div className='hw26-reveal'>
             <a className='hw26-apply hw26-apply--lg' href={applyHref}>
@@ -766,13 +966,13 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
         <div className='hw26-endplate-body'>
           <div className='hw26-endplate-top'>
             <p className='hw26-endplate-mark'>
-              Hardware
+              Alien Bazaar
               <br />
               <em>Warsaw 26</em>
             </p>
             <div className='hw26-stamp'>
               Registration open
-              <span>Closes 10 SEP 2026</span>
+              <span>Closes 12 SEP 2026</span>
             </div>
           </div>
 
@@ -788,7 +988,7 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
             ))}
             <div className='hw26-tb hw26-tb--gate'>
               <dt>Applications close</dt>
-              <dd>10 SEP 2026</dd>
+              <dd>12 SEP 2026</dd>
             </div>
             <div className='hw26-tb'>
               <dt>Seats</dt>
@@ -810,9 +1010,11 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
               <i key={`tick-${i}`} />
             ))}
           </div>
-          <span className='hw26-label'>Hacklab × Epikor · HW—WAW—26</span>
+          <span className='hw26-label'>Hacklab × Epikor · AB—WAW—26</span>
         </div>
       </footer>
+
+      <ThemeToggle />
     </div>
   )
 }

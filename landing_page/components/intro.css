@@ -151,8 +151,8 @@
   opacity: 0;
   animation: hw26-i-x 320ms var(--hw-ease, ease) forwards;
   background-image:
-    linear-gradient(var(--hw-red, #fc3500), var(--hw-red, #fc3500)),
-    linear-gradient(var(--hw-red, #fc3500), var(--hw-red, #fc3500));
+    linear-gradient(var(--hw-mint, #82f5c6), var(--hw-mint, #82f5c6)),
+    linear-gradient(var(--hw-mint, #82f5c6), var(--hw-mint, #82f5c6));
   background-size:
     1px 100%,
     100% 1px;
@@ -360,11 +360,11 @@
   align-items: center;
   gap: 0.6rem;
   padding: 0.35rem 0.85rem;
-  border: 1px solid var(--hw-red, #fc3500);
+  border: 1px solid var(--hw-mint, #82f5c6);
   font-size: 9px;
   letter-spacing: 0.26em;
   text-transform: uppercase;
-  color: var(--hw-red, #fc3500);
+  color: var(--hw-mint, #82f5c6);
   /* Flashes while items are outstanding, then holds dim as they clear. */
   animation: hw26-i-caution 190ms steps(1) var(--in, 0ms) 4 forwards;
 }
@@ -373,7 +373,7 @@
   width: 7px;
   height: 7px;
   border-radius: 50%;
-  background: var(--hw-red, #fc3500);
+  background: var(--hw-mint, #82f5c6);
 }
 
 @keyframes hw26-i-caution {
@@ -536,7 +536,7 @@
   position: absolute;
   width: clamp(16px, 2.6vw, 30px);
   height: clamp(16px, 2.6vw, 30px);
-  border: 2px solid var(--hw-red, #fc3500);
+  border: 2px solid var(--hw-mint, #82f5c6);
   opacity: 0;
   animation: hw26-i-box-c 460ms cubic-bezier(0.16, 1, 0.3, 1)
     calc(var(--in, 0ms) + 120ms) forwards;
@@ -672,7 +672,7 @@
   font-size: clamp(0.85rem, 2.2vw, 1.5rem);
   letter-spacing: 0.4em;
   text-transform: uppercase;
-  color: var(--hw-red, #fc3500);
+  color: var(--hw-mint, #82f5c6);
   opacity: 0;
   animation: hw26-i-lockword 620ms steps(1) calc(var(--in, 0ms) + 380ms)
     forwards;

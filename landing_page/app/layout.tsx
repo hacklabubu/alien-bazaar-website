@@ -47,15 +47,27 @@ export const viewport: Viewport = {
   themeColor: '#070707',
 }
 
+/**
+ * Applies the visitor's stored theme before first paint, so a light-mode
+ * visitor never sees a dark flash. Dark is the default for everyone else —
+ * the server renders data-theme='dark' and this only ever overrides it.
+ */
+const THEME_SCRIPT = `try{if(localStorage.getItem('hw26-theme')==='light')document.documentElement.dataset.theme='light'}catch(e){}`
+
 export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html
       className={`${orbitron.variable} ${jetbrainsMono.variable} ${terminess.variable}`}
+      data-theme='dark'
       lang='en'
+      suppressHydrationWarning
     >
-      <body>{children}</body>
+      <body>
+        <script dangerouslySetInnerHTML={{ __html: THEME_SCRIPT }} />
+        {children}
+      </body>
     </html>
   )
 }

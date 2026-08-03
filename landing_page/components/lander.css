@@ -7,9 +7,10 @@
    designations, registration crosshairs — not cyberpunk costume.
 
    Every variable and class is namespaced so this page cannot
-   leak into the product, and the palette is declared locally so
-   the page renders identically no matter which theme the visitor
-   has selected. A poster does not flip to light mode.
+   leak into the product. The palette is themed: the tokens below
+   are the dark field (the default), and the light theme swaps
+   them wholesale via html[data-theme='light'] so every rule keeps
+   reading from the same names.
    ============================================================= */
 
 .hw26 {
@@ -21,10 +22,9 @@
   --hw-line: #242926;
   --hw-line-hi: #39413c;
 
-  /* ---- Light field (spec-sheet sections) ---- */
+  /* ---- Fixed pair for the photo-plate captions: a printed chip that
+     stays ink-on-paper in both themes. ---- */
   --hw-paper: #e4e4df;
-  --hw-paper-deep: #d5d5ce;
-  --hw-paper-line: #bcbfb5;
   --hw-ink: #0a0a0a;
 
   /* ---- Type colors ---- */
@@ -33,16 +33,14 @@
   --hw-silver: #8b928d;
 
   /* ---- Signal ---- */
-  /* Phosphor Mint. The one interactive/accent color on the page. */
+  /* Phosphor Mint. The one accent color on the page — it marks the
+     interactive, the counted, and the gated alike. */
   --hw-mint: #82f5c6;
+  /* Text set on top of a solid mint fill (the apply button). */
+  --hw-on-mint: #04120c;
   /* Matrix Green is the arrival color. It appears in exactly one
      place on this page — the UFO's beam — and nowhere else. */
   --hw-matrix: #00ff41;
-  /* Burn Red. The second signal, and it means the same thing here as it
-     does everywhere else in the system: a point of no return. It marks
-     the three hard gates and stamps the end plate. It is never a
-     decorative accent — if it is red, a clock is running out. */
-  --hw-red: #fc3500;
 
   --hw-ease: cubic-bezier(0.16, 1, 0.3, 1);
   --hw-gutter: clamp(1.25rem, 4vw, 4.5rem);
@@ -54,6 +52,26 @@
   line-height: 1.6;
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
+}
+
+/* Light theme. Dark is the default (no attribute, or data-theme='dark');
+   the toggle stamps data-theme on <html>. The dark field becomes paper,
+   the paper sections stay paper, and the mint goes deep enough to hold
+   contrast as text on a light ground. */
+html[data-theme='light'] .hw26 {
+  --hw-void: #f1f1ec;
+  --hw-pit: #e7e7e0;
+  --hw-steel: #f8f8f4;
+  --hw-steel-hi: #edede6;
+  --hw-line: #d1d4ca;
+  --hw-line-hi: #a9afa5;
+
+  --hw-snow: #0a0a0a;
+  --hw-bone: #3a403c;
+  --hw-silver: #5d645f;
+
+  --hw-mint: #00794c;
+  --hw-on-mint: #f2fff9;
 }
 
 .hw26 *,
@@ -89,13 +107,6 @@
   );
 }
 
-.hw26-paper .hw26-grid {
-  background-image:
-    linear-gradient(to right, var(--hw-paper-line) 1px, transparent 1px),
-    linear-gradient(to bottom, var(--hw-paper-line) 1px, transparent 1px);
-  opacity: 0.45;
-}
-
 /* Eyebrow / technical label. The smallest type on the page and
    the one that carries the machine vernacular. */
 .hw26-label {
@@ -109,11 +120,6 @@
 
 .hw26-label--mint {
   color: var(--hw-mint);
-}
-
-/* Reserved for dates that can still be missed. */
-.hw26-label--red {
-  color: var(--hw-red);
 }
 
 /* -------------------------------------------------------------
@@ -140,16 +146,6 @@
   font-size: 13px;
   letter-spacing: 0.12em;
   color: var(--hw-mint);
-}
-
-.hw26-paper .hw26-num {
-  color: #005c39;
-}
-
-/* Darker than it looks like it needs to be: these labels are 10px with wide
-   tracking, and the lighter grey only just cleared 4.5:1 on the paper field. */
-.hw26-paper .hw26-label {
-  color: #4a504e;
 }
 
 /* Registration crosshair, as on a print plate. */
@@ -198,13 +194,11 @@
   max-width: 1440px;
 }
 
+/* The lab section sits on the pit field with rules top and bottom, so it
+   still reads as its own sheet without breaking theme. */
 .hw26-paper {
-  background: var(--hw-paper);
-  color: #2b2f2c;
-}
-
-.hw26-paper .hw26-display {
-  color: var(--hw-ink);
+  background: var(--hw-pit);
+  border-block: 1px solid var(--hw-line);
 }
 
 /* Section heading block: a rule, a designation, then the title. */
@@ -217,10 +211,6 @@
   margin-bottom: clamp(2.5rem, 5vw, 4rem);
 }
 
-.hw26-paper .hw26-head {
-  border-color: var(--hw-paper-line);
-}
-
 .hw26-head h2 {
   font-family: var(--font-orbitron), sans-serif;
   font-weight: 800;
@@ -230,10 +220,6 @@
   letter-spacing: 0.01em;
   color: var(--hw-snow);
   margin: 0;
-}
-
-.hw26-paper .hw26-head h2 {
-  color: var(--hw-ink);
 }
 
 /* -------------------------------------------------------------
@@ -251,7 +237,7 @@
   background:
     radial-gradient(
       ellipse 80% 55% at 62% 8%,
-      rgba(130, 245, 198, 0.07),
+      color-mix(in srgb, var(--hw-mint) 7%, transparent),
       transparent 62%
     ),
     var(--hw-void);
@@ -461,7 +447,7 @@
   gap: 1rem;
   padding: 1.15rem 2.5rem;
   background: var(--hw-mint);
-  color: #04120c;
+  color: var(--hw-on-mint);
   font-family: var(--font-orbitron), sans-serif;
   font-weight: 800;
   font-size: clamp(0.8rem, 1.1vw, 0.95rem);
@@ -490,7 +476,7 @@
 
 .hw26-apply:hover {
   transform: translate(-2px, -2px);
-  box-shadow: 6px 6px 0 0 rgba(130, 245, 198, 0.28);
+  box-shadow: 6px 6px 0 0 color-mix(in srgb, var(--hw-mint) 28%, transparent);
 }
 
 .hw26-apply:hover::after {
@@ -543,7 +529,7 @@
   white-space: pre;
   text-align: center;
   color: var(--hw-mint);
-  text-shadow: 0 0 18px rgba(130, 245, 198, 0.5);
+  text-shadow: 0 0 18px color-mix(in srgb, var(--hw-mint) 50%, transparent);
   animation: hw26-hover 6s ease-in-out infinite;
 }
 
@@ -595,6 +581,18 @@
     transparent 2px 7px
   );
   animation: hw26-scan 2.6s linear infinite;
+}
+
+/* Screen blending is additive light and disappears on paper; in the light
+   theme the beam prints instead, the way a green plate would. */
+html[data-theme='light'] .hw26-ufo-beam {
+  mix-blend-mode: multiply;
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 154, 40, 0.28),
+    rgba(0, 154, 40, 0.09) 42%,
+    rgba(0, 154, 40, 0)
+  );
 }
 
 @keyframes hw26-beam {
@@ -650,10 +648,6 @@
 .hw26-ticker span b {
   color: var(--hw-mint);
   font-weight: 500;
-}
-
-.hw26-ticker span b.hw26-tick-red {
-  color: var(--hw-red);
 }
 
 @keyframes hw26-marquee {
@@ -788,20 +782,20 @@
 }
 
 /* -------------------------------------------------------------
-   4. THE LAB — the light section. A parts catalogue page.
+   4. THE LAB — a parts catalogue page, themed like the rest.
    ------------------------------------------------------------- */
 
 .hw26-kit {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
   gap: 1px;
-  background: var(--hw-paper-line);
-  border: 1px solid var(--hw-paper-line);
+  background: var(--hw-line);
+  border: 1px solid var(--hw-line);
 }
 
 .hw26-kit-item {
   position: relative;
-  background: var(--hw-paper);
+  background: var(--hw-steel);
   padding: 1.5rem;
   display: flex;
   flex-direction: column;
@@ -810,7 +804,7 @@
 }
 
 .hw26-kit-item:hover {
-  background: var(--hw-paper-deep);
+  background: var(--hw-steel-hi);
 }
 
 .hw26-kit-item dt {
@@ -819,24 +813,21 @@
   text-transform: uppercase;
   font-size: 1rem;
   letter-spacing: 0.02em;
-  color: var(--hw-ink);
+  color: var(--hw-snow);
 }
 
 .hw26-kit-item dd {
   margin: 0;
   font-size: 0.82rem;
   line-height: 1.6;
-  color: #4c524e;
+  color: var(--hw-bone);
 }
 
-/* The mint has to go this dark to stay legible at 10px on paper — the
-   light-mode mint the product uses lands around 3:1 here, which is not
-   enough for text this small. */
 .hw26-kit-qty {
   font-family: var(--font-jetbrains-mono), monospace;
   font-size: 10px;
   letter-spacing: 0.18em;
-  color: #005c39;
+  color: var(--hw-mint);
 }
 
 /* Photo plates: a broken grid, each with a callout. */
@@ -850,8 +841,8 @@
 .hw26-plate {
   position: relative;
   overflow: hidden;
-  border: 1px solid var(--hw-paper-line);
-  background: var(--hw-paper-deep);
+  border: 1px solid var(--hw-line);
+  background: var(--hw-steel);
 }
 
 .hw26-plate img {
@@ -946,12 +937,12 @@
   grid-template-columns: 4.5rem 1fr;
   gap: 1.25rem;
   padding: 0.7rem 0;
-  border-bottom: 1px solid rgba(36, 41, 38, 0.6);
+  border-bottom: 1px solid color-mix(in srgb, var(--hw-line) 60%, transparent);
   transition: background 250ms var(--hw-ease);
 }
 
 .hw26-slot:hover {
-  background: rgba(130, 245, 198, 0.04);
+  background: color-mix(in srgb, var(--hw-mint) 4%, transparent);
 }
 
 .hw26-slot-time {
@@ -966,7 +957,8 @@
   line-height: 1.5;
 }
 
-/* A deadline is not an agenda item. It gets the hazard rule. */
+/* A deadline is not an agenda item. It gets the hazard rule, drawn in the
+   accent at full strength where ordinary slots only get a whisper of it. */
 .hw26-slot--gate .hw26-slot-what {
   color: var(--hw-snow);
   font-weight: 500;
@@ -985,26 +977,61 @@
   width: 3px;
   background-image: repeating-linear-gradient(
     -45deg,
-    var(--hw-red) 0 3px,
+    var(--hw-mint) 0 3px,
     transparent 3px 7px
   );
 }
 
-/* The time on a gate reads red too — it is the number that actually
-   costs you something if you miss it. */
-.hw26-slot--gate .hw26-slot-time {
-  color: var(--hw-red);
-}
-
 .hw26-slot--gate:hover {
-  background: rgba(252, 53, 0, 0.05);
+  background: color-mix(in srgb, var(--hw-mint) 7%, transparent);
 }
 
 /* -------------------------------------------------------------
-   6. SPONSORS — a logo garden with real clear space. NVIDIA's
-   guidelines require the mark be large, uncrowded, and
-   unmodified; the grid is sized around that, not around us.
+   6. ORGANIZERS & SPONSORS — a logo garden with real clear
+   space. NVIDIA's guidelines require the mark be large,
+   uncrowded, and unmodified; the grid is sized around that,
+   not around us.
    ------------------------------------------------------------- */
+
+/* Sub-headers dividing organizers from partners inside the section. */
+.hw26-subhead {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  margin: 0 0 1rem;
+}
+
+.hw26-sponsors-lead + .hw26-subhead {
+  margin-top: 2.5rem;
+}
+
+/* Typographic organizer mark, standing in for a logo until the real file
+   lands. Fixed white: the lead cells keep their dark plate in both themes. */
+.hw26-org-mark {
+  font-family: var(--font-orbitron), sans-serif;
+  font-weight: 900;
+  text-transform: uppercase;
+  font-size: clamp(1.5rem, 3vw, 2.4rem);
+  line-height: 1;
+  letter-spacing: 0.02em;
+  color: #ffffff;
+  text-decoration: none;
+  padding-bottom: 0.1em;
+  border-bottom: 2px solid transparent;
+  transition:
+    color 220ms var(--hw-ease),
+    border-color 220ms var(--hw-ease);
+}
+
+.hw26-org-mark:hover {
+  color: #82f5c6;
+  border-bottom-color: #82f5c6;
+}
+
+.hw26-org-mark:focus-visible {
+  outline: 2px solid #82f5c6;
+  outline-offset: 4px;
+}
 
 .hw26-sponsors-lead {
   display: grid;
@@ -1027,6 +1054,21 @@
 
 .hw26-sponsor-lead:hover {
   background: var(--hw-steel-hi);
+}
+
+/* The lead marks are the on-dark variants and must be used unmodified, so
+   their cells stay a dark plate in the light theme rather than the logos
+   being recolored. */
+html[data-theme='light'] .hw26-sponsor-lead {
+  background: #0f1110;
+}
+
+html[data-theme='light'] .hw26-sponsor-lead:hover {
+  background: #171a18;
+}
+
+html[data-theme='light'] .hw26-sponsor-lead p {
+  color: #c3c3c3;
 }
 
 .hw26-sponsor-lead img {
@@ -1087,7 +1129,7 @@
   background:
     radial-gradient(
       ellipse 60% 50% at 50% 100%,
-      rgba(130, 245, 198, 0.1),
+      color-mix(in srgb, var(--hw-mint) 10%, transparent),
       transparent 70%
     ),
     var(--hw-pit);
@@ -1134,16 +1176,16 @@
   isolation: isolate;
 }
 
-/* The band that runs the full width at the top of the plate. Red,
-   because the only date on this page that can still be missed is
-   the one printed on it. */
+/* The band that runs the full width at the top of the plate — the one
+   place the accent is laid on thick, so the plate closes the page in
+   the same color that opened it. */
 .hw26-endplate-hazard {
   height: 22px;
   flex-shrink: 0;
   background-image: repeating-linear-gradient(
     -45deg,
-    var(--hw-red) 0 12px,
-    #0d0300 12px 26px
+    var(--hw-mint) 0 12px,
+    var(--hw-pit) 12px 26px
   );
   background-size: 200% 100%;
   animation: hw26-band 3.2s linear infinite;
@@ -1217,7 +1259,7 @@
 .hw26-endplate-mark em {
   font-style: normal;
   color: transparent;
-  -webkit-text-stroke: 1px var(--hw-red);
+  -webkit-text-stroke: 1px var(--hw-mint);
 }
 
 /* The issued stamp. Rotated and outlined, like something pressed
@@ -1226,8 +1268,8 @@
   align-self: flex-start;
   flex-shrink: 0;
   padding: 0.7rem 1.1rem;
-  border: 2px solid var(--hw-red);
-  color: var(--hw-red);
+  border: 2px solid var(--hw-mint);
+  color: var(--hw-mint);
   font-family: var(--font-orbitron), sans-serif;
   font-weight: 800;
   font-size: clamp(0.7rem, 1.1vw, 0.9rem);
@@ -1236,7 +1278,8 @@
   transform: rotate(-3.5deg);
   text-align: center;
   line-height: 1.3;
-  box-shadow: 0 0 0 1px rgba(252, 53, 0, 0.25) inset;
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--hw-mint) 25%, transparent)
+    inset;
 }
 
 .hw26-stamp span {
@@ -1270,7 +1313,7 @@
 }
 
 .hw26-tb:hover {
-  background: #0b0d0c;
+  background: var(--hw-steel);
 }
 
 .hw26-tb dt {
@@ -1292,11 +1335,8 @@
   text-transform: uppercase;
 }
 
-/* One cell in the block is the deadline. It gets the red. */
-.hw26-tb--gate dd {
-  color: var(--hw-red);
-}
-
+/* The deadline cell and the status cell both read in the accent. */
+.hw26-tb--gate dd,
 .hw26-tb--mint dd {
   color: var(--hw-mint);
 }
@@ -1313,7 +1353,7 @@
   background: var(--hw-pit);
 }
 
-/* Red registration ticks along the bottom rule — the marks a plate
+/* Registration ticks along the bottom rule — the marks a plate
    gets so it can be lined up. */
 .hw26-ticks {
   display: flex;
@@ -1325,13 +1365,64 @@
   display: block;
   width: 2px;
   height: 11px;
-  background: var(--hw-red);
+  background: var(--hw-mint);
   opacity: 0.55;
 }
 
 .hw26-ticks i:nth-child(4n) {
   height: 17px;
   opacity: 1;
+}
+
+/* -------------------------------------------------------------
+   Theme toggle — a small stamped control, fixed so the page can
+   be flipped from anywhere. Dark is the default; the button names
+   the mode it will switch to.
+   ------------------------------------------------------------- */
+
+.hw26-theme {
+  position: fixed;
+  z-index: 120;
+  right: 1.1rem;
+  bottom: 1.1rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.55rem 0.85rem;
+  background: var(--hw-pit);
+  border: 1px solid var(--hw-line-hi);
+  color: var(--hw-mint);
+  font-family: var(--font-jetbrains-mono), monospace;
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition:
+    border-color 220ms var(--hw-ease),
+    background 220ms var(--hw-ease);
+}
+
+.hw26-theme:hover {
+  border-color: var(--hw-mint);
+  background: var(--hw-steel);
+}
+
+.hw26-theme:focus-visible {
+  outline: 2px solid var(--hw-mint);
+  outline-offset: 3px;
+}
+
+.hw26-theme i {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: currentcolor;
+}
+
+/* Keep the plate's own right-hand label clear of the fixed toggle. */
+.hw26-endplate-foot {
+  padding-right: calc(var(--hw-gutter) + 7rem);
 }
 
 /* -------------------------------------------------------------

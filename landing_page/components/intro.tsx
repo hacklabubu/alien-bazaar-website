@@ -70,10 +70,10 @@ function useScramble(text: string, delay: number, duration: number) {
 
 /** Five, not eight: the act is 760ms and this has to read as a sweep. */
 const CHECKS = [
-  'DRONE CAGE',
-  'ARM CELL',
+  'DRONES',
+  'HUMANOIDS',
+  'COBOTS',
   'PRINT FARM',
-  'PARTS WALL',
   'SEATS 200',
 ]
 
@@ -104,7 +104,7 @@ function Frame() {
 
 function Sequence() {
   const host = useScramble('HACKER-HOUSE-WARSAW', 120, 420)
-  const key = useScramble('9F4C-A17E-002B-HWWAW26', 260, 480)
+  const key = useScramble('9F4C-A17E-002B-ABWAW26', 260, 480)
   const coord = useScramble('52.2297N 21.0122E', ACT.lockIn, 600)
 
   return (
@@ -192,8 +192,8 @@ function Sequence() {
                 the letters are developed by the light crossing them rather
                 than simply faded in. */}
             <span className='hw26-i-mark'>
-              <span className='hw26-i-mark-base'>Warsaw 26</span>
-              <span className='hw26-i-mark-lit'>Warsaw 26</span>
+              <span className='hw26-i-mark-base'>Alien Bazaar</span>
+              <span className='hw26-i-mark-lit'>Alien Bazaar</span>
             </span>
           </div>
 
@@ -205,7 +205,7 @@ function Sequence() {
 
       {/* ---- persistent status rail ---- */}
       <div className='hw26-i-rail'>
-        <span className='hw26-i-rail-id'>HW—WAW—26</span>
+        <span className='hw26-i-rail-id'>AB—WAW—26</span>
         <div className='hw26-i-rail-stages'>
           {STAGES.map((s, i) => (
             <span
