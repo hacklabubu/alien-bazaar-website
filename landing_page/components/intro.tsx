@@ -76,17 +76,17 @@ const LOG = [
   'CELL 6DOF  HOMED',
   'FARM 12 NODES  Q:0',
   'WALL STOCK NOMINAL',
-  'TRK  04 ACTIVE',
+  'CAT  06 ACTIVE',
   'SEATS 200 / 200 HELD',
 ]
 
 /** Reports down the right. Each flicks to OK on its own schedule. */
 const CHECKS = [
-  { k: 'CAGE', at: 420 },
-  { k: 'ARM CELL', at: 560 },
-  { k: 'PRINT FARM', at: 700 },
-  { k: 'PARTS WALL', at: 840 },
-  { k: 'BENCHES', at: 980 },
+  { k: 'DRONES', at: 420 },
+  { k: 'UNDERWATER', at: 560 },
+  { k: 'HUMANOIDS', at: 700 },
+  { k: 'COBOTS', at: 840 },
+  { k: 'PRINT FARM', at: 980 },
   { k: 'SEATS', at: 1120 },
 ]
 
@@ -97,7 +97,7 @@ const STAGES = [
 ]
 
 function Hud() {
-  const key = useScramble('9F4C-A17E-002B-HWWAW26', 220, 620)
+  const key = useScramble('9F4C-A17E-002B-ABWAW26', 220, 620)
   const coord = useScramble('52.2297N 21.0122E', 140, 520)
 
   return (
@@ -128,8 +128,8 @@ function Hud() {
             letters are developed by the light crossing them rather than
             faded in. */}
         <span className='hw26-i-mark'>
-          <span className='hw26-i-mark-base'>Warsaw 26</span>
-          <span className='hw26-i-mark-lit'>Warsaw 26</span>
+          <span className='hw26-i-mark-base'>Alien Bazaar</span>
+          <span className='hw26-i-mark-lit'>Alien Bazaar</span>
         </span>
         <p className='hw26-i-coord'>{coord}</p>
       </div>
@@ -178,7 +178,7 @@ function Hud() {
 
       {/* ---- status rail ---- */}
       <div className='hw26-i-rail'>
-        <span className='hw26-i-rail-id'>HW—WAW—26</span>
+        <span className='hw26-i-rail-id'>AB—WAW—26</span>
         <div className='hw26-i-rail-stages'>
           {STAGES.map((s) => (
             <span
