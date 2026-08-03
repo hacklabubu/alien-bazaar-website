@@ -33,11 +33,16 @@
   --hw-silver: #8b928d;
 
   /* ---- Signal ---- */
-  /* Phosphor Mint. The one accent color on the page — it marks the
-     interactive, the counted, and the gated alike. */
+  /* Phosphor Mint. The bright signal — interactive, active, counted. */
   --hw-mint: #82f5c6;
   /* Text set on top of a solid mint fill (the apply button). */
   --hw-on-mint: #04120c;
+  /* Pine. The deep green, and the page's second signal: it marks the
+     gates — the moments with a clock on them — plus the plate marks
+     that frame them. Always the darker of the two greens in either
+     theme, so the pair reads as one family with a clear hierarchy
+     rather than as two competing accents. */
+  --hw-pine: #2f9e63;
   /* Matrix Green is the arrival color. It appears in exactly one
      place on this page — the UFO's beam — and nowhere else. */
   --hw-matrix: #00ff41;
@@ -72,6 +77,9 @@ html[data-theme='light'] .hw26 {
 
   --hw-mint: #00794c;
   --hw-on-mint: #f2fff9;
+  /* Light-mode mint is already a deep green, so pine has to drop
+     further still to stay the darker of the pair. */
+  --hw-pine: #0a3d28;
 }
 
 .hw26 *,
@@ -977,13 +985,13 @@ html[data-theme='light'] .hw26-ufo-beam {
   width: 3px;
   background-image: repeating-linear-gradient(
     -45deg,
-    var(--hw-mint) 0 3px,
+    var(--hw-pine) 0 3px,
     transparent 3px 7px
   );
 }
 
 .hw26-slot--gate:hover {
-  background: color-mix(in srgb, var(--hw-mint) 7%, transparent);
+  background: color-mix(in srgb, var(--hw-pine) 12%, transparent);
 }
 
 /* -------------------------------------------------------------
@@ -1200,7 +1208,7 @@ html[data-theme='light'] .hw26-sponsor-lead p {
   flex-shrink: 0;
   background-image: repeating-linear-gradient(
     -45deg,
-    var(--hw-mint) 0 12px,
+    var(--hw-pine) 0 12px,
     var(--hw-pit) 12px 26px
   );
   background-size: 200% 100%;
@@ -1275,7 +1283,7 @@ html[data-theme='light'] .hw26-sponsor-lead p {
 .hw26-endplate-mark em {
   font-style: normal;
   color: transparent;
-  -webkit-text-stroke: 1px var(--hw-mint);
+  -webkit-text-stroke: 1px var(--hw-pine);
 }
 
 /* The issued stamp. Rotated and outlined, like something pressed
@@ -1284,8 +1292,8 @@ html[data-theme='light'] .hw26-sponsor-lead p {
   align-self: flex-start;
   flex-shrink: 0;
   padding: 0.7rem 1.1rem;
-  border: 2px solid var(--hw-mint);
-  color: var(--hw-mint);
+  border: 2px solid var(--hw-pine);
+  color: var(--hw-pine);
   font-family: var(--font-orbitron), sans-serif;
   font-weight: 800;
   font-size: clamp(0.7rem, 1.1vw, 0.9rem);
@@ -1352,7 +1360,10 @@ html[data-theme='light'] .hw26-sponsor-lead p {
 }
 
 /* The deadline cell and the status cell both read in the accent. */
-.hw26-tb--gate dd,
+.hw26-tb--gate dd {
+  color: var(--hw-pine);
+}
+
 .hw26-tb--mint dd {
   color: var(--hw-mint);
 }
@@ -1381,8 +1392,8 @@ html[data-theme='light'] .hw26-sponsor-lead p {
   display: block;
   width: 2px;
   height: 11px;
-  background: var(--hw-mint);
-  opacity: 0.55;
+  background: var(--hw-pine);
+  opacity: 0.7;
 }
 
 .hw26-ticks i:nth-child(4n) {

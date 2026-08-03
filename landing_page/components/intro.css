@@ -104,8 +104,8 @@
   opacity: 0;
   animation: hw26-i-x 320ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
   background-image:
-    linear-gradient(var(--hw-mint, #82f5c6), var(--hw-mint, #82f5c6)),
-    linear-gradient(var(--hw-mint, #82f5c6), var(--hw-mint, #82f5c6));
+    linear-gradient(var(--hw-pine, #2f9e63), var(--hw-pine, #2f9e63)),
+    linear-gradient(var(--hw-pine, #2f9e63), var(--hw-pine, #2f9e63));
   background-size: 1px 100%, 100% 1px;
   background-position: center, center;
   background-repeat: no-repeat;
@@ -200,7 +200,7 @@
   position: absolute;
   width: clamp(16px, 2.6vw, 30px);
   height: clamp(16px, 2.6vw, 30px);
-  border: 2px solid var(--hw-mint, #82f5c6);
+  border: 2px solid var(--hw-pine, #2f9e63);
   opacity: 0;
   animation: hw26-i-ret 620ms cubic-bezier(0.16, 1, 0.3, 1) 1400ms forwards;
 }
@@ -459,7 +459,7 @@
 }
 
 .hw26-i-lockword {
-  color: var(--hw-mint, #82f5c6);
+  color: var(--hw-pine, #2f9e63);
   letter-spacing: 0.34em;
   opacity: 0;
   animation: hw26-i-lockword 700ms steps(1) 1740ms forwards;
