@@ -577,7 +577,15 @@ html[data-theme='light'] .hw26 {
      ships, and the glyphs already carry spacing, so the tracking comes
      down from the Orbitron setting. */
   font-family: var(--font-geist-pixel-circle), var(--font-orbitron), sans-serif;
+  /* Geist Pixel ships exactly one weight across all five cuts, so there is
+     no bold to ask for — `font-weight: 700` would only get a synthetic
+     smear, which on a dot-matrix face pulls the round dots into ovals.
+     Stroking grows every dot uniformly instead, which is what a heavier
+     cut of this face would actually look like. `paint-order` puts the
+     stroke under the fill so the counters do not close up. */
   font-weight: 500;
+  -webkit-text-stroke: 0.03em currentColor;
+  paint-order: stroke fill;
   font-size: clamp(1.05rem, 3.4vw, 2.8rem);
   line-height: 1;
   letter-spacing: 0.05em;
