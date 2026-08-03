@@ -489,12 +489,27 @@
 }
 
 /* -------------------------------------------------------------
-   Reduced motion: the component does not mount at all, but if the
-   preference flips mid-session the overlay must still not sit and
-   animate in front of the page.
+   Escape hatches
+
+   The overlay is server-rendered so it paints in the first frame,
+   which means CSS — not React — has to be what guarantees it can
+   never trap anyone.
+
+   Reduced motion never paints it at all. Scripting off never
+   paints it either, in browsers that support the query. And in
+   any browser that supports neither, `hw26-i-hold` still runs to
+   `opacity: 0` + `pointer-events: none` on its own, so the page
+   underneath becomes visible and usable after 2.5s with no
+   JavaScript involved.
    ------------------------------------------------------------- */
 
 @media (prefers-reduced-motion: reduce) {
+  .hw26-intro {
+    display: none;
+  }
+}
+
+@media (scripting: none) {
   .hw26-intro {
     display: none;
   }

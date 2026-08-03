@@ -200,16 +200,22 @@ function Hud() {
 export function HardwareIntro() {
   // `null` means nothing is playing. `id` forces a fresh mount so the run
   // can be replayed from the top.
-  const [run, setRun] = useState<{ id: number } | null>(null)
-  const [ready, setReady] = useState(false)
+  //
+  // Starts non-null so the overlay is in the server-rendered HTML and is
+  // painted in the very first frame. Mounting it from an effect instead would
+  // show the page first and drop the intro on top a moment later, once
+  // hydration got around to it.
+  //
+  // Rendering it server-side is safe in both directions the other way costs
+  // nothing: reduced motion hides it in CSS before it can paint, and with
+  // scripting off the `hw26-i-hold` animation still runs to `opacity: 0` +
+  // `pointer-events: none`, so the overlay clears itself without React.
+  const [run, setRun] = useState<{ id: number } | null>({ id: 0 })
 
-  // Decide on the client only. Rendering the overlay during SSR would put a
-  // full-screen panel in the static HTML, which is what anyone with scripting
-  // off would be left staring at.
   useEffect(() => {
-    setReady(true)
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
-    setRun({ id: 0 })
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      setRun(null)
+    }
   }, [])
 
   useEffect(() => {
@@ -246,7 +252,7 @@ export function HardwareIntro() {
     }
   }, [run])
 
-  if (!ready || !run) return null
+  if (!run) return null
 
   return (
     <div
