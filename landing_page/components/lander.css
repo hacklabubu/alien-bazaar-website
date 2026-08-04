@@ -319,9 +319,9 @@ html[data-theme='light'] .hw26 {
 }
 
 /* -------------------------------------------------------------
-   CRT — the name only.
+   Signal break — the name only.
 
-   Three artifacts of a cathode-ray tube, stacked:
+   Two layers:
 
    1. Scanlines. A repeating mask across the word, so the letters
       are built out of bright lines with a hairline gap between
@@ -331,29 +331,27 @@ html[data-theme='light'] .hw26 {
       the tube, so they stay the same gauge whether the wordmark
       is at hero size or wrapped onto a phone.
 
-   2. Convergence error. Cyan and magenta copies sit behind the
-      white original, one pushed left and one right, so the letters
-      carry a faint colour fringe at rest.
+   2. The break itself, ported verbatim from the hacklab landing
+      page so the two properties glitch identically. The base word
+      stays stable and selectable; two clipped colour-split copies
+      (phosphor mint + sky signal cyan) flash in short bursts over
+      it. Bursts occupy ~8% of the 3.6s cycle, so the word reads
+      clean most of the time — a wordmark that glitches
+      continuously stops reading as a wordmark.
 
-   3. Vertical hold. Every ~6s the tube loses lock for about a
-      fifth of a second: the scan pattern jumps, the fringes tear
-      into bands, and the beam current spikes and dips. Then it
-      settles. It is still the rest of the time, because a wordmark
-      that glitches continuously stops reading as a wordmark.
-
-   Nothing here animates `transform` or `opacity` on the word
-   itself — those belong to the entrance animation, and a second
-   animation touching them would silently win and drop the
-   entrance. The roll rides on `mask-position` and the flicker on
-   `filter`, so all three can run at once.
+   The word itself is never animated: `transform` and `opacity`
+   belong to the entrance animation, and a second animation
+   touching them would silently win and drop the entrance. All the
+   motion lives on the two copies.
 
    Confined to `hw26-glitch`, which is only ever on the two lines
-   of the event name.
+   of the event name. Requires data-text carrying the same string
+   as the element's content.
    ------------------------------------------------------------- */
 
 .hw26-glitch {
   position: relative;
-  isolation: isolate;
+  display: inline-block;
   color: var(--hw-snow);
   /* Bright line, thin gap — the gap is what reads as a scanline. */
   -webkit-mask-image: repeating-linear-gradient(
@@ -366,164 +364,74 @@ html[data-theme='light'] .hw26 {
     #000 0 2px,
     rgba(0, 0, 0, 0.3) 2px 3px
   );
-  animation:
-    hw26-crt-roll 6s steps(1) infinite,
-    hw26-crt-beam 4.7s steps(1) infinite;
-}
-
-/* The entrance and the CRT run on the same element. They are declared
-   together, above the specificity of either on its own, so neither
-   drops the other. */
-.hw26-rise.hw26-glitch {
-  animation:
-    hw26-rise 900ms var(--hw-ease) both,
-    hw26-crt-roll 6s steps(1) infinite,
-    hw26-crt-beam 4.7s steps(1) infinite;
 }
 
 .hw26-glitch::before,
 .hw26-glitch::after {
+  /* Fallback first, then the alt-text syntax: the "/ ''" marks the copies
+     decorative so screen readers don't announce the word three times. */
   content: attr(data-text);
+  content: attr(data-text) / "";
   position: absolute;
   inset: 0;
-  /* Behind the white original. `isolation` above keeps the negative
-     index inside this word rather than punching through the hero. */
-  z-index: -1;
+  opacity: 0;
   pointer-events: none;
   white-space: nowrap;
 }
 
 .hw26-glitch::before {
-  color: #00e5ff;
-  animation: hw26-crt-tear-a 6s steps(1) infinite;
+  color: #82f5c6;
+  animation: hw26-glitch-slice-a 3.6s steps(1) infinite;
 }
 
 .hw26-glitch::after {
-  color: #ff2bd6;
-  animation: hw26-crt-tear-b 6s steps(1) infinite;
+  color: #09b2dc;
+  animation: hw26-glitch-slice-b 3.6s steps(1) infinite;
 }
 
-/* Vertical hold. The scan pattern sits locked, then slips by a
-   fraction of a line and snaps back — the picture rolling. */
-@keyframes hw26-crt-roll {
+@keyframes hw26-glitch-slice-a {
   0%,
-  84%,
-  95%,
-  100% {
-    -webkit-mask-position: 0 0;
-    mask-position: 0 0;
+  89.9% {
+    opacity: 0;
+    transform: none;
+    clip-path: inset(0);
   }
-  85% {
-    -webkit-mask-position: 0 1px;
-    mask-position: 0 1px;
-  }
-  87% {
-    -webkit-mask-position: 0 -2px;
-    mask-position: 0 -2px;
-  }
-  89% {
-    -webkit-mask-position: 0 1px;
-    mask-position: 0 1px;
-  }
-  91% {
-    -webkit-mask-position: 0 -1px;
-    mask-position: 0 -1px;
+  90% {
+    opacity: 0.85;
+    transform: translate(-0.05em, -0.015em);
+    clip-path: inset(10% 0 62% 0);
   }
   93% {
-    -webkit-mask-position: 0 0.5px;
-    mask-position: 0 0.5px;
+    opacity: 0.85;
+    transform: translate(0.04em, 0.015em);
+    clip-path: inset(58% 0 8% 0);
+  }
+  96%,
+  100% {
+    opacity: 0;
   }
 }
 
-/* Beam current. A near-invisible idle flicker, then the spike and
-   brownout that go with losing lock. */
-@keyframes hw26-crt-beam {
+@keyframes hw26-glitch-slice-b {
   0%,
-  30%,
-  34%,
-  74%,
-  100% {
-    filter: brightness(1);
-  }
-  32% {
-    filter: brightness(0.94);
-  }
-  76% {
-    filter: brightness(1.06);
-  }
-  85% {
-    filter: brightness(1.4) saturate(1.3);
-  }
-  88% {
-    filter: brightness(0.78);
+  90.9% {
+    opacity: 0;
+    transform: none;
+    clip-path: inset(0);
   }
   91% {
-    filter: brightness(1.22);
+    opacity: 0.7;
+    transform: translate(0.05em, 0.015em);
+    clip-path: inset(42% 0 34% 0);
   }
   94% {
-    filter: brightness(0.92);
+    opacity: 0.7;
+    transform: translate(-0.04em, -0.015em);
+    clip-path: inset(4% 0 78% 0);
   }
-}
-
-/* Horizontal desync on the two fringes — bands of the picture
-   arriving early or late. */
-@keyframes hw26-crt-tear-a {
-  0%,
-  84%,
-  95%,
+  97%,
   100% {
-    transform: translate(-0.008em, 0);
-    clip-path: inset(0 0 0 0);
-  }
-  85% {
-    transform: translate(-0.085em, 0);
-    clip-path: inset(12% 0 66% 0);
-  }
-  87% {
-    transform: translate(0.055em, 0);
-    clip-path: inset(70% 0 9% 0);
-  }
-  89% {
-    transform: translate(-0.05em, 0);
-    clip-path: inset(37% 0 46% 0);
-  }
-  91% {
-    transform: translate(0.03em, 0);
-    clip-path: inset(3% 0 84% 0);
-  }
-  93% {
-    transform: translate(-0.014em, 0);
-    clip-path: inset(52% 0 31% 0);
-  }
-}
-
-@keyframes hw26-crt-tear-b {
-  0%,
-  84%,
-  95%,
-  100% {
-    transform: translate(0.008em, 0);
-    clip-path: inset(0 0 0 0);
-  }
-  85% {
-    transform: translate(0.072em, 0);
-    clip-path: inset(56% 0 24% 0);
-  }
-  87% {
-    transform: translate(-0.06em, 0);
-    clip-path: inset(6% 0 72% 0);
-  }
-  89% {
-    transform: translate(0.042em, 0);
-    clip-path: inset(44% 0 38% 0);
-  }
-  91% {
-    transform: translate(-0.028em, 0);
-    clip-path: inset(80% 0 4% 0);
-  }
-  93% {
-    transform: translate(0.012em, 0);
-    clip-path: inset(24% 0 58% 0);
+    opacity: 0;
   }
 }
 .hw26-title-rule {
@@ -909,54 +817,95 @@ html[data-theme='light'] .hw26-ufo-beam {
 }
 
 /* -------------------------------------------------------------
-   3. TRACKS — two enormous panels. Numbering is real here:
-   there are exactly two and you commit to one.
+   3. THE BOOKABLE FLOOR — two enormous panels per row, one per
+   kind of machine. The display numeral is the unit count, which
+   is the only figure on the panel that decides anything: one
+   machine per team means the sheet runs out.
    ------------------------------------------------------------- */
 
-/* Two up, deliberately, rather than auto-fit: four tracks across a 1440px
+/* Two up, deliberately, rather than auto-fit: four panels across a 1440px
    sheet would each be too narrow to carry a display-size name, and the 2×2
    keeps the panels the size the design is built around. */
-.hw26-tracks {
+.hw26-rigs {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: clamp(1rem, 2vw, 1.75rem);
 }
 
 @media (max-width: 780px) {
-  .hw26-tracks {
+  .hw26-rigs {
     grid-template-columns: minmax(0, 1fr);
   }
 }
 
-.hw26-track {
+/* The chamfered panel, drawn so the outline follows the chamfer.
+
+   `border` cannot do this. A border is painted on the four edges of the
+   border box and the clip-path is applied afterwards, so the chamfer slices
+   the corner clean off — top and right border survive either side of the cut
+   and the diagonal itself comes out bare. The fix is to stop asking for a
+   border at all: the panel's own background *is* the outline, and a
+   pseudo-element inset by one edge-width paints the fill on top of it,
+   leaving exactly `--rig-edge` of outline showing all the way round,
+   diagonal included.
+
+   The inner shape needs its own chamfer length. Insetting a 45° chamfer by
+   `e` perpendicular to every edge shortens the chamfer's run by (2 − √2)·e —
+   reuse `--rig-cut` unchanged and the diagonal would come out ~1.4× the
+   weight of the four straight sides. */
+.hw26-rig {
+  --rig-cut: 34px;
+  --rig-edge: 1px;
+  --rig-cut-inner: calc(var(--rig-cut) - 0.585786 * var(--rig-edge));
+  --rig-shape-inner: polygon(
+    0 0,
+    calc(100% - var(--rig-cut-inner)) 0,
+    100% var(--rig-cut-inner),
+    100% 100%,
+    var(--rig-cut-inner) 100%,
+    0 calc(100% - var(--rig-cut-inner))
+  );
   position: relative;
   min-height: clamp(420px, 52vh, 580px);
   padding: clamp(1.75rem, 3vw, 2.75rem);
   overflow: hidden;
   isolation: isolate;
-  background: var(--hw-steel);
-  border: 1px solid var(--hw-line);
+  background: var(--hw-line);
   clip-path: polygon(
     0 0,
-    calc(100% - 34px) 0,
-    100% 34px,
+    calc(100% - var(--rig-cut)) 0,
+    100% var(--rig-cut),
     100% 100%,
-    34px 100%,
-    0 calc(100% - 34px)
+    var(--rig-cut) 100%,
+    0 calc(100% - var(--rig-cut))
   );
-  transition: border-color 400ms var(--hw-ease);
+  transition: background-color 400ms var(--hw-ease);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
 }
 
-.hw26-track:hover {
-  border-color: var(--hw-mint);
+/* The fill. Sits one edge-width inside the outline in the same shape. */
+.hw26-rig::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: var(--rig-edge);
+  background: var(--hw-steel);
+  clip-path: var(--rig-shape-inner);
 }
 
-.hw26-track-photo {
+.hw26-rig:hover {
+  background: var(--hw-mint);
+}
+
+/* Inset and clipped to match the fill, so the photo stops at the outline
+   rather than tinting it. Paints above `::before` — same stacking level,
+   later in the box tree. */
+.hw26-rig-photo {
   position: absolute;
-  inset: 0;
+  inset: var(--rig-edge);
+  clip-path: var(--rig-shape-inner);
   z-index: -1;
   opacity: 0.16;
   filter: grayscale(1) contrast(1.25);
@@ -966,22 +915,22 @@ html[data-theme='light'] .hw26-ufo-beam {
     transform 900ms var(--hw-ease);
 }
 
-.hw26-track:hover .hw26-track-photo {
+.hw26-rig:hover .hw26-rig-photo {
   opacity: 0.32;
   filter: grayscale(0.35) contrast(1.1);
   transform: scale(1.05);
 }
 
-.hw26-track-photo img {
+.hw26-rig-photo img {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
 
-/* Circle — the track number is a counter, so it gets the dot-matrix cut.
+/* Circle — the unit count is a counter, so it gets the dot-matrix cut.
    Filled rather than outlined here: the face is already open enough that a
    stroke-only treatment reads as noise at this size. */
-.hw26-track-no {
+.hw26-rig-no {
   font-family: var(--font-geist-pixel-circle), var(--font-orbitron), sans-serif;
   font-weight: 500;
   font-size: clamp(3rem, 7.5vw, 5.75rem);
@@ -991,11 +940,18 @@ html[data-theme='light'] .hw26-ufo-beam {
   transition: color 400ms var(--hw-ease);
 }
 
-.hw26-track:hover .hw26-track-no {
+.hw26-rig:hover .hw26-rig-no {
   color: var(--hw-mint);
 }
 
-.hw26-track-name {
+/* Without this the count is just a large number: on a page where numerals
+   have meant section indices everywhere else, it has to say what it counts. */
+.hw26-rig-units {
+  display: block;
+  margin-top: 0.4rem;
+}
+
+.hw26-rig-name {
   font-family: var(--font-orbitron), sans-serif;
   font-weight: 900;
   text-transform: uppercase;
@@ -1005,7 +961,7 @@ html[data-theme='light'] .hw26-ufo-beam {
   margin: 0.5rem 0 0;
 }
 
-.hw26-track-blurb {
+.hw26-rig-blurb {
   margin: 1.25rem 0 0;
   max-width: 42ch;
   font-size: 0.9rem;
@@ -1013,24 +969,14 @@ html[data-theme='light'] .hw26-ufo-beam {
   color: var(--hw-bone);
 }
 
-.hw26-track-sponsor {
+/* The spec line — what you get when you book this one. */
+.hw26-rig-spec {
   margin-top: 1.75rem;
   padding-top: 1.25rem;
   border-top: 1px solid var(--hw-line);
   display: flex;
   align-items: center;
   gap: 1rem;
-}
-
-/* Pushed to the far edge so the mark keeps clear space from the kit line
-   no matter how long that line runs. Taller than a wordmark would need:
-   the only mark that lands here is NVIDIA's stacked lockup, which is
-   roughly square, so equal height with a horizontal logo would read as
-   half the size. */
-.hw26-track-mark {
-  height: 42px;
-  width: auto;
-  margin-left: auto;
 }
 
 /* -------------------------------------------------------------

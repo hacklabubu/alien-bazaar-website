@@ -27,13 +27,13 @@ export const EVENT: HardwareEvent = {
   slug: 'alien-bazaar-warsaw-2026',
   title: 'Alien Bazaar — Warsaw 2026',
   summary:
-    'Three days, six hardware categories, and a full print farm. Build a physical prototype in 48 work hours and pitch it to investors — at the Hacker House in Warsaw.',
+    'Three days of home automation at the Hacker House in Warsaw. Every team books one machine, teams wire their machines into each other, and what gets pitched to investors after 48 work hours is the combined system.',
   startsAt: new Date('2026-09-26T09:00:00+02:00'),
   endsAt: new Date('2026-09-28T20:00:00+02:00'),
   timezone: 'Europe/Warsaw',
   location: 'Hacker House powered by Hacklab and Epikor — Warsaw, Poland',
-  maxTeamSize: 6,
-  capacity: 200,
+  maxTeamSize: 4,
+  capacity: 100,
 }
 
 /**
