@@ -76,17 +76,17 @@ const LOG = [
   'CELL 6DOF  HOMED',
   'FARM 12 NODES  Q:0',
   'WALL STOCK NOMINAL',
-  'CAT  06 ACTIVE',
-  'SEATS 200 / 200 HELD',
+  'RIGS 06 TYPES  BOOKABLE',
+  'SEATS 100 / 100 HELD',
 ]
 
 /** Reports down the right. Each flicks to OK on its own schedule. */
 const CHECKS = [
-  { k: 'DRONES', at: 420 },
-  { k: 'UNDERWATER', at: 560 },
-  { k: 'HUMANOIDS', at: 700 },
-  { k: 'COBOTS', at: 840 },
-  { k: 'PRINT FARM', at: 980 },
+  { k: 'ARMS', at: 420 },
+  { k: 'COBOTS', at: 560 },
+  { k: 'DRONES', at: 700 },
+  { k: 'CAMERAS', at: 840 },
+  { k: 'HUMANOIDS', at: 980 },
   { k: 'SEATS', at: 1120 },
 ]
 

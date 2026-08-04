@@ -817,54 +817,95 @@ html[data-theme='light'] .hw26-ufo-beam {
 }
 
 /* -------------------------------------------------------------
-   3. TRACKS — two enormous panels. Numbering is real here:
-   there are exactly two and you commit to one.
+   3. THE BOOKABLE FLOOR — two enormous panels per row, one per
+   kind of machine. The display numeral is the unit count, which
+   is the only figure on the panel that decides anything: one
+   machine per team means the sheet runs out.
    ------------------------------------------------------------- */
 
-/* Two up, deliberately, rather than auto-fit: four tracks across a 1440px
+/* Two up, deliberately, rather than auto-fit: four panels across a 1440px
    sheet would each be too narrow to carry a display-size name, and the 2×2
    keeps the panels the size the design is built around. */
-.hw26-tracks {
+.hw26-rigs {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: clamp(1rem, 2vw, 1.75rem);
 }
 
 @media (max-width: 780px) {
-  .hw26-tracks {
+  .hw26-rigs {
     grid-template-columns: minmax(0, 1fr);
   }
 }
 
-.hw26-track {
+/* The chamfered panel, drawn so the outline follows the chamfer.
+
+   `border` cannot do this. A border is painted on the four edges of the
+   border box and the clip-path is applied afterwards, so the chamfer slices
+   the corner clean off — top and right border survive either side of the cut
+   and the diagonal itself comes out bare. The fix is to stop asking for a
+   border at all: the panel's own background *is* the outline, and a
+   pseudo-element inset by one edge-width paints the fill on top of it,
+   leaving exactly `--rig-edge` of outline showing all the way round,
+   diagonal included.
+
+   The inner shape needs its own chamfer length. Insetting a 45° chamfer by
+   `e` perpendicular to every edge shortens the chamfer's run by (2 − √2)·e —
+   reuse `--rig-cut` unchanged and the diagonal would come out ~1.4× the
+   weight of the four straight sides. */
+.hw26-rig {
+  --rig-cut: 34px;
+  --rig-edge: 1px;
+  --rig-cut-inner: calc(var(--rig-cut) - 0.585786 * var(--rig-edge));
+  --rig-shape-inner: polygon(
+    0 0,
+    calc(100% - var(--rig-cut-inner)) 0,
+    100% var(--rig-cut-inner),
+    100% 100%,
+    var(--rig-cut-inner) 100%,
+    0 calc(100% - var(--rig-cut-inner))
+  );
   position: relative;
   min-height: clamp(420px, 52vh, 580px);
   padding: clamp(1.75rem, 3vw, 2.75rem);
   overflow: hidden;
   isolation: isolate;
-  background: var(--hw-steel);
-  border: 1px solid var(--hw-line);
+  background: var(--hw-line);
   clip-path: polygon(
     0 0,
-    calc(100% - 34px) 0,
-    100% 34px,
+    calc(100% - var(--rig-cut)) 0,
+    100% var(--rig-cut),
     100% 100%,
-    34px 100%,
-    0 calc(100% - 34px)
+    var(--rig-cut) 100%,
+    0 calc(100% - var(--rig-cut))
   );
-  transition: border-color 400ms var(--hw-ease);
+  transition: background-color 400ms var(--hw-ease);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
 }
 
-.hw26-track:hover {
-  border-color: var(--hw-mint);
+/* The fill. Sits one edge-width inside the outline in the same shape. */
+.hw26-rig::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: var(--rig-edge);
+  background: var(--hw-steel);
+  clip-path: var(--rig-shape-inner);
 }
 
-.hw26-track-photo {
+.hw26-rig:hover {
+  background: var(--hw-mint);
+}
+
+/* Inset and clipped to match the fill, so the photo stops at the outline
+   rather than tinting it. Paints above `::before` — same stacking level,
+   later in the box tree. */
+.hw26-rig-photo {
   position: absolute;
-  inset: 0;
+  inset: var(--rig-edge);
+  clip-path: var(--rig-shape-inner);
   z-index: -1;
   opacity: 0.16;
   filter: grayscale(1) contrast(1.25);
@@ -874,22 +915,22 @@ html[data-theme='light'] .hw26-ufo-beam {
     transform 900ms var(--hw-ease);
 }
 
-.hw26-track:hover .hw26-track-photo {
+.hw26-rig:hover .hw26-rig-photo {
   opacity: 0.32;
   filter: grayscale(0.35) contrast(1.1);
   transform: scale(1.05);
 }
 
-.hw26-track-photo img {
+.hw26-rig-photo img {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
 
-/* Circle — the track number is a counter, so it gets the dot-matrix cut.
+/* Circle — the unit count is a counter, so it gets the dot-matrix cut.
    Filled rather than outlined here: the face is already open enough that a
    stroke-only treatment reads as noise at this size. */
-.hw26-track-no {
+.hw26-rig-no {
   font-family: var(--font-geist-pixel-circle), var(--font-orbitron), sans-serif;
   font-weight: 500;
   font-size: clamp(3rem, 7.5vw, 5.75rem);
@@ -899,11 +940,18 @@ html[data-theme='light'] .hw26-ufo-beam {
   transition: color 400ms var(--hw-ease);
 }
 
-.hw26-track:hover .hw26-track-no {
+.hw26-rig:hover .hw26-rig-no {
   color: var(--hw-mint);
 }
 
-.hw26-track-name {
+/* Without this the count is just a large number: on a page where numerals
+   have meant section indices everywhere else, it has to say what it counts. */
+.hw26-rig-units {
+  display: block;
+  margin-top: 0.4rem;
+}
+
+.hw26-rig-name {
   font-family: var(--font-orbitron), sans-serif;
   font-weight: 900;
   text-transform: uppercase;
@@ -913,7 +961,7 @@ html[data-theme='light'] .hw26-ufo-beam {
   margin: 0.5rem 0 0;
 }
 
-.hw26-track-blurb {
+.hw26-rig-blurb {
   margin: 1.25rem 0 0;
   max-width: 42ch;
   font-size: 0.9rem;
@@ -921,24 +969,14 @@ html[data-theme='light'] .hw26-ufo-beam {
   color: var(--hw-bone);
 }
 
-.hw26-track-sponsor {
+/* The spec line — what you get when you book this one. */
+.hw26-rig-spec {
   margin-top: 1.75rem;
   padding-top: 1.25rem;
   border-top: 1px solid var(--hw-line);
   display: flex;
   align-items: center;
   gap: 1rem;
-}
-
-/* Pushed to the far edge so the mark keeps clear space from the kit line
-   no matter how long that line runs. Taller than a wordmark would need:
-   the only mark that lands here is NVIDIA's stacked lockup, which is
-   roughly square, so equal height with a horizontal logo would read as
-   half the size. */
-.hw26-track-mark {
-  height: 42px;
-  width: auto;
-  margin-left: auto;
 }
 
 /* -------------------------------------------------------------

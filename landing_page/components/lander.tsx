@@ -17,10 +17,11 @@ import { APPLY_URL, type HardwareEvent } from '../lib/event'
  * Alien Bazaar — Warsaw 2026. The event's own landing page.
  *
  * Neoindustrial: machine-shop signage read through a phosphor terminal.
- * Structure carries meaning rather than decorating it — the four tracks are
- * numbered because you commit to exactly one, the mint accent marks both the
- * interactive and the three gates that can cost you something, and the light
- * section is a parts catalogue because that is what the lab inventory is.
+ * Structure carries meaning rather than decorating it — the rig panels carry
+ * a unit count because the booking sheet is finite and that number is the
+ * whole constraint, the mint accent marks both the interactive and the gates
+ * that can cost you something, and the light section is a parts catalogue
+ * because that is what the lab inventory is.
  *
  * The page ships two themes, dark by default; the toggle stamps data-theme
  * on <html> and the palette tokens in lander.css do the rest.
@@ -47,97 +48,133 @@ const UFO_LIGHTS = [
 
 const TICKER = [
   { label: '48 WORK HOURS' },
-  { label: 'SIX HARDWARE CATEGORIES' },
+  { label: 'THEME — HOME AUTOMATION', mint: true },
+  { label: 'ONE MACHINE PER TEAM' },
+  { label: 'TEAMS INTEGRATE WITH TEAMS', mint: true },
   { label: 'HACKER HOUSE / WARSAW' },
-  { label: 'DRONES · HUMANOIDS · COBOTS · AR', mint: true },
-  { label: 'FULL PRINT FARM, ALL THREE DAYS' },
+  { label: 'ARMS · COBOTS · DRONES · CAMERAS · MONOWHEELS · HUMANOIDS' },
+  { label: 'OPEN STOCK, NO BOOKING SHEET' },
   { label: 'PITCH DAY 28 SEP', mint: true },
   { label: 'APPLICATIONS CLOSE 12 SEP', mint: true },
-  { label: 'BUILD SOMETHING THAT MOVES' },
 ]
 
 /**
- * Six hardware categories. Booking one by 12 September is what gets a team
- * its machine, so the choice is about which hardware fits the idea rather
- * than which buzzword. Teams are not limited to this list — the paragraph
- * under the grid carries the bring-your-own-rig clause.
+ * The theme. Deliberately domestic and deliberately broad: a house is the one
+ * environment every reader already has a problem with, and it is large enough
+ * that two teams pointing at it from different directions still end up in the
+ * same building.
  */
-const TRACKS = [
+const DOMAINS = [
+  'Lights',
+  'Cleaning',
+  'Security',
+  'Welcoming guests',
+  'Damage monitoring',
+  'Repairs',
+  'Whatever else a house needs',
+]
+
+/**
+ * How a build actually happens here, in the order it happens. This replaced
+ * the old track system: there is no category you compete inside any more, so
+ * the thing that needs explaining is the booking-plus-collaboration mechanic,
+ * and it needs explaining before the inventory rather than after it.
+ */
+const PROTOCOL = [
   {
-    no: '01',
-    name: 'Drones',
-    kit: 'Flight · FPV · autonomy',
-    blurb:
-      'Anything that leaves the ground. Book a platform, strap your idea to it, and prove it flies before pitch day.',
-    photo: '/photos/drone-01.jpg',
-    alt: 'A quadcopter hovering in flight, its pilot on the controller behind it',
-    sponsor: {
-      src: '/sponsors/nvidia.svg',
-      alt: 'NVIDIA',
-    },
+    step: 'STEP 01',
+    name: 'Book one machine',
+    what: 'One per team, reserved by 12 September. Six kinds on the floor and a fixed number of each, so the sheet runs out — book the machine your idea cannot work without.',
   },
   {
-    no: '02',
-    name: 'Underwater Drones',
-    kit: 'Submersibles · ROV rigs',
-    blurb:
-      'The same problem with worse physics. Submersible platforms for teams whose product starts where the signal ends.',
-    photo: '/photos/workshop-01.jpg',
-    alt: 'A machine shop with lathes and tooling along the wall',
-    sponsor: null,
+    step: 'STEP 02',
+    name: 'Find other teams',
+    what: 'One partner team, or four. Nothing forces you to, but one machine on its own rarely makes a house do anything worth two minutes of an investor’s attention.',
   },
   {
-    no: '03',
-    name: 'Humanoids',
-    kit: 'Bipeds · teleop · balance',
-    blurb:
-      'The hardest form factor in the building. Put hands, balance, and your software on a machine shaped like its operator.',
-    photo: '/photos/robot-arm-03.jpg',
-    alt: 'A robot arm at a welding station',
-    sponsor: null,
+    step: 'STEP 03',
+    name: 'Integrate',
+    what: 'Wire the machines into a single system that solves something domestic. What gets pitched on Sunday is the integration — not your half of it.',
   },
+]
+
+/**
+ * The bookable floor. One unit of one of these per team, which makes the unit
+ * counts the most important number on the panel — they are what the booking
+ * sheet is drawn against, so they get the display numeral rather than a
+ * sequence number.
+ *
+ * Photography is what the house has on file. Where a photo does not depict
+ * the machine it sits behind, the alt text still describes the photograph:
+ * these are plates of the venue, not product shots, and the caption must not
+ * claim otherwise.
+ */
+const RIGS = [
   {
-    no: '04',
-    name: 'Cobots',
-    kit: 'Collaborative arms · grippers',
+    name: 'Robot arms',
+    units: '06',
+    kit: '6-axis · fenced cell · grippers',
     blurb:
-      'Teach an arm to do something useful. Collaborative cells, grippers, and 48 hours to make one earn its place on a line.',
+      'Reach, speed, and repeatability behind a fence. In a house the arm is whatever actually picks the thing up, sorts it, or puts it back — pair it with something that can see.',
     photo: '/photos/robot-arm-01.jpg',
     alt: 'A yellow industrial robot arm on a factory line',
-    sponsor: null,
   },
   {
-    no: '05',
-    name: 'AR',
-    kit: 'Headsets · spatial interfaces',
+    name: 'Cobots',
+    units: '04',
+    kit: 'Force-limited · hand-guidable',
     blurb:
-      'Hardware you look through instead of at. Build the layer between the machines in this house and the people running them.',
+      'An arm safe to stand next to, which is the only kind that belongs in a kitchen. Teach it by moving it, then let a partner team’s code drive it.',
+    photo: '/photos/robot-arm-03.jpg',
+    alt: 'A robot arm at a welding station',
+  },
+  {
+    name: 'Drones',
+    units: '08',
+    kit: 'Indoor · prop guards · autonomy',
+    blurb:
+      'The eyes that move. Indoor-safe platforms for inspection, damage spotting, and getting a camera into the one corner of a house nothing else can reach.',
+    photo: '/photos/drone-01.jpg',
+    alt: 'A quadcopter hovering in flight, its pilot on the controller behind it',
+  },
+  {
+    name: 'Camera rigs',
+    units: '05',
+    kit: 'Pan-tilt-zoom · depth · tracking',
+    blurb:
+      'A house that watches. Motorised heads and depth arrays on stands — most integrations end up routing perception through one of these, so they go early.',
     photo: '/photos/hacker-01.jpg',
     alt: 'A person operating a workshop machine',
-    sponsor: null,
   },
   {
-    no: '06',
-    name: 'Mobile Platforms',
-    kit: 'Wheels · tracks · payloads',
+    name: 'Monowheel robots',
+    units: '04',
+    kit: 'Self-balancing · single wheel',
     blurb:
-      'Rovers, carts, and anything that carries a payload somewhere it should not go. Ground vehicles for products that move.',
+      'Small, quick, and genuinely awkward to control. The team that gets one balancing by Saturday morning becomes the team everyone else wants to integrate with.',
     photo: '/photos/printer-01.jpg',
     alt: 'A 3D printer mid-print',
-    sponsor: null,
+  },
+  {
+    name: 'Humanoids',
+    units: '02',
+    kit: 'Bipedal · hands · teleop',
+    blurb:
+      'The hardest form factor in the building, and the shortest queue on the sheet. Book one expecting to spend the weekend with other teams hanging capability off it.',
+    photo: '/photos/workshop-01.jpg',
+    alt: 'A machine shop with lathes and tooling along the wall',
   },
 ]
 
 /**
- * The print farm. Available to every team for the whole hackathon, whatever
- * category they booked — this is the one part of the inventory that is not
- * a choice.
+ * The print farm. Open stock like everything else in this section — the only
+ * thing in the house that is booked is the one machine per team above.
  */
-const KIT = [
+const PRINT_FARM = [
   {
     name: 'Formlabs 4L',
     qty: 'QTY 01',
-    what: 'Large-format SLA for the parts that have to be right. Book it early — its jobs run long.',
+    what: 'Large-format SLA for the parts that have to be right. Start it early — its jobs run long.',
   },
   {
     name: 'BambuLab H2D',
@@ -158,6 +195,61 @@ const KIT = [
     name: 'Anycubic Resin',
     qty: 'QTY 01',
     what: 'For detail an FDM head cannot hold. Wash and cure station beside it.',
+  },
+]
+
+/**
+ * Everything else on the floor, none of it reserved. The house network is in
+ * this list rather than in a footnote on purpose: a shared broker is what
+ * makes two teams' machines able to talk on the first evening instead of the
+ * last one, and it is the piece that makes the collaboration mechanic work
+ * in practice rather than in principle.
+ */
+const OPEN_STOCK = [
+  {
+    name: 'House network',
+    qty: 'LIVE',
+    what: 'Event VLAN, wired and wireless, with an MQTT broker and a Home Assistant instance already running. Two teams can put their machines on the same bus before dinner on day one.',
+  },
+  {
+    name: 'Camera modules',
+    qty: 'QTY 40',
+    what: 'USB and MIPI modules — global shutter, wide angle, low light. They live in a bin, not on a booking sheet.',
+  },
+  {
+    name: 'Depth & LiDAR',
+    qty: 'QTY 12',
+    what: 'Depth cameras and 2D room scanners, for anything that has to know where the walls are before it moves.',
+  },
+  {
+    name: 'NPU modules',
+    qty: 'QTY 08',
+    what: 'Provided by NVIDIA. Edge inference on the machine itself, for the models that will not fit on a microcontroller.',
+  },
+  {
+    name: 'Microcontrollers',
+    qty: 'OPEN',
+    what: 'ESP32, Pico, and the usual dev boards by the tray, Wi-Fi and BLE on every one. The glue for most of what gets built here.',
+  },
+  {
+    name: 'Smart-home stock',
+    qty: 'OPEN',
+    what: 'Matter and Zigbee bulbs, plugs, relays, locks, and blind motors — the ordinary fixtures your system is supposed to end up commanding.',
+  },
+  {
+    name: 'Mics & speakers',
+    qty: 'QTY 16',
+    what: 'Far-field mic arrays and speakers, for the half of home automation that listens and answers rather than moves.',
+  },
+  {
+    name: 'Electronics bench',
+    qty: 'OPEN',
+    what: 'Soldering stations, bench supplies, scopes, logic analysers, and a wall of passives, connectors, and wire.',
+  },
+  {
+    name: 'Extrusion & fixings',
+    qty: 'OPEN',
+    what: 'Aluminium extrusion, brackets, bearings, and fasteners. The dull half of every rig that actually ends up working.',
   },
   {
     name: 'Your Own Rig',
@@ -208,16 +300,16 @@ const FUNNEL = [
   { t: 'NOW', w: 'Join the wait-list on HackLab and pick the hackathon.' },
   {
     t: '12 SEP',
-    w: 'Book the hardware your project needs.',
+    w: 'Book the one machine your team will own for the weekend.',
     gate: true,
   },
   {
     t: '12 SEP',
-    w: 'No team? Find 3–5 teammates on the platform, with an AI assistant doing the matchmaking.',
+    w: 'No team? Find 1–3 teammates on the platform, with an AI assistant doing the matchmaking.',
   },
   {
     t: '12 SEP',
-    w: 'Submit the startup idea you will prototype on the booked hardware.',
+    w: 'Submit the home-automation idea you will prototype on the machine you booked.',
     gate: true,
   },
   { t: '19 SEP', w: 'Organizers accept teams. Results go out.' },
@@ -229,8 +321,12 @@ const HOUSE = [
     w: 'Move into the house. The clock starts — 48 work hours.',
   },
   {
+    t: '26 SEP',
+    w: 'Find your partner teams and agree what the combined system has to do.',
+  },
+  {
     t: '27 SEP',
-    w: 'Build. The lab, the print farm, and the media floor run all day.',
+    w: 'Build. The open stock, the print farm, and the media floor run all day.',
   },
   {
     t: '28 SEP',
@@ -254,35 +350,51 @@ const ORGANIZERS = [
     // both themes.
     src: '/sponsors/hacklab.png' as string | null,
     href: 'https://hacklab.so',
-    line: 'The platform the funnel runs on — registration, team matching, and hardware booking.',
+    line: 'The platform the funnel runs on — registration, team matching, and hardware booking — and the house it all happens in.',
   },
   {
     name: 'Epikor',
     src: null as string | null,
     href: 'https://epikor.eu',
-    line: 'The house itself: four floors and a courtyard turned into a hub for building, content, and networking.',
+    line: 'The hardware on the floor, all of it: some their own — including the bicopter drones they build — and the rest sourced and brought in through their partners. Co-organizing the weekend alongside it.',
   },
 ]
 
 /**
- * Confirmed partners use their official marks, downloaded from each company's
- * brand page and used unmodified at full clear space, which is what both sets
- * of guidelines require for sponsor identification.
+ * The three lead partners, given the full-width cells. Confirmed marks are the
+ * official files, downloaded from each company's brand page and used
+ * unmodified at full clear space, which is what every one of those guidelines
+ * requires for sponsor identification. JetBrains has no file here yet, so it
+ * falls back to the typographic mark the organizers use.
+ *
+ * Each line says what the partner actually provides, and nothing more. Two of
+ * the three supply something physical; the third does not, and saying so is
+ * better than padding the cell with a claim nobody made.
  */
 const LEAD_SPONSORS = [
   {
     name: 'NVIDIA',
-    src: '/sponsors/nvidia.svg',
+    src: '/sponsors/nvidia.svg' as string | null,
+    href: 'https://www.nvidia.com',
     // Their two-colour mark is the stacked lockup, so matching Red Hat's
     // height would leave it reading half the size. Flagged for its own
     // sizing rather than hard-coding a height per sponsor.
     stacked: true,
-    line: 'Compute, engineers on the floor, and the Drones category prize.',
+    line: 'A batch of NPU modules in open stock, for teams running inference on the machine itself rather than off it.',
   },
   {
     name: 'Red Hat',
-    src: '/sponsors/redhat-on-dark.svg',
+    src: '/sponsors/redhat-on-dark.svg' as string | null,
+    href: 'https://www.redhat.com',
+    stacked: false,
     line: 'Infrastructure for every team, and the platform workshops on day one.',
+  },
+  {
+    name: 'JetBrains',
+    src: null as string | null,
+    href: 'https://www.jetbrains.com',
+    stacked: false,
+    line: 'Backing the weekend itself rather than the inventory — no hardware on the floor, their name on the event.',
   },
 ]
 
@@ -322,19 +434,18 @@ const TITLE_BLOCK = [
   { k: 'Sheet', v: '07 / 07' },
   { k: 'Rev', v: '03' },
   { k: 'Status', v: 'Issued', tone: 'mint' },
-  { k: 'Categories', v: '06' },
+  { k: 'Theme', v: 'Home automation' },
   { k: 'Venue', v: 'Hacker House' },
   { k: 'Coord', v: '52.2297°N 21.0122°E' },
   { k: 'Duration', v: '48 WORK H' },
 ]
 
 /**
- * The rest of the partner wall. IntelliJ is confirmed and shown as a named
- * partner (official mark to follow); the remaining names are placeholders
- * for this prototype, marked TBC so a draft can never read as a claim.
+ * The rest of the partner wall. Every name here is a placeholder for this
+ * prototype, marked TBC so a draft can never read as a claim — the three
+ * confirmed partners are in the lead cells above.
  */
 const REST_PARTNERS = [
-  { name: 'IntelliJ', tag: 'Partner' },
   { name: 'Voltbend', tag: 'TBC' },
   { name: 'Meridian Robotics', tag: 'TBC' },
   { name: 'Nordhaus Systems', tag: 'TBC' },
@@ -618,8 +729,12 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
               <dd>Hacker House, Warsaw</dd>
             </div>
             <div>
+              <dt>Theme</dt>
+              <dd>Home automation</dd>
+            </div>
+            <div>
               <dt>Hardware</dt>
-              <dd>Six categories + print farm</dd>
+              <dd>One machine per team</dd>
             </div>
             <div>
               <dt>Teams</dt>
@@ -665,55 +780,89 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
         ))}
       </div>
 
-      {/* ---------------- TRACKS ---------------- */}
+      {/* ---------------- THE BRIEF ---------------- */}
       <section className='hw26-section'>
         <div className='hw26-inner'>
           <div className='hw26-head hw26-reveal'>
             <span className='hw26-num'>02</span>
-            <h2>Pick your hardware</h2>
+            <h2>Automate the house</h2>
             <span
               className='hw26-label hw26-label--mint'
               style={{ marginLeft: 'auto' }}
             >
-              Booked by 12 SEP
+              Theme / Home automation
             </span>
           </div>
 
-          <div className='hw26-tracks'>
-            {TRACKS.map((track, i) => (
+          <p
+            className='hw26-reveal'
+            style={{
+              maxWidth: '58ch',
+              margin: '0 0 1.25rem',
+              fontSize: '0.95rem',
+              lineHeight: 1.75,
+              color: 'var(--hw-bone)',
+            }}
+          >
+            One theme for the whole weekend: the machines in a house, doing
+            something the people in it actually want done. Nobody competes in a
+            category — every team books a single machine, then goes and finds
+            the other teams whose machines make theirs worth having.
+          </p>
+
+          <p
+            className='hw26-label hw26-label--mint hw26-reveal'
+            style={{ margin: '0 0 2.5rem', lineHeight: 2.2 }}
+          >
+            {DOMAINS.join('  ·  ')}
+          </p>
+
+          <dl className='hw26-kit hw26-reveal'>
+            {PROTOCOL.map((item) => (
+              <div className='hw26-kit-item' key={item.step}>
+                <span className='hw26-kit-qty'>{item.step}</span>
+                <dt>{item.name}</dt>
+                <dd>{item.what}</dd>
+              </div>
+            ))}
+          </dl>
+
+          <div className='hw26-subhead hw26-reveal' style={{ marginTop: '3.5rem' }}>
+            <span className='hw26-label hw26-label--mint'>
+              The bookable floor
+            </span>
+            <span className='hw26-poweredby-rule' />
+            <span className='hw26-label'>One per team · booked by 12 SEP</span>
+          </div>
+
+          <div className='hw26-rigs'>
+            {RIGS.map((rig, i) => (
               <article
-                className='hw26-track hw26-reveal'
-                key={track.no}
+                className='hw26-rig hw26-reveal'
+                key={rig.name}
                 style={{ transitionDelay: `${i * 90}ms` }}
               >
-                <div className='hw26-track-photo'>
+                <div className='hw26-rig-photo'>
                   <Image
-                    alt={track.alt}
+                    alt={rig.alt}
                     fill
                     sizes='(max-width: 900px) 100vw, 50vw'
-                    src={track.photo}
+                    src={rig.photo}
                   />
                 </div>
                 <div>
-                  <div className='hw26-track-no'>{track.no}</div>
-                  <h3 className='hw26-track-name'>{track.name}</h3>
-                  <p className='hw26-track-blurb'>{track.blurb}</p>
+                  {/* The display numeral is the unit count, not a sequence
+                      number: with one machine per team it is the only figure
+                      on the panel that decides anything. */}
+                  <div className='hw26-rig-no'>{rig.units}</div>
+                  <span className='hw26-label hw26-label--mint hw26-rig-units'>
+                    On the floor
+                  </span>
+                  <h3 className='hw26-rig-name'>{rig.name}</h3>
+                  <p className='hw26-rig-blurb'>{rig.blurb}</p>
                 </div>
-                {/* The kit line is the real differentiator between tracks —
-                    which machines you get — so it is on every panel, and the
-                    sponsor mark sits beside it only where there is one. */}
-                <div className='hw26-track-sponsor'>
-                  <span className='hw26-label'>{track.kit}</span>
-                  {track.sponsor ? (
-                    // Vector marks, served as-authored. Running a partner's
-                    // logo through the image optimizer would re-encode it,
-                    // which their brand terms do not allow.
-                    <img
-                      alt={track.sponsor.alt}
-                      className='hw26-track-mark'
-                      src={track.sponsor.src}
-                    />
-                  ) : null}
+                <div className='hw26-rig-spec'>
+                  <span className='hw26-label'>{rig.kit}</span>
                 </div>
               </article>
             ))}
@@ -729,9 +878,10 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
               color: 'var(--hw-bone)',
             }}
           >
-            Not on the list? Teams are not limited to these categories. Propose
-            your own idea with your own equipment — we will help you build it
-            with what the house has, or arrange delivery of what it does not.
+            Not on the list? Propose your own machine with your own equipment —
+            we will help you run it on what the house has, or arrange delivery
+            of what it does not. The theme is fixed; the hardware is only fixed
+            by what fits through the door.
           </p>
         </div>
       </section>
@@ -742,9 +892,9 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
         <div className='hw26-inner'>
           <div className='hw26-head hw26-reveal'>
             <span className='hw26-num'>03</span>
-            <h2>The print farm</h2>
+            <h2>The open floor</h2>
             <span className='hw26-label' style={{ marginLeft: 'auto' }}>
-              Inventory / Hacker House
+              No booking / all three days
             </span>
           </div>
 
@@ -758,13 +908,37 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
               color: 'var(--hw-bone)',
             }}
           >
-            Whatever category you booked, the full fleet below is available to
-            every team for the entire hackathon — not a demo behind a rope.
-            Design it one day, hold it the next. The printers go first.
+            Your booked machine is the only thing in this house with your name
+            on it. Everything below is open stock — no sheet, no reservation,
+            take what the build needs and put it back. Design it one day, hold
+            it the next. The printers go first.
           </p>
 
+          <div className='hw26-subhead hw26-reveal'>
+            <span className='hw26-label hw26-label--mint'>Print farm</span>
+            <span className='hw26-poweredby-rule' />
+          </div>
+
           <dl className='hw26-kit hw26-reveal'>
-            {KIT.map((item) => (
+            {PRINT_FARM.map((item) => (
+              <div className='hw26-kit-item' key={item.name}>
+                <span className='hw26-kit-qty'>{item.qty}</span>
+                <dt>{item.name}</dt>
+                <dd>{item.what}</dd>
+              </div>
+            ))}
+          </dl>
+
+          <div
+            className='hw26-subhead hw26-reveal'
+            style={{ marginTop: '2.5rem' }}
+          >
+            <span className='hw26-label hw26-label--mint'>Open stock</span>
+            <span className='hw26-poweredby-rule' />
+          </div>
+
+          <dl className='hw26-kit hw26-reveal'>
+            {OPEN_STOCK.map((item) => (
               <div className='hw26-kit-item' key={item.name}>
                 <span className='hw26-kit-qty'>{item.qty}</span>
                 <dt>{item.name}</dt>
@@ -936,11 +1110,22 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
           <div className='hw26-sponsors-lead hw26-reveal'>
             {LEAD_SPONSORS.map((s) => (
               <div className='hw26-sponsor-lead' key={s.name}>
-                <img
-                  alt={s.name}
-                  className={s.stacked ? 'hw26-mark--stacked' : undefined}
-                  src={s.src}
-                />
+                {s.src ? (
+                  // Vector marks, served as-authored. Running a partner's logo
+                  // through the image optimizer would re-encode it, which
+                  // their brand terms do not allow.
+                  <img
+                    alt={s.name}
+                    className={s.stacked ? 'hw26-mark--stacked' : undefined}
+                    src={s.src}
+                  />
+                ) : (
+                  // Typographic mark until the real logo file lands, same as
+                  // the organizer cells above.
+                  <a className='hw26-org-mark' href={s.href}>
+                    {s.name}
+                  </a>
+                )}
                 <p>{s.line}</p>
               </div>
             ))}
@@ -963,12 +1148,13 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
           <h2 className='hw26-reveal'>
             Bring a problem
             <br />
-            that needs a motor
+            your house has
           </h2>
           <p className='hw26-reveal'>
             {hackathon.capacity ? `${hackathon.capacity} seats. ` : ''}
-            Three days, six hardware categories, a full print farm, and a pitch
-            day in front of investors. Applications close on 12 September.
+            Three days, one machine per team, and a floor full of other teams
+            to wire yours into. Open stock throughout, and a pitch day in front
+            of investors. Applications close on 12 September.
           </p>
           <div className='hw26-reveal'>
             <a className='hw26-apply hw26-apply--lg' href={applyHref}>
