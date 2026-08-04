@@ -161,13 +161,16 @@
   -webkit-text-stroke: 1px var(--hw-line-hi, #39413c);
 }
 
-/* Developed by the bar rather than faded in. */
+/* Developed by the bar rather than faded in. `both`, not `forwards`: the
+   run starts 480ms in, and without the backwards half the lit copy spends
+   that delay unclipped — the mark flashes solid before it has been
+   developed at all, then blanks back to the outline to start. */
 .hw26-i-mark-lit {
   position: absolute;
   inset: 0;
   color: var(--hw-snow, #fff);
   text-shadow: 0 0 26px rgba(130, 245, 198, 0.4);
-  animation: hw26-i-lit 1500ms cubic-bezier(0.5, 0, 0.2, 1) 480ms forwards;
+  animation: hw26-i-lit 1500ms cubic-bezier(0.5, 0, 0.2, 1) 480ms both;
 }
 
 @keyframes hw26-i-lit {
@@ -381,7 +384,10 @@
   height: 2px;
   background: var(--hw-matrix, #00ff41);
   box-shadow: 0 0 34px 10px rgba(0, 255, 65, 0.32);
-  animation: hw26-i-scan 1500ms cubic-bezier(0.5, 0, 0.2, 1) 480ms forwards;
+  /* `both` for the same reason as the lit mark it develops: the 0% keyframe
+     is what parks the bar off the top edge, so without the backwards half
+     it sits visible at its static position for the whole 480ms delay. */
+  animation: hw26-i-scan 1500ms cubic-bezier(0.5, 0, 0.2, 1) 480ms both;
 }
 
 @keyframes hw26-i-scan {
