@@ -39,12 +39,36 @@ const GLYPHS = '0123456789ABCDEF#%&/\\<>=*+·'
  * Resolves a string left to right out of scrambled glyphs. Frame-driven
  * rather than interval-driven so it tracks real elapsed time and cannot
  * drift out of step with the CSS timeline it plays against.
+ *
+ * Exported because the lander's timeline runs the same effect on one line and
+ * a second implementation of it would only be this one with the constants
+ * retyped. That call site needs the run held until the line is scrolled to,
+ * which is what `armed` is for: false renders the finished string and starts
+ * nothing.
+ *
+ * Held is the *readable* state, not a row of blanks, and deliberately so — it
+ * is what the server renders, what a reader with scripting off keeps, and
+ * what hydration matches. The cost is a frame of legible text before the
+ * effect scrambles it, which nobody sees at a call site that only arms the
+ * hook once the line has entered the viewport. Unheld, the run still opens on
+ * blanks so the intro's readouts type in from nothing rather than flashing
+ * their own answer first.
  */
-function useScramble(text: string, delay: number, duration: number) {
-  const [out, setOut] = useState(() => ' '.repeat(text.length))
+export function useScramble(
+  text: string,
+  delay: number,
+  duration: number,
+  armed = true
+) {
+  const [out, setOut] = useState(() => (armed ? ' '.repeat(text.length) : text))
   const raf = useRef(0)
 
   useEffect(() => {
+    if (!armed) {
+      setOut(text)
+      return
+    }
+
     let start = 0
     const step = (t: number) => {
       if (!start) start = t
@@ -61,7 +85,7 @@ function useScramble(text: string, delay: number, duration: number) {
     }
     raf.current = requestAnimationFrame(step)
     return () => cancelAnimationFrame(raf.current)
-  }, [text, delay, duration])
+  }, [text, delay, duration, armed])
 
   return out
 }
