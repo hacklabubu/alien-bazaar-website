@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from 'next'
-import { JetBrains_Mono, Orbitron } from 'next/font/google'
+import { JetBrains_Mono, Orbitron, Poppins } from 'next/font/google'
 import localFont from 'next/font/local'
 
 import './globals.css'
@@ -23,6 +23,20 @@ const jetbrainsMono = JetBrains_Mono({
   subsets: ['latin'],
   variable: '--font-jetbrains-mono',
   weight: ['400', '500', '700'],
+  display: 'swap',
+})
+
+/**
+ * Poppins Light, and only that cut: it is not a face this page sets type in,
+ * it is one partner's own — GHOST publish their wordmark in Poppins 300, so
+ * the tile that carries their icon sets the word beside it in the same thing.
+ * One weight, one tile; anything more and it would be a fourth face on a page
+ * built on two.
+ */
+const poppins = Poppins({
+  subsets: ['latin'],
+  variable: '--font-poppins',
+  weight: ['300'],
   display: 'swap',
 })
 
@@ -80,7 +94,7 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html
-      className={`${orbitron.variable} ${jetbrainsMono.variable} ${terminess.variable}`}
+      className={`${orbitron.variable} ${jetbrainsMono.variable} ${poppins.variable} ${terminess.variable}`}
       data-theme='dark'
       lang='en'
       suppressHydrationWarning
