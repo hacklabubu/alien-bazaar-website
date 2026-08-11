@@ -43,9 +43,6 @@
      theme, so the pair reads as one family with a clear hierarchy
      rather than as two competing accents. */
   --hw-pine: #2f9e63;
-  /* Matrix Green is the arrival color. It appears in exactly one
-     place on this page — the UFO's beam — and nowhere else. */
-  --hw-matrix: #00ff41;
 
   --hw-ease: cubic-bezier(0.16, 1, 0.3, 1);
   --hw-gutter: clamp(1.25rem, 4vw, 4.5rem);
@@ -55,14 +52,23 @@
   font-family: var(--font-jetbrains-mono), ui-monospace, monospace;
   font-size: 16px;
   line-height: 1.6;
-  overflow-x: hidden;
+  /* `clip`, not `hidden`, and the difference is load-bearing. `overflow-x:
+     hidden` forces the other axis from `visible` to `auto`, which makes this
+     element a scroll container — and a scroll container is what a descendant
+     `position: sticky` sticks to. The timeline's pin would have been stuck to
+     a box that never scrolls, i.e. never stuck at all. `clip` crops exactly
+     the same overhang and creates no scrollport, so the sticky wrapper keeps
+     the viewport as its reference. */
+  overflow-x: clip;
   -webkit-font-smoothing: antialiased;
 }
 
 /* Light theme. Dark is the default (no attribute, or data-theme='dark');
-   the toggle stamps data-theme on <html>. The dark field becomes paper,
-   the paper sections stay paper, and the mint goes deep enough to hold
-   contrast as text on a light ground. */
+   light needs data-theme='light' on <html>, which nothing sets since the
+   toggle was removed — kept whole so putting the toggle back is a button
+   and nothing else. The dark field becomes paper, the paper sections stay
+   paper, and the mint goes deep enough to hold contrast as text on a light
+   ground. */
 html[data-theme='light'] .hw26 {
   --hw-void: #f1f1ec;
   --hw-pit: #e7e7e0;
@@ -130,6 +136,62 @@ html[data-theme='light'] .hw26 {
   color: var(--hw-mint);
 }
 
+/* The hairline that fills whatever a subhead's labels leave over. Named for
+   the hero's powered-by lockup, which is where it started and which is now
+   gone; the subheads in 02/03 and the sponsor wall still run on it, so the
+   name is left alone rather than churned through six call sites. */
+.hw26-poweredby-rule {
+  flex: 1;
+  min-width: 1.5rem;
+  height: 1px;
+  background: var(--hw-line-hi);
+}
+
+/* The middle heading level. Between a section's display `h2` and the 10px
+   label there was nothing, which is fine while a section is one list and
+   breaks the moment it is five — a 10px mint eyebrow cannot hold a group of
+   panels apart, and a second `h2`-scale title would read as a second section.
+
+   So: Square, the stamped cut, at roughly 60% of the section title. The size
+   is set against the panel names below it rather than in the abstract: those
+   are Orbitron 900 and land at 2rem, and a group title that measures the
+   same is outweighed by them however much air it is given — the heavier face
+   wins at equal size. 2.5rem against their 2rem was the smallest gap that
+   worked at all; 3.75rem is that gap opened out so the group reads as a
+   division of the sheet rather than as the first thing in its own list, and
+   the ceiling and the slope are both scaled by the same half.
+
+   The floor is not, and cannot be. At 390px the section `h2` is on its own
+   floor at 2.5rem, so a group title at 2.4rem would measure the section head
+   — the ladder collapses at the one width where it has least room. 2rem is
+   what the phone takes: still a quarter up on where it was, still 1.5× the
+   panel names beneath it, and still visibly under a heavier 2.5rem above.
+
+   White rather than mint, because mint on this page is
+   reserved for what is interactive or counted and a group title is neither;
+   white also keeps the three levels reading as one ladder — display title,
+   stamp, then the panels' own names — instead of as three unrelated systems.
+
+   Word-spacing is opened because Square's space is narrow for a face set
+   this loose, and `break-word` is the same backstop the section title
+   carries: at 390px "UNDERWATER DRONES" is the longest title here and now
+   turns at its own space onto a second line, which is a wrap and not a break
+   — but the section must never be what gives the page a horizontal
+   scrollbar. */
+.hw26-cat {
+  font-family: var(--font-geist-pixel-square), var(--font-orbitron), sans-serif;
+  font-weight: 500;
+  font-size: clamp(2rem, 4.5vw, 3.75rem);
+  line-height: 1.05;
+  letter-spacing: 0.06em;
+  word-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--hw-snow);
+  margin: 0 0 clamp(1rem, 1.8vw, 1.5rem);
+  overflow-wrap: break-word;
+  min-width: 0;
+}
+
 /* -------------------------------------------------------------
    Geist Pixel — the third face, on a short leash.
 
@@ -139,52 +201,26 @@ html[data-theme='light'] .hw26 {
    something a machine would have *displayed* rather than
    typeset — a counter, a plate stamp, a data cell, a readout.
 
-   One cut, one job, so the four never look interchangeable:
-     Circle → the dot-matrix readout — the hero descriptor, and the
-              numerals that count (sections, tracks)
+   One cut per job, so the four never look interchangeable:
+     Circle → the numerals that count — the hero countdown and the
+              unit counts on the rig panels
      Grid   → title-block data cells
-     Square → the plate number stamped huge
+     Square → the two things that are stamped rather than set —
+              the plate number huge at the foot of the sheet, and
+              the category titles inside a section (`.hw26-cat`)
      Line   → the intro's terminal readout (matches shiplog)
    Triangle is unused.
+
+   Square is the one cut carrying two, and they are at opposite
+   ends of the scale — 22rem outlined and bled off the page
+   against 3.75rem solid over a row of panels. They read as the
+   same act at both sizes, which is why they are the same cut and
+   why nothing else has been let into it.
+
+   The section indices used to be a fourth Circle job. They are
+   gone with the rest of the head furniture — see the section
+   frame below.
    ------------------------------------------------------------- */
-
-/* Circle — numerals that count. */
-.hw26-num {
-  font-family:
-    var(--font-geist-pixel-circle), var(--font-jetbrains-mono), monospace;
-  font-size: 13px;
-  letter-spacing: 0.12em;
-  color: var(--hw-mint);
-}
-
-/* Registration crosshair, as on a print plate. */
-.hw26-cross {
-  position: absolute;
-  width: 13px;
-  height: 13px;
-  pointer-events: none;
-  opacity: 0.55;
-}
-.hw26-cross::before,
-.hw26-cross::after {
-  content: "";
-  position: absolute;
-  background: var(--hw-mint);
-}
-.hw26-cross::before {
-  left: 50%;
-  top: 0;
-  bottom: 0;
-  width: 1px;
-  transform: translateX(-50%);
-}
-.hw26-cross::after {
-  top: 50%;
-  left: 0;
-  right: 0;
-  height: 1px;
-  transform: translateY(-50%);
-}
 
 /* -------------------------------------------------------------
    Section frame
@@ -203,14 +239,10 @@ html[data-theme='light'] .hw26 {
   max-width: 1440px;
 }
 
-/* The lab section sits on the pit field with rules top and bottom, so it
-   still reads as its own sheet without breaking theme. */
-.hw26-paper {
-  background: var(--hw-pit);
-  border-block: 1px solid var(--hw-line);
-}
-
-/* Section heading block: a rule, a designation, then the title. */
+/* Section heading block: a rule, then the title. It used to carry a stencil
+   index on the left and a technical aside on the right; both are gone, and
+   the head is the rule and the words now. The flex row stays because it
+   costs nothing and is what any future furniture would hang off. */
 .hw26-head {
   display: flex;
   align-items: baseline;
@@ -220,102 +252,436 @@ html[data-theme='light'] .hw26 {
   margin-bottom: clamp(2.5rem, 5vw, 4rem);
 }
 
+/* Display scale, not heading scale. These are the only words between one
+   section and the next and they should land like the wordmark does rather
+   than like a heading in a document — so the type is roughly doubled and the
+   leading pulled under 1, which is what stops a two-line title reading as two
+   separate lines.
+
+   The floor is what the longest title is tuned against: at 390px there is
+   about 350px of measure, and "BAZAAR?" — the longest word on the page's
+   longest title — sets to about 218px at 2.5rem. `break-word` is the backstop
+   for a title nobody has written yet; it only ever fires on a word that
+   cannot fit, and the section must never be the thing that gives the page a
+   horizontal scrollbar. */
 .hw26-head h2 {
   font-family: var(--font-orbitron), sans-serif;
   font-weight: 800;
   text-transform: uppercase;
-  font-size: clamp(1.5rem, 4vw, 2.75rem);
-  line-height: 0.95;
+  font-size: clamp(2.5rem, 7vw, 6rem);
+  line-height: 0.9;
   letter-spacing: 0.01em;
   color: var(--hw-snow);
   margin: 0;
+  overflow-wrap: break-word;
+  min-width: 0;
+}
+
+/* Exactly one section on the page is centred: the brief, whose copy is a
+   64ch column already sitting on the page's middle. Its head is the only one
+   that has a centred thing under it to agree with, so this is a modifier and
+   not a change to the shared rule above — every other head on the page is
+   flush left and stays that way.
+
+   The modifier is its own class rather than a second job for
+   `--rain`. They happen to land on the same <section>, but one is about
+   stacking and one is about axis; hanging the centring off `--rain` would
+   mean moving the rain silently un-centres the head, and vice versa.
+
+   `justify-content` rather than `text-align` on the head, because the head is
+   a flex row and the h2 is a flex item: centring the row is what puts the
+   block on the middle. But that only places the block — the title wraps to
+   two lines at 1440 and three at 390, and within a centred block those lines
+   would still be ragged right off a left edge, which reads as a mistake
+   rather than as a choice. So the h2 gets `text-align` too. Both are needed;
+   neither does the other's job.
+
+   The rule stays full-bleed on purpose. Every section on the page is opened
+   by the same hairline running the full measure, and that edge is the
+   section's, not the title's — shortening or centring it here would break the
+   page's rhythm far more loudly than a centred title under a full-width rule
+   reads as odd. The title hanging off-centre under a full edge is the
+   intended result, not a leftover. */
+.hw26-section--centred .hw26-head {
+  justify-content: center;
+}
+
+.hw26-section--centred .hw26-head h2 {
+  text-align: center;
 }
 
 /* -------------------------------------------------------------
-   1. HERO
+   1. HERO — a three-layer composite, one screen.
+
+   Back to front: the lit plate, the event name set in HTML, then
+   a transparent cutout of the same subjects from the same frame.
+   Because the cutout is that frame and not a second photograph,
+   the heads and the drones land exactly where they already are in
+   the plate — so they occlude the bottom of the letters and the
+   name reads as if it were painted on the back wall of the room
+   the group is standing in.
+
+   The illusion survives exactly as long as the two plates stay in
+   register, which is why neither of them is cover-fitted on its
+   own. The stage below does the fitting once and all three layers
+   inherit it.
    ------------------------------------------------------------- */
 
 .hw26-hero {
   position: relative;
-  min-height: 100svh;
+  /* `height`, not `min-height`. The hero is a fixed frame around a fixed
+     composite — letting it grow past the viewport would only pull the
+     stage further out of the fold, never show more picture. */
+  height: 100svh;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  padding: clamp(6rem, 12vh, 9rem) var(--hw-gutter) clamp(3rem, 6vh, 5rem);
-  overflow: hidden;
-  background:
-    radial-gradient(
-      ellipse 80% 55% at 62% 8%,
-      color-mix(in srgb, var(--hw-mint) 7%, transparent),
-      transparent 62%
-    ),
-    var(--hw-void);
+  justify-content: flex-end;
+  align-items: center;
+  /* Fixed near-black rather than `--hw-void`, and deliberately not themed:
+     the plate's own edges fall off to almost this exact value, so the
+     ground never announces itself against the art. A light-theme paper
+     ground would put a bright edge on the fold instead. */
+  background: #050605;
 }
 
-/* Corner designations, pinned to the viewport corners of the hero. */
-.hw26-hero-corner {
+/* The stage. Cover-fitting done once, at container level, so the two plates
+   and the type between them are locked to a single box and cannot register
+   differently from one another. `object-fit` on each image independently
+   would compute the same crop today and drift the moment one of them is
+   re-exported a few pixels off.
+
+   The two arms of each `max()` are the two ways of covering the hero: match
+   its width, or match its height. Take a viewport wider than the art
+   (W/H > r): W beats H·r so `width` resolves to 100%, and W/r beats H so
+   `height` resolves to W/r — a W × W/r box, exactly ratio r, overflowing
+   top and bottom. Narrower and the pair swaps: `height` takes 100% and
+   `width` takes H·r, giving H·r × H, ratio r again, overflowing left and
+   right. Either branch is the art's own aspect and covers the frame; the
+   hero's `overflow: hidden` crops the surplus and the centring splits that
+   crop evenly across both sides.
+
+   Cover at every aspect, with no `contain` escape hatch on tall screens:
+   a portrait viewport therefore crops hard into the middle of the art, and
+   the title — positioned against the stage — crops with it. That is the
+   intended trade.
+
+   `--hero-ar` is parenthesised at the point it divides. Substituted bare,
+   `calc(100vw / var(--hero-ar))` would expand to `100vw / 1920 / 1074` and
+   evaluate left to right, i.e. divide twice. Multiplication needs no such
+   guard, which is why only one of the two uses carries the brackets.
+
+   `container-type: size` so the title can be measured in cqh — the type has
+   to scale with the art, not with the viewport, or it slides off the heads
+   it is supposed to sit behind. */
+.hw26-hero-stage {
+  --hero-ar: 1920 / 1074;
+
+  /* The title's whole geometry, in art-relative units. Cap height lands at
+     ~12% of the plate for a face whose caps are ~0.7em, and the block is
+     dropped 8% so that with `line-height: 0.84` ALIEN occupies roughly
+     8–22% and BAZAAR roughly 23–38% of the art. The drones sit at 8–24%
+     and the heads rise from 25%, so BAZAAR is the line that gets eaten. */
+  --hero-title-size: 16.5cqh;
+  --hero-title-top: 8%;
+
+  /* The advance width of the longest line, in ems, so the size above can be
+     capped to the screen rather than to the stage.
+
+     It has to be a hard number because CSS cannot measure text: the type is
+     sized against the stage, and on a tall screen the stage is far wider
+     than the viewport it is cropped into, so an art-relative size that is
+     correct against the picture runs straight off both edges of the phone.
+
+     Measured, not guessed — 'BAZAAR' is 4.986em in Orbitron and the
+     letter-spacing takes 0.01em back off each of its six characters, giving
+     4.926em. Orbitron's advances do not move across its weight axis, so the
+     figure holds at 900 as well as at 400, and kerning can only make the
+     line shorter than this. Re-measure if the words ever change. */
+  --hero-title-em: 4.93;
+
+  /* The resolved size, named once because two children need it to agree:
+     the title sets its type from it, and the mark above the I measures its
+     own height and offsets in ems of it. `cqh` inside resolves against this
+     element for both of them, since both are its descendants. */
+  --hero-title-fs: min(
+    var(--hero-title-size),
+    calc((100vw - 2 * var(--hw-gutter)) / var(--hero-title-em))
+  );
+
+  position: absolute;
+  z-index: 0;
+  top: 50%;
+  left: 50%;
+  translate: -50% -50%;
+  width: max(100%, calc(100svh * var(--hero-ar)));
+  height: max(100%, calc(100vw / (var(--hero-ar))));
+  container-type: size;
+}
+
+/* Every layer fills the stage, which is already at the art's exact ratio, so
+   the `object-fit` is belt and braces — there is nothing left for it to fit.
+
+   The two plates are inert. `pointer-events: none` stops the cutout
+   swallowing selection of the real text underneath it, and `user-select`
+   keeps the plates themselves out of any selection that does get made:
+   sweeping across the hero should pick up the name and nothing else, and
+   an image caught in a selection is also an image that can be dragged off
+   the page as a file. Prefixed for Safari, which still needs it here. */
+.hw26-hero-layer {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  pointer-events: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.hw26-hero-layer--bg {
+  z-index: 0;
+}
+
+/* The cutout, over the type. */
+.hw26-hero-layer--fg {
+  z-index: 2;
+}
+
+/* The name, between the two plates. Centred as a block rather than
+   positioned per line so the two words share one axis whatever the face
+   does to their widths. */
+.hw26-hero-title {
+  position: absolute;
+  z-index: 1;
+  top: var(--hero-title-top);
+  left: 0;
+  right: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  /* Whichever is smaller: the size the artwork wants, or the size that puts
+     the longest line inside the screen with the page's own gutter either
+     side. The stage is centred on the viewport, so the title is too, and
+     fitting it to `100vw` fits it to what the reader can actually see even
+     though its own container is wider than that.
+
+     The two terms cross over at roughly a 0.88 aspect ratio: anything
+     squarer or wider is sized by the picture and sits exactly where it was
+     measured to sit, and only genuinely portrait screens hand the decision
+     to the width. There it comes out smaller against the art than intended
+     — the letters ride higher above the heads that are meant to cut them
+     off — which is the price of the name staying readable on a phone. */
+  font-size: var(--hero-title-fs);
+
+  /* ---- the tube's optics, applied to the finished wordmark ----
+
+     Three of the five CRT artifacts live here rather than on the words
+     themselves, and the reason is clipping: a mask clips to its element's
+     border box, and `.hw26-title-word` is an inline-block at `line-height:
+     0.84`, i.e. a box *shorter* than the letters' own em. A halo declared down
+     there would be sliced off flat at the top and bottom of every line. Up
+     here there is no mask and no overflow, so the light spreads.
+
+     It is also the right order physically. The scanline mask and the grille
+     below are the beam being drawn; bloom is what the phosphor and the glass
+     do with that light afterwards, which is why real CRT bloom smears across
+     the scanline gaps rather than respecting them.
+
+     In the order they are listed:
+
+     1. Beam softness. A rightward white smear, because a beam is not a point
+        and it is sweeping — it lights a spot and decays into the next one it
+        reaches, so the softness is horizontal and directional rather than a
+        symmetric blur. This is what makes the type read softer across than
+        down.
+     2. Convergence error. A red gun a hair left and a blue-cyan gun a hair
+        right of where they should be. At the hero's ~148px type these offsets
+        are well under a pixel each, which is the point: not a visible double
+        image, just colour on the edges. Constant, so it stays a property of
+        the tube rather than the event the glitch burst is.
+     3. Phosphor bloom, tight then wide: a near-white core halo, then a broad
+        faint one in the page's own mint. The wide one is what puts light into
+        the dark room *around* the letters. */
+  filter:
+    drop-shadow(0.014em 0 0.011em rgba(255, 255, 255, 0.3))
+    drop-shadow(-0.006em 0 0.003em rgba(255, 62, 72, 0.5))
+    drop-shadow(0.006em 0 0.003em rgba(58, 222, 255, 0.45))
+    drop-shadow(0 0 0.05em rgba(255, 255, 255, 0.42))
+    drop-shadow(0 0 0.3em rgba(130, 245, 198, 0.26));
+
+  /* Refresh flicker. Low amplitude and irregular — a tube's brightness is not
+     steady, but a wordmark that pulses on a beat is a strobe rather than a
+     screen. `opacity` rather than `filter: brightness()` for two reasons: the
+     filter slot above is already spent, and opacity is composited, so this
+     costs nothing per frame and the five-pass filter result stays cached. The
+     alien mark runs the same keyframes at the same period, so the two flicker
+     together rather than beating against each other. */
+  animation: hw26-crt-flicker 3.1s linear infinite;
+}
+
+/* Irregular on purpose: the dips are different depths at uneven intervals, so
+   nothing in it can be counted. Nothing drops below 0.94, which on white type
+   over a near-black room reads as the picture dimming rather than as the
+   letters going see-through. */
+@keyframes hw26-crt-flicker {
+  0%,
+  3%,
+  9%,
+  21%,
+  27%,
+  40%,
+  47%,
+  62%,
+  68%,
+  80%,
+  89%,
+  100% {
+    opacity: 1;
+  }
+  5% {
+    opacity: 0.965;
+  }
+  24% {
+    opacity: 0.985;
+  }
+  43% {
+    opacity: 0.955;
+  }
+  65% {
+    opacity: 0.99;
+  }
+  84% {
+    opacity: 0.945;
+  }
+}
+
+/* The alien mark, sitting on the I of ALIEN as its tittle — the dot the
+   capital lost. Above the cutout rather than behind it, because it belongs
+   to the wordmark rather than to the room; the countdown panel is still in
+   front of both, since it sits outside the stage entirely.
+
+   Positioned from the type's own metrics rather than by eye, so it stays on
+   the stem at every size. Orbitron sets its caps at 0.72em on a 1.011/0.243
+   ascent/descent, so with `line-height: 0.84` the half-leading is negative
+   and the cap top lands 0.084em below the top of the line box — which is
+   what `--hero-title-top` positions. The horizontal figure is the same
+   arithmetic across the line: A and L advance 0.836 and 0.779, the I is
+   0.214 wide with its stem inked from 0.031 to 0.184, and the letter-spacing
+   takes 0.01em back after each character. That puts the stem's centre
+   0.014em right of the line's own centre — very nearly nothing, because
+   ALIEN is close to symmetrical about its middle letter, but it is measured
+   rather than assumed.
+
+   The three values below are the tuning surface: how tall the mark is, how
+   far it floats above the cap, and any nudge off the stem. Height is capped
+   by the headroom — the cap top is only ~0.57em below the top of the art,
+   so mark plus gap has to stay inside that or the mark crops. */
+.hw26-hero-tittle {
+  --hero-tittle-h: 0.38em;
+  --hero-tittle-gap: 0.1em;
+  --hero-tittle-dx: 0.014em;
+
   position: absolute;
   z-index: 3;
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
-}
-.hw26-hero-corner--tl {
-  top: 1.6rem;
-  left: var(--hw-gutter);
-}
-.hw26-hero-corner--tr {
-  top: 1.6rem;
-  right: var(--hw-gutter);
-}
-.hw26-hero-corner--bl {
-  bottom: 1.6rem;
-  left: var(--hw-gutter);
-}
-.hw26-hero-corner--br {
-  bottom: 1.6rem;
-  right: var(--hw-gutter);
+  font-size: var(--hero-title-fs);
+  height: var(--hero-tittle-h);
+  width: auto;
+  top: calc(
+    var(--hero-title-top) + 0.084em - var(--hero-tittle-gap) -
+      var(--hero-tittle-h)
+  );
+  left: calc(50% + var(--hero-tittle-dx));
+  translate: -50% 0;
+  pointer-events: none;
+  -webkit-user-select: none;
+  user-select: none;
+
+  /* ---- the same tube, on a replaced element ----
+
+     The mark is on the same screen as the wordmark and has to be degraded by
+     the same one, but none of the techniques the words use transfer: an `img`
+     has no pseudo-elements and no text to clip a background to. So the grille
+     and the scanlines arrive as a two-layer alpha mask — which is what a
+     shadow mask does geometrically anyway — and the optics arrive as filters.
+
+     They are on two different elements, and that is the whole reason this is a
+     span with an image in it rather than the image on its own. A mask
+     modulates everything its element paints, bloom included, so a halo
+     declared alongside the mask came out as a rectangle of striped haze the
+     size of the image box. Split across two elements, the mask stays on the
+     artwork and the light happens outside it — the same split, and the same
+     reason, as the h1 carrying the wordmark's optics.
+
+     What does *not* transfer is the colour. This is the alien, it is
+     `#00f888`, and it is the only green object in the hero; bloom in the
+     wordmark's white-and-mint would drag it toward the type. So the smear and
+     both halos are struck in its own green, and only the convergence fringes
+     stay red and cyan — misregistration is a property of the guns and not of
+     what is being drawn, so it is correct on a green source and is also what
+     keeps the mark reading as the same tube.
+
+     The two horizontal figures are identical to the wordmark's, in the same
+     `em` off the same `--hero-title-fs`, so they resolve to the same count of
+     pixels on both: a tube's convergence error and beam width do not know how
+     big the thing being drawn is. The bloom radii are the exception and are
+     pulled in hard. The mark is 0.38em tall, and a halo sized for 0.72em caps
+     would be wider than the object making it, which stops being bloom and
+     becomes a glow. */
+  height: var(--hero-tittle-h);
+  filter:
+    drop-shadow(0.014em 0 0.011em rgba(0, 248, 136, 0.34))
+    drop-shadow(-0.006em 0 0.003em rgba(255, 62, 72, 0.45))
+    drop-shadow(0.006em 0 0.003em rgba(58, 222, 255, 0.4))
+    drop-shadow(0 0 0.035em rgba(150, 255, 205, 0.5))
+    drop-shadow(0 0 0.14em rgba(0, 248, 136, 0.34));
+  animation: hw26-crt-flicker 3.1s linear infinite;
 }
 
-.hw26-hero-inner {
-  position: relative;
-  z-index: 2;
-  margin-inline: auto;
-  width: 100%;
-  max-width: 1440px;
-}
-
-/* The stacked wordmark. Each line is its own flex row so the
-   trailing rule can fill whatever space the word leaves. */
-.hw26-title {
-  display: flex;
-  flex-direction: column;
-  gap: clamp(0.1rem, 0.5vw, 0.4rem);
-  margin: 0;
-}
-
-.hw26-title-row {
-  display: flex;
-  align-items: center;
-  gap: clamp(0.75rem, 2vw, 1.75rem);
+/* The artwork, and the only thing masked. The scanline gap is lighter here
+   than on the wordmark — 0.5 against 0.3 — because this mark is a fortieth of
+   the wordmark's area at the same scanline pitch, so the same modulation that
+   textures 148px letters turns a 56px alien into a dot-matrix sign. The grille
+   is likewise barely there: two layers intersected, both nearly opaque, and
+   between them they are a fine weave rather than a screen door. */
+.hw26-hero-tittle-img {
+  display: block;
+  height: 100%;
+  width: auto;
+  -webkit-mask-image:
+    repeating-linear-gradient(to bottom, #000 0 2px, rgba(0, 0, 0, 0.5) 2px 3px),
+    repeating-linear-gradient(
+      to right,
+      rgba(0, 0, 0, 0.9) 0 1px,
+      rgba(0, 0, 0, 0.95) 1px 2px,
+      #000 2px 3px
+    );
+  -webkit-mask-composite: source-in;
+  mask-image:
+    repeating-linear-gradient(to bottom, #000 0 2px, rgba(0, 0, 0, 0.5) 2px 3px),
+    repeating-linear-gradient(
+      to right,
+      rgba(0, 0, 0, 0.9) 0 1px,
+      rgba(0, 0, 0, 0.95) 1px 2px,
+      #000 2px 3px
+    );
+  mask-composite: intersect;
 }
 
 .hw26-title-word {
   font-family: var(--font-orbitron), sans-serif;
   font-weight: 900;
   text-transform: uppercase;
-  color: var(--hw-snow);
+  /* Fixed white, not `--hw-snow`. Same reasoning as the panel below: this
+     type sits on a photograph that does not flip with the theme, and the
+     light-theme token would set it in near-black against the dark room. */
+  color: #ffffff;
   line-height: 0.84;
   letter-spacing: -0.01em;
-  font-size: clamp(2.6rem, 11.5vw, 10.5rem);
   white-space: nowrap;
-}
-
-/* "Warsaw 26" carries the green outline — the place line, drawn rather
-   than filled, so the name above it stays the solid thing. */
-.hw26-title-word--hollow {
-  color: transparent;
-  -webkit-text-stroke: 1.5px var(--hw-mint);
 }
 
 /* -------------------------------------------------------------
@@ -339,10 +705,13 @@ html[data-theme='light'] .hw26 {
       clean most of the time — a wordmark that glitches
       continuously stops reading as a wordmark.
 
-   The word itself is never animated: `transform` and `opacity`
-   belong to the entrance animation, and a second animation
-   touching them would silently win and drop the entrance. All the
-   motion lives on the two copies.
+   The word itself is never animated, only the two copies. Here
+   that matters more than it did on a flat hero: this type is
+   occluded by a photographic cutout pinned to the stage, and any
+   transform on the base word would slide the letters out from
+   behind the heads that are supposed to be standing in front of
+   them. The copies are allowed to break register — that is the
+   effect.
 
    Confined to `hw26-glitch`, which is only ever on the two lines
    of the event name. Requires data-text carrying the same string
@@ -352,7 +721,6 @@ html[data-theme='light'] .hw26 {
 .hw26-glitch {
   position: relative;
   display: inline-block;
-  color: var(--hw-snow);
   /* Bright line, thin gap — the gap is what reads as a scanline. */
   -webkit-mask-image: repeating-linear-gradient(
     to bottom,
@@ -364,6 +732,50 @@ html[data-theme='light'] .hw26 {
     #000 0 2px,
     rgba(0, 0, 0, 0.3) 2px 3px
   );
+}
+
+/* The aperture grille: fine vertical stripes crossing the horizontal
+   scanlines, which together are the two directions a shadow-masked tube is
+   actually built out of. A 3px pitch, one device pixel per gun, and tints only
+   a few percent off white — a grille is not a rainbow, it is the reason white
+   type on a tube has a faintly iridescent edge instead of a clean one.
+
+   Done as the glyph *fill* rather than as an overlay, and that is the whole
+   trick: `background-clip: text` confines the stripes to the letters, so
+   nothing is painted over the photograph behind them. An overlay would have to
+   be a rectangle, and a faintly striped rectangle across the hero is worse
+   than no grille at all.
+
+   It has to be the background rather than a `text-shadow` stack for the same
+   structural reason the bloom is a `filter` up on the h1: a background clipped
+   to text is painted in the background phase, *underneath* any text-shadow, so
+   shadows declared here would smear colour across the letter bodies instead of
+   ringing their edges. `drop-shadow` composites behind the source graphic and
+   does not have that problem.
+
+   `@supports`-gated because the fill is transparent and the stripes are the
+   only thing filling it: without background-clip the wordmark would be
+   invisible rather than merely unstriped. */
+@supports (-webkit-background-clip: text) or (background-clip: text) {
+  .hw26-glitch {
+    background-image: repeating-linear-gradient(
+      90deg,
+      #fff2f5 0 1px,
+      #f2fff6 1px 2px,
+      #f3f5ff 2px 3px
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  /* `-webkit-text-fill-color` inherits, and the burst copies are the one thing
+     on the page whose colour is the content. Left inherited they would be
+     transparent with no background of their own to show through, i.e. gone. */
+  .hw26-glitch::before,
+  .hw26-glitch::after {
+    -webkit-text-fill-color: currentColor;
+  }
 }
 
 .hw26-glitch::before,
@@ -434,163 +846,137 @@ html[data-theme='light'] .hw26 {
     opacity: 0;
   }
 }
-.hw26-title-rule {
-  flex: 1;
-  height: 1px;
-  background: var(--hw-line-hi);
-  min-width: 1.5rem;
-}
 
-.hw26-title-tag {
-  font-family: var(--font-jetbrains-mono), monospace;
-  font-size: clamp(9px, 0.9vw, 11px);
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: var(--hw-silver);
-  white-space: nowrap;
-}
+/* The countdown panel, in the bottom third of the frame where the plate is
+   quietest.
 
-/* Load sequence: each word rises and settles once. */
-.hw26-rise {
-  animation: hw26-rise 900ms var(--hw-ease) both;
-}
-@keyframes hw26-rise {
-  from {
-    opacity: 0;
-    transform: translateY(0.5em);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
+   Deliberately a plain rectangle, alone on this page: `clip-path` gives
+   `backdrop-filter` nothing to sample against, so the chamfer the rig
+   panels wear would take the blur down with the corners. The straight
+   edges are what buy the frosted ground. */
+.hw26-hero-panel {
+  position: relative;
+  /* Above the stage, which means above the cutout too — the panel is the
+     one thing in the hero that is in front of the people in the picture. */
+  z-index: 2;
+  /* A third of what it was. At 9vh the panel sat a fifth of the way up the
+     frame, which is neither of the two places a countdown can sit: not
+     centred in the plate, and not on its bottom edge — just adrift in the
+     lower half with a band of photograph under it doing nothing. Dropped to
+     3vh it is a panel resting on the foot of the hero, and the composite's
+     subjects get back the height it was floating in.
 
-/* Powered-by lockup. Set at display weight directly under the title: this
-   is co-branding, not a caption, and the two names carry the venue. */
-/* Descriptor. "Alien Bazaar" is a name, not a description — on its own it
-   tells a first-time visitor nothing about what this is. So the descriptor
-   is set at display weight directly under the wordmark, sized between the
-   name and the powered-by lockup: clearly subordinate to the one, clearly
-   ahead of everything else. The trailing rule is the same device the title
-   rows use, so it reads as another line of the wordmark block. */
-.hw26-subtitle {
-  margin: clamp(0.9rem, 2.4vh, 1.6rem) 0 0;
+     Not zero, and the floor is why. `vh` alone would put the panel against
+     the edge on a laptop in a short window, and a frosted plate touching the
+     bottom of the viewport reads as a browser chrome bar rather than as part
+     of the picture. The floor keeps a visible margin of photograph under it
+     at every height the hero can be. */
+  margin-bottom: clamp(0.7rem, 3vh, 1.85rem);
+  max-width: calc(100% - 2 * var(--hw-gutter));
+  padding: clamp(1.1rem, 2.5vw, 1.75rem) clamp(1.25rem, 4vw, 2.75rem)
+    clamp(1.5rem, 3vw, 2rem);
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: clamp(0.75rem, 2vw, 1.5rem);
-  /* Circle — the dot-matrix cut, at display size. Its rounded dots give
-     the line a different texture from the hard geometric wordmark above
-     it, so the descriptor reads as a separate register rather than as a
-     smaller version of the name. Weight 500 is the only one the family
-     ships, and the glyphs already carry spacing, so the tracking comes
-     down from the Orbitron setting. */
+  gap: clamp(0.9rem, 2vh, 1.4rem);
+  text-align: center;
+
+  /* The panel opts out of the palette. Everything else on the page sits on
+     a ground that flips with the theme; this one sits on a photograph that
+     does not, and the light-theme tokens would put grey type and a deep
+     bottle-green button on near-black. Re-declaring the two mint tokens
+     locally keeps the button phosphor mint in both themes without
+     inventing a second accent. */
+  --hw-mint: #82f5c6;
+  --hw-on-mint: #04120c;
+  color: #ffffff;
+
+  background: rgba(6, 10, 8, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  /* Prefixed first: Safari has never unprefixed this one. */
+  -webkit-backdrop-filter: blur(6px) saturate(130%);
+  backdrop-filter: blur(6px) saturate(130%);
+}
+
+/* The claim above the clock. Set at twice label size — it is a statement the
+   panel is making, not a caption on the countdown — and held to two lines:
+   `max-width` is narrow enough that it cannot sit on one, and `text-wrap:
+   balance` then splits it near the middle instead of leaving a long first
+   line and an orphan. The width is in `em` so it tracks the type rather than
+   needing a second number kept in step by hand. Browsers without `balance`
+   still get two lines from the width alone, just less evenly.
+
+   32em, up from 22. The line is uppercase at 0.24em of tracking, which makes
+   it about 43em of run — the old width was under half of that, so the claim
+   came out in three lines the moment it gained a word, and three lines of
+   10px-grade caps above a clock reads as a paragraph rather than as a claim.
+   At 32em two lines is the tightest it can wrap to, which is the shape the
+   rule was written for; on a phone the panel is narrower than this anyway and
+   the panel's own width is what breaks the line. The panel widens to suit,
+   which it has the gutter for. */
+.hw26-hero-when {
+  margin: 0;
+  /* Fluid rather than fixed: the panel it sits in is sized against the
+     viewport, so a pinned 20px read as a shout on a phone and as a footnote
+     on a wide desktop. The floor is the smallest this claim can be and still
+     carry weight; the ceiling stops it competing with the numerals below it.
+     `max-width` is in `em`, so the two-line break tracks the size on its own
+     and there is no second number to keep in step. */
+  font-size: clamp(13px, 1.5vw, 21px);
+  line-height: 1.5;
+  max-width: 32em;
+  text-wrap: balance;
+  color: rgba(255, 255, 255, 0.78);
+}
+
+.hw26-count {
+  display: flex;
+  align-items: flex-start;
+  gap: clamp(1rem, 4vw, 2.5rem);
+}
+
+.hw26-count-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* Circle — the cut reserved for numerals that count, and nothing on the
+   page counts more literally than this.
+
+   The readout is the only thing on the page that changes shape while you
+   look at it, so its box has to be content-independent or the whole
+   frosted panel breathes in and out once a second. Two defences, because
+   one was not enough:
+
+   `tabular-nums` asks the face for equal-width figures, which fixes 11 vs
+   88 wherever the font actually ships the feature. A dot-matrix display
+   cut may not, and the pre-hydration placeholder is not a figure at all —
+   so the cell is also given a hard width, measured in `ch` against this
+   element's own font rather than the panel's, and the glyphs are centred
+   inside it. Width now comes from the rule, not from the digits, and
+   nothing the clock prints can move it.
+
+   Sized for two digits, which is what every unit reads for the whole life
+   of this page — the doors open inside two months. A three-digit day count
+   would overhang its box into the surrounding gap rather than widen the
+   panel, which is the failure mode worth having. */
+.hw26-count-n {
   font-family: var(--font-geist-pixel-circle), var(--font-orbitron), sans-serif;
   font-weight: 500;
-  font-size: clamp(1.05rem, 3.4vw, 2.8rem);
-  line-height: 1;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  color: var(--hw-snow);
+  font-size: clamp(2.85rem, 9vw, 5.25rem);
+  line-height: 0.9;
+  letter-spacing: 0.04em;
+  font-variant-numeric: tabular-nums;
+  display: block;
+  width: 2.4ch;
+  text-align: center;
+  color: #ffffff;
 }
 
-.hw26-subtitle span {
-  white-space: nowrap;
-}
-
-.hw26-poweredby {
-  margin-top: clamp(1.5rem, 3.5vh, 2.5rem);
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: clamp(0.75rem, 2vw, 1.5rem);
-}
-
-.hw26-poweredby-names {
-  display: flex;
-  align-items: center;
-  gap: clamp(0.55rem, 1.4vw, 1.1rem);
-  font-family: var(--font-orbitron), sans-serif;
-  font-weight: 800;
-  text-transform: uppercase;
-  font-size: clamp(1.1rem, 2.7vw, 2.15rem);
-  line-height: 1;
-  letter-spacing: 0.02em;
-  color: var(--hw-snow);
-  white-space: nowrap;
-}
-
-/* The join, not a third name — mint keeps it reading as a mark rather than
-   as a letter in either word. */
-.hw26-poweredby-x {
-  color: var(--hw-mint);
-  font-weight: 500;
-}
-
-/* Underlined on hover from below the baseline, so the names sit as a lockup
-   at rest and only reveal themselves as links on approach. */
-.hw26-poweredby-link {
-  color: inherit;
-  text-decoration: none;
-  padding-bottom: 0.12em;
-  border-bottom: 2px solid transparent;
-  transition:
-    color 220ms var(--hw-ease),
-    border-color 220ms var(--hw-ease);
-}
-
-.hw26-poweredby-link:hover {
-  color: var(--hw-mint);
-  border-bottom-color: var(--hw-mint);
-}
-
-.hw26-poweredby-link:focus-visible {
-  outline: 2px solid var(--hw-mint);
-  outline-offset: 4px;
-}
-
-.hw26-poweredby-rule {
-  flex: 1;
-  min-width: 1.5rem;
-  height: 1px;
-  background: var(--hw-line-hi);
-}
-
-.hw26-hero-meta {
-  margin-top: clamp(2rem, 5vh, 3.5rem);
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  gap: 1px;
-  background: var(--hw-line);
-  border: 1px solid var(--hw-line);
-  max-width: 940px;
-}
-
-.hw26-hero-meta > div {
-  background: var(--hw-void);
-  padding: 1.1rem 1.25rem;
-}
-
-.hw26-hero-meta dt {
-  font-size: 10px;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: var(--hw-silver);
-  margin: 0 0 0.5rem;
-}
-
-.hw26-hero-meta dd {
-  margin: 0;
-  font-size: clamp(0.82rem, 1.1vw, 0.95rem);
-  color: var(--hw-snow);
-  line-height: 1.35;
-}
-
-.hw26-hero-actions {
-  margin-top: clamp(2rem, 4vh, 3rem);
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 1.5rem;
+.hw26-count-u {
+  color: rgba(255, 255, 255, 0.62);
 }
 
 /* -------------------------------------------------------------
@@ -645,10 +1031,49 @@ html[data-theme='light'] .hw26 {
   outline-offset: 4px;
 }
 
+/* The hero's control is a real <button> so it can carry `disabled`; the rest
+   of the page's are anchors. The class already sets the face, size, weight and
+   tracking, so all a button needs back is the two things the UA stylesheet
+   takes off it rather than inherits: the page's line-height, and the native
+   control painting that would otherwise fight the mint fill on Safari.
+   Selector is `button.hw26-apply` rather than a second class because it is a
+   correction for the element, not a variant of the design. */
+button.hw26-apply {
+  line-height: inherit;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
 .hw26-apply--ghost {
   background: transparent;
   color: var(--hw-mint);
   border: 1px solid var(--hw-mint);
+}
+
+/* Switched off. The button keeps its silhouette — same chamfer, same
+   tracking, same place in the panel — and loses everything that says it will
+   do something: the phosphor fill drops to a desaturated plate, the label to
+   a muted grey-green that still clears 4.5:1 against it, and the hover lift
+   and its shadow are withdrawn so the pointer gets no reply. `not-allowed`
+   over the whole thing, including the arrow.
+
+   Paired with the `disabled` attribute in the markup, never a substitute for
+   it: this rule is what the sighted reader gets, the attribute is what the
+   keyboard and the screen reader get, and a control that is only one of the
+   two is broken for whoever is on the other side. */
+.hw26-apply--disabled {
+  background: #33413a;
+  color: #9fb3a9;
+  cursor: not-allowed;
+}
+
+.hw26-apply--disabled:hover {
+  transform: none;
+  box-shadow: none;
+}
+
+.hw26-apply--disabled:hover::after {
+  transform: none;
 }
 
 .hw26-apply--lg {
@@ -657,146 +1082,66 @@ html[data-theme='light'] .hw26 {
 }
 
 /* -------------------------------------------------------------
-   The UFO. The page's signature.
-
-   An ASCII craft hovering in the hero with a beam that actually
-   falls across the content beneath it. This is the only place
-   Matrix Green appears, which is what makes it read as arrival
-   rather than as another accent.
-   ------------------------------------------------------------- */
-
-.hw26-ufo {
-  position: absolute;
-  z-index: 1;
-  top: clamp(4rem, 11vh, 8rem);
-  right: clamp(1rem, 7vw, 8rem);
-  pointer-events: none;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: min(340px, 46vw);
-}
-
-.hw26-ufo-craft {
-  position: relative;
-  z-index: 2;
-  font-family: var(--font-terminess), ui-monospace, monospace;
-  font-size: clamp(7px, 1.35vw, 13px);
-  line-height: 1.02;
-  white-space: pre;
-  text-align: center;
-  color: var(--hw-mint);
-  text-shadow: 0 0 18px color-mix(in srgb, var(--hw-mint) 50%, transparent);
-  animation: hw26-hover 6s ease-in-out infinite;
-}
-
-.hw26-ufo-lights {
-  font-family: var(--font-terminess), ui-monospace, monospace;
-  font-size: clamp(7px, 1.35vw, 13px);
-  line-height: 1.02;
-  white-space: pre;
-  text-align: center;
-  color: var(--hw-matrix);
-  text-shadow: 0 0 12px var(--hw-matrix);
-}
-
-@keyframes hw26-hover {
-  0%,
-  100% {
-    transform: translateY(0) rotate(-0.4deg);
-  }
-  50% {
-    transform: translateY(-13px) rotate(0.4deg);
-  }
-}
-
-/* The beam: a cone of light widening downward, layered with a
-   scanning band so it reads as active rather than as a gradient. */
-.hw26-ufo-beam {
-  position: relative;
-  width: 100%;
-  height: clamp(200px, 40vh, 460px);
-  margin-top: -6px;
-  clip-path: polygon(38% 0, 62% 0, 100% 100%, 0 100%);
-  background: linear-gradient(
-    to bottom,
-    rgba(0, 255, 65, 0.3),
-    rgba(0, 255, 65, 0.1) 42%,
-    rgba(0, 255, 65, 0)
-  );
-  mix-blend-mode: screen;
-  animation: hw26-beam 6s ease-in-out infinite;
-}
-
-.hw26-ufo-beam::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: repeating-linear-gradient(
-    to bottom,
-    rgba(0, 255, 65, 0.14) 0 2px,
-    transparent 2px 7px
-  );
-  animation: hw26-scan 2.6s linear infinite;
-}
-
-/* Screen blending is additive light and disappears on paper; in the light
-   theme the beam prints instead, the way a green plate would. */
-html[data-theme='light'] .hw26-ufo-beam {
-  mix-blend-mode: multiply;
-  background: linear-gradient(
-    to bottom,
-    rgba(0, 154, 40, 0.28),
-    rgba(0, 154, 40, 0.09) 42%,
-    rgba(0, 154, 40, 0)
-  );
-}
-
-@keyframes hw26-beam {
-  0%,
-  100% {
-    opacity: 0.85;
-    transform: translateY(0) scaleX(1);
-  }
-  50% {
-    opacity: 1;
-    transform: translateY(-13px) scaleX(1.04);
-  }
-}
-
-@keyframes hw26-scan {
-  from {
-    background-position-y: 0;
-  }
-  to {
-    background-position-y: 36px;
-  }
-}
-
-/* -------------------------------------------------------------
    2. TICKER
    ------------------------------------------------------------- */
 
+/* The band carries three facts now instead of nine, so it is set heavier than
+   a caption would be: it is the first thing under the fold and has to read as
+   a plate riveted across the page rather than as something that happened to
+   land there.
+
+   Halved from the depth it opened at — 180px was taking a fifth of the fold
+   for three short facts. Padding and type came down by the same factor rather
+   than the padding alone, so the band is the same object at half scale
+   instead of oversized type crowding a thin frame. Every figure here is
+   literally half of what it was; keep them in step if either moves. */
 .hw26-ticker {
   position: relative;
   border-block: 1px solid var(--hw-line);
   background: var(--hw-pit);
-  padding-block: 0.85rem;
+  padding-block: clamp(1.25rem, 3.2vh, 2.1rem);
   overflow: hidden;
   display: flex;
 }
 
+/* The loop translates each track by exactly its own width, so the second
+   track lands where the first started and the seam is invisible — but only
+   while one track is at least as wide as the viewport. Below that the pair
+   runs out of content before the cycle ends and a hole crosses the band.
+
+   TICKER_RUNS in the component fills the track for any ordinary screen;
+   `min-width` is the guarantee for the ones it does not, spreading the runs
+   over the full width rather than leaving the gap at the end. Either way the
+   track is never short, which is the only condition the loop needs. */
 .hw26-ticker-track {
   display: flex;
   flex-shrink: 0;
+  min-width: 100%;
+  justify-content: space-between;
   gap: 3rem;
   padding-right: 3rem;
   white-space: nowrap;
   animation: hw26-marquee 42s linear infinite;
 }
 
+/* One pass of the three facts. A flex box of its own rather than
+   `display: contents` so the runs and the labels inside them are spaced by
+   the same gap, and so `aria-hidden` sits on an element the a11y tree
+   actually has. */
+.hw26-ticker-run {
+  display: flex;
+  flex-shrink: 0;
+  gap: 3rem;
+}
+
+/* Set above label size but well under the headings — the band is a line the
+   reader passes through, not a footnote under the hero and not a title
+   competing with the name above it. The tracking stays at label spacing
+   whatever the size does: it is what keeps the band reading as stencilled
+   signage rather than as a sentence. Halved along with the padding above;
+   see the note on `.hw26-ticker`. */
 .hw26-ticker span {
-  font-size: 11px;
+  font-size: clamp(16.5px, 1.65vw, 19.5px);
   letter-spacing: 0.24em;
   text-transform: uppercase;
   color: var(--hw-silver);
@@ -817,25 +1162,140 @@ html[data-theme='light'] .hw26-ufo-beam {
 }
 
 /* -------------------------------------------------------------
-   3. THE BOOKABLE FLOOR — two enormous panels per row, one per
-   kind of machine. The display numeral is the unit count, which
-   is the only figure on the panel that decides anything: one
-   machine per team means the sheet runs out.
+   3. HARDWARE CATEGORIES — one section, five titled groups,
+   three cells across. There were two whole sections once, a
+   fixed category and an open one, two enormous panels to a row;
+   then one flat list; then the same list under closed/open. This
+   is the shape that survives, because it groups by what the
+   machine is rather than by the terms it comes under, which is
+   what a reader is actually choosing between.
+
+   Five groups is what forced the middle heading level. Two mint
+   eyebrows could divide a sheet in half; five of them read as
+   captions floating over an undifferentiated grid. The group
+   title is `.hw26-cat` — Square, white, some three fifths of the
+   section head — and it does the dividing on its own, so the hairline
+   rule that came with the eyebrow is gone.
+
+   Rows come out part-full: 4, 3, 2, 1, 2 against a three-column
+   grid. That is the data and it is not padded. A group is read
+   as a group because a title opens it, not because it fills its
+   last row.
+
+   A cell is a count, a name, sometimes a caption, and on three of
+   them a photo plate. The blurb and the spec strip came off long
+   ago; `--rig-note` is not their return, it is one clause on the
+   two cells whose name genuinely does not say enough. The panel
+   is the compact `--about` variant — no fixed height, content
+   stacked rather than spread — with the proportions below
+   re-tuned for the smaller cell.
    ------------------------------------------------------------- */
 
-/* Two up, deliberately, rather than auto-fit: four panels across a 1440px
-   sheet would each be too narrow to carry a display-size name, and the 2×2
-   keeps the panels the size the design is built around. */
+/* The gap between groups. Wider than the gap between cells and narrower than
+   the space under a section head, because that is what it is: a bigger break
+   than a row and a smaller one than a section. */
+.hw26-rig-group + .hw26-rig-group {
+  margin-top: clamp(2.5rem, 5vw, 4rem);
+}
+
+/* Three up. Steps to two before the name's longest word starts breaking the
+   cell, then to one on a phone. */
 .hw26-rigs {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: clamp(1rem, 2vw, 1.75rem);
 }
 
-@media (max-width: 780px) {
+@media (max-width: 1100px) {
+  .hw26-rigs {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 720px) {
   .hw26-rigs {
     grid-template-columns: minmax(0, 1fr);
   }
+}
+
+/* The brief, as prose. This was a three-up grid of chamfered cells holding a
+   question and its answer each; it is two paragraphs now, and the only styling
+   it needs is a measure and a size.
+
+   `ch` rather than `rem` because the measure is a count of characters and the
+   face is monospace, so `ch` is literally the unit the constraint is expressed
+   in. 64 of them is at the long end of comfortable, which is right for the one
+   passage on the page that is genuinely being read rather than scanned.
+
+   Set a step above the page's other body copy. Everything else set in this
+   face on this page is a caption, a note or a label hung off something larger;
+   this is the section's whole content, and body copy at caption size reads as
+   though it is annotating a heading that is not there.
+
+   Centred rather than flush left. The measure is carrying real prose now
+   rather than four lines, and a 64ch column against a 1440px section left the
+   right two thirds of it empty; centring puts the column under the middle of
+   the head instead of under its first word, and puts the rain either side of
+   it instead of all on one flank. The head is centred to match, via
+   `.hw26-section--centred` up by `.hw26-head` — this is the one section on
+   the page that reads as centred as a unit, and a flush-left title over a
+   centred column looked like the column had drifted. The text itself stays
+   left-aligned inside that column: nine lines of monospace ragged on
+   both edges reads as a poem, and the second paragraph is terms that have to
+   scan. */
+.hw26-brief {
+  max-width: 64ch;
+  margin-inline: auto;
+}
+
+.hw26-brief p {
+  margin: 0;
+  font-size: clamp(0.95rem, 1.2vw, 1.15rem);
+  line-height: 1.8;
+  color: var(--hw-bone);
+}
+
+.hw26-brief p + p {
+  margin-top: 1.6rem;
+}
+
+/* The rain behind the brief — see BriefRain in lander.tsx for the field
+   itself; this is the two things about it that are the stylesheet's job.
+
+   Containment costs nothing. A canvas cannot paint outside its own bitmap, and
+   `inset: 0` on an absolutely positioned child resolves against the section's
+   padding box, which is already `position: relative` — so the field is
+   full-bleed within the brief and has no way of reaching the ticker above or
+   the categories below. No clip, no `overflow: hidden`, and nothing that has to
+   be kept in step with the section's padding.
+
+   The mask is what turns a field into a spill. Fading downward, the rain is at
+   full strength where it meets the band above and gone before the section ends,
+   so it reads as falling out from behind the ribbon rather than as a texture
+   the section happens to be sitting on — and it clears the ground under the
+   copy on the way, which is the same rule doing the legibility job for free.
+   The first stop is held to 20% so the top edge is flat rather than already
+   fading, since a gradient starting at 0 would thin out exactly where the
+   effect is supposed to be densest.
+
+   `-webkit-` alongside the standard property for Safari, which still wants the
+   prefix on mask-image. The stacking is the only other thing: the canvas is at
+   0 and the content is lifted to 1, so the copy is over the rain and not
+   under it. */
+.hw26-section--rain > .hw26-inner {
+  z-index: 1;
+}
+
+.hw26-rain {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  mask-image: linear-gradient(180deg, #000 0%, #000 20%, transparent 90%);
+  -webkit-mask-image: linear-gradient(180deg, #000 0%, #000 20%, transparent 90%);
 }
 
 /* The chamfered panel, drawn so the outline follows the chamfer.
@@ -856,6 +1316,9 @@ html[data-theme='light'] .hw26-ufo-beam {
 .hw26-rig {
   --rig-cut: 34px;
   --rig-edge: 1px;
+  /* Named because the count is pinned to the panel's top-left corner and has
+     to sit on the same inset the copy does — one figure, two rules. */
+  --rig-pad: clamp(1.75rem, 3vw, 2.75rem);
   --rig-cut-inner: calc(var(--rig-cut) - 0.585786 * var(--rig-edge));
   --rig-shape-inner: polygon(
     0 0,
@@ -867,7 +1330,7 @@ html[data-theme='light'] .hw26-ufo-beam {
   );
   position: relative;
   min-height: clamp(420px, 52vh, 580px);
-  padding: clamp(1.75rem, 3vw, 2.75rem);
+  padding: var(--rig-pad);
   overflow: hidden;
   isolation: isolate;
   background: var(--hw-line);
@@ -901,14 +1364,27 @@ html[data-theme='light'] .hw26-ufo-beam {
 
 /* Inset and clipped to match the fill, so the photo stops at the outline
    rather than tinting it. Paints above `::before` — same stacking level,
-   later in the box tree. */
+   later in the box tree.
+
+   A quarter of the original saturation at rest, not none. Full greyscale was
+   cut for stock photographs, where colour was the thing that gave away that
+   the plate was a picture of somewhere else; these are studio renders of the
+   actual machines, and the little colour they have — the orange manipulator,
+   the FPV drone's red props, the cobot's teal floor — is the machine's own
+   marking rather than a stray cast. A quarter of it survives the 16%
+   opacity as a tint you notice on the second look, which is the right
+   loudness for something sitting under type.
+
+   Hover opens further than it used to. Against a rest state that is already
+   slightly warm, the old 35% grey read as barely a move, so hover now goes
+   effectively full colour and takes the opacity a step higher with it. */
 .hw26-rig-photo {
   position: absolute;
   inset: var(--rig-edge);
   clip-path: var(--rig-shape-inner);
   z-index: -1;
   opacity: 0.16;
-  filter: grayscale(1) contrast(1.25);
+  filter: grayscale(0.75) contrast(1.25);
   transition:
     opacity 620ms var(--hw-ease),
     filter 620ms var(--hw-ease),
@@ -916,8 +1392,8 @@ html[data-theme='light'] .hw26-ufo-beam {
 }
 
 .hw26-rig:hover .hw26-rig-photo {
-  opacity: 0.32;
-  filter: grayscale(0.35) contrast(1.1);
+  opacity: 0.36;
+  filter: grayscale(0.05) contrast(1.1);
   transform: scale(1.05);
 }
 
@@ -945,10 +1421,14 @@ html[data-theme='light'] .hw26-ufo-beam {
 }
 
 /* Without this the count is just a large number: on a page where numerals
-   have meant section indices everywhere else, it has to say what it counts. */
+   have meant section indices everywhere else, it has to say what it counts.
+
+   No top margin. It used to sit directly under the numeral and needed the
+   gap; the numeral is now pinned to the panel's top-left corner and this is
+   the first thing in the bottom-hung stack, where a leading margin would push
+   the whole block up off the baseline its neighbours sit on. */
 .hw26-rig-units {
   display: block;
-  margin-top: 0.4rem;
 }
 
 .hw26-rig-name {
@@ -961,227 +1441,641 @@ html[data-theme='light'] .hw26-ufo-beam {
   margin: 0.5rem 0 0;
 }
 
-.hw26-rig-blurb {
-  margin: 1.25rem 0 0;
-  max-width: 42ch;
-  font-size: 0.9rem;
+/* The compact panel: the same chamfered plate as the floor cell, with the
+   fixed height taken off so it sizes to what is in it.
+
+   It was called `--about` until recently, after the What / Where / Who cells
+   it was cut for. Those are gone — that section is prose now — and the
+   inventory and the add-ons are the only things wearing it, so the name
+   describes the shape rather than a section that no longer exists.
+
+   This block has to stay after `.hw26-rig` and after the element rules it
+   overrides: it matches at the same specificity as the base panel, so the
+   only thing making the override win is that it is read later. Move it up
+   and the compact panel silently goes back to the 420px floor cell. */
+.hw26-rig--compact {
+  min-height: 0;
+  justify-content: flex-start;
+}
+
+.hw26-rig--compact .hw26-rig-name {
+  font-size: clamp(1.75rem, 3.2vw, 2.6rem);
+  margin: 0;
+}
+
+/* The inventory cells. The same compact panel the about cells wear, but a
+   third of the sheet wide and holding three short lines instead of a
+   paragraph, so three figures come down with the cell: the numeral, the name,
+   and the chamfer — 34px was cut for a panel twice this size and reads as a
+   slice taken out of a small one.
+
+   Hung from the bottom edge rather than stacked from the top: names run to
+   one line or three depending on the entry, and top-stacked those cells open
+   a hole under the short ones. Bottom-aligned, every name in a row sits on
+   the same baseline.
+
+   `min-height` stops a row collapsing onto its shortest name. These are a
+   grid of plates, and a plate that shrink-wraps its text stops reading as
+   one. It is also what holds the corner the count sits in open — see below. */
+.hw26-rigs .hw26-rig--compact {
+  --rig-cut: 24px;
+  min-height: clamp(190px, 20vw, 260px);
+  justify-content: flex-end;
+}
+
+/* The count, in the corner. It used to ride directly above the name at the
+   foot of the cell, where it read as the first line of the name rather than
+   as a figure about it — two display cuts stacked, one number and one word.
+   Pinned to the top-left instead, it is the plate's own marking: the corner
+   the eye lands on first, diagonally opposite the chamfer, and as far from
+   the type as the panel goes.
+
+   Out of flow rather than pushed there with `space-between`, because the copy
+   is bottom-hung and has to stay bottom-hung whether or not the entry has a
+   count — the add-ons have none, and their names must sit on the same
+   baseline as the floor's. The corner is square: `--rig-cut` takes the
+   top-right and the bottom-left, so nothing is clipped here.
+
+   Down from the floor panel's figure for the same reason as the name: at
+   7.5vw a count filled half a third-width cell. */
+.hw26-rigs .hw26-rig-no {
+  position: absolute;
+  top: var(--rig-pad);
+  left: var(--rig-pad);
+  font-size: clamp(2.5rem, 4.5vw, 4rem);
+}
+
+/* Sized so the longest word in the list — MANIPULATORS — clears the cell's
+   measure at every step of the grid, three up and two. */
+.hw26-rigs .hw26-rig--compact .hw26-rig-name {
+  font-size: clamp(1.35rem, 2.1vw, 2rem);
+}
+
+/* The caption. One clause under a name, set at the body face and small — it
+   has to read as an annotation on the name above it rather than as a second
+   line of the name, which is why it is the only thing in the cell that is
+   neither uppercase nor a display cut. `max-width` in ch keeps it to about
+   two lines at every column count; it is a caption, and a caption that runs
+   to four lines is the blurb this section already threw out once. */
+.hw26-rig-note {
+  margin: 0.55rem 0 0;
+  max-width: 34ch;
+  font-size: 0.82rem;
+  line-height: 1.5;
+  color: var(--hw-bone);
+}
+
+/* The placeholders. Muted, not absent: "there is a category here and it is
+   not announced yet" is real information, and a cell dressed like the ones
+   beside it would be claiming a machine nobody has named.
+
+   Dimmer on both counts, out of the palette already here — the outline steps
+   down from `--hw-line` to the panel highlight, and the name from snow to
+   silver. Still legible, not ghosted. The mint hover comes off with them:
+   there is nothing here to go and look at yet.
+
+   Only the cells that are *entirely* placeholder wear this. VR is flagged
+   TBA and keeps the live panel, because it has a count on it and muting a
+   real number to say "details pending" trades information for mood. */
+.hw26-rigs .hw26-rig--tba,
+.hw26-rigs .hw26-rig--tba:hover {
+  background: var(--hw-steel-hi);
+}
+
+.hw26-rig--tba .hw26-rig-name {
+  color: var(--hw-silver);
+}
+
+/* A placeholder that has a plate. Both TBA cells now carry the render of the
+   machine that will land there, which is a claim the muted chrome has to
+   survive rather than contradict: the picture says we know what it is, the
+   `?` and the silver name say we have not settled how many or what it is
+   called. Left at the announced cells' 16% the plate wins that argument —
+   the panel reads as fully dressed and the mute stops registering — so it
+   sits a step under, at rest and on hover both, and the muting stays the
+   loudest thing about the cell.
+
+   The hover bloom is kept rather than killed. A cell with a visible picture
+   that does not move under the pointer reads as broken, not as reserved; the
+   reserve is carried by the smaller figures, not by an absent transition. */
+.hw26-rig--tba .hw26-rig-photo {
+  opacity: 0.1;
+}
+
+.hw26-rig--tba:hover .hw26-rig-photo {
+  opacity: 0.2;
+}
+
+/* The "?" holds the numeral's slot, its cut and its baseline, so the rhythm
+   across the group does not break on its last row. */
+.hw26-rig--tba .hw26-rig-no,
+.hw26-rig--tba:hover .hw26-rig-no {
+  color: var(--hw-line-hi);
+}
+
+/* -------------------------------------------------------------
+   3B. TIMELINE — one dashed hairline, six ticks on it, the stops
+   hung off it and the brackets in a strip alongside.
+
+   Numbered 3B rather than 4 because it landed between the floor
+   and the lab, and renumbering five headings to make room would
+   churn far more than it clarifies.
+
+   The same figure is drawn twice, on two axes. Below 900px the
+   rule runs *down* the page and the stops stack beside it; at
+   900px and up it runs *across*, the stops sit in a row under it,
+   and the section pins to the viewport so vertical scroll is spent
+   travelling sideways. One breakpoint, and the phone keeps the
+   layout that reads without any of that machinery.
+
+   Nothing is enclosed. A single dashed rule, a short tick per stop
+   crossing it, and an ordinal, a date and a sentence flush to it.
+   Nothing names those rows: an ordinal above a date is not a table
+   needing a key.
+
+   The brackets sit on no arithmetic in either layout, which is the
+   whole reason both are cheap. The list and the bracket strip are
+   two subgrids of one grid, so a bracket is placed by naming the
+   stops it spans — `grid-row: from / to` going down, `grid-column:
+   from / to` going across — and lands on its ticks whatever size
+   the stops come out at. Transposing the figure is transposing
+   which axis the subgrid is taken on, and nothing is measured in
+   script or in CSS to make the ends meet.
+
+   Three figures are spent differently by the two layouts and are
+   therefore redefined rather than reused: `--tl-spine` is the
+   bracket strip's width going down and its height going across,
+   `--tl-gap` is the rule's clearance to the copy, and `--tl-tick`
+   is how far along a stop its tick sits. Going down that is
+   0.35rem, which drops the mark onto the middle of the ordinal;
+   going across it is 0, because a stop's leading edge is a grid
+   column edge and so is the end of a bracket.
+   ------------------------------------------------------------- */
+
+.hw26-tl-track {
+  --tl-spine: 2.6rem;
+  --tl-gap: 1.5rem;
+  --tl-tick: 0.35rem;
+  /* The date row's type size, named because two rules want it. */
+  --tl-date: clamp(1.3rem, 2.1vw, 1.85rem);
+  display: grid;
+  grid-template-columns: var(--tl-spine) minmax(0, 1fr);
+  /* `--tl-stops` is the stop count and comes from the markup, so the track
+     the two subgrids below hang off cannot be given a different answer than
+     TIMELINE. It is rows here and columns in the horizontal block. */
+  grid-template-rows: repeat(var(--tl-stops), auto);
+  column-gap: 0.55rem;
+}
+
+/* Wide enough to set a bracket's label across the strip rather than along it.
+   The turned labels below exist because a phone leaves the strip a couple of
+   characters wide; a tablet does not, and a horizontal line of type reads
+   without the reader tilting their head. */
+@media (min-width: 720px) {
+  .hw26-tl-track {
+    --tl-spine: clamp(9rem, 15vw, 15rem);
+    --tl-gap: 2rem;
+  }
+}
+
+/* ---- the brackets ---- */
+
+/* The strip, as a subgrid of the track's rows. It holds nothing that can size
+   a row — the braces are stretched decorations — so the rows are the stops'
+   own heights and the two columns stay in register by construction. */
+.hw26-tl-braces {
+  grid-column: 1;
+  grid-row: 1 / -1;
+  display: grid;
+  grid-template-rows: subgrid;
+}
+
+/* Three sides of a box, opening toward the rule: a spine down the strip and
+   an arm reaching right at each end, stopping just short of where the tick
+   starts. Drawn as borders because that is precisely the shape and needs no
+   pseudo-elements to get it.
+
+   Dashed and in `--hw-line` rather than solid in `--hw-line-hi`: it has to
+   read as the same hairline the rule beside it is drawn in, and a solid
+   bracket that long next to a dashed rule reads as a container instead of an
+   annotation. It is the largest shape in the section and it should be the
+   quietest.
+
+   `top` is a relative shift, not a margin — it moves the bracket from the top
+   of its first row down onto that row's tick, and the bottom edge travels the
+   identical distance onto the tick of the row it ends at, all without costing
+   the grid a pixel. */
+.hw26-tl-brace {
+  grid-column: 1;
+  grid-row: var(--tl-span-from) / var(--tl-span-to);
+  position: relative;
+  top: var(--tl-tick);
+  border: 1px dashed var(--hw-line);
+  border-right: 0;
+}
+
+/* Centred on the span, which is the same point as the midpoint of the stretch
+   of time it names.
+
+   Set above `.hw26-label`'s 10px. That size is right for an eyebrow sitting on
+   top of something; these labels are the only thing inside a shape that runs a
+   third of the section, and at 10px they read as a caption that got lost in it.
+   The tracking comes down as the size goes up, which is the usual trade — 0.24em
+   is spacing that exists to make 10px caps legible and starts to fall apart as
+   words at this size. */
+.hw26-tl-brace-label {
+  position: absolute;
+  top: 50%;
+  left: 0.6rem;
+  right: 0.6rem;
+  translate: 0 -50%;
+  text-align: center;
+  font-size: 0.8rem;
+  letter-spacing: 0.14em;
+  line-height: 1.5;
+}
+
+/* Set along the spine, reading bottom-to-top, on one line.
+   Horizontal labels were the other option and there is no room for them: a
+   390px screen leaves about 280px of measure once the strip and the rule are
+   out, and a label laid across the top of its span either sits on the stop it
+   is pointing at or takes that measure below what the copy needs. Turned, it
+   belongs to the bracket the way the wide one does — centred on the span it
+   names — and costs the copy nothing.
+
+   One line is the whole point of the treatment and it took two goes to get.
+   Wrapping, the label was a ladder of three or four short turned lines stacked
+   across the strip, which is a paragraph set sideways: it reads as a cramped
+   block sitting beside the bracket rather than as a caption running along it,
+   and it forces the strip wide enough to hold the block, which is measure
+   taken off the copy. `nowrap` makes the label exactly what the shape wants —
+   one continuous line down the length of the span it names, in a strip only as
+   wide as one line is thick. */
+@media (max-width: 719px) {
+  /* Down from 4.2rem, which was sized to hold three or four wrapped turned
+     lines. A single line needs its own thickness and the two hairline insets,
+     nothing more, and the ~44px this releases goes straight to the sentences
+     on the other side of the rule. */
+  .hw26-tl-track {
+    --tl-spine: 1.6rem;
+  }
+
+  /* The size is the binding constraint, and the *shortest* bracket sets it.
+     "We print your requested objects" is 31 characters and spans one stop —
+     about 185px of run at the spacing above — so its set length has to come in
+     under that or the line is clipped at both ends. Measured rather than
+     estimated: at 9px with 0.02em it sets to 173px, which leaves ~10px of
+     headroom, and that margin is the reason the stop spacing above is 30vw
+     rather than the 28 that would otherwise have hit the 1.4× target. The two
+     figures are one decision. That is also why the tracking is nearly off here
+     while the wide label above keeps 0.14em — the run is spent on characters,
+     not on air between them.
+
+     9px is small, and it is the size this label was originally set at before
+     wrapping forced it up. It survives being small because it is one short
+     line of uppercase in a monospace face with no neighbours: nothing here is
+     being read, it is being identified.
+
+     `overflow: hidden` stays as the backstop. With `nowrap` a label that
+     outgrows its span would otherwise run out past both bracket arms and into
+     the stops above and below, which is a worse failure than a clipped word —
+     it is one that does not look like a failure. */
+  .hw26-tl-brace-label {
+    inset: 0 0.1rem 0 0.1rem;
+    translate: none;
+    writing-mode: vertical-rl;
+    rotate: 180deg;
+    white-space: nowrap;
+    text-align: center;
+    overflow: hidden;
+    font-size: 9px;
+    letter-spacing: 0.02em;
+    line-height: 1;
+  }
+}
+
+/* ---- the line and its stops ---- */
+
+/* The other subgrid. The rule is drawn on its leading edge and the copy is
+   inset from it by `--tl-gap`, so `left: 0` on the rule and the tick's travel
+   back to it are two readings of the same figure. */
+.hw26-tl-items {
+  grid-column: 2;
+  grid-row: 1 / -1;
+  display: grid;
+  grid-template-rows: subgrid;
+  position: relative;
+  margin: 0;
+  padding: 0 0 0 var(--tl-gap);
+  list-style: none;
+}
+
+/* The rule: one dashed hairline, one element, the height of the list. It
+   starts a little above the first tick for the same reason the horizontal one
+   used to run in from the left — so the line is already going when it reaches
+   the tick rather than starting at it and turning that tick into an end cap —
+   and runs out at the foot of the last stop, which is why that stop drops its
+   trailing padding below. */
+.hw26-tl-items::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: -1.1rem;
+  bottom: 0;
+  border-left: 1px dashed var(--hw-line);
+}
+
+/* One stop, one row: ordinal, date, then the sentence and — on the first —
+   the button, in the order they are written.
+
+   The trailing space is the whole of the vertical figure's rhythm, and it is
+   large on purpose: the six stops used to sit 28px apart on a phone, which is
+   the gap between paragraphs, so the section read as a bulleted list that
+   happened to have a rule down its left edge. A timeline is a *distance*
+   between two moments, and at 28px the two months between registration opening
+   and the doors were the same distance as the fortnight inside them. Opened to
+   the point where the rule between two stops is longer than either stop, the
+   gap is the thing the eye travels and the dates are what it arrives at —
+   which is the figure, and it costs a phone nothing but scroll it already had.
+
+   About 1.4× the section it replaced, and the number is arrived at rather
+   than chosen: the stops' own content is ~615px on a 390px screen, so ~117px
+   in each of the five gaps is what takes the section from 1034px to ~1455.
+   Twice that gap was tried first and is too much — one stop then fills most
+   of a phone screen, and a timeline whose stops are never in view together
+   has stopped being a sequence and become six separate cards. At 1.4× three
+   stops are on screen at once and the gaps are still unmistakably gaps.
+
+   The `vw` term keeps that proportion up to about 400px and the ceiling stops
+   it running away on a tablet, where the copy has already reflowed to fewer
+   lines and does not need the extra air.
+
+   This figure is also what the turned bracket labels are set against: a
+   bracket's run is the height of the stops it spans, and the shortest of the
+   three spans a single stop. See the label rule below — the two numbers are
+   solved together and neither can move without the other being re-measured. */
+.hw26-tl-item {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  align-items: start;
+  align-content: start;
+  row-gap: 0.45rem;
+  padding-bottom: clamp(6rem, 30vw, 9rem);
+}
+
+.hw26-tl-item:last-child {
+  padding-bottom: 0;
+}
+
+/* The tick, crossing the rule at `--tl-tick` down from the top of the stop —
+   the same figure the brackets are offset by, so the two cannot drift. Short
+   and centred on the rule, so it reads as a mark on the line rather than a
+   divider between stops. */
+.hw26-tl-item::before {
+  content: "";
+  position: absolute;
+  top: var(--tl-tick);
+  left: calc(-1 * var(--tl-gap));
+  translate: -50% 0;
+  width: 1.05rem;
+  height: 1px;
+  background: var(--hw-line-hi);
+}
+
+.hw26-tl-item--live::before {
+  background: var(--hw-mint);
+}
+
+.hw26-tl-step {
+  line-height: 1;
+}
+
+/* Circle — the cut this page reserves for numerals that count. These are the
+   dates the hero clock is counting towards, so they are the same kind of
+   figure as the readout up there and get the same face. */
+.hw26-tl-when {
+  font-family: var(--font-geist-pixel-circle), var(--font-orbitron), sans-serif;
+  font-weight: 500;
+  font-size: var(--tl-date);
+  line-height: 1;
+  letter-spacing: 0.04em;
+  color: var(--hw-snow);
+}
+
+.hw26-tl-item--live .hw26-tl-when {
+  color: var(--hw-mint);
+}
+
+.hw26-tl-body {
+  align-self: start;
+}
+
+/* The measure is set here rather than on the wrapper so `ch` is measured in
+   the face and size the sentence is actually set in. Far narrower than the
+   field it sits in, which is the point: the copy has to look hung off the
+   tick, not poured into a cell. */
+.hw26-tl-what {
+  margin: 0;
+  max-width: 44ch;
+  font-size: 0.85rem;
   line-height: 1.7;
   color: var(--hw-bone);
 }
 
-/* The spec line — what you get when you book this one. */
-.hw26-rig-spec {
-  margin-top: 1.75rem;
-  padding-top: 1.25rem;
-  border-top: 1px solid var(--hw-line);
-  display: flex;
-  align-items: center;
-  gap: 1rem;
+/* The line that arrives encrypted. Set in the body face on purpose: every
+   glyph in the scramble pool is one monospace advance wide, so the string
+   cannot change width while it resolves and the stop under it does not
+   twitch for the length of the effect. */
+.hw26-tl-secret {
+  color: var(--hw-snow);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
 }
 
-/* -------------------------------------------------------------
-   4. THE LAB — a parts catalogue page, themed like the rest.
-   ------------------------------------------------------------- */
-
-.hw26-kit {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: 1px;
-  background: var(--hw-line);
-  border: 1px solid var(--hw-line);
-}
-
-.hw26-kit-item {
-  position: relative;
-  background: var(--hw-steel);
-  padding: 1.5rem;
-  display: flex;
-  flex-direction: column;
+/* The apply button at a note's width rather than the hero's. Same chrome,
+   dialled down: it belongs to the sentence above it, not to the section. */
+.hw26-tl-cta {
+  margin-top: 1.35rem;
   gap: 0.6rem;
-  transition: background 300ms var(--hw-ease);
+  padding: 0.85rem 1.25rem;
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
 }
 
-.hw26-kit-item:hover {
-  background: var(--hw-steel-hi);
-}
+/* ---- the pin, and the horizontal figure it drives ----
 
-.hw26-kit-item dt {
-  font-family: var(--font-orbitron), sans-serif;
-  font-weight: 800;
-  text-transform: uppercase;
-  font-size: 1rem;
-  letter-spacing: 0.02em;
-  color: var(--hw-snow);
-}
+   The section is taller than the screen and the frame inside it sticks to the
+   top, so for the length of that surplus the timeline is the only thing on
+   screen and the page's scroll is spent translating the track sideways. The
+   surplus *is* the track's overflow: `--tl-pin` is set by the driver in
+   lander.tsx to exactly `trackWidth - portWidth`, so a full sweep of the pin
+   is a full sweep of the line, and the two cannot drift.
 
-.hw26-kit-item dd {
-  margin: 0;
-  font-size: 0.82rem;
-  line-height: 1.6;
-  color: var(--hw-bone);
-}
+   `data-pinned` is the switch, and it is only ever set by that driver. Nothing
+   below is the default state — with no script, under reduced motion, on a
+   phone, or on a screen wide enough to hold all six stops, the attribute is
+   never written and the section is an ordinary section. That is why the
+   scrollport's standing state is `auto` rather than `hidden`: the fallback has
+   to leave every stop reachable, and a reader who can't be given the pin can
+   still push the track. Same guarantee the page makes for `scripting: none`
+   further down, arrived at without needing a rule of its own. */
 
-.hw26-kit-qty {
-  font-family: var(--font-jetbrains-mono), monospace;
-  font-size: 10px;
-  letter-spacing: 0.18em;
-  color: var(--hw-mint);
-}
-
-/* Photo plates: a broken grid, each with a callout. */
-.hw26-plates {
-  margin-top: clamp(2.5rem, 5vw, 4rem);
-  display: grid;
-  grid-template-columns: repeat(12, 1fr);
-  gap: clamp(0.75rem, 1.5vw, 1.25rem);
-}
-
-.hw26-plate {
-  position: relative;
-  overflow: hidden;
-  border: 1px solid var(--hw-line);
-  background: var(--hw-steel);
-}
-
-.hw26-plate img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  filter: grayscale(1) contrast(1.15);
-  transition:
-    filter 700ms var(--hw-ease),
-    transform 900ms var(--hw-ease);
-}
-
-.hw26-plate:hover img {
-  filter: grayscale(0) contrast(1);
-  transform: scale(1.04);
-}
-
-.hw26-plate figcaption {
-  position: absolute;
-  left: 0;
-  bottom: 0;
-  padding: 0.5rem 0.75rem;
-  background: var(--hw-ink);
-  color: var(--hw-paper);
-  font-size: 9px;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-}
-
-.hw26-plate--a {
-  grid-column: span 7;
-  aspect-ratio: 16 / 10;
-}
-.hw26-plate--b {
-  grid-column: span 5;
-  aspect-ratio: 4 / 3;
-}
-.hw26-plate--c {
-  grid-column: span 4;
-  aspect-ratio: 1;
-}
-.hw26-plate--d {
-  grid-column: span 4;
-  aspect-ratio: 1;
-}
-.hw26-plate--e {
-  grid-column: span 4;
-  aspect-ratio: 1;
-}
-
-/* -------------------------------------------------------------
-   5. SCHEDULE — a machine readout, not a marketing timeline.
-   ------------------------------------------------------------- */
-
-.hw26-days {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-  gap: clamp(1.5rem, 3vw, 3rem);
-}
-
-/* Room for the hazard rule, which hangs off the left edge of a gated slot
-   and would otherwise spill into the neighbouring column. */
-.hw26-day {
-  padding-left: 0.85rem;
-}
-
-.hw26-day h3 {
-  font-family: var(--font-orbitron), sans-serif;
-  font-weight: 800;
-  text-transform: uppercase;
-  font-size: clamp(1.1rem, 2vw, 1.5rem);
-  color: var(--hw-snow);
-  margin: 0 0 1.5rem;
-  padding-bottom: 0.75rem;
-  border-bottom: 1px solid var(--hw-line);
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  gap: 1rem;
-}
-
-.hw26-day h3 span {
-  font-family: var(--font-jetbrains-mono), monospace;
-  font-weight: 500;
-  font-size: 10px;
-  letter-spacing: 0.2em;
-  color: var(--hw-silver);
-}
-
-.hw26-slot {
-  display: grid;
-  grid-template-columns: 4.5rem 1fr;
-  gap: 1.25rem;
-  padding: 0.7rem 0;
-  border-bottom: 1px solid color-mix(in srgb, var(--hw-line) 60%, transparent);
-  transition: background 250ms var(--hw-ease);
-}
-
-.hw26-slot:hover {
-  background: color-mix(in srgb, var(--hw-mint) 4%, transparent);
-}
-
-.hw26-slot-time {
-  font-size: 0.8rem;
-  color: var(--hw-mint);
-  letter-spacing: 0.05em;
-}
-
-.hw26-slot-what {
-  font-size: 0.85rem;
-  color: var(--hw-bone);
-  line-height: 1.5;
-}
-
-/* A deadline is not an agenda item. It gets the hazard rule, drawn in the
-   accent at full strength where ordinary slots only get a whisper of it. */
-.hw26-slot--gate .hw26-slot-what {
-  color: var(--hw-snow);
-  font-weight: 500;
-}
-
-.hw26-slot--gate {
+.hw26-tl-pin {
   position: relative;
 }
 
-.hw26-slot--gate::before {
-  content: "";
-  position: absolute;
-  left: -0.85rem;
-  top: 0.7rem;
-  bottom: 0.7rem;
-  width: 3px;
-  background-image: repeating-linear-gradient(
-    -45deg,
-    var(--hw-pine) 0 3px,
-    transparent 3px 7px
-  );
+.hw26-tl-port {
+  overflow: visible;
 }
 
-.hw26-slot--gate:hover {
-  background: color-mix(in srgb, var(--hw-pine) 12%, transparent);
+@media (min-width: 900px) {
+  /* The port scrolls itself unless the driver has taken the wheel. It is a
+     scroll container either way — but it is a *descendant* of the sticky
+     frame, not an ancestor, so it cannot be the thing the pin sticks to. (The
+     ancestor that could be is `.hw26`, and the note at the top of this file is
+     why it is `overflow-x: clip`.) */
+  .hw26-tl-port {
+    overflow-x: auto;
+    overflow-y: hidden;
+    overscroll-behavior-x: contain;
+  }
+
+  /* `padding-block: 0` is load-bearing, not tidiness. A sticky box travels
+     inside its containing block, which is the section's *content* box — so
+     with the section's usual padding the frame would run out of travel
+     `2 × padding` before the scroll did, and the track would still be short of
+     the last stop when the pin let go. Zeroed, the frame's travel is exactly
+     `--tl-pin` and progress reaches 1 on the same pixel the pin releases. The
+     rhythm between sections survives on the neighbours' own padding. */
+  .hw26-tl-section[data-pinned] {
+    padding-block: 0;
+    min-height: calc(100svh + var(--tl-pin, 0px));
+  }
+
+  .hw26-tl-section[data-pinned] .hw26-tl-pin {
+    position: sticky;
+    top: 0;
+    height: 100svh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .hw26-tl-section[data-pinned] .hw26-tl-port {
+    overflow: hidden;
+  }
+
+  /* The same six stops, laid across. Every part is the object it already was;
+     only the axis it is placed on changes. */
+  .hw26-tl-track {
+    /* The bracket strip is a height up here. */
+    --tl-spine: 3.4rem;
+    /* Rule down to the copy. */
+    --tl-gap: 1.6rem;
+    /* Nothing. A stop's leading edge is its column's edge, and a bracket ends
+       on a column edge too, so the tick and the bracket arm land on the same x
+       with no offset asked of either. */
+    --tl-tick: 0px;
+    /* One stop's column, and the gutter inside it that keeps a stop's sentence
+       off the next stop's tick. The gutter is also where the rule stops. */
+    --tl-step: clamp(19rem, 25vw, 25rem);
+    --tl-pad: clamp(2rem, 3vw, 3.5rem);
+    /* How far past the last tick the rule keeps going. A fixed length rather
+       than a share of the step, so it stays the same at every viewport, and set
+       to clear the last stop's sentence — the line should run out past the end
+       of the copy, not stop inside it and not carry on to the edge of a column
+       that has nothing in it. */
+    --tl-runout: 12.5rem;
+    width: max-content;
+    grid-template-columns: repeat(var(--tl-stops), var(--tl-step));
+    grid-template-rows: var(--tl-spine) auto;
+    column-gap: 0;
+    row-gap: 0.55rem;
+    will-change: transform;
+  }
+
+  /* The strip, now a subgrid of the track's columns rather than its rows. */
+  .hw26-tl-braces {
+    grid-column: 1 / -1;
+    grid-row: 1;
+    grid-template-columns: subgrid;
+    grid-template-rows: none;
+  }
+
+  /* Three sides of a box opening *downward*, toward the rule below it — the
+     same shape as the vertical bracket, turned a quarter. The `row-gap` above
+     is what stops the arms landing on the rule itself. */
+  .hw26-tl-brace {
+    grid-column: var(--tl-span-from) / var(--tl-span-to);
+    grid-row: 1;
+    top: 0;
+    left: var(--tl-tick);
+    border: 1px dashed var(--hw-line);
+    border-bottom: 0;
+  }
+
+  /* Room to set the label properly: a bracket up here spans as much as three
+     stops, which is far more measure than the vertical strip ever has, so it
+     stays well above the 9px the turned strip is pinned to.
+
+     Room is not licence, though. Earlier figures let the label grow past the
+     stops' own sentences underneath it on a wide screen — an annotation set
+     bigger than the copy it annotates, which inverts the hierarchy the bracket
+     itself is built on: the note on `.hw26-tl-brace` argues that the largest
+     shape in the section should be the quietest, and the label had stopped
+     honouring it. This clamp tops out at 12.8px, strictly under the 13.6px the
+     stop copy is fixed at, so the label sits below the sentence it annotates at
+     every width this layout exists at — which is where a thing that names a
+     stretch of time belongs relative to the thing it names. */
+  .hw26-tl-brace-label {
+    font-size: clamp(0.75rem, 0.9vw, 0.8rem);
+    letter-spacing: 0.12em;
+  }
+
+  .hw26-tl-items {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    grid-template-columns: subgrid;
+    grid-template-rows: none;
+    padding: var(--tl-gap) 0 0;
+  }
+
+  /* The rule. It runs in from the left of the first tick for the same reason it
+     starts above it going down — so the line is already going when it reaches
+     the tick rather than starting at it and turning that tick into an end cap —
+     and it runs out the same way at the other end, one `--tl-runout` past the
+     last tick. Not to the end of the track: the last column is a full step wide
+     like every other, and a rule drawn to its edge trails a third of a stop of
+     dashes past anything that is on the line. */
+  .hw26-tl-items::before {
+    top: 0;
+    bottom: auto;
+    left: -1.4rem;
+    right: calc(var(--tl-step) - var(--tl-runout));
+    border-left: 0;
+    border-top: 1px dashed var(--hw-line);
+  }
+
+  .hw26-tl-item {
+    grid-row: 1;
+    padding: 0 var(--tl-pad) 0 0;
+  }
+
+  /* The tick, crossing the rule on its stop's leading edge. */
+  .hw26-tl-item::before {
+    top: calc(-1 * var(--tl-gap));
+    left: var(--tl-tick);
+    translate: 0 -50%;
+    width: 1px;
+    height: 1.05rem;
+  }
+
+  /* The measure is the column's now, minus its gutter, so the `ch` cap would
+     only ever cut the field short of the space it has. */
+  .hw26-tl-what {
+    max-width: none;
+  }
 }
 
 /* -------------------------------------------------------------
@@ -1199,53 +2093,50 @@ html[data-theme='light'] .hw26-ufo-beam {
   margin: 0 0 1rem;
 }
 
-.hw26-sponsors-lead + .hw26-subhead {
+.hw26-sponsors-lead + .hw26-subhead,
+.hw26-sponsors-rest + .hw26-subhead {
   margin-top: 2.5rem;
 }
 
 /* Organizer logo. Slightly larger than the partner marks below — this is
-   the co-branding row, not the sponsor wall. */
-.hw26-org-logo {
-  display: inline-flex;
-}
+   the co-branding row, not the sponsor wall.
 
-.hw26-org-logo:focus-visible {
-  outline: 2px solid #82f5c6;
-  outline-offset: 4px;
-}
-
-.hw26-sponsor-lead .hw26-org-logo img {
+   It used to be wrapped in its own anchor, which is where the whole tile's
+   link now lives instead; the class moved onto the image with it. */
+.hw26-sponsor-lead img.hw26-org-logo {
   height: clamp(48px, 6vw, 72px);
   width: auto;
 }
 
-/* Typographic organizer mark, standing in for a logo until the real file
-   lands. Fixed white: the lead cells keep their dark plate in both themes. */
-.hw26-org-mark {
-  font-family: var(--font-orbitron), sans-serif;
-  font-weight: 900;
-  text-transform: uppercase;
-  font-size: clamp(1.5rem, 3vw, 2.4rem);
-  line-height: 1;
-  letter-spacing: 0.02em;
-  color: #ffffff;
-  text-decoration: none;
-  padding-bottom: 0.1em;
-  border-bottom: 2px solid transparent;
-  transition:
-    color 220ms var(--hw-ease),
-    border-color 220ms var(--hw-ease);
+/* Epikor is the odd one in this row and needs its own figure. The row's height
+   is set against Hacklab, which is a stacked lockup at 1.92:1 — mark over
+   wordmark — so a lot of its 72px is spent going up rather than sideways.
+   Epikor publishes a horizontal lockup at 2.56:1, mark *beside* wordmark. Run
+   at the row's height it comes out 184px wide against Hacklab's 138px, and two
+   marks in two equal cells where one is a third wider is not co-branding, it is
+   a ranking.
+
+   Held to 0.8 of the row instead, which lands it at 138px — the same width as
+   the mark beside it. Width rather than height is the right thing to match
+   between two horizontal lockups: it is what the eye reads as "how big is
+   that logo", and the cap heights come out close as a consequence rather than
+   by being aimed at.
+
+   This replaced a portrait glyph at 68×78 — their site's inline mark, recoloured
+   by hand and carrying no wordmark at all — which is why the row's own height
+   used to fit and no longer does. */
+.hw26-sponsor-lead img.hw26-org-logo--epikor {
+  height: clamp(38px, 4.8vw, 58px);
 }
 
-.hw26-org-mark:hover {
-  color: #82f5c6;
-  border-bottom-color: #82f5c6;
-}
-
-.hw26-org-mark:focus-visible {
-  outline: 2px solid #82f5c6;
-  outline-offset: 4px;
-}
+/* There was a typographic mark here — the partner's name set in Orbitron,
+   standing in for a logo where there was no file to show. It is gone on
+   purpose, and this note is the reason it should stay gone: it has already
+   been deleted once and restored once, on the strength of a single partner
+   who published no artwork. That partner has a file now, every name on the
+   wall has a file, and `Partner.src` is a required field so a nameless plate
+   cannot appear without the type checker asking about it first. A missing
+   mark is a thing to go and get, not a thing to typeset. */
 
 .hw26-sponsors-lead {
   display: grid;
@@ -1256,17 +2147,156 @@ html[data-theme='light'] .hw26-ufo-beam {
   margin-bottom: 1px;
 }
 
+/* The organizer row is two cells and `auto-fit` gives it two columns on its
+   own. The lead partner row is two as well, but stated rather than fitted: at
+   the 280px track above, a 1440 sheet would fit four of them and the two leads
+   would lay out half a row wide with two lit tracks beside them. Two columns,
+   named, is also the measure the tier is defined by — the small tier below is
+   half of one of these. */
+.hw26-sponsors-lead--partners {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+/* The second tier: three tiles at half a lead's width.
+   ................................................................
+   Three tiles on a four-track measure leaves one track over, and the gap
+   between these cells is the container showing through — so that track would
+   come out as a lit rectangle the size of a plate. The wall answers this two
+   ways elsewhere: span the leftover, or shrink the container until there is no
+   leftover. Spanning is wrong *here* specifically, because a tile at two of
+   these tracks is a lead cell and this tier is defined by not being one. So the
+   container shrinks, which is the `--solo` row's bargain further down.
+
+   The arithmetic is that row's too. A four-track grid on the full sheet has a
+   track of `(100% − 2px border − 3px gaps) / 4`; three of those plus the two
+   gaps between them plus the container's own two borders is the width below.
+
+   That figure is exactly half a lead track — `(track_lead − 1px) / 2` resolves
+   to the same `(100% − 5px) / 4` — so these three land on tracks 1, 2 and 3 of
+   the row above them, their edges falling on the lead cells' edges, and the
+   fourth track is never drawn at all. */
+.hw26-sponsors-lead--small {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  width: calc(3 * (100% - 5px) / 4 + 4px);
+}
+
+/* Half the width does not take the lead cell's clear space with it: at 1440 a
+   lead tile is ~532px of measure inside its padding and one of these is ~244px,
+   so the lead's inset would spend more than a third of the cell on air and
+   leave the mark nowhere to sit. */
+.hw26-sponsors-lead--small .hw26-sponsor-lead {
+  padding: clamp(1.75rem, 3vw, 2.75rem);
+}
+
+/* The lead-cell image rule sets a height and leaves width alone, which is safe
+   in a cell that wide and is not safe here. `contain` rather than a bare
+   `max-width`, because capping the width of an element whose height is fixed
+   would otherwise squash the mark rather than fit it. */
+.hw26-sponsors-lead--small img {
+  max-width: 100%;
+  object-fit: contain;
+}
+
+/* A lead row holding one cell. The tier is worth a lead plate, but one plate
+   across the sheet is a banner, not one entry in a group — so the same bargain
+   the `--solo` small row strikes: the container shrinks to one slot and the
+   slot keeps the width it has in the two-column row above.
+
+   `100%` is the sheet, `2px` is the container's own two borders and `1px` is
+   the single gap between the two lead tracks, so a track is `(100% − 3px) / 2`
+   and this container is that plus its own two borders. Its cell's edges
+   therefore fall on the first lead cell's edges, and the second track is never
+   drawn.
+
+   The column count is stated because the base row is `auto-fit` on a 280px
+   track: at anything over ~561px of container that would open a second track
+   for a single child, which is the lit rectangle this whole arithmetic
+   exists to avoid. */
+.hw26-sponsors-lead--one {
+  grid-template-columns: minmax(0, 1fr);
+  width: calc((100% - 3px) / 2 + 2px);
+}
+
+/* Three across on the full sheet: still no leftover track, and still visibly
+   the smaller tile, because the lead row above has already dropped to one
+   column by here. */
+@media (max-width: 900px) {
+  .hw26-sponsors-lead--small {
+    width: auto;
+  }
+}
+
+@media (max-width: 720px) {
+  .hw26-sponsors-lead--partners {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  /* Full width, because the row it is half of is one column here and half of
+     one column is not a slot — the row *is* the sheet, so a shrunk container
+     would only read as a tile that came up short. */
+  .hw26-sponsors-lead--one {
+    width: auto;
+  }
+}
+
+/* One across, where a third of a phone is not a tile, it is a stamp. */
+@media (max-width: 480px) {
+  .hw26-sponsors-lead--small {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* The whole cell is the link. It was a plain div with an anchor around the
+   artwork inside it, which gave the reader a hover state the size of the tile
+   and a hit area the size of a logo; the anchor is now the tile itself, so
+   there is one link per partner and it is as big as it looks.
+
+   `color: inherit` and no underline because the only thing inside is artwork,
+   which carries its own colour, and the tile is not trying to look like
+   running text with a link in it. */
 .hw26-sponsor-lead {
   background: var(--hw-steel);
   padding: clamp(2.5rem, 5vw, 4rem);
   display: flex;
   flex-direction: column;
-  gap: 1.75rem;
-  align-items: flex-start;
-  transition: background 300ms var(--hw-ease);
+  /* Centred on both axes, which is what every small tile further down the wall
+     already does — these cells were the exception and there was no argument
+     for it. Vertically it used to be load-bearing: one partner carried a
+     descriptive paragraph, so a mark-only tile would hang from the top of a
+     plate sized by its neighbour's copy. That copy is gone and every cell is
+     now a mark, so the row is only as tall as the tallest mark plus its
+     padding — a much smaller job, but the marks are still set at different
+     heights and the difference still has to fall evenly above and below rather
+     than all below. Horizontally it matters for the same reason it always did:
+     these marks are wildly different widths, and hung from a common left edge
+     in cells of equal width the row reads as ragged rather than as a set. */
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: inherit;
+  text-decoration: none;
+  transition:
+    background 300ms var(--hw-ease),
+    box-shadow 300ms var(--hw-ease);
 }
 
+/* The lift the cell already had, plus a mint hairline inset into it. The
+   background step on its own is what an inert panel does on hover; the
+   hairline is the page's accent for what you can act on, and it is what makes
+   the difference between a plate that reacts and one you can click. */
 .hw26-sponsor-lead:hover {
+  background: var(--hw-steel-hi);
+  box-shadow: inset 0 0 0 1px
+    color-mix(in srgb, var(--hw-mint) 40%, transparent);
+}
+
+/* Inset rather than offset: these cells are separated by a 1px gap showing
+   the container through, so an outline drawn outside the border box would sit
+   under the neighbouring tile. Keyboard focus lands on the whole tile, which
+   is the thing that is now the control. */
+.hw26-sponsor-lead:focus-visible {
+  outline: 2px solid var(--hw-mint);
+  outline-offset: -2px;
   background: var(--hw-steel-hi);
 }
 
@@ -1281,10 +2311,6 @@ html[data-theme='light'] .hw26-sponsor-lead:hover {
   background: #171a18;
 }
 
-html[data-theme='light'] .hw26-sponsor-lead p {
-  color: #c3c3c3;
-}
-
 .hw26-sponsor-lead img {
   height: clamp(38px, 5vw, 58px);
   width: auto;
@@ -1297,22 +2323,165 @@ html[data-theme='light'] .hw26-sponsor-lead p {
   height: clamp(64px, 8.5vw, 98px);
 }
 
-.hw26-sponsor-lead p {
-  margin: 0;
-  font-size: 0.85rem;
-  line-height: 1.7;
-  color: var(--hw-bone);
-  max-width: 40ch;
+/* Per-logo heights, because equal height is not equal size: these marks pack a
+   symbol, a wordmark and sometimes a tagline into very different proportions,
+   and the proportion is what decides how large a mark reads.
+
+   The first two are lead cells' figures. The three after them are the small
+   tier's, and they are re-decided rather than scaled — a cell at half the width
+   is not the same cell smaller. At 1440 a lead tile gives a mark ~532px of
+   measure and one of these gives ~244px, so a mark that used most of the lead
+   cell would run into both walls of its own clear space here. */
+
+/* 4.5:1 and heavy — the widest mark on the wall and the one that grows
+   fastest per pixel of height. Held just under the row's base so it does not
+   swamp the cell beside it. */
+.hw26-sponsor-lead img.hw26-mark--esra {
+  height: clamp(36px, 4.6vw, 54px);
 }
 
+/* The sponsor tier, in a lead cell since it was promoted out of the small
+   tiles. Re-decided rather than scaled, and decided against ESRA above rather
+   than against the figure this mark carried at 244px: a solid elephant beside a
+   two-tone wordmark at about 4.6:1, so it is the same kind of object as ESRA and
+   takes very nearly the same height — a hair under, because the extra tenth of
+   ratio is a hair more width for every pixel of it. Nowhere near the stacked
+   mark's figure, which is two rows of lockup and buys its height back in mass a
+   horizontal mark this wide does not have. */
+.hw26-sponsor-lead img.hw26-mark--prelint {
+  height: clamp(34px, 4.2vw, 50px);
+}
+
+/* The one mark on this wall that is a plate: cropped to the lockup on its own
+   deep blue, so the bounding box *is* the mark and every pixel in it is ink. It
+   reads far heavier per unit of height than the cut-outs beside it, and in a
+   half-width cell it is also the only one whose rectangle can be measured
+   against the cell's edges. So it takes the smallest figure in the tier — 116px
+   across a 244px cell, under half, where it reads as a framed mark rather than
+   as a block someone dropped in.
+
+   It gets no drawn edge. It had a hairline for a while, on the argument that an
+   undressed rectangle among cut-outs reads as an image whose transparency
+   failed; the frame turned out to be the thing that made it look like a
+   pasted-in crop, and size alone settles it. The floor is where "Federation"
+   stops being readable. */
+.hw26-sponsor-lead img.hw26-mark--eurotech {
+  height: clamp(30px, 3.5vw, 44px);
+}
+
+/* Cyan infinity beside white "OFI" and nothing else — the "Oxbridge Frontier
+   Intelligence" tagline that used to sit under it is gone from the artwork, so
+   this is now a much shorter, much wider mark than the height it carried
+   before was set against. At that height it would run 212px into a 244px cell
+   and touch both walls. Sized to the width instead, where the airy line work
+   can afford to be the largest of the three. */
+.hw26-sponsor-lead img.hw26-mark--ofi {
+  height: clamp(34px, 4vw, 50px);
+}
+
+/* Five letters overlapped into one monogram and nothing else — no wordmark, no
+   tagline, and taller than it is wide, which no other mark on this wall is.
+   Height is the wrong axis to match it on: matched to its neighbours it would
+   come out under half their width. It stays the tallest figure in the tier and
+   is still the narrowest object in it, which is what a portrait mark among
+   landscape ones costs. */
+.hw26-sponsor-lead img.hw26-mark--sprtk {
+  height: clamp(56px, 6.6vw, 84px);
+}
+
+/* Five tiles, and the gap between them is the container showing through — so
+   an unfilled track at the end of the last row is not empty space, it is a
+   lit rectangle the size of a tile. `auto-fit` on a min track width picks
+   whatever count the viewport allows, and five divides evenly by exactly two
+   of them: five and one. Every count in between leaves that rectangle.
+
+   So the count is stated per breakpoint and the last tile spans whatever the
+   row has left over. A double-width tile with a mark centred in it is the
+   same object as its neighbours; a blank plate is a partner nobody named. */
 .hw26-sponsors-rest {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: 1px;
   background: var(--hw-line);
   border: 1px solid var(--hw-line);
 }
 
+/* 3 across: rows of 3 + 2, so the last tile takes the spare column. */
+@media (max-width: 1100px) {
+  .hw26-sponsors-rest {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .hw26-sponsors-rest .hw26-sponsor:last-child {
+    grid-column: span 2;
+  }
+}
+
+/* 2 across: rows of 2 + 2 + 1, and the same span closes the last row. */
+@media (max-width: 720px) {
+  .hw26-sponsors-rest {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* One across, and nothing is left over. */
+@media (max-width: 480px) {
+  .hw26-sponsors-rest {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .hw26-sponsors-rest .hw26-sponsor:last-child {
+    grid-column: auto;
+  }
+}
+
+/* A row holding one tile. Media partners and Sponsors are a name each so far,
+   and both of the obvious things to do with that are wrong: a full-width plate
+   turns a small tile into a lead cell nobody was given, and one tile in a
+   five-track grid leaves four lit rectangles beside it.
+
+   So the row is one track wide instead of five, and the track is exactly the
+   width it would have had in the rows above — the container shrinks, not the
+   tile. `100%` is the sheet, `2px` is the container's own two borders and the
+   `4px` is the four 1px gaps between five tiles, so the arithmetic is the
+   same one the grid does and the tile lands on the column above it.
+
+   `:last-child` is also `:first-child` here, so the span rules at the
+   narrower breakpoints have to be undone: they would open an implicit second
+   column inside a container only one wide. */
+.hw26-sponsors-rest--solo {
+  grid-template-columns: minmax(0, 1fr);
+  width: calc((100% - 2px - 4px) / 5 + 2px);
+}
+
+.hw26-sponsors-rest--solo .hw26-sponsor:last-child {
+  grid-column: auto;
+}
+
+@media (max-width: 1100px) {
+  .hw26-sponsors-rest--solo {
+    width: calc((100% - 2px - 2px) / 3 + 2px);
+  }
+}
+
+@media (max-width: 720px) {
+  .hw26-sponsors-rest--solo {
+    width: calc((100% - 2px - 1px) / 2 + 2px);
+  }
+}
+
+/* One across up there too, so the solo row is the same width as every other
+   row on the wall and there is nothing left to subtract. */
+@media (max-width: 480px) {
+  .hw26-sponsors-rest--solo {
+    width: auto;
+  }
+}
+
+/* Small tiles, and links like every other cell on this wall. They used to be
+   inert divs holding a name and a TBC tag; the names are real now and each one
+   has somewhere to go, so the tile is the anchor and the hover state it always
+   had finally means something. */
 .hw26-sponsor {
   background: var(--hw-steel);
   padding: 2.25rem 1.5rem;
@@ -1323,20 +2492,101 @@ html[data-theme='light'] .hw26-sponsor-lead p {
   justify-content: center;
   text-align: center;
   min-height: 150px;
-  transition: background 300ms var(--hw-ease);
+  color: inherit;
+  text-decoration: none;
+  transition:
+    background 300ms var(--hw-ease),
+    box-shadow 300ms var(--hw-ease);
 }
 
 .hw26-sponsor:hover {
   background: var(--hw-steel-hi);
+  box-shadow: inset 0 0 0 1px
+    color-mix(in srgb, var(--hw-mint) 40%, transparent);
 }
 
-.hw26-sponsor-name {
-  font-family: var(--font-orbitron), sans-serif;
-  font-weight: 800;
-  text-transform: uppercase;
-  font-size: 1.05rem;
-  letter-spacing: 0.04em;
-  color: var(--hw-bone);
+/* Inset, for the same reason as the lead cells: the 1px gap between tiles is
+   the container showing through, and an outline drawn outside the border box
+   would sit under the neighbour. */
+.hw26-sponsor:focus-visible {
+  outline: 2px solid var(--hw-mint);
+  outline-offset: -2px;
+  background: var(--hw-steel-hi);
+}
+
+/* These marks are white-on-transparent and stay that way in the light theme,
+   so the tile keeps a dark plate under them — same bargain as the lead cells
+   above. */
+html[data-theme='light'] .hw26-sponsor {
+  background: #0f1110;
+}
+
+html[data-theme='light'] .hw26-sponsor:hover {
+  background: #171a18;
+}
+
+.hw26-sponsor img.hw26-sponsor-logo {
+  height: clamp(30px, 3vw, 40px);
+  width: auto;
+  max-width: 100%;
+  object-fit: contain;
+}
+
+/* A helmet stacked over its wordmark, nearly square: at the row's height it
+   would read half the size of the wordmarks beside it. */
+.hw26-sponsor img.hw26-mark--bmf {
+  height: clamp(52px, 5vw, 68px);
+}
+
+/* Badge plus four short lines of type, and it is the lines that set the
+   floor: at the row's height they fall to about 6px and close up. The floor
+   is high because the narrow layouts are the roomy ones — one tile per row,
+   width to spare — so nothing here is fighting for it.
+
+   Up a little on the recut art. The badge is line work on its plate now rather
+   than a solid block, so the mark carries less ink at the same size and can
+   take a few more pixels before it starts shouting; the four lines of type get
+   the benefit. */
+.hw26-sponsor img.hw26-mark--ghost {
+  height: clamp(46px, 4.2vw, 54px);
+}
+
+/* The full lockup, where this used to be the bare monogram. The monogram
+   carried no type at all and ran over the row's height to make up for it;
+   the lockup is the same three letters at 3:1 with "robotics" under their
+   right shoulder, so the extra height now buys width it does not have room
+   for. Back to the row's base, where the monogram's own cap height lands
+   about where the wordmarks beside it sit.
+
+   The floors on these three are set by the tightest tile the wall ever has,
+   which is not the phone: at 1101px the row is still five across and a tile
+   is 153px of measure, where the phone's single column is 302px. A wide mark
+   in a tile that narrow is capped by `max-width` and letterboxed inside its
+   own box, so the height stops meaning anything — these floors are the
+   largest that clear that step, and they are what the mark holds through
+   every layout below it. */
+.hw26-sponsor img.hw26-mark--mab {
+  height: clamp(40px, 3.2vw, 46px);
+}
+
+/* A wordmark and nothing else, at 5.3:1 in the face the supplied art was set
+   in. No symbol means no vertical mass to carry the mark, so all of its height
+   is cap height and it grows across the tile faster than anything else on the
+   small tiles. Held well under the row's base for that reason, which is the
+   opposite of what a monogram in this slot would need.
+
+   This replaced the one typographic fallback the wall had. */
+.hw26-sponsor img.hw26-mark--w01tek {
+  height: clamp(17px, 1.8vw, 23px);
+}
+
+/* Wide, and a plate rather than a cut-out: white type on the channel's own
+   orange, so the whole rectangle is ink. Sized under the row's base for the
+   same reason EuroTech is above, and framed for the same reason it is not —
+   a plate that is small enough reads as a mark on its own colour, and a
+   hairline round it only reads as a crop. */
+.hw26-sponsor img.hw26-mark--przygody {
+  height: clamp(32px, 2.7vw, 38px);
 }
 
 /* -------------------------------------------------------------
@@ -1629,57 +2879,6 @@ html[data-theme='light'] .hw26-sponsor-lead p {
 }
 
 /* -------------------------------------------------------------
-   Theme toggle — a small stamped control, fixed so the page can
-   be flipped from anywhere. Dark is the default; the button names
-   the mode it will switch to.
-   ------------------------------------------------------------- */
-
-.hw26-theme {
-  position: fixed;
-  z-index: 120;
-  right: 1.1rem;
-  bottom: 1.1rem;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.55rem 0.85rem;
-  background: var(--hw-pit);
-  border: 1px solid var(--hw-line-hi);
-  color: var(--hw-mint);
-  font-family: var(--font-jetbrains-mono), monospace;
-  font-size: 9px;
-  font-weight: 500;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  cursor: pointer;
-  transition:
-    border-color 220ms var(--hw-ease),
-    background 220ms var(--hw-ease);
-}
-
-.hw26-theme:hover {
-  border-color: var(--hw-mint);
-  background: var(--hw-steel);
-}
-
-.hw26-theme:focus-visible {
-  outline: 2px solid var(--hw-mint);
-  outline-offset: 3px;
-}
-
-.hw26-theme i {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: currentcolor;
-}
-
-/* Keep the plate's own right-hand label clear of the fixed toggle. */
-.hw26-endplate-foot {
-  padding-right: calc(var(--hw-gutter) + 7rem);
-}
-
-/* -------------------------------------------------------------
    Scroll reveal
    ------------------------------------------------------------- */
 
@@ -1710,32 +2909,6 @@ html[data-theme='light'] .hw26-sponsor-lead p {
    Responsive + accessibility floor
    ------------------------------------------------------------- */
 
-@media (max-width: 900px) {
-  .hw26-ufo {
-    top: auto;
-    bottom: 4rem;
-    right: -2rem;
-    width: min(230px, 58vw);
-    opacity: 0.75;
-  }
-  .hw26-ufo-beam {
-    height: clamp(120px, 22vh, 220px);
-  }
-  .hw26-plate--a,
-  .hw26-plate--b {
-    grid-column: span 12;
-  }
-  .hw26-plate--c,
-  .hw26-plate--d,
-  .hw26-plate--e {
-    grid-column: span 6;
-  }
-  .hw26-hero-corner--bl,
-  .hw26-hero-corner--br {
-    display: none;
-  }
-}
-
 @media (prefers-reduced-motion: reduce) {
   .hw26 *,
   .hw26 *::before,
@@ -1747,5 +2920,17 @@ html[data-theme='light'] .hw26-sponsor-lead p {
   .hw26-reveal {
     opacity: 1;
     transform: none;
+  }
+
+  /* The blanket rule above already parks these on their base frame, but the
+     CRT flicker is the one animation on the page whose base frame is also its
+     brightest — so saying it outright costs a line and removes any question
+     about what a reader who asked for stillness gets. The tube's static optics
+     stay: bloom, grille, convergence and scanlines do not move, and the
+     timeline's pin is declined in script by the same query. */
+  .hw26-hero-title,
+  .hw26-hero-tittle {
+    animation: none;
+    opacity: 1;
   }
 }
