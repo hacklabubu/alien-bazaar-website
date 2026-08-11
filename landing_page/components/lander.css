@@ -121,6 +121,40 @@ html[data-theme='light'] .hw26 {
   );
 }
 
+/* The same paper over a box twice the height.
+ *
+ * The mask above is measured against its own container, and the figures in it
+ * are tuned to one section's proportions: the ellipse reaches 70% of the box
+ * from a centre at 40% of it, which puts the fully-opaque band across the
+ * upper-middle and lets the bottom edge go. On the inventory — one section
+ * carrying both the categories and the add-ons — that box is roughly 6800px
+ * against the partner wall's ~1500, and 40% of it lands somewhere inside the
+ * robot arms. Left alone, the add-ons sit out past three quarters of the
+ * ellipse and come out at about a fifth of the ink the top of the sheet gets,
+ * which is the falloff reading as "the grid stopped" rather than as an edge.
+ *
+ * So: the reach goes to 95% and the centre to 45%, which holds the opaque
+ * band from about a sixth of the way down to about three quarters — the
+ * bottom of the categories and the whole of the add-ons — and leaves both far
+ * edges softened rather than either of them cut. The stops are the base
+ * rule's, unchanged; only the ellipse it is measured on has moved.
+ *
+ * Its own modifier rather than an edit to `.hw26-grid`, because the partner
+ * wall is still one ordinary section and the original figures are still the
+ * right ones for a box that size. */
+.hw26-grid--tall {
+  -webkit-mask-image: radial-gradient(
+    ellipse 100% 95% at 50% 45%,
+    #000 30%,
+    transparent 100%
+  );
+  mask-image: radial-gradient(
+    ellipse 100% 95% at 50% 45%,
+    #000 30%,
+    transparent 100%
+  );
+}
+
 /* Eyebrow / technical label. The smallest type on the page and
    the one that carries the machine vernacular. */
 .hw26-label {
@@ -192,17 +226,22 @@ html[data-theme='light'] .hw26 {
   min-width: 0;
 }
 
-/* The line some groups open with, under the title and above the cells.
-   Currently one of them: the print deadline, which is an instruction for the
-   whole of 3D Printers and not a fact about the print farm cell it used to
-   hang off. See ADDON_GROUPS in lander.tsx.
+/* The line a group opens with, under the title and above the cells. Both of
+   them have one: the print deadline, which is an instruction for the whole of
+   3D Printers and not a fact about the print farm cell it used to hang off,
+   and what Components will hand out during the weekend. See ADDON_GROUPS in
+   lander.tsx.
 
-   Set at the brief's body size, not the cell caption's 0.82rem. A caption is
-   hung off the object above it and reads as a footnote to that one thing;
-   this is the subsection's opening line, has to read as being about
-   everything under it, and under a 3.75rem title anything caption-sized reads
-   as type that has fallen out of a card. Bone rather than snow keeps it a
-   step under the title all the same.
+   Back down to the cell caption's size, and the box is why. It used to be set
+   at the brief's body size on the argument that a subsection's opening line
+   has to read as being about everything under it, and that under a 3.75rem
+   title anything caption-sized reads as type that has fallen out of a card.
+   The box answers both without the size: a lit panel under a title is
+   unmissable at any weight, and type that is inside something cannot read as
+   having fallen out of it. What the extra size buys now is a callout loud
+   enough to compete with the heading over it, so it goes back. The colour and
+   the box are further down, on the rule these share with
+   `.hw26-head-intro`.
 
    A `ch` measure for the same reason the brief has one — it is monospace, the
    constraint is a character count, and a sentence run across the full 1440px
@@ -215,10 +254,17 @@ html[data-theme='light'] .hw26 {
   margin-bottom: 0.6rem;
 }
 
+/* The bottom margin is the group title's, stepped up. It was the same figure
+   `.hw26-cat` carries, which was right while this was a bare line of type —
+   the gap under a sentence and the gap under a heading are the same gap when
+   both are just words. It is a box now, with padding and a ring and a bloom
+   past the ring, and a box's edge sits closer to whatever is under it than a
+   baseline does at the same margin. Half a step more, so the first row of
+   cards clears the glow rather than starting at it. */
 .hw26-cat-intro {
-  margin: 0 0 clamp(1rem, 1.8vw, 1.5rem);
+  margin: 0 0 clamp(1.75rem, 2.6vw, 2.25rem);
   max-width: 60ch;
-  font-size: clamp(0.9rem, 1.05vw, 1.05rem);
+  font-size: clamp(0.82rem, 0.92vw, 0.92rem);
   line-height: 1.7;
   color: var(--hw-bone);
 }
@@ -257,9 +303,15 @@ html[data-theme='light'] .hw26 {
    Section frame
    ------------------------------------------------------------- */
 
+/* Named because the inventory borrows it. The band between two sections is
+   two of these meeting — padding does not collapse — and the inventory, which
+   is now one section holding two heads, has to reproduce that band itself.
+   One figure, two rules, so the seam cannot drift from the real boundaries
+   either side of it. */
 .hw26-section {
+  --hw-section-pad: clamp(5rem, 11vh, 9rem);
   position: relative;
-  padding-block: clamp(5rem, 11vh, 9rem);
+  padding-block: var(--hw-section-pad);
   padding-inline: var(--hw-gutter);
 }
 
@@ -268,6 +320,18 @@ html[data-theme='light'] .hw26 {
   margin-inline: auto;
   width: 100%;
   max-width: 1440px;
+}
+
+/* A second measure under the same section head-to-foot — currently only the
+   add-ons, under the categories. The gap it opens is exactly what a section
+   boundary was worth here before the two were merged: the first one's
+   `padding-block` plus the second one's, which is the whole of the air a
+   reader was reading as "that list ended and another began". Without it the
+   add-ons' rule would land one line under the last row of cards and the two
+   inventories would run together, which is the one thing sharing an element
+   was not supposed to cost. */
+.hw26-inner--stacked {
+  margin-top: calc(2 * var(--hw-section-pad));
 }
 
 /* Section heading block: a rule, then the title. It used to carry a stencil
@@ -317,12 +381,15 @@ html[data-theme='light'] .hw26 {
    `.hw26-head`; that is a baseline flex row and the line would set beside the
    title rather than under it.
 
-   The type is `.hw26-brief p`'s, figure for figure, and deliberately not
-   `.hw26-cat-intro`'s smaller step. A category's line is a caption on a grid;
-   this one is prose about the event in the same register the brief is written
-   in, and it should read as the brief's voice arriving one section later. The
-   64ch measure comes across with it for the reason it was set there: the face
-   is monospace and the constraint is a character count. */
+   The type used to be `.hw26-brief p`'s figure for figure, on the argument
+   that this is prose about the event in the brief's register and should read
+   as the brief's voice arriving one section later. It is a step under that
+   now, and still a step over `.hw26-cat-intro` — the gap between the two is
+   the part that was carrying the argument, and it survives at the smaller
+   pair. The box is what changed the sums: a lit panel does not need to be set
+   large to be read first, and at the old size it was a paragraph in a frame
+   rather than a line in a callout. The 64ch measure stays for the reason it
+   was set: the face is monospace and the constraint is a character count. */
 .hw26-head:has(+ .hw26-head-intro) {
   margin-bottom: 0.9rem;
 }
@@ -330,9 +397,68 @@ html[data-theme='light'] .hw26 {
 .hw26-head-intro {
   margin: 0 0 clamp(2.5rem, 5vw, 4rem);
   max-width: 64ch;
-  font-size: clamp(0.95rem, 1.2vw, 1.15rem);
+  font-size: clamp(0.86rem, 1.04vw, 1rem);
   line-height: 1.8;
   color: var(--hw-bone);
+}
+
+/* Both intro lines, boxed and lit.
+ *
+ * They were bare paragraphs in bone, which is what a subtitle looks like when
+ * it is only a subtitle. These three sentences are not that: each one is a
+ * condition on everything under it — one unit per team, files in by the 18th,
+ * more parts unlocked during the weekend — and a reader who skims past a grey
+ * line under a title has skipped a rule rather than a caption. Put in a lit
+ * box they are the one thing between the title and the grid that is not the
+ * grid, which is the whole job.
+ *
+ * Mint is the page's signal for the counted and the conditional and it is
+ * already spent on exactly this kind of fact — the team cap in the ticker, the
+ * live cell on the wall — so the colour is not a new claim, it is the claim
+ * these lines were already making without saying so.
+ *
+ * A plain rectangle, and the second one on the page: `box-shadow` is painted
+ * inside the element's clip, so the chamfer the rig panels wear would take the
+ * bloom off with the corners exactly the way it takes the countdown panel's
+ * blur off. Straight edges are what buy an effect that has to reach past the
+ * box — see `.hw26-hero-panel` for the other one and the same reason.
+ *
+ * The ring is inset rather than a zero-blur outer spread so the border box is
+ * the whole of the footprint and nothing downstream has to allow for it; the
+ * bloom outside it is the only thing that overruns, and it is 30px of nothing
+ * that catches no pointer.
+ *
+ * The type is untouched — same size, same leading, same measure. The measures
+ * are restated below because they are character counts and `border-box` would
+ * otherwise spend the padding out of the 60 and 64 the notes above set.
+ *
+ * `fit-content` is what turns the measure back into a ceiling. A `<p>` is a
+ * block and takes the whole column whether or not it has anything to put in
+ * it, which was invisible while these were bare lines of type and is not once
+ * they have an edge: "Each team can reserve 1 hardware unit" is thirty-seven
+ * characters and the box round it was drawn at sixty-four, so a third of it
+ * was a lit rectangle containing nothing. Sized to its content the box is the
+ * sentence, which is the only thing it was ever supposed to be around. The
+ * `max-width` rules below stay as the cap they were always written as — they
+ * just stop being the width as well. */
+.hw26-head-intro,
+.hw26-cat-intro {
+  --intro-pad-i: clamp(1rem, 2vw, 1.4rem);
+  width: fit-content;
+  padding: clamp(0.85rem, 1.6vw, 1.15rem) var(--intro-pad-i);
+  color: var(--hw-mint);
+  background: color-mix(in srgb, var(--hw-mint) 8%, var(--hw-steel));
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, var(--hw-mint) 45%, transparent),
+    0 0 30px color-mix(in srgb, var(--hw-mint) 22%, transparent);
+}
+
+.hw26-head-intro {
+  max-width: calc(64ch + 2 * var(--intro-pad-i));
+}
+
+.hw26-cat-intro {
+  max-width: calc(60ch + 2 * var(--intro-pad-i));
 }
 
 /* Exactly one section on the page is centred: the brief, whose copy is a
@@ -860,14 +986,33 @@ html[data-theme='light'] .hw26 {
   white-space: nowrap;
 }
 
+/* The negative delay is where the first burst lands.
+ *
+ * Both slices sit still for the first nine tenths of the cycle and break in
+ * the last tenth, so started from zero the word holds for 3.24s before it
+ * does the one thing it is here to do — long enough that most readers have
+ * scrolled past the hero without ever seeing it. A negative delay starts the
+ * clock already inside the cycle: at −2.74s the 90% mark falls at
+ * 0.90 × 3.6 − 2.74 = 0.5s of real time, and everything after that is the
+ * same 3.6s loop it always was.
+ *
+ * The same figure on both, not a figure each. The two layers are offset by a
+ * tenth of a percent in the keyframes — a at 90%, b at 91% — and that 36ms is
+ * what makes the pair read as one break with a channel lagging rather than as
+ * two words glitching at once. Shifting the clock moves both and keeps it.
+ *
+ * −2.74s lands at 76% of the cycle, which is inside the long still stretch,
+ * so nothing is mid-burst at first paint. */
 .hw26-glitch::before {
   color: #82f5c6;
   animation: hw26-glitch-slice-a 3.6s steps(1) infinite;
+  animation-delay: -2.74s;
 }
 
 .hw26-glitch::after {
   color: #09b2dc;
   animation: hw26-glitch-slice-b 3.6s steps(1) infinite;
+  animation-delay: -2.74s;
 }
 
 @keyframes hw26-glitch-slice-a {
@@ -919,12 +1064,44 @@ html[data-theme='light'] .hw26 {
 /* The countdown panel, in the bottom third of the frame where the plate is
    quietest.
 
-   Deliberately a plain rectangle, alone on this page: `clip-path` gives
-   `backdrop-filter` nothing to sample against, so the chamfer the rig
-   panels wear would take the blur down with the corners. The straight
-   edges are what buy the frosted ground. */
+   Chamfered, like every other plate on the page. It was the one square box
+   here, on the standing claim that `clip-path` leaves `backdrop-filter`
+   nothing to sample and the frosted ground was worth more than the corners.
+   That is no longer true of the engines this ships to — a clipped element
+   keeps its backdrop blur, checked rather than assumed — so the only thing
+   the square corners were still buying was the exception.
+
+   What does not survive the clip is the border. A border is painted on the
+   four edges of the border box and the clip is applied after, so the diagonal
+   comes out bare with two stubs either side of it. Same problem the inventory
+   panels have and the same construction out of it: the plate's own background
+   *is* the outline, and a pseudo-element inset by one edge-width paints the
+   fill on top of it, leaving exactly `--panel-edge` showing all the way round
+   including the diagonal. See the long note on `.hw26-rig`.
+
+   The fill has to stay translucent, which is the one thing this version does
+   that neither the rig nor the FAQ plate does: both of those fill with a solid
+   token, and here the whole point is the photograph coming through. The
+   backdrop filter stays on the panel, so it is the panel's own background —
+   the outline — and the semi-transparent fill above it that the blurred plate
+   shows through.
+
+   28px, the FAQ plate's figure rather than the inventory cell's 34 or the
+   compact cell's 24: this is a wide plate of no great height, which is what
+   that number was cut for.
+
+   The intro callouts are the only square-cornered boxes left, and their reason
+   is a different property — a clipped element still cannot paint a glow
+   outside itself. */
 .hw26-hero-panel {
+  --panel-cut: 28px;
+  --panel-edge: 1px;
+  /* Insetting a 45° chamfer by `e` on every edge shortens its run by
+     (2 − √2)·e — see the note on `.hw26-rig`, where this constant comes
+     from. */
+  --panel-cut-inner: calc(var(--panel-cut) - 0.585786 * var(--panel-edge));
   position: relative;
+  isolation: isolate;
   /* Above the stage, which means above the cutout too — the panel is the
      one thing in the hero that is in front of the people in the picture. */
   z-index: 2;
@@ -960,11 +1137,42 @@ html[data-theme='light'] .hw26 {
   --hw-on-mint: #04120c;
   color: #ffffff;
 
-  background: rgba(6, 10, 8, 0.5);
-  border: 1px solid rgba(255, 255, 255, 0.16);
+  /* The outline, not the fill — the fill is on `::before`. Same ink the
+     `border` used to be drawn in. */
+  background: rgba(255, 255, 255, 0.16);
+  clip-path: polygon(
+    0 0,
+    calc(100% - var(--panel-cut)) 0,
+    100% var(--panel-cut),
+    100% 100%,
+    var(--panel-cut) 100%,
+    0 calc(100% - var(--panel-cut))
+  );
   /* Prefixed first: Safari has never unprefixed this one. */
   -webkit-backdrop-filter: blur(6px) saturate(130%);
   backdrop-filter: blur(6px) saturate(130%);
+}
+
+/* The fill, one edge-width inside the outline in the same shape. `z-index: -1`
+   puts it above the panel's own background and below the panel's content,
+   which is the layer a negative-index child paints on — so it covers the
+   outline everywhere except the one pixel it is inset by, and the countdown
+   sits on top of it either way. Translucent, because the frosted photograph
+   underneath is the ground. */
+.hw26-hero-panel::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: var(--panel-edge);
+  background: rgba(6, 10, 8, 0.5);
+  clip-path: polygon(
+    0 0,
+    calc(100% - var(--panel-cut-inner)) 0,
+    100% var(--panel-cut-inner),
+    100% 100%,
+    var(--panel-cut-inner) 100%,
+    0 calc(100% - var(--panel-cut-inner))
+  );
 }
 
 /* The claim above the clock. Set at twice label size — it is a statement the
@@ -1219,6 +1427,18 @@ button.hw26-apply {
 .hw26-ticker span b {
   color: var(--hw-mint);
   font-weight: 500;
+}
+
+/* The city, lifted out of the address. Snow and heavy is the only emphasis
+   left that is not the accent — mint is the team count's and nothing else's
+   — so the band can say the one word that decides whether the rest of the
+   line matters to you without spending the signal colour on a place. `i`
+   because `b` is already the mint's element here; the slant is turned off,
+   the tag is doing nothing but carrying a hook. */
+.hw26-ticker span i {
+  color: var(--hw-snow);
+  font-style: normal;
+  font-weight: 700;
 }
 
 @keyframes hw26-marquee {
@@ -1628,6 +1848,35 @@ button.hw26-apply {
   opacity: 0.36;
   filter: grayscale(0.05) contrast(1.1);
   transform: scale(1.05);
+}
+
+/* The one plate that is not a picture of the thing the cell names — the
+   Components card, whose shot is a shelf and not a machine. See `blurPhoto`.
+   Out of focus so it reads as ground and stops short of being a photograph:
+   the cell's whole claim is that what is coming is not announced, and a
+   legible shelf invites the reader to inventory it.
+
+   The greyscale and contrast are restated rather than dropped, because
+   `filter` is one property and a second declaration replaces the list. Both
+   states carry their own figures for the same reason, so the blur survives
+   the hover instead of being lifted by it — hover is allowed to bring the
+   colour back, not the focus.
+
+   The scale is on the image and not on the wrapper, which already animates
+   its own transform on hover. Blur samples past the edge of the source and
+   comes back transparent there, so an unscaled plate would fade out a few
+   pixels inside its own outline; oversizing the picture inside the frame puts
+   that soft border outside the clip. */
+.hw26-rig--blur .hw26-rig-photo {
+  filter: grayscale(0.75) contrast(1.25) blur(9px);
+}
+
+.hw26-rig--blur:is(:hover, .hw26-rig--active) .hw26-rig-photo {
+  filter: grayscale(0.05) contrast(1.1) blur(9px);
+}
+
+.hw26-rig--blur .hw26-rig-photo img {
+  transform: scale(1.14);
 }
 
 .hw26-rig-photo img {
@@ -2861,12 +3110,15 @@ button.hw26-apply {
   color: var(--hw-bone);
 }
 
-/* The page's inline link, and currently its only one. Everything else that
-   goes somewhere is a plate or a button; this is an address inside a
-   sentence, so it is marked the way an address in a sentence is marked —
-   the accent colour and a hairline under it at the weight the rest of the
-   page's lines are drawn at, held off the baseline far enough to clear the
-   descenders in a monospace face. */
+/* The page's inline link. Everything else that goes somewhere is a plate or a
+   button; this is an address inside a sentence, so it is marked the way an
+   address in a sentence is marked — the accent colour and a hairline under it
+   at the weight the rest of the page's lines are drawn at, held off the
+   baseline far enough to clear the descenders in a monospace face.
+
+   The FAQ's mailto is the one that wears it. `.hw26-spec-link` below is the
+   same underline without the accent, for the two links that sit inside a value
+   in the spec list rather than inside prose. */
 .hw26-link {
   color: var(--hw-mint);
   text-decoration: underline;
@@ -2880,6 +3132,35 @@ button.hw26-apply {
 }
 
 .hw26-link:focus-visible {
+  outline: 2px solid var(--hw-mint);
+  outline-offset: 2px;
+}
+
+/* The two organizer names in the spec list. Underlined and otherwise nothing:
+   `color: inherit` keeps them the silver the rest of the value is set in.
+
+   `.hw26-link`'s mint would be wrong here for the reason the mint is right
+   there — the accent is loud on purpose, and it earns that inside a paragraph
+   where a link is the only thing in the sentence that goes anywhere. This is a
+   two-word value in a list of one-line facts, sitting a few pixels under a
+   date and a venue, and two mint words in that column would read as the
+   loudest fact in the block rather than as the quietest. The underline is the
+   whole affordance, which is what an underline is for.
+
+   Mint arrives on hover, where the rest of the page puts it. */
+.hw26-spec-link {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.22em;
+  transition: color 300ms var(--hw-ease);
+}
+
+.hw26-spec-link:hover {
+  color: var(--hw-mint);
+}
+
+.hw26-spec-link:focus-visible {
   outline: 2px solid var(--hw-mint);
   outline-offset: 2px;
 }
@@ -2953,88 +3234,92 @@ button.hw26-apply {
   margin-bottom: 1px;
 }
 
-/* The organizer row is two cells and `auto-fit` gives it two columns on its
-   own. The lead partner row is two as well, but stated rather than fitted: at
-   the 280px track above, a 1440 sheet would fit four of them and the two leads
-   would lay out half a row wide with two lit tracks beside them. Two columns,
-   named, is also the measure the tier is defined by — the small tier below is
-   half of one of these. */
-.hw26-sponsors-lead--partners {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-}
-
-/* The second tier: three tiles at half a lead's width.
+/* Ecosystem Partners: five tiles, one row, one size.
    ................................................................
-   Three tiles on a four-track measure leaves one track over, and the gap
-   between these cells is the container showing through — so that track would
-   come out as a lit rectangle the size of a plate. The wall answers this two
-   ways elsewhere: span the leftover, or shrink the container until there is no
-   leftover. Spanning is wrong *here* specifically, because a tile at two of
-   these tracks is a lead cell and this tier is defined by not being one. So the
-   container shrinks, which is the `--solo` row's bargain further down.
+   This was two rows and two sizes — a two-column lead row for NVIDIA and ESRA
+   and a three-column row at half their linear size under it — plus a paragraph
+   of arithmetic here shrinking the second container so its three tracks fell
+   exactly on the first row's two cells' edges. That alignment was the giveaway:
+   the layout was being engineered back into reading as a single block, which is
+   what it should have been. The tier was the page's, not the organizers'.
 
-   The arithmetic is that row's too. A four-track grid on the full sheet has a
-   track of `(100% − 2px border − 3px gaps) / 4`; three of those plus the two
-   gaps between them plus the container's own two borders is the width below.
+   Five columns, stated rather than fitted. `auto-fit` on the base rule's 280px
+   track happens to give five at 1440, and would give a different number at any
+   other width — and every count that is not five leaves an empty track, which
+   on this container is not empty: the gaps are the `--hw-line` background
+   showing through, so a short row comes out as a lit rectangle the size of a
+   plate. Five children, five tracks, no leftover.
 
-   That figure is exactly half a lead track — `(track_lead − 1px) / 2` resolves
-   to the same `(100% − 5px) / 4` — so these three land on tracks 1, 2 and 3 of
-   the row above them, their edges falling on the lead cells' edges, and the
-   fourth track is never drawn at all. */
-.hw26-sponsors-lead--small {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  width: calc(3 * (100% - 5px) / 4 + 4px);
+   The width calc goes with the row it was reconciling. There is nothing above
+   these cells to line up with any more. */
+.hw26-sponsors-lead--eco {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
 }
 
-/* Half the width does not take the lead cell's clear space with it: at 1440 a
-   lead tile is ~532px of measure inside its padding and one of these is ~244px,
-   so the lead's inset would spend more than a third of the cell on air and
-   leave the mark nowhere to sit. */
-.hw26-sponsors-lead--small .hw26-sponsor-lead {
+/* A fifth of the sheet does not take a half-sheet cell's inset with it: at 1440
+   a track here is ~287px, and the lead padding would spend more than half of
+   that on air and leave the mark nowhere to sit. Inherited from the old small
+   tier, where the same sum was run against ~244px. */
+.hw26-sponsors-lead--eco .hw26-sponsor-lead {
   padding: clamp(1.75rem, 3vw, 2.75rem);
 }
 
 /* The lead-cell image rule sets a height and leaves width alone, which is safe
-   in a cell that wide and is not safe here. `contain` rather than a bare
-   `max-width`, because capping the width of an element whose height is fixed
-   would otherwise squash the mark rather than fit it. */
-.hw26-sponsors-lead--small img {
+   in a cell half a sheet wide and is not safe here. `contain` rather than a
+   bare `max-width`, because capping the width of an element whose height is
+   fixed would otherwise squash the mark rather than fit it. */
+.hw26-sponsors-lead--eco img {
   max-width: 100%;
   object-fit: contain;
 }
 
-/* A lead row holding one cell. The tier is worth a lead plate, but one plate
-   across the sheet is a banner, not one entry in a group — so the same bargain
-   the `--solo` small row strikes: the container shrinks to one slot and the
-   slot keeps the width it has in the two-column row above.
+/* A lead row holding one cell. The Sponsors tier is worth a lead plate, but one
+   plate across the whole sheet is a banner rather than one entry in a group, so
+   the container shrinks to a single slot at half the sheet.
 
    `100%` is the sheet, `2px` is the container's own two borders and `1px` is
-   the single gap between the two lead tracks, so a track is `(100% − 3px) / 2`
-   and this container is that plus its own two borders. Its cell's edges
-   therefore fall on the first lead cell's edges, and the second track is never
-   drawn.
+   one gap, so a half-sheet track is `(100% − 3px) / 2` and this container is
+   that plus its own two borders. It used to be sized so its edge fell on the
+   lead partner row's first cell; that row is gone and the figure stays, because
+   what it was really buying is the half-sheet plate — the alignment was the
+   bonus, not the reason.
 
    The column count is stated because the base row is `auto-fit` on a 280px
    track: at anything over ~561px of container that would open a second track
-   for a single child, which is the lit rectangle this whole arithmetic
-   exists to avoid. */
+   for a single child, which is the lit rectangle this arithmetic exists to
+   avoid. */
 .hw26-sponsors-lead--one {
   grid-template-columns: minmax(0, 1fr);
   width: calc((100% - 3px) / 2 + 2px);
 }
 
-/* Three across on the full sheet: still no leftover track, and still visibly
-   the smaller tile, because the lead row above has already dropped to one
-   column by here. */
-@media (max-width: 900px) {
-  .hw26-sponsors-lead--small {
-    width: auto;
+/* Five is only clean at five and at one — every count between them leaves a
+   track over, and a track over on this container is a lit plate. So each step
+   down closes its own leftover by spanning the last cell into it: three across
+   puts 1-2-3 on the first row and lets the fourth take two tracks so the second
+   row is full, and two across does the same with the fifth. One across has no
+   leftover to close, and the spans are handed back on the way down. */
+@media (max-width: 1100px) {
+  .hw26-sponsors-lead--eco {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .hw26-sponsors-lead--eco > :nth-child(4) {
+    grid-column: span 2;
   }
 }
 
 @media (max-width: 720px) {
-  .hw26-sponsors-lead--partners {
-    grid-template-columns: minmax(0, 1fr);
+  .hw26-sponsors-lead--eco {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .hw26-sponsors-lead--eco > :nth-child(4) {
+    grid-column: auto;
+  }
+
+  .hw26-sponsors-lead--eco > :nth-child(5) {
+    grid-column: span 2;
   }
 
   /* Full width, because the row it is half of is one column here and half of
@@ -3045,10 +3330,14 @@ button.hw26-apply {
   }
 }
 
-/* One across, where a third of a phone is not a tile, it is a stamp. */
+/* One across, where a fifth of a phone is not a tile, it is a stamp. */
 @media (max-width: 480px) {
-  .hw26-sponsors-lead--small {
+  .hw26-sponsors-lead--eco {
     grid-template-columns: minmax(0, 1fr);
+  }
+
+  .hw26-sponsors-lead--eco > :nth-child(5) {
+    grid-column: auto;
   }
 }
 
@@ -3122,28 +3411,42 @@ html[data-theme='light'] .hw26-sponsor-lead:hover {
   width: auto;
 }
 
-/* A stacked lockup carries its weight in two rows, so it needs about
-   1.7x the height of a horizontal mark to sit at the same optical size
-   beside one. */
+/* A stacked lockup carries its weight in two rows, so it needs about 1.5x the
+   height of a horizontal mark to sit at the same optical size beside one — the
+   symbol and the wordmark are stacked, so half its height is spent on each and
+   neither reads at the full figure.
+
+   Re-decided for the five-across row, not scaled into it. At the old lead
+   tile's ~532px this ran 98px tall and covered about 11,500px² of ink, against
+   5,000–6,800 for the three it now stands beside; in a 264px cell that is the
+   one mark in the row asserting a rank the row was flattened to stop
+   asserting. 72px puts it at ~6,200 — inside the spread of the other three
+   rather than at twice their top — and 86px wide in 177px of clear space. */
 .hw26-sponsor-lead img.hw26-mark--stacked {
-  height: clamp(64px, 8.5vw, 98px);
+  height: clamp(48px, 5vw, 72px);
 }
 
 /* Per-logo heights, because equal height is not equal size: these marks pack a
    symbol, a wordmark and sometimes a tagline into very different proportions,
    and the proportion is what decides how large a mark reads.
 
-   The first two are lead cells' figures. The three after them are the small
-   tier's, and they are re-decided rather than scaled — a cell at half the width
-   is not the same cell smaller. At 1440 a lead tile gives a mark ~532px of
-   measure and one of these gives ~244px, so a mark that used most of the lead
-   cell would run into both walls of its own clear space here. */
+   All of them are the Ecosystem row's figures now, and prelint's is the solo
+   Sponsors cell's. Each was re-decided against the cell it sits in rather than
+   scaled into it — a fifth of the sheet is not a half of it made smaller. At
+   1440 a track here gives a mark 177px of clear space, against the ~532px the
+   two-column lead row used to give NVIDIA and ESRA, which is why those two
+   moved furthest when the two tiers became one. */
 
-/* 4.5:1 and heavy — the widest mark on the wall and the one that grows
-   fastest per pixel of height. Held just under the row's base so it does not
-   swamp the cell beside it. */
+/* 4.5:1 with a two-line tagline under the letters — the widest mark in the row
+   and the one that grows fastest per pixel of height. Width is what decides it
+   and not height: at the 54px it carried in a half-sheet cell it measures
+   177px, which is the whole of a track's clear space and touches both walls.
+   34px is 153px wide and leaves the mark somewhere to sit; it also lands its
+   area inside EuroTech's and OFI's rather than above them, which is the same
+   test the stacked mark above is set by. The clamp is a narrow range because
+   this one is pinned by width at every step. */
 .hw26-sponsor-lead img.hw26-mark--esra {
-  height: clamp(36px, 4.6vw, 54px);
+  height: clamp(30px, 2.4vw, 34px);
 }
 
 /* The sponsor tier, in a lead cell since it was promoted out of the small

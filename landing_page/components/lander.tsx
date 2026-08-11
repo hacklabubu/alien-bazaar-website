@@ -50,12 +50,23 @@ import { type HardwareEvent } from '../lib/event'
  * figure seen from the other side — one machine per team — so it is a fact
  * about the floor rather than a second cap, and this page reserves the accent
  * for the number that can cost you a seat.
+ *
+ * `emphasize` is the trailing run of a label that comes up in white and
+ * heavy — the city, and only the city. The address is one label because a
+ * street and a city split across two facts would read as two places, but the
+ * street is where you go once you have already decided and the city is what
+ * decides it, so the two halves of that label are not carrying the same
+ * weight and they should not be set as though they were. A field rather than
+ * a flag, holding the substring itself, so the render does not have to know
+ * where the word ends. It is not `mint`: that accent is spoken for by the
+ * team count and spending it a second time on a place would make the two read
+ * as the same kind of fact.
  */
 const TICKER = [
   { label: '25.09.–27.09.2026.' },
   { label: '20 TEAMS', mint: true },
   { label: '20 HARDWARE UNITS' },
-  { label: 'KOSIARZY 21B, WARSAW' },
+  { label: 'KOSIARZY 21B, WARSAW', emphasize: 'WARSAW' },
 ]
 
 /**
@@ -149,10 +160,18 @@ const TICKER_RUNS = 4
  * open — but the renders they carried were of a generic cobot and a generic
  * humanoid, which is the stand-in problem this section threw out once already,
  * dressed as a decision. A placeholder that shows a picture is claiming a
- * machine; these two are claiming a category. They are flat now, and the rule
- * reads without an exception: a plate means we can show you this one. The
- * dimmed-plate rules stay in the stylesheet for the day a placeholder has a
- * real render behind it.
+ * machine; these two are claiming a category. They are flat now, and on the
+ * floor the rule reads without an exception: a plate means we can show you
+ * this one. The dimmed-plate rules stay in the stylesheet for the day a
+ * placeholder has a real render behind it.
+ *
+ * The add-ons' Components cell is the exception, and it is deliberate: it is
+ * named TBA, it carries a photograph, and it sets neither flag. What the
+ * picture shows is a shelf of parts, not a machine — so it is not standing in
+ * for anything, and the claim the rule guards against is not being made. A
+ * generic cobot render says *this* is the arm; a stock shot of the components
+ * wall says there are components, which is true today and is the one thing
+ * about that cell that is settled. See the note on ADDON_GROUPS.
  */
 type Rig = {
   name: string
@@ -161,6 +180,23 @@ type Rig = {
   photo?: string
   tba?: boolean
   unannounced?: boolean
+  /**
+   * Throws the plate out of focus. One cell sets it: the Components card,
+   * whose picture is a stock shot of a shelf rather than a render of the
+   * machine the cell names — because the cell does not name a machine.
+   *
+   * The plate treatment everywhere else is tuned for a photograph you are
+   * meant to half-read: the shape under the type is the thing being shown,
+   * and it stays sharp. Here there is nothing to read. A legible photograph
+   * of some components would invite the reader to work out *which*
+   * components, which is exactly the question the card's name declines to
+   * answer, so the picture is taken down to texture and left there.
+   *
+   * A field on the item rather than a second flag on the group, and it does
+   * not compose with `unannounced`: that one already has a picture, the `?`,
+   * and it owns the same slot.
+   */
+  blurPhoto?: boolean
   /**
    * The partner whose parts a cell is built out of, as a mark and the sentence
    * that mark stands for. The two "Build your own" slots set it and nothing
@@ -256,7 +292,7 @@ const RIG_GROUPS: { label: string; items: Rig[] }[] = [
       // rather than as the machine's name. Wrapped before the model number
       // instead, it comes out as two whole tokens.
       {
-        name: 'Robodog W01‑TEK',
+        name: 'W01‑TEK',
         units: '1x',
         photo: '/hardware/robodog-w01-tek.jpeg',
       },
@@ -296,8 +332,8 @@ const RIG_GROUPS: { label: string; items: Rig[] }[] = [
  *
  * It used to be two cells and no headings, on the argument that two cells do
  * not need dividing. They no longer are two: printers and parts are being
- * itemised the way the floor above is, and an eight-cell grid with a print
- * bed next to a reel of cable and no line between them is a bin, not an
+ * itemised the way the floor above is, and one flat grid with a print bed
+ * next to a reel of cable and no line between them is a bin, not an
  * inventory. So the same structure as the categories — the group titles are
  * `.hw26-cat` `h3`s, the entry names step down to `h4` — which is also the
  * reading that was always true: these are two facilities, not two objects.
@@ -323,12 +359,22 @@ const RIG_GROUPS: { label: string; items: Rig[] }[] = [
  * farm's beds, and "1x" beside a printer would invite exactly the booking the
  * section says is not on offer.
  *
- * "Parts room" stays a cell, because Components is still a facility with one
- * unannounced shelf beside it rather than a list of named things — the case
- * the printers have just left. What changed for both groups when the labels
- * were promoted to headings is the naming: "3D Printers" and "Components" are
- * the headings now, and a cell echoing its own heading reads as a duplicate
- * rather than as an entry.
+ * Components is one cell. It was two — a "Parts room" card holding the
+ * caption and a placeholder card beside it — and between them they were
+ * saying one thing twice over: there is a shelf, and what will be on it is
+ * not announced. Merged, that is a single card, named TBA for the half that
+ * is open, with the caption under it and a photograph of the shelf behind it.
+ * It also clears the last cell that echoed its own heading, which is the
+ * naming the print farm's cell was dropped for: "Parts room" under
+ * "Components" reads as the heading said twice rather than as an entry.
+ *
+ * That card is dressed like an announced one — full plate, live panel,
+ * caption in the note slot — because it sets neither `tba` nor `unannounced`.
+ * The flags would mute the panel and lay a giant "?" across it as ground, in
+ * the exact slot the plate occupies, and the two would be arguing over the
+ * same square: here the photograph *is* the picture. Why that is allowed to
+ * carry one when the placeholders upstairs are not is on the `Rig` type, and
+ * so is the one thing the plate does not keep, which is focus.
  *
  * `intro` is the other half of that promotion, and it is a *group* field
  * rather than a card one because of what the sentence it holds is doing. The
@@ -340,21 +386,20 @@ const RIG_GROUPS: { label: string; items: Rig[] }[] = [
  * the reader about the room, not to a bed about its queue.)
  * Under the heading it is what it is: how you use this group. It is also the
  * only place that sentence now lives, which is the load-bearing part: the
- * cell it used to sit on is gone. The parts room's caption stays on the parts room,
- * because "use them to extend your hardware" *is* about that shelf, and
- * moving it up would be claiming the same thing for a subsection that has one
- * other card and it is a placeholder. Only `ADDON_GROUPS` carries the field:
+ * cell it used to sit on is gone. Components keeps both halves and keeps them
+ * apart: the intro says what is coming, and "use them to extend your
+ * hardware" stays down on the card, because it is about the shelf rather than
+ * about the subsection. Only `ADDON_GROUPS` carries the field:
  * the categories above render from their own block, none of the six wants an
  * intro line, and a field nobody sets is a field that reads as an oversight.
  *
  * The rest are the machines and the shelves, listed the way the floor lists
  * a manipulator: what it is, and nothing that is not settled. Which is why
- * Components is two cells and not four: `Sensors`, `Motors and drivers` and
+ * Components is one cell and not four: `Sensors`, `Motors and drivers` and
  * `Cables and connectors` were invented to fill a row, and three made-up
- * shelf labels are a claim about what is in the room. The single TBA card in
- * their place is the same object the floor above uses for a category nobody
- * has settled, and it says the honest thing — there is more coming and it is
- * not announced.
+ * shelf labels are a claim about what is in the room. One card that shows the
+ * room and does not name its contents is the honest version of that row —
+ * there is more coming, and it is not announced.
  */
 const ADDON_GROUPS: { label: string; intro?: string; items: Rig[] }[] = [
   {
@@ -369,21 +414,32 @@ const ADDON_GROUPS: { label: string; intro?: string; items: Rig[] }[] = [
     ],
   },
   {
-    label: 'Components',
+    label: 'Extra components',
     intro: 'During the hackathon, you will be able to unlock and pick up additional hardware. More information is coming soon.',
     items: [
-      { name: 'Parts room', note: 'Use them to extend your hardware' },
-      { name: 'TBA', units: '?', tba: true, unannounced: true },
+      {
+        name: 'TBA',
+        photo: '/hardware/components.jpeg',
+        blurPhoto: true,
+        note: 'Use them to extend your hardware',
+      },
     ],
   },
 ]
 
 /**
- * The timeline: five stops between today and the doors opening.
+ * The timeline: six stops, from today to the pitch.
  *
  * The shape of the run in one line. A reader who has just seen what they can
  * book wants to know when they have to have booked it by, and gets that here
  * without reading a table.
+ *
+ * It used to stop at the doors opening, which was the wrong end to stop at: a
+ * line that runs out the moment the event starts answers "when do I have to be
+ * ready" and leaves "and then what" to the reader. The last stop is what the
+ * three days are for — the submission and the pitch — and putting it on the
+ * line makes the whole run one shape with a beginning and an end rather than a
+ * countdown that stops at the beginning.
  *
  * Every stop is now a date. There used to be an undated one — "TBA, secret
  * event" — sitting between the two registration dates, on the argument that
@@ -391,7 +447,7 @@ const ADDON_GROUPS: { label: string; intro?: string; items: Rig[] }[] = [
  * act in rather than ahead of it. It is gone, and what it took with it is the
  * one thing on the line that was not a commitment: a stop that names neither
  * a date nor a thing is a gap in a sequence whose whole content is the order
- * and the intervals. Five stops that all say when are a schedule; five plus a
+ * and the intervals. Stops that all say when are a schedule; a schedule plus a
  * question mark is a schedule with a rumour in it.
  *
  * Its decrypt effect went with it. `SecretLine` and `.hw26-tl-secret` were
@@ -399,10 +455,21 @@ const ADDON_GROUPS: { label: string; intro?: string; items: Rig[] }[] = [
  * one thing the live page still imported out of the switched-off intro — has
  * no caller here at all now.
  *
- * `live` is the mint flag, and only two stops carry it: NOW, because it is
- * the one thing on the line you can act on this second, and 25.09., because
- * it is the moment the hero clock is counting to. The page reserves the
- * accent for what is interactive or counted, and those are exactly the two.
+ * Every date is written the same way, and "25 SEP" is the last one to come
+ * into line: it was "25.09." while it was the one stop the hero clock pointed
+ * at, which made it look like a figure quoted from somewhere else. The ticker
+ * still writes the full dotted range because that is the event's dates as a
+ * fact; on the line, a stop is a label and the labels match.
+ *
+ * `live` is the mint flag, and three stops carry it. NOW, because it is the
+ * one thing on the line you can act on this second. Then the two hard edges of
+ * the event itself: the 25th, which is the moment the hero clock is counting
+ * to, and the 27th, which is the hour the work has to be finished and shown.
+ * The hero counts to the first of those and not the second, so "what the clock
+ * points at" is not the rule and never quite was — the rule is that the accent
+ * goes on what a reader has to do something about. Three of these six are
+ * dates you have to be somewhere or have something ready by; the other three
+ * are dates when something happens to you, and they are silver.
  */
 const TIMELINE: {
   when: string
@@ -422,7 +489,12 @@ const TIMELINE: {
   },
   { when: '15 SEP', what: 'Team creation and applications deadline' },
   { when: '18 SEP', what: 'We announce selected teams' },
-  { when: '25.09.', what: 'The hackathon begins', live: true },
+  { when: '25 SEP', what: 'The hackathon begins', live: true },
+  {
+    when: '27 SEP',
+    what: 'Submission deadline and pitch day in front of investors',
+    live: true,
+  },
 ]
 
 /**
@@ -445,6 +517,12 @@ const TIMELINE: {
  * both inclusive of the tick: the first bracket runs from today to the
  * booking deadline, the second covers selection, and the third is the print
  * queue between the announcement and the doors.
+ *
+ * The sixth stop has no bracket after it and wants none. A bracket is what a
+ * reader is doing between two dates while nothing on the line is happening,
+ * and the stretch between the doors and the pitch is the event — it is the
+ * thing the whole line leads to, not the wait before something. The strip is
+ * three brackets over six stops and stops one short on purpose.
  */
 const TIMELINE_SPANS = [
   { from: 1, to: 3, label: 'Chat, create teams, book hardware' },
@@ -507,6 +585,10 @@ const ORGANIZERS: {
  * leaving the tile out. The tile is then a div rather than an anchor — same
  * plate, same mark, no hover bloom and nothing to press — see `SponsorTile`.
  * A dead link on a partner wall is worse than a tile that does not offer one.
+ * No tile is in that state today: MCHTR was the last one, and the faculty has
+ * since given an address. The optional field and its branch stay, because the
+ * next partner to arrive without a site is a fact about them rather than a
+ * decision this file gets to make.
  *
  * `mark` names a per-logo sizing class. These are marks at wildly different
  * aspect ratios — a 5.3:1 wordmark and a stacked helmet lockup do not read as
@@ -525,12 +607,21 @@ type Partner = {
 }
 
 /**
- * The partners, in two tiers.
+ * The two Ecosystem Partners that are not dealt.
  *
- * They were five equal lead cells. They are not five equal partners, and a
- * wall that says they are is the wall making a claim nobody authorised — so
- * the two leads take the large cell and the other three take one at half its
- * width, which is the same tile at the same treatment and half the sheet.
+ * They were a tier once: these two on a plate twice the linear size of the
+ * other three, on the argument that five equal cells would be the wall making
+ * a claim about rank nobody authorised. Two sizes turned out to be the louder
+ * claim — the organizers publish all five under one heading, and the
+ * stylesheet was carrying a paragraph of arithmetic pulling the small row's
+ * edges onto the large row's so the two would read as one block anyway. They
+ * are one row of five at one size now.
+ *
+ * The array survives the row that mapped over it, because the two are still
+ * the two things the row cannot shuffle: `ecosystem` is dealt again every
+ * visit and these two are pinned to the front of it, so they have to be
+ * referable by name rather than by position in a shuffled list. See the
+ * Ecosystem Partners row in the markup.
  *
  * Every mark is the partner's own file — NVIDIA's straight off their brand
  * page, the rest normalised for the dark plate these cells keep in both
@@ -541,8 +632,8 @@ type Partner = {
  * sentence saying what it supplies, and it was the only one — which meant the
  * wall stated one partner's contribution and left the other four's to be
  * guessed at, and put a paragraph of body copy in one tile of a row of logos.
- * With it gone the wall makes no claim about who gave what, and the two cells
- * are the same object at the same weight, which is what a tier is.
+ * With it gone the wall makes no claim about who gave what, and all five cells
+ * are the same object at the same weight.
  */
 const LEAD_SPONSORS: Partner[] = [
   {
@@ -692,11 +783,10 @@ const HARDWARE_PARTNERS: Partner[] = [
     // publish, and square. Like GHOST's, the file is a symbol with no name in
     // it, so the word is set live underneath rather than cut into a bitmap.
     src: '/sponsors/mchtr.png',
+    href: 'https://www.mchtr.pw.edu.pl/',
     mark: 'hw26-mark--mchtr',
     lockup: 'hw26-sponsor-lockup--mchtr',
     wordmark: 'MCHTR',
-    // No `href`. The faculty gave a mark and a name and no address, and the
-    // wall does not invent one — see the note on `Partner`.
   },
 ]
 
@@ -738,6 +828,7 @@ const SPONSORS: Partner[] = [
   },
 ]
 
+
 /**
  * The questions, in the order they are asked rather than in any order the page
  * would prefer. Cost and start time open the list because they are the two
@@ -774,7 +865,7 @@ const FAQ: { q: string; a: ReactNode }[] = [
   },
   {
     q: 'Can I book more than one hardware unit?',
-    a: 'You can only book one main hardware unit (robot arm, drone, underwater drone, robodog, humanoid or headset). At the event you will be able to unlock extras: cables, Raspberry PIs, camera modules and more.',
+    a: 'You can only book one main hardware unit (robot arm, drone, underwater drone, robodog, humanoid or VR headset). At the event you will be able to unlock extras: cables, Raspberry PIs, camera modules and more.',
   },
   {
     q: 'Can I sleep at the hackathon?',
@@ -785,8 +876,8 @@ const FAQ: { q: string; a: ReactNode }[] = [
     a: "Yes, bring the equipment you need. You can bring your laptop, mouse, screen, hardware and tools. Just be reasonable: it has to fit on your spot on your desk and it shouldn't bother others.",
   },
   {
-    q: 'Will Epikor or Hacklab cover my travel costs?',
-    a: 'Unfortunately, no.',
+    q: 'Will you pay for my trip?',
+    a: 'We will not reimburse travel costs nor accommodation.',
   },
   {
     q: 'Will there be free Wi-Fi?',
@@ -794,7 +885,7 @@ const FAQ: { q: string; a: ReactNode }[] = [
   },
   {
     q: 'Can I take my final project home?',
-    a: 'No. You cannot take any of our hardware home.',
+    a: 'No. Everything created during the hackathon stays here.',
   },
   {
     q: 'I have a different question, how can I contact you?',
@@ -1614,7 +1705,13 @@ function SponsorTile({ partner }: { partner: Partner }) {
   }
 
   return (
-    <a aria-label={partner.name} className='hw26-sponsor' href={partner.href}>
+    <a
+      aria-label={partner.name}
+      className='hw26-sponsor'
+      href={partner.href}
+      rel='noopener noreferrer'
+      target='_blank'
+    >
       {inside}
     </a>
   )
@@ -1722,7 +1819,7 @@ function Faq() {
 function RigCell({ item, order }: { item: Rig; order: number }) {
   return (
     <article
-      className={`hw26-rig hw26-rig--compact${item.unannounced ? ' hw26-rig--tba' : ''} hw26-reveal`}
+      className={`hw26-rig hw26-rig--compact${item.unannounced ? ' hw26-rig--tba' : ''}${item.blurPhoto ? ' hw26-rig--blur' : ''} hw26-reveal`}
       style={{ transitionDelay: `${order * 90}ms` }}
     >
       {/* Ground, not a product shot — see the note on RIG_GROUPS. Empty
@@ -2345,7 +2442,23 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
               >
                 {TICKER.map((item) => (
                   <span key={item.label}>
-                    {item.mint ? <b>{item.label}</b> : item.label}
+                    {/* Three ways a label can be set, and a label takes one:
+                        the mint `b` for the count that can cost you a seat,
+                        the white `i` for the tail of the address, plain
+                        silver for the rest. See TICKER. */}
+                    {item.mint ? (
+                      <b>{item.label}</b>
+                    ) : item.emphasize ? (
+                      <>
+                        {item.label.slice(
+                          0,
+                          item.label.length - item.emphasize.length,
+                        )}
+                        <i>{item.emphasize}</i>
+                      </>
+                    ) : (
+                      item.label
+                    )}
                     <span style={{ opacity: 0.4 }}>{' ///'}</span>
                   </span>
                 ))}
@@ -2412,7 +2525,7 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
               </div>
               <div className='hw26-stat'>
                 <dt>Hardware units</dt>
-                <dd>20</dd>
+                <dd>20+</dd>
               </div>
               <div className='hw26-stat'>
                 <dt>Days</dt>
@@ -2428,39 +2541,94 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
                 <dd>Hacker Bloc, a 3-storey hacker house in Warsaw</dd>
               </div>
               <div className='hw26-spec-row'>
-                <dt>Provided</dt>
-                <dd>3D printers, components and tools</dd>
+                <dt>Time</dt>
+                <dd>25.09.-27.09.2026.</dd>
+              </div>
+              {/* The two names as two links, because they are two houses and a
+                  single link round "Epikor and Hacklab" would be one door onto
+                  either. Underlined and left the silver the rest of the value
+                  is set in — see `.hw26-spec-link`, and the note there on why
+                  the page's mint inline link is the wrong object for a
+                  two-word value in a list of one-line facts.
+
+                  The addresses come off `ORGANIZERS` rather than being typed
+                  again: the tiles at the foot of the page are the same two
+                  links, and two copies of a URL is one of them going stale
+                  unnoticed.
+
+                  New tab, matching the partner wall. The wall's argument holds
+                  here more strongly if anything: this is a line inside a list
+                  of facts about the event, and a reader checking who is behind
+                  it is not leaving. The FAQ's `.hw26-link` stays in place
+                  because it is a `mailto:` and opens a mail client, not a
+                  page. */}
+              <div className='hw26-spec-row'>
+                <dt>Organized by</dt>
+                <dd>
+                  <a
+                    className='hw26-spec-link'
+                    href={ORGANIZERS[0].href}
+                    rel='noopener noreferrer'
+                    target='_blank'
+                  >
+                    Epikor
+                  </a>{' '}
+                  and{' '}
+                  <a
+                    className='hw26-spec-link'
+                    href={ORGANIZERS[1].href}
+                    rel='noopener noreferrer'
+                    target='_blank'
+                  >
+                    Hacklab
+                  </a>
+                </dd>
               </div>
               {/* The last row is centred rather than split, which is the one
                   break in the pattern and is doing a job: the theme is not a
                   spec of the event, it is what the event is for, and a
                   left/right row would file it beside the printers. */}
-              <div className='hw26-spec-row hw26-spec-row--centred'>
+              <div className='hw26-spec-row'>
                 <dt>Theme</dt>
-                <dd>Home automation</dd>
+                <dd>Home automation; choose your problem</dd>
               </div>
             </dl>
           </div>
         </div>
       </section>
 
-      {/* ---------------- HARDWARE CATEGORIES ---------------- */}
-      {/* Its own section rather than a subhead inside the brief above: it
-          takes the same head every other section gets. The five categories
-          are groups *inside* that one head — they are one inventory, and
-          giving each its own display title would read as five unrelated
-          sections. What divides them is the medium heading (`.hw26-cat`),
-          which is the level this page did not have until this section needed
-          it: too big to be lost between the panels, nowhere near the
-          section title. */}
-      {/* The grid is the graph paper this page is drawn on, and it goes on the
-          two sections that are literally sheets of parts: this inventory and
-          the partner wall at the bottom. Skipping everything between them is
-          what keeps it texture — behind every section it stops being noticed,
-          and a page that is uniformly ruled is a page with no ruled sections
-          in it. */}
+      {/* ---------------- THE INVENTORY ---------------- */}
+      {/* One `section` holding two inventories, which is a layout fact rather
+          than an editorial one: the categories and the add-ons keep an `h2`
+          each and read as two lists, and the element around them is single
+          because the graph paper has to be.
+
+          The grid is drawn from its container's top-left corner at a fixed
+          88px pitch and faded by an ellipse measured against that same box.
+          Two sections means two of everything: a tiling origin that only
+          lines up if the first section's height happens to land on a multiple
+          of 88, and a second fade centred on the second box — a seam and two
+          ruled rectangles stacked, rather than one sheet. Nothing about the
+          copy wanted these apart; only the `</section>` did.
+
+          The categories are groups *inside* one head — they are one
+          inventory, and giving each its own display title would read as six
+          unrelated sections. What divides them is the medium heading
+          (`.hw26-cat`), which is the level this page did not have until this
+          section needed it: too big to be lost between the panels, nowhere
+          near the section title. That same level is what divides the add-ons
+          below, which is the other half of why one section works.
+
+          The grid itself is the graph paper this page is drawn on, and it
+          goes on the two places that are literally sheets of parts: this
+          inventory and the partner wall at the bottom. Skipping everything
+          between them is what keeps it texture — behind every section it
+          stops being noticed, and a page that is uniformly ruled is a page
+          with no ruled sections in it. */}
       <section className='hw26-section'>
-        <div aria-hidden='true' className='hw26-grid' />
+        <div aria-hidden='true' className='hw26-grid hw26-grid--tall' />
+
+        {/* ---------------- HARDWARE CATEGORIES ---------------- */}
         <div className='hw26-inner'>
           <div className='hw26-head hw26-reveal'>
             <h2>Hardware categories</h2>
@@ -2488,20 +2656,24 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
             </div>
           ))}
         </div>
-      </section>
 
-      {/* ---------------- ADD-ONS ---------------- */}
-      {/* Directly under the categories because it answers the question the
-          last cell leaves open: you have picked a machine, and these are the
-          two things in the house that are not one. Those two are now group
-          headings rather than cells — the print farm and the parts room have
-          an inventory each, and the medium level (`.hw26-cat`) is what says
-          that the eight cells below are two lists and not one drawer. Same
-          heading cut and same grid as the categories above, which is what
-          makes this section read as the last page of that sheet rather than
-          as a different kind of object. */}
-      <section className='hw26-section'>
-        <div className='hw26-inner'>
+        {/* ---------------- ADD-ONS ---------------- */}
+        {/* Directly under the categories because it answers the question the
+            last cell leaves open: you have picked a machine, and these are the
+            two things in the house that are not one. Those two are group
+            headings rather than cells — the print farm and the parts room have
+            an inventory each, and the medium level (`.hw26-cat`) is what says
+            that the cells below are two lists and not one drawer. Same heading
+            cut and, now literally, the same sheet of graph paper as the
+            categories above, which is what makes this read as the last page of
+            that drawing rather than as a different kind of object.
+
+            A second `.hw26-inner` under the same `section` and not a section of
+            its own — see the note above. `--stacked` is the air the vanished
+            boundary was carrying: two sections meeting put two `padding-block`s
+            between the last card and this head, and padding does not collapse,
+            so the modifier owes the pair back. */}
+        <div className='hw26-inner hw26-inner--stacked'>
           <div className='hw26-head hw26-reveal'>
             <h2>Add-ons</h2>
           </div>
@@ -2513,8 +2685,9 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
               {/* The group's own line, under its title and above its cells —
                   see the note on ADDON_GROUPS for why the print deadline is
                   a fact about the subsection rather than about the first
-                  card in it. Rendered only where a group sets one, which is
-                  currently one of the two. */}
+                  card in it. Both groups set one, and the field stays
+                  optional for the group that arrives without a condition on
+                  it rather than because either of these is that group. */}
               {group.intro ? (
                 <p className='hw26-cat-intro hw26-reveal'>{group.intro}</p>
               ) : null}
@@ -2680,6 +2853,8 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
                 className='hw26-sponsor-lead'
                 href={s.href}
                 key={s.name}
+                rel='noopener noreferrer'
+                target='_blank'
               >
                 <img alt={s.name} className={s.mark} src={s.src} />
               </a>
@@ -2693,44 +2868,40 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
             <span className='hw26-poweredby-rule' />
           </div>
 
-          {/* Same tile-as-link treatment as the organizers below, and here it
-              buys more: the cell was previously dead space beside a link on
-              the artwork alone. Marks are served as-authored — running a
-              partner's logo through the image optimizer would re-encode it,
-              which their brand terms do not allow. */}
-          <div className='hw26-sponsors-lead hw26-sponsors-lead--partners hw26-reveal'>
-            {LEAD_SPONSORS.map((s) => (
+          {/* One row of five, and it used to be two rows of two and three.
+              The split was a tier: NVIDIA and ESRA took a plate twice the
+              linear size of the other three, and the stylesheet carried a
+              paragraph of arithmetic making the small row's three columns land
+              exactly on the large row's two so the two rows read as one block
+              anyway. That is the tell. A layout that has to be engineered back
+              into looking like one row is one row with a rank drawn through
+              it, and the rank was the page's own invention — the organizers
+              publish these five under one heading. So: one grid, five tiles,
+              one size, and the arithmetic goes with the thing it was
+              reconciling.
+
+              Same tile-as-link treatment as the organizers below. Marks are
+              served as-authored — running a partner's logo through the image
+              optimizer would re-encode it, which their brand terms do not
+              allow.
+
+              NVIDIA and ESRA are written out ahead of the map rather than
+              folded into it, which is the whole of how they stay first and
+              second: `ecosystem` is `useShuffled`, dealt again every visit, and
+              anything inside it is somewhere different on the next load. These
+              two are pinned and the three behind them reorder. Keys are the
+              partner names, so React moves the existing nodes rather than
+              rebuilding them — which matters because the reveal observer has
+              already been handed these elements. */}
+          <div className='hw26-sponsors-lead hw26-sponsors-lead--eco hw26-reveal'>
+            {[LEAD_SPONSORS[0], LEAD_SPONSORS[1], ...ecosystem].map((s) => (
               <a
                 aria-label={s.name}
                 className='hw26-sponsor-lead'
                 href={s.href}
                 key={s.name}
-              >
-                <img alt={s.name} className={s.mark} src={s.src} />
-              </a>
-            ))}
-          </div>
-
-          {/* The second tier, directly under the first and sharing its edge:
-              the same tile and the same anchor, at half the width. No subhead
-              of its own — these are Ecosystem Partners too, and a second
-              heading would be inventing a rank the organizers have not
-              published. The size is the whole statement.
-
-              Dealt again per visit, and this row is the easy half of that: it
-              is three tiles on three tracks, or three on one below 480px, so
-              there is never a leftover to close and nothing in the stylesheet
-              selects a position inside it. The order is free to be anything.
-              Keys are the partner names, so React moves the existing nodes
-              instead of rebuilding them — which matters because the reveal
-              observer has already been handed these elements. */}
-          <div className='hw26-sponsors-lead hw26-sponsors-lead--small hw26-reveal'>
-            {ecosystem.map((s) => (
-              <a
-                aria-label={s.name}
-                className='hw26-sponsor-lead'
-                href={s.href}
-                key={s.name}
+                rel='noopener noreferrer'
+                target='_blank'
               >
                 <img alt={s.name} className={s.mark} src={s.src} />
               </a>
@@ -2802,9 +2973,18 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
               hover was already implying.
 
               `aria-label` names the organisation, because the accessible name
-              would otherwise be the alt text. No `target`: every outbound link
-              on this page opens in place, and a sponsor mark is not the one to
-              break that with. */}
+              would otherwise be the alt text.
+
+              `target='_blank'` on every tile on this wall, which is the one
+              place on the page that opens anywhere else. It used to open in
+              place on the argument that the page has one convention and a
+              sponsor mark is not the one to break it — but the reader who
+              clicks a mark here is checking who these people are, not leaving,
+              and the cost of taking them out of a page they were half way down
+              is losing the rest of it. Every other outbound control on the
+              page still opens in place. `rel='noopener noreferrer'` comes with
+              it and is not optional: an opened tab can otherwise reach back
+              through `window.opener` and repoint the one it came from. */}
           <div className='hw26-sponsors-lead hw26-reveal'>
             {ORGANIZERS.map((org) => (
               <a
@@ -2812,6 +2992,8 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
                 className='hw26-sponsor-lead'
                 href={org.href}
                 key={org.name}
+                rel='noopener noreferrer'
+                target='_blank'
               >
                 <img
                   alt={org.name}
