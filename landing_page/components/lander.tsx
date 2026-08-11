@@ -9,6 +9,7 @@ import {
 import Image from 'next/image'
 import {
   type CSSProperties,
+  type RefObject,
   useEffect,
   useLayoutEffect,
   useRef,
@@ -74,11 +75,17 @@ const TICKER_RUNS = 4
  *
  * The closed/open split is gone and so are the two mint labels that carried
  * it. A team choosing hardware is not choosing a set of terms, it is choosing
- * between an arm, a drone, something that goes underwater, a humanoid, and
- * the odds and ends — so the groups are the categories themselves, five of
+ * between an arm, a drone, something that goes underwater, something that
+ * walks and a headset — so the groups are the categories themselves, six of
  * them, each titled in the medium heading cut (`.hw26-cat`) rather than in a
  * 10px eyebrow. One `h2` still; the group titles are the `h3`s under it and
  * the entry names step down to `h4`.
+ *
+ * The order runs by how the machine moves: wheels, then air, then water, then
+ * legs — robodogs beside the humanoids because those are the two groups that
+ * walk, and a quadruped filed under "other" was the leftovers bin holding a
+ * machine the reader is specifically looking for. VR stays last, because it
+ * is the one entry here that is not a machine on the floor at all.
  *
  * One line per entry, and for two of them one short caption under it. Not the
  * blurb that came off this section earlier — that was a paragraph per cell at
@@ -89,7 +96,11 @@ const TICKER_RUNS = 4
  * `units` is the count as the organizers write it — `2x`, `6x`, `?` — so the
  * display figure stays a short glyph run in every cell rather than a sum, and
  * the reader is never asked whether `02` means two or the second of
- * something.
+ * something. It is optional, and an entry the organizers have named without
+ * naming a number simply goes without: the corner stays empty. `?` is not the
+ * spelling for that — it is the placeholder's glyph, it comes with the muted
+ * panel and it says the *entry* is unsettled, which is the opposite of what a
+ * named machine with an open count is saying.
  *
  * The per-entry status tag is gone with the split it described. "Ready to
  * use" against "Custom design by you" was the closed/open distinction said a
@@ -99,8 +110,8 @@ const TICKER_RUNS = 4
  *
  * `photo` is the plate behind the panel, and the rule is now the machine
  * rather than the group: a cell carries the picture of *its own* machine, and
- * the three cells whose machine has not been shot yet carry none. Nine of
- * twelve have one. This replaces the old rule that plates went on a whole
+ * the cells whose machine has not been settled yet carry none. Nine of
+ * thirteen have one. This replaces the old rule that plates went on a whole
  * group or on none of it, which existed because the house had seven stock
  * photographs and dressing robo fish in a picture of a workshop bench was
  * worse than leaving the cell flat. There is a stylized render per machine
@@ -116,11 +127,15 @@ const TICKER_RUNS = 4
  * there are two of them, and only the details are pending; muting that cell
  * would throw away a count the reader can use.
  *
- * An `unannounced` cell can still carry a plate, and two of them do. The
- * machine is picked and photographed; what is not settled is how many and
- * under what name, which is exactly what the `?` and the muted chrome say.
- * The plate rides one step dimmer there than on an announced cell — see the
- * placeholder block in the stylesheet — so the mute survives the picture.
+ * No `unannounced` cell carries a plate any more. Both of them used to, on the
+ * argument that the machine was picked and only the count and the name were
+ * open — but the renders they carried were of a generic cobot and a generic
+ * humanoid, which is the stand-in problem this section threw out once already,
+ * dressed as a decision. A placeholder that shows a picture is claiming a
+ * machine; these two are claiming a category. They are flat now, and the rule
+ * reads without an exception: a plate means we can show you this one. The
+ * dimmed-plate rules stay in the stylesheet for the day a placeholder has a
+ * real render behind it.
  */
 type Rig = {
   name: string
@@ -156,7 +171,6 @@ const RIG_GROUPS: { label: string; items: Rig[] }[] = [
         units: '?',
         tba: true,
         unannounced: true,
-        photo: '/hardware/cobot-tba.png',
       },
     ],
   },
@@ -172,7 +186,24 @@ const RIG_GROUPS: { label: string; items: Rig[] }[] = [
     label: 'Underwater drones',
     items: [
       { name: 'Robo fish', units: '3x', photo: '/hardware/robo-fish.png' },
-      { name: 'Underwater drone', units: '1x' },
+      {
+        name: 'Underwater drone',
+        units: '1x',
+        photo: '/hardware/underwater-drone.png',
+      },
+    ],
+  },
+  {
+    label: 'Robodogs',
+    items: [
+      // Non-breaking hyphen: the cell's measure puts the line break exactly
+      // on it, and "ROBODOG W01-" over "TEK" reads as a hyphenated word
+      // rather than as the machine's name. Wrapped before the model number
+      // instead, it comes out as two whole tokens.
+      { name: 'Robodog W01‑TEK', units: '1x', photo: '/hardware/w01-tek.jpeg' },
+      // Named, on the floor, and no count published — so no count is
+      // printed. See the note on `units` above for why this is not a `?`.
+      { name: 'Unitree Go2' },
     ],
   },
   {
@@ -183,38 +214,63 @@ const RIG_GROUPS: { label: string; items: Rig[] }[] = [
         units: '?',
         tba: true,
         unannounced: true,
-        photo: '/hardware/humanoid.png',
       },
     ],
   },
   {
-    label: 'Other',
-    items: [
-      { name: 'VR', units: '2x', tba: true },
-      // Non-breaking hyphen: the cell's measure puts the line break exactly
-      // on it, and "ROBODOG W01-" over "TEK" reads as a hyphenated word
-      // rather than as the machine's name. Wrapped before the model number
-      // instead, it comes out as two whole tokens.
-      { name: 'Robodog W01‑TEK', units: '1x', photo: '/hardware/w01-tek.jpeg' },
-    ],
+    label: 'VR',
+    items: [{ name: 'VR', units: '2x', tba: true }],
   },
 ]
 
 /**
  * The add-ons: what is on the floor besides a machine to book.
  *
- * Its own section rather than a sixth category, because these are not
+ * Its own section rather than a seventh category, because these are not
  * something a team books one of — the print farm and the parts room are
- * there for everybody, so they get no counts and no group headings. Two
- * cells, the same chrome, and a caption each carrying the only thing that
- * needs saying: the print deadline, and what the components are for.
+ * there for everybody, so nothing here carries a count.
+ *
+ * It used to be two cells and no headings, on the argument that two cells do
+ * not need dividing. They no longer are two: printers and parts are being
+ * itemised the way the floor above is, and an eight-cell grid with a print
+ * bed next to a reel of cable and no line between them is a bin, not an
+ * inventory. So the same structure as the categories — the group titles are
+ * `.hw26-cat` `h3`s, the entry names step down to `h4` — which is also the
+ * reading that was always true: these are two facilities, not two objects.
+ *
+ * The first cell in each group is the facility itself, and it is the one
+ * carrying the caption: the print deadline, and what the parts are for. Both
+ * were their own cell before this split and both kept their copy through it —
+ * what changed is the name, because "3D Printers" and "Components" have been
+ * promoted to the headings above them and a cell echoing its own heading
+ * reads as a duplicate rather than as an entry. "Print farm" and "Parts room"
+ * are what this comment already called them.
+ *
+ * The rest are the machines and the shelves, listed the way the floor lists
+ * a manipulator: what it is, and nothing that is not settled.
  */
-const ADDONS: Rig[] = [
+const ADDON_GROUPS: { label: string; items: Rig[] }[] = [
   {
-    name: '3D Printed objects',
-    note: "Send us your files by 18.09. and we'll print them for you",
+    label: '3D Printers',
+    items: [
+      {
+        name: 'Print farm',
+        note: "Send us your files by 18.09. and we'll print them for you",
+      },
+      { name: 'FDM printers' },
+      { name: 'Resin printer' },
+      { name: 'Large format' },
+    ],
   },
-  { name: 'Components', note: 'Use them to extend your hardware' },
+  {
+    label: 'Components',
+    items: [
+      { name: 'Parts room', note: 'Use them to extend your hardware' },
+      { name: 'Sensors' },
+      { name: 'Motors and drivers' },
+      { name: 'Cables and connectors' },
+    ],
+  },
 ]
 
 /**
@@ -333,16 +389,27 @@ const ORGANIZERS: {
  * decide what to do about it rather than silently printing their name in
  * Orbitron.
  *
+ * `href` *is* optional, and for the opposite reason to `src`. A partner with no
+ * mark is a hole in the wall; a partner with no site is an ordinary fact about
+ * a partner, and the only alternatives to admitting it are guessing a URL or
+ * leaving the tile out. The tile is then a div rather than an anchor — same
+ * plate, same mark, no hover bloom and nothing to press — see `SponsorTile`.
+ * A dead link on a partner wall is worse than a tile that does not offer one.
+ *
  * `mark` names a per-logo sizing class. These are marks at wildly different
  * aspect ratios — a 5.3:1 wordmark and a stacked helmet lockup do not read as
  * the same size at the same height — so optical balance is a decision per file,
- * taken in CSS and pointed at from here.
+ * taken in CSS and pointed at from here. `lockup` is the same idea one box out:
+ * it dresses the icon-plus-word stack described under `wordmark`, which is
+ * tuned to the word in it and cannot be one figure for every partner.
  */
 type Partner = {
   name: string
-  href: string
+  href?: string
   src: string
   mark?: string
+  lockup?: string
+  wordmark?: string
 }
 
 /**
@@ -470,12 +537,14 @@ const HARDWARE_PARTNERS: Partner[] = [
   },
   {
     name: 'GHOST',
-    src: '/sponsors/ghost.png',
-    href: 'https://ghost.put.poznan.pl/',
-    // Line-art badge beside four short lines of type, all in white — the
-    // solid orange block this used to be has been cut away. It is the type
-    // that sets the floor: at the row's height those lines close up.
+    src: '/sponsors/ghost-icon.png',
+    href: 'https://ghostpai.github.io/',
+    // Their official icon, untouched: white line art on the red plate they
+    // publish it on, square. It is not a lockup on its own — no name in it —
+    // so the name is set beneath it in their own face rather than cut into a
+    // second bitmap, which is what `wordmark` below is for.
     mark: 'hw26-mark--ghost',
+    wordmark: 'GHOST',
   },
   {
     name: 'MAB Robotics',
@@ -486,6 +555,23 @@ const HARDWARE_PARTNERS: Partner[] = [
     // 3:1 overall. Wide marks grow fast per pixel of height, so this one now
     // runs under the row's base rather than over it.
     mark: 'hw26-mark--mab',
+  },
+  {
+    // The faculty's full name is the accessible name and the tooltip; the
+    // tile shows "MCHTR", because a small tile that has to carry five Polish
+    // words sets them at caption size and stops being a mark on a wall. The
+    // long form is not lost — it is what a screen reader reads and what a
+    // pointer surfaces.
+    name: 'MCHTR — Wydział Mechatroniki Politechnika Warszawska',
+    // White line art on transparent, keyed off the black-on-white source they
+    // publish, and square. Like GHOST's, the file is a symbol with no name in
+    // it, so the word is set live underneath rather than cut into a bitmap.
+    src: '/sponsors/mchtr.png',
+    mark: 'hw26-mark--mchtr',
+    lockup: 'hw26-sponsor-lockup--mchtr',
+    wordmark: 'MCHTR',
+    // No `href`. The faculty gave a mark and a name and no address, and the
+    // wall does not invent one — see the note on `Partner`.
   },
 ]
 
@@ -630,6 +716,152 @@ function useReveal() {
 }
 
 /**
+ * The inventory cell's hover, given to readers who have no pointer to hover
+ * with.
+ *
+ * Every cell in the two `.hw26-rigs` grids opens under the pointer — the plate
+ * comes up to near full colour, the count goes mint, the outline goes with it.
+ * On a phone none of that had ever been on a screen: `:hover` is a state a
+ * finger cannot enter, so the entire treatment was desktop-only decoration and
+ * the touch reader got the resting plate for the length of the section. This
+ * gives them the same thing along the axis they do have — the cell nearest the
+ * middle of the screen wears it, and scrolling moves it down the grid.
+ *
+ * `(hover: none)` is the whole gate, and it is deliberately not paired with a
+ * width. The question is not how wide the window is, it is whether the reader
+ * can produce a hover at all, and the two answers come apart in both
+ * directions: a tablet at 1200px cannot hover and would be left with the dead
+ * state this exists to fix, while a mouse at 380px can, and would get a second
+ * cell lighting up under its own. Asking the browser the actual question gets
+ * both right. It is also the same query the stylesheet would use, so there is
+ * one definition of "no pointer here" rather than a width in script and a
+ * capability in CSS. Nothing else on the page is touched: where a real hover
+ * exists this hook never arms, never listens, and never writes a class.
+ *
+ * Which cell is nearest is settled on rects, once per frame, over only the
+ * cells that are on screen. The observer is not doing the choosing — it cannot,
+ * "closest to the centre" is not a threshold — it is deciding what is worth
+ * measuring. That matters mostly for the rest of the page: away from the two
+ * grids the intersecting set is empty, so a scroll wakes the frame, finds
+ * nothing to measure, clears the class and goes back to sleep without touching
+ * layout. Scroll is coalesced onto one `requestAnimationFrame` the way the
+ * timeline's pin does it — the handler only ever wakes the loop, and the loop
+ * reads the newest position itself, so a phone firing scroll faster than it
+ * paints cannot queue up work.
+ *
+ * Ties go to DOM order, because `<` keeps the first cell that reached the best
+ * distance. Two cells exactly equidistant is a real position on a one-column
+ * phone grid — the gap between two squares centred on the fold — and without a
+ * rule the class would flip between them on sub-pixel scroll noise.
+ *
+ * The TBA placeholders take part like everything else. They are cells in the
+ * same grid with a plate and a hover of their own (a smaller one, deliberately
+ * — see `.hw26-rig--tba` in the stylesheet), and skipping them would leave a
+ * hole in the middle of the sweep where the light goes out for one square.
+ * Their muted figures are in the CSS, so what they do here is exactly what
+ * they do under a pointer.
+ */
+function useRigFocus(root: RefObject<HTMLDivElement | null>) {
+  useEffect(() => {
+    const rootEl = root.current
+    if (!rootEl) return
+    if (typeof IntersectionObserver === 'undefined') return
+
+    // In DOM order, which is what makes the tie-break below stable. Both grids
+    // — the categories and the add-ons — wear the same cell and behave the
+    // same, so this is one flat list rather than a list per section.
+    const cells = Array.from(
+      rootEl.querySelectorAll<HTMLElement>('.hw26-rig--compact')
+    )
+    if (!cells.length) return
+
+    const touch = window.matchMedia('(hover: none)')
+
+    let frame = 0
+    let armed = false
+    let lit: HTMLElement | null = null
+    const onscreen = new Set<HTMLElement>()
+
+    // One writer for the class, so exactly one cell can carry it and an
+    // unchanged pick does not touch the DOM at all.
+    const light = (next: HTMLElement | null) => {
+      if (next === lit) return
+      lit?.classList.remove('hw26-rig--active')
+      next?.classList.add('hw26-rig--active')
+      lit = next
+    }
+
+    const pick = () => {
+      frame = 0
+      const middle = window.innerHeight / 2
+      let best: HTMLElement | null = null
+      let bestGap = Number.POSITIVE_INFINITY
+      for (const cell of cells) {
+        if (!onscreen.has(cell)) continue
+        const rect = cell.getBoundingClientRect()
+        const gap = Math.abs(rect.top + rect.height / 2 - middle)
+        // Strictly closer, so a tie leaves the earlier cell holding it.
+        if (gap < bestGap) {
+          bestGap = gap
+          best = cell
+        }
+      }
+      light(best)
+    }
+
+    const schedule = () => {
+      if (!frame) frame = requestAnimationFrame(pick)
+    }
+
+    const io = new IntersectionObserver((entries) => {
+      for (const entry of entries) {
+        if (entry.isIntersecting) onscreen.add(entry.target as HTMLElement)
+        else onscreen.delete(entry.target as HTMLElement)
+      }
+      schedule()
+    })
+
+    const arm = () => {
+      if (armed) return
+      armed = true
+      for (const cell of cells) io.observe(cell)
+      window.addEventListener('scroll', schedule, { passive: true })
+      window.addEventListener('resize', schedule)
+      schedule()
+    }
+
+    // Everything the armed state put anywhere comes back off here, the class
+    // included: a cell left lit after the reader has plugged in a mouse or
+    // turned the tablet into a desktop-width window is a cell stuck in a state
+    // nothing can now leave.
+    const disarm = () => {
+      if (!armed) return
+      armed = false
+      io.disconnect()
+      window.removeEventListener('scroll', schedule)
+      window.removeEventListener('resize', schedule)
+      if (frame) cancelAnimationFrame(frame)
+      frame = 0
+      onscreen.clear()
+      light(null)
+    }
+
+    const sync = () => {
+      if (touch.matches) arm()
+      else disarm()
+    }
+
+    sync()
+    touch.addEventListener('change', sync)
+
+    return () => {
+      touch.removeEventListener('change', sync)
+      disarm()
+    }
+  }, [root])
+}
+
+/**
  * The timeline's desktop pin: vertical page scroll spent travelling the line
  * sideways.
  *
@@ -657,6 +889,17 @@ function useReveal() {
  * full travel when it lets go, and that it comes to a stop rather than creeping
  * after the reader has.
  *
+ * None of that is what a reader means when they say the timeline stops them
+ * dead, though: what stops is their own vertical scroll, on one pixel, and
+ * starts again on one pixel at the far end. A frame cannot be stuck gradually,
+ * but it can be *translated* — and a translation over scroll is a speed. So
+ * the page's apparent vertical speed is written by hand across a runway
+ * centred on each of the two boundaries, going from 1:1 to a standstill on the
+ * way in and back on the way out. Half of each runway falls outside the pin,
+ * which is what keeps the offset small and the timeline centred through the
+ * middle. See `glide` and `lift` below; every runway ends on exactly 0, so
+ * nothing is left hanging off its box.
+ *
  * Three cases refuse the pin outright, and they all take the same branch:
  * below the breakpoint the layout is vertical and has nothing to travel;
  * under reduced motion, hijacking the scroll is precisely the thing being
@@ -680,6 +923,9 @@ function useTimelinePin() {
 
     const wide = window.matchMedia('(min-width: 900px)')
     const still = window.matchMedia('(prefers-reduced-motion: reduce)')
+    // The frame the stylesheet sticks. Looked up rather than handed a ref of
+    // its own so the markup does not have to know the driver moves it.
+    const pinEl = portEl.closest<HTMLElement>('.hw26-tl-pin')
 
     let overflow = 0
     let frame = 0
@@ -688,17 +934,40 @@ function useTimelinePin() {
     // Two numbers rather than one because the whole of the smoothing is the
     // gap between them.
     let at = 0
+    // The scroll distance each vertical hand-off is given — half of it before
+    // the boundary and half after — and the frame offset last written, so an
+    // unchanged offset is not rewritten.
+    let runway = 0
+    let lifted = 0
 
     const unpin = () => {
       overflow = 0
+      runway = 0
       at = 0
+      lifted = 0
       sectionEl.removeAttribute('data-pinned')
       sectionEl.style.removeProperty('--tl-pin')
+      // Cleared rather than left stale, and that is load-bearing: the rule that
+      // reads it is keyed on the width, not on `data-pinned`, so a leftover
+      // lead-in would indent the track by half a screen in exactly the states
+      // this branch is for — reduced motion and a screen wide enough to hold
+      // all six stops — where nothing drives the track back off it again.
+      trackEl.style.removeProperty('--tl-lead-start')
       trackEl.style.transform = ''
+      if (pinEl) pinEl.style.transform = ''
     }
 
     const paint = (x: number) => {
       trackEl.style.transform = `translate3d(${x.toFixed(2)}px, 0, 0)`
+    }
+
+    // The frame's own vertical offset, which is the whole of the hand-off.
+    const raise = (y: number) => {
+      if (!pinEl || y === lifted) return
+      lifted = y
+      pinEl.style.transform = y
+        ? `translate3d(0, ${y.toFixed(2)}px, 0)`
+        : ''
     }
 
     // The shape of the sweep: an ease-in-out on progress, defined by its *rate*
@@ -741,16 +1010,101 @@ function useTimelinePin() {
       return v * (t - RAMP / 2)
     }
 
-    // Where the scroll says the track should be, in pixels.
+    // ---- the vertical hand-off ----
+    //
+    // Everything above shapes the *sideways* travel. None of it touches the
+    // thing the reader actually complains about, which is their own scroll:
+    // one pixel before the frame sticks the page is moving up at 1:1, one
+    // pixel after it is not moving at all, and at the far end it goes back to
+    // 1:1 just as abruptly. Two discontinuities in the page's vertical speed,
+    // and no amount of easing on the track can hide them because the track is
+    // not the thing that stopped.
+    //
+    // A stuck box cannot be made to stick gradually — `position: sticky` is a
+    // predicate, not a dial. But the frame can be *translated*, and a
+    // translation over scroll is a speed. So the page's apparent vertical
+    // speed is ours to write, on both sides of the boundary, and what it is
+    // written as is a single smoothstep: `runway` pixels of scroll over which
+    // the page goes from 1:1 to a standstill, and another over which it comes
+    // back.
+    //
+    // The one decision that matters is *where that runway sits*. Putting it
+    // wholly inside the pin — the obvious reading of "ease the pin" — is what
+    // a first pass did, and it does not scale. All the deceleration happens
+    // while the frame is stuck, so every pixel of it comes out of the frame's
+    // own slack: a runway of R costs R/2 of drift, the drift is where the
+    // content sits for the whole middle of the pin, and the frame only has
+    // ~240px of room above its contents at 1440×900. That caps the runway at
+    // about 380px however it is written, and leaves the timeline parked hard
+    // against the top of the screen when it gets there.
+    //
+    // Centring the runway on the boundary instead costs almost nothing. Half
+    // of it is spent *before* the frame sticks, where the frame is still free
+    // and the translate only has to slow it down rather than carry all of it;
+    // half after, where the translate hands the remainder back. The frame is
+    // stuck for the fast half of neither curve, so the peak offset collapses
+    // from R/2 to `ramp(1/2)` = 3/32 of R — a thirteenth of what it was — and
+    // the offset is exactly 0 through the whole middle of the pin, so the
+    // timeline sits dead centre while the line sweeps instead of parked high.
+    // That is what buys a runway four times longer out of *less* drift than
+    // before.
+    //
+    // The bookkeeping, with `s` measured from the pixel the frame sticks and
+    // `u` running 0 → 1 across a runway centred on that pixel:
+    //
+    //   apparent speed   −(1 − smoothstep(u))   entering, both halves
+    //   frame offset     +runway · ramp(u)      u < 1/2, frame still free
+    //                    +runway · (1/2 − glide(u))   u ≥ 1/2, frame stuck
+    //
+    // `glide` is the integral of `1 − smoothstep`, so `glide(0) = 0`,
+    // `glide′(0) = 1` (the runway starts at exactly the speed the page already
+    // had), `glide′(1) = 0` (it arrives at a standstill rather than being cut
+    // off at one) and `glide(1) = 1/2`. That last figure is the invariant the
+    // whole thing rests on: half a runway is exactly the distance a page
+    // decelerating from 1:1 covers, which is why the offset lands on exactly 0
+    // at the far end of each runway and exactly 0 through the hold — three
+    // anchors, none of them approached, all of them assigned. `ramp` is
+    // `u − glide(u)`, which is the same integral read from the other side, and
+    // is the identity that makes the two halves meet without a seam at 3/32.
+    const glide = (u: number) => u - ramp(u)
+
+    // The peak offset, as a share of the runway: `ramp(1/2)`, exactly 3/32.
+    const PEAK = 3 / 32
+
+    // `s` is how far the scroll has run into the section: 0 when the frame
+    // sticks, `travel` when it lets go. One runway is centred on each of those
+    // two pixels; everywhere else — including the whole middle of the pin —
+    // there is no offset at all.
+    const lift = (s: number, travel: number) => {
+      if (runway <= 0) return 0
+      const half = runway / 2
+
+      // Coming in. Below −half the page has not been touched yet; above
+      // +half the frame is stuck and square in its box.
+      if (s < half) {
+        if (s <= -half) return 0
+        const u = (s + half) / runway
+        return s < 0 ? runway * ramp(u) : runway * (0.5 - glide(u))
+      }
+
+      // Going out: the same curve, mirrored, centred on the release.
+      const u = (s - travel + half) / runway
+      if (u <= 0 || u >= 1) return 0
+      return s < travel
+        ? -runway * ramp(u)
+        : runway * (u - 0.5 - ramp(u))
+    }
+
+    // Where the scroll says the track and the frame should be, in pixels.
     const wanted = () => {
       const rect = sectionEl.getBoundingClientRect()
       // The section is one screen plus the overflow, so this is the overflow
       // again — read from layout rather than assumed, since `100svh` and
       // `innerHeight` can disagree while a mobile toolbar is retracting.
       const travel = rect.height - window.innerHeight
-      const progress =
-        travel <= 0 ? 0 : Math.min(1, Math.max(0, -rect.top / travel))
-      return -(shape(progress) * overflow)
+      const s = -rect.top
+      const progress = travel <= 0 ? 0 : Math.min(1, Math.max(0, s / travel))
+      return { x: -(shape(progress) * overflow), y: lift(s, travel) }
     }
 
     // The chase. Each frame closes a fixed *share* of the remaining distance,
@@ -777,7 +1131,12 @@ function useTimelinePin() {
       const dt = Math.min(50, Math.max(1, now - last))
       last = now
 
-      const target = wanted()
+      const { x: target, y } = wanted()
+      // The frame's offset is assigned, never chased. It is a pure function of
+      // the scroll position, so it is exactly 0 on both the pixel the pin takes
+      // hold and the pixel the runway ends — and chasing it would put lag into
+      // the one motion whose entire job is to match the reader's gesture.
+      raise(y)
       const gap = target - at
       if (Math.abs(gap) <= EPSILON) {
         // Settled: land on the target exactly and let the loop die.
@@ -802,9 +1161,51 @@ function useTimelinePin() {
 
     const measure = () => {
       if (!wide.matches || still.matches) return unpin()
+
+      // Where the line starts. Untouched, the track's first tick sits on the
+      // scrollport's left edge — a hand's width from the edge of the screen —
+      // so the first pixel of the pin immediately takes "NOW" off toward it,
+      // and the stop the section opens on is the one stop the reader never
+      // gets to see cross the screen. Leading the track in by the distance
+      // from the port's edge to a third of the way across the viewport starts
+      // it there instead, and gives the first stop a run across before it
+      // leaves. A third rather than the middle: it is far enough in that the
+      // stop is read as arriving rather than as already leaving, and it leaves
+      // the two thirds to its right showing what is coming, which a centred
+      // start spends on empty track.
+      //
+      // Padding rather than a starting translate, because padding is a
+      // *layout* figure and the translate is not: it lands in `scrollWidth`,
+      // which is where `overflow` below comes from, so the pin lengthens by
+      // exactly the lead and every other number in this hook stays as written.
+      // A point that sat at track-relative `x` now sits at `lead + x`, and at
+      // the far end the translate is `-(overflow + lead)`, so it lands on
+      // `x - overflow` — where it landed before. The end of the sweep is
+      // untouched; only the start moved, and the scroll got longer to pay for
+      // it. The rate is untouched too: the sideways distance and the vertical
+      // distance both grow by `lead`, and `shape` is defined on the ratio.
+      //
+      // Whether there is a pin at all is still judged on the track's own
+      // width, with the lead-in taken back off first: on a screen wide enough
+      // to hold all six stops there is nothing to sweep, and a lead-in would
+      // otherwise manufacture a pin whose only content is itself.
+      //
       // `scrollWidth` and `clientWidth` are layout figures and are not moved by
       // the transform already on the track, so the measurement does not have to
       // undo its own effect first.
+      trackEl.style.removeProperty('--tl-lead-start')
+      if (trackEl.scrollWidth <= portEl.clientWidth) return unpin()
+
+      // Clamped at 0 for a port whose left edge is already past the third of
+      // the screen the line is meant to start on. Read from layout rather than
+      // derived, so whatever the box model does with padding on a `max-content`
+      // box is measured and not assumed.
+      const lead = Math.max(
+        0,
+        Math.round(window.innerWidth / 3 - portEl.getBoundingClientRect().left)
+      )
+      trackEl.style.setProperty('--tl-lead-start', `${lead}px`)
+
       const next = Math.max(
         0,
         Math.round(trackEl.scrollWidth - portEl.clientWidth)
@@ -813,11 +1214,51 @@ function useTimelinePin() {
       overflow = next
       sectionEl.style.setProperty('--tl-pin', `${next}px`)
       sectionEl.setAttribute('data-pinned', 'true')
+
+      // How long each hand-off runway gets, held down by three ceilings, all
+      // three re-derived for a runway that straddles its boundary rather than
+      // sitting inside the pin.
+      //
+      // Collision. Only the *inner* half of each runway is inside the pin, at
+      // `[0, runway/2]` and `[travel − runway/2, travel]`, so they meet at
+      // `runway = travel` — twice the room the wholly-inside version had. The
+      // 0.95 is what keeps a hold in the middle rather than a point; even at
+      // exactly 1 the two curves would meet at 0 offset and 0 speed and join
+      // cleanly, so this is margin, not a load-bearing limit.
+      //
+      // Approach. The outer half runs *before* the frame sticks, so it must
+      // fit in the screen the section is climbing: at `runway = innerHeight`
+      // the page starts slowing when the section's top edge is halfway up the
+      // viewport, which is as early as this should ever begin.
+      //
+      // Slack. The peak offset is `PEAK` of the runway, not half of it, and it
+      // is symmetric — the frame dips that far *down* on the way in and that
+      // far *up* on the way out — so the ceiling is the smaller of the two
+      // equal gaps around the centred content, with a tenth held back so the
+      // heading never runs up against the edge of the frame. At 3/32 this
+      // works out at nearly ten runways per unit of slack, and it stops being
+      // the binding constraint at every desktop size the page sees, which is
+      // the whole point of moving the runway.
+      const inner = pinEl?.firstElementChild
+      const room = inner
+        ? Math.max(
+            0,
+            (pinEl!.clientHeight - inner.getBoundingClientRect().height) / 2
+          )
+        : 0
+      runway = pinEl
+        ? Math.round(
+            Math.min(next * 0.95, window.innerHeight, (room * 0.9) / PEAK)
+          )
+        : 0
+
       // A cut, not a chase. Measuring happens on mount, on resize and when the
       // track reflows — none of which is motion the reader performed, and all
       // of which would otherwise slide the line from a position that is no
       // longer where anything is.
-      at = wanted()
+      const now = wanted()
+      at = now.x
+      raise(now.y)
       paint(at)
     }
 
@@ -862,16 +1303,61 @@ function useTimelinePin() {
  * re-encode it, which their brand terms do not allow.
  *
  * There is no `src`-less branch any more — see the note on `Partner` for why
- * that is a decision and not an oversight.
+ * that is a decision and not an oversight. There *is* an `href`-less one, for
+ * the opposite reason given in the same note: that tile is a div, so a reader
+ * is never handed a target that goes nowhere, and it drops out of the tab
+ * order because there is nothing on it to activate.
+ *
+ * `wordmark` is for the partners whose published mark is a bare icon with
+ * no name in it: the word is set live under the icon instead, in the partner's
+ * own face, so the pair reads as the lockup the others ship as a single file.
+ * It is `aria-hidden`, and the `img` loses its alt text in the same branch —
+ * the anchor's `aria-label` already names the organisation, and two more
+ * copies of "GHOST" inside it would be two more chances for a reader to say
+ * it. The alt is empty rather than absent, which is how you say "this image
+ * adds nothing the name has not already said".
+ *
+ * That trade only works while there is an anchor holding the name. On the
+ * link-less tile the `alt` is the only place the organisation is named — the
+ * visible word is `aria-hidden` and a bare `aria-label` on a div is a label on
+ * nothing — so the mark keeps its alt there and the `title` gives a pointer
+ * the same string.
  */
 function SponsorTile({ partner }: { partner: Partner }) {
+  const named = Boolean(partner.href) && Boolean(partner.wordmark)
+
+  const logo = (
+    <img
+      alt={named ? '' : partner.name}
+      className={`hw26-sponsor-logo${partner.mark ? ` ${partner.mark}` : ''}`}
+      src={partner.src}
+    />
+  )
+
+  const inside = partner.wordmark ? (
+    <span
+      className={`hw26-sponsor-lockup${partner.lockup ? ` ${partner.lockup}` : ''}`}
+    >
+      {logo}
+      <span aria-hidden='true' className='hw26-sponsor-wordmark'>
+        {partner.wordmark}
+      </span>
+    </span>
+  ) : (
+    logo
+  )
+
+  if (!partner.href) {
+    return (
+      <div className='hw26-sponsor hw26-sponsor--static' title={partner.name}>
+        {inside}
+      </div>
+    )
+  }
+
   return (
     <a aria-label={partner.name} className='hw26-sponsor' href={partner.href}>
-      <img
-        alt={partner.name}
-        className={`hw26-sponsor-logo${partner.mark ? ` ${partner.mark}` : ''}`}
-        src={partner.src}
-      />
+      {inside}
     </a>
   )
 }
@@ -880,27 +1366,16 @@ function SponsorTile({ partner }: { partner: Partner }) {
  * One cell on the floor, used by both the categories and the add-ons.
  *
  * Shared because the two sections are the same object twice — a chamfered
- * panel with a count, a name and sometimes a caption — and the only thing
- * that differs is how deep in the outline the name sits. Under the
- * categories it is an `h4`, because the category title above it is the `h3`;
- * in the add-ons there is no group title, so the name is the `h3` itself.
- * The level is a prop rather than a guess from context, since JSX cannot ask
- * what heading came before it.
+ * panel with a count, a name and sometimes a caption — and since the add-ons
+ * took group titles of their own, they are the same object at the same depth
+ * too: a group title is the `h3` in both sections and the entry name is the
+ * `h4` under it. The `headingLevel` prop that carried that difference is gone
+ * with the difference; a level nobody varies is a level the markup can state.
  *
  * `order` is only the stagger. Cells fade in a row at a time and 90ms apart,
  * which is the same figure the about cells use.
  */
-function RigCell({
-  headingLevel = 4,
-  item,
-  order,
-}: {
-  headingLevel?: 3 | 4
-  item: Rig
-  order: number
-}) {
-  const Name = headingLevel === 3 ? 'h3' : 'h4'
-
+function RigCell({ item, order }: { item: Rig; order: number }) {
   return (
     <article
       className={`hw26-rig hw26-rig--compact${item.unannounced ? ' hw26-rig--tba' : ''} hw26-reveal`}
@@ -943,7 +1418,7 @@ function RigCell({
         <span className='hw26-label hw26-rig-units'>To be announced</span>
       ) : null}
 
-      <Name className='hw26-rig-name'>{item.name}</Name>
+      <h4 className='hw26-rig-name'>{item.name}</h4>
 
       {item.note ? <p className='hw26-rig-note'>{item.note}</p> : null}
     </article>
@@ -1401,6 +1876,10 @@ function BriefRain() {
 export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
   const root = useReveal()
   const timeline = useTimelinePin()
+  // Hung off the page root the reveal observer already holds, rather than a
+  // ref of its own on the same element — the cells are two sections apart and
+  // the only thing this needs is a node that contains both.
+  useRigFocus(root)
 
   // Two of the partner rows are dealt again on every visit, so no name owns the
   // first plate. Only these two: the sponsor row and the media row hold one
@@ -1519,7 +1998,7 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
               with a claim attached is worth more than a number with a date
               the reader is about to see again. */}
           <p className='hw26-label hw26-hero-when'>
-            The biggest hardware hackathon in Europe starts in:
+            The boldest hardware hackathon in Europe starts in:
           </p>
 
           {/* Straight off the event row. The page had a constant of its own
@@ -1663,25 +2142,30 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
       {/* ---------------- ADD-ONS ---------------- */}
       {/* Directly under the categories because it answers the question the
           last cell leaves open: you have picked a machine, and these are the
-          two things in the house that are not one. No group headings — two
-          cells do not need dividing — so the medium level is skipped here and
-          the entry names sit straight under the `h2`. */}
+          two things in the house that are not one. Those two are now group
+          headings rather than cells — the print farm and the parts room have
+          an inventory each, and the medium level (`.hw26-cat`) is what says
+          that the eight cells below are two lists and not one drawer. Same
+          heading cut and same grid as the categories above, which is what
+          makes this section read as the last page of that sheet rather than
+          as a different kind of object. */}
       <section className='hw26-section'>
         <div className='hw26-inner'>
           <div className='hw26-head hw26-reveal'>
             <h2>Add-ons</h2>
           </div>
 
-          <div className='hw26-rigs'>
-            {ADDONS.map((item, i) => (
-              <RigCell
-                headingLevel={3}
-                item={item}
-                key={item.name}
-                order={i}
-              />
-            ))}
-          </div>
+          {ADDON_GROUPS.map((group) => (
+            <div className='hw26-rig-group' key={group.label}>
+              <h3 className='hw26-cat hw26-reveal'>{group.label}</h3>
+
+              <div className='hw26-rigs'>
+                {group.items.map((item, i) => (
+                  <RigCell item={item} key={item.name} order={i} />
+                ))}
+              </div>
+            </div>
+          ))}
         </div>
       </section>
 

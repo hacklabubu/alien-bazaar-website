@@ -296,14 +296,25 @@ html[data-theme='light'] .hw26 {
    rather than as a choice. So the h2 gets `text-align` too. Both are needed;
    neither does the other's job.
 
-   The rule stays full-bleed on purpose. Every section on the page is opened
-   by the same hairline running the full measure, and that edge is the
-   section's, not the title's — shortening or centring it here would break the
-   page's rhythm far more loudly than a centred title under a full-width rule
-   reads as odd. The title hanging off-centre under a full edge is the
-   intended result, not a leftover. */
+   The rule is dropped here, and only here. A hairline is a left-edge device:
+   it opens a section by drawing the measure the title then hangs off. Under a
+   centred head there is no left edge to open — the full-width rule and the
+   centred title disagree about where the section starts, and the head reads as
+   a title that has drifted out from under its own edge rather than as a block
+   placed on the middle. Every other head on the page keeps its rule; this is
+   the one section whose axis is not the rule's.
+
+   `padding-top` goes with it. That 1rem was only ever the gap holding the
+   title off the hairline above it, so with no hairline it is 1rem of nothing —
+   and worse, it starts the title a rule's-height lower than every neighbour's,
+   which is exactly the drift the removal is meant to fix. Zeroed, the title's
+   cap-line lands where the other sections' rules land and the page's vertical
+   rhythm is unchanged. `margin-bottom` stays: that is the gap to the copy
+   below, which has nothing to do with the rule. */
 .hw26-section--centred .hw26-head {
   justify-content: center;
+  border-top: 0;
+  padding-top: 0;
 }
 
 .hw26-section--centred .hw26-head h2 {
@@ -1170,14 +1181,15 @@ button.hw26-apply {
    machine is rather than by the terms it comes under, which is
    what a reader is actually choosing between.
 
-   Five groups is what forced the middle heading level. Two mint
-   eyebrows could divide a sheet in half; five of them read as
+   Six groups is what forced the middle heading level. Two mint
+   eyebrows could divide a sheet in half; six of them read as
    captions floating over an undifferentiated grid. The group
    title is `.hw26-cat` — Square, white, some three fifths of the
    section head — and it does the dividing on its own, so the hairline
-   rule that came with the eyebrow is gone.
+   rule that came with the eyebrow is gone. The add-ons below take
+   the same title now, so what is described here is both sections.
 
-   Rows come out part-full: 4, 3, 2, 1, 2 against a three-column
+   Rows come out part-full: 4, 3, 2, 2, 1, 1 against a three-column
    grid. That is the data and it is not padded. A group is read
    as a group because a title opens it, not because it fills its
    last row.
@@ -1358,7 +1370,27 @@ button.hw26-apply {
   clip-path: var(--rig-shape-inner);
 }
 
-.hw26-rig:hover {
+/* Hover, and the one state that stands in for it.
+ *
+ * A touch reader never produces `:hover`, so on a phone every rule below this
+ * point was dead code and the plate they saw was the resting state and nothing
+ * else. `.hw26-rig--active` is that same state reached the other way: the
+ * driver in `useRigFocus` hangs it on whichever cell is nearest the middle of
+ * the screen as the reader scrolls, so the treatment arrives by travelling
+ * past a cell instead of by pointing at one.
+ *
+ * Written as `:is(:hover, .hw26-rig--active)` on every rule rather than as a
+ * second block, because the two states are not similar — they are the same
+ * state, and a copy of these figures would be a copy free to drift. `:is()`
+ * takes the specificity of its most specific argument, and a class and a
+ * pseudo-class weigh the same, so each of these selectors is exactly as
+ * specific as the `:hover` it replaces and nothing downstream of it moves.
+ *
+ * The transitions are the base rules' own, which is the other half of the
+ * reason for sharing the selector: the active cell fades up over the same
+ * 620ms the pointer buys, so scrolling through the grid reads as passing a
+ * light rather than as a class landing on a card. */
+.hw26-rig:is(:hover, .hw26-rig--active) {
   background: var(--hw-mint);
 }
 
@@ -1391,7 +1423,7 @@ button.hw26-apply {
     transform 900ms var(--hw-ease);
 }
 
-.hw26-rig:hover .hw26-rig-photo {
+.hw26-rig:is(:hover, .hw26-rig--active) .hw26-rig-photo {
   opacity: 0.36;
   filter: grayscale(0.05) contrast(1.1);
   transform: scale(1.05);
@@ -1416,7 +1448,7 @@ button.hw26-apply {
   transition: color 400ms var(--hw-ease);
 }
 
-.hw26-rig:hover .hw26-rig-no {
+.hw26-rig:is(:hover, .hw26-rig--active) .hw26-rig-no {
   color: var(--hw-mint);
 }
 
@@ -1476,11 +1508,43 @@ button.hw26-apply {
 
    `min-height` stops a row collapsing onto its shortest name. These are a
    grid of plates, and a plate that shrink-wraps its text stops reading as
-   one. It is also what holds the corner the count sits in open — see below. */
+   one. It is also what holds the corner the count sits in open — see below.
+   The inventory cells take a ratio instead, one rule down; this floor is
+   what the add-ons are left standing on. */
 .hw26-rigs .hw26-rig--compact {
   --rig-cut: 24px;
   min-height: clamp(190px, 20vw, 260px);
   justify-content: flex-end;
+}
+
+/* Square, everywhere `.hw26-rig--compact` appears — the inventory groups
+   and the add-ons alike, so the two sections read as one system of cards
+   rather than two shapes.
+
+   A floor height stopped a row collapsing, but it stopped there: the cell's
+   width is a third of the sheet and its height was a constant, so the plate
+   went from nearly square on a phone to a wide letterbox on a desktop and
+   the grid had no proportion of its own. `aspect-ratio` is the same
+   guarantee expressed as a ratio — the height follows the column at every
+   step of 3 → 2 → 1.
+
+   The floor comes off with it, because an explicit ratio and a `min-height`
+   both want to decide the height and on any column wider than 260px the
+   floor would simply be idle. One figure decides, and it is the ratio.
+
+   Nothing has to be made to fit: the tallest content in the set — a
+   three-line name, or a name over a caption — cleared the old 260px box
+   already, and every square is taller than that at every breakpoint. What
+   the height buys is the empty middle, and the middle is the composition:
+   the count pinned in one corner, the name on the opposite edge, and the
+   render between them on the cells that have one. The add-ons have neither
+   a count nor a plate, so their middle is emptier still — a name and a
+   caption hung off the bottom edge of a taller field — but that emptiness
+   now reads as the same held space the rest of the grid keeps, not as a
+   shape the add-ons alone were left out of. */
+.hw26-rigs .hw26-rig--compact {
+  min-height: 0;
+  aspect-ratio: 1 / 1;
 }
 
 /* The count, in the corner. It used to ride directly above the name at the
@@ -1538,7 +1602,7 @@ button.hw26-apply {
    TBA and keeps the live panel, because it has a count on it and muting a
    real number to say "details pending" trades information for mood. */
 .hw26-rigs .hw26-rig--tba,
-.hw26-rigs .hw26-rig--tba:hover {
+.hw26-rigs .hw26-rig--tba:is(:hover, .hw26-rig--active) {
   background: var(--hw-steel-hi);
 }
 
@@ -1546,14 +1610,16 @@ button.hw26-apply {
   color: var(--hw-silver);
 }
 
-/* A placeholder that has a plate. Both TBA cells now carry the render of the
-   machine that will land there, which is a claim the muted chrome has to
-   survive rather than contradict: the picture says we know what it is, the
-   `?` and the silver name say we have not settled how many or what it is
-   called. Left at the announced cells' 16% the plate wins that argument —
-   the panel reads as fully dressed and the mute stops registering — so it
-   sits a step under, at rest and on hover both, and the muting stays the
-   loudest thing about the cell.
+/* A placeholder that has a plate. Neither TBA cell carries one at the moment
+   — both were stripped back to flat panels, because the renders they had were
+   of a generic cobot and a generic humanoid and a placeholder showing a
+   picture is claiming a machine. The rule stays for the day one of them is
+   settled enough to be photographed, and it is the shape that claim has to
+   take: the picture says we know what it is, the `?` and the silver name say
+   we have not settled how many or what it is called. Left at the announced
+   cells' 16% the plate wins that argument — the panel reads as fully dressed
+   and the mute stops registering — so it sits a step under, at rest and on
+   hover both, and the muting stays the loudest thing about the cell.
 
    The hover bloom is kept rather than killed. A cell with a visible picture
    that does not move under the pointer reads as broken, not as reserved; the
@@ -1562,14 +1628,14 @@ button.hw26-apply {
   opacity: 0.1;
 }
 
-.hw26-rig--tba:hover .hw26-rig-photo {
+.hw26-rig--tba:is(:hover, .hw26-rig--active) .hw26-rig-photo {
   opacity: 0.2;
 }
 
 /* The "?" holds the numeral's slot, its cut and its baseline, so the rhythm
    across the group does not break on its last row. */
 .hw26-rig--tba .hw26-rig-no,
-.hw26-rig--tba:hover .hw26-rig-no {
+.hw26-rig--tba:is(:hover, .hw26-rig--active) .hw26-rig-no {
   color: var(--hw-line-hi);
 }
 
@@ -1987,6 +2053,18 @@ button.hw26-apply {
        of the copy, not stop inside it and not carry on to the edge of a column
        that has nothing in it. */
     --tl-runout: 12.5rem;
+    /* The lead-in: blank track ahead of the first tick, so the pin opens with
+       the start of the line a third of the way across the screen rather than
+       against the port's left edge. Written by the driver in lander.tsx, which
+       is the only thing that can know where that third of the viewport falls
+       relative to the port, and cleared by the same driver when the pin lets go —
+       there is no pin to justify the indent in the fallback, and this rule is
+       keyed on the width alone, so an uncleared value would simply push the
+       track half a screen right and leave it there. Padding rather than a
+       margin or a starting transform because padding is part of the track's
+       `scrollWidth`, which is exactly the figure the pin's length is measured
+       from: the sweep gets longer by the lead-in instead of faster. */
+    padding-left: var(--tl-lead-start, 0px);
     width: max-content;
     grid-template-columns: repeat(var(--tl-stops), var(--tl-step));
     grid-template-rows: var(--tl-spine) auto;
@@ -2389,35 +2467,35 @@ html[data-theme='light'] .hw26-sponsor-lead:hover {
   height: clamp(56px, 6.6vw, 84px);
 }
 
-/* Five tiles, and the gap between them is the container showing through — so
-   an unfilled track at the end of the last row is not empty space, it is a
-   lit rectangle the size of a tile. `auto-fit` on a min track width picks
-   whatever count the viewport allows, and five divides evenly by exactly two
-   of them: five and one. Every count in between leaves that rectangle.
+/* The gap between tiles is the container showing through — so an unfilled
+   track at the end of the last row is not empty space, it is a lit rectangle
+   the size of a tile, and every column count this row is drawn at has to
+   divide the tiles exactly.
 
-   So the count is stated per breakpoint and the last tile spans whatever the
-   row has left over. A double-width tile with a mark centred in it is the
-   same object as its neighbours; a blank plate is a partner nobody named. */
+   At five it never did: five is prime, so every count between one and five
+   left a hole, and the row closed them by spanning the last tile across
+   whatever was left over. MCHTR makes six, and six is the friendliest number
+   this wall could have been handed — 6, 3, 2 and 1 all divide it — so the
+   spans are gone and the count is simply stated per breakpoint. Nothing here
+   selects a tile by position any more, which also takes the last constraint
+   off the shuffle: the row is dealt fresh per visit, and a rule keyed to
+   `:last-child` was a rule about which tile the deal happened to end on. */
 .hw26-sponsors-rest {
   display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
+  grid-template-columns: repeat(6, minmax(0, 1fr));
   gap: 1px;
   background: var(--hw-line);
   border: 1px solid var(--hw-line);
 }
 
-/* 3 across: rows of 3 + 2, so the last tile takes the spare column. */
+/* 3 across: two full rows. */
 @media (max-width: 1100px) {
   .hw26-sponsors-rest {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
-
-  .hw26-sponsors-rest .hw26-sponsor:last-child {
-    grid-column: span 2;
-  }
 }
 
-/* 2 across: rows of 2 + 2 + 1, and the same span closes the last row. */
+/* 2 across: three full rows. */
 @media (max-width: 720px) {
   .hw26-sponsors-rest {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -2429,10 +2507,6 @@ html[data-theme='light'] .hw26-sponsor-lead:hover {
   .hw26-sponsors-rest {
     grid-template-columns: minmax(0, 1fr);
   }
-
-  .hw26-sponsors-rest .hw26-sponsor:last-child {
-    grid-column: auto;
-  }
 }
 
 /* A row holding one tile. Media partners and Sponsors are a name each so far,
@@ -2440,22 +2514,17 @@ html[data-theme='light'] .hw26-sponsor-lead:hover {
    turns a small tile into a lead cell nobody was given, and one tile in a
    five-track grid leaves four lit rectangles beside it.
 
-   So the row is one track wide instead of five, and the track is exactly the
+   So the row is one track wide instead of six, and the track is exactly the
    width it would have had in the rows above — the container shrinks, not the
    tile. `100%` is the sheet, `2px` is the container's own two borders and the
-   `4px` is the four 1px gaps between five tiles, so the arithmetic is the
-   same one the grid does and the tile lands on the column above it.
-
-   `:last-child` is also `:first-child` here, so the span rules at the
-   narrower breakpoints have to be undone: they would open an implicit second
-   column inside a container only one wide. */
+   `5px` is the five 1px gaps between six tiles, so the arithmetic is the
+   same one the grid does and the tile lands on the column above it. It tracks
+   the wall's count: the hardware row went to six when MCHTR landed, and a
+   solo tile still cut to a fifth of the sheet would sit wider than every tile
+   it is meant to line up with. */
 .hw26-sponsors-rest--solo {
   grid-template-columns: minmax(0, 1fr);
-  width: calc((100% - 2px - 4px) / 5 + 2px);
-}
-
-.hw26-sponsors-rest--solo .hw26-sponsor:last-child {
-  grid-column: auto;
+  width: calc((100% - 2px - 5px) / 6 + 2px);
 }
 
 @media (max-width: 1100px) {
@@ -2525,6 +2594,21 @@ html[data-theme='light'] .hw26-sponsor:hover {
   background: #171a18;
 }
 
+/* The tile for a partner who gave no address. It is a div, so it never takes
+   focus and there is nothing to press — but the hover state is written on the
+   class both wear, and a plate that lights up under the pointer and then does
+   nothing is a broken link with extra steps. Held at rest in both themes, and
+   the cursor is left alone, so the only thing the tile ever says is what it
+   is: a mark on the wall. */
+.hw26-sponsor--static:hover {
+  background: var(--hw-steel);
+  box-shadow: none;
+}
+
+html[data-theme='light'] .hw26-sponsor--static:hover {
+  background: #0f1110;
+}
+
 .hw26-sponsor img.hw26-sponsor-logo {
   height: clamp(30px, 3vw, 40px);
   width: auto;
@@ -2538,17 +2622,113 @@ html[data-theme='light'] .hw26-sponsor:hover {
   height: clamp(52px, 5vw, 68px);
 }
 
-/* Badge plus four short lines of type, and it is the lines that set the
-   floor: at the row's height they fall to about 6px and close up. The floor
-   is high because the narrow layouts are the roomy ones — one tile per row,
-   width to spare — so nothing here is fighting for it.
+/* The lockup: an icon with the name set live under it, for the tiles whose
+   supplied file is a symbol and nothing else. GHOST was the first — their
+   official icon is a square plate with no name in it — and the figures below
+   are theirs; MCHTR wears the same construction with its own two numbers, one
+   block down.
 
-   Up a little on the recut art. The badge is line work on its plate now rather
-   than a solid block, so the mark carries less ink at the same size and can
-   take a few more pixels before it starts shouting; the four lines of type get
-   the benefit. */
-.hw26-sponsor img.hw26-mark--ghost {
-  height: clamp(46px, 4.2vw, 54px);
+   The width is declared once, on the lockup, and everything hangs off it. The
+   icon is square, so a width is also its height and the `height`/`width:auto`
+   the other marks use is the wrong handle here — pinning the width instead is
+   what lets the word below be measured against a known number. `min-width: 0`
+   keeps the flex item from refusing to shrink if a tile ever gets narrower
+   than the mark; nothing in the current grid does, but the tile is a flex
+   column and the default `min-width: auto` is how a mark ends up overflowing
+   one.
+
+   44px is the icon, not the lockup: the word and its leading add about 16 on
+   top, so what the row actually sees is 60 against BMF's 68 and MAB's 46 —
+   which is where a square wants to sit among wordmarks, and the same place the
+   four-line badge this replaces sat at 54. It cannot simply take BMF's number.
+   A solid plate at full saturation is the loudest thing per pixel on a wall of
+   white line art, and it is the only mark here that is filled rather than
+   drawn; at 48 it stopped being a tile in the row and became the thing the row
+   was arranged around. The floor is BMF's floor, because the narrow layouts
+   are where the tiles are widest and nothing is competing for the space. */
+.hw26-sponsor-lockup {
+  --hw26-lockup-icon: clamp(38px, 3.1vw, 44px);
+  --hw26-lockup-track: 0.2515em;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: var(--hw26-lockup-icon);
+  min-width: 0;
+  max-width: 100%;
+}
+
+.hw26-sponsor img.hw26-mark--ghost,
+.hw26-sponsor img.hw26-mark--mchtr {
+  width: 100%;
+  height: auto;
+}
+
+/* The second lockup, and the reason the two figures above are variables
+   rather than constants. MCHTR's mark is the faculty's M, square like GHOST's
+   icon and nothing like it otherwise: hairline outline on transparent against
+   a filled plate at full saturation. GHOST's number is small because a solid
+   plate is the loudest thing per pixel on this wall; line art is the quietest,
+   and at 44px an outlined M reads as a smudge — so the icon runs up where the
+   drawn square marks sit, in BMF's territory, and the word under it is
+   retracked to match the wider box.
+
+   The tracking is measured the same way GHOST's is, on the same rule: the
+   word must set to the icon's width. "MCHTR" in Poppins 300 measures 3.399em
+   untracked against the icon's 1/0.23 = 4.348em, and letter-spacing opens the
+   four gaps between five letters, so s = (4.348 − 3.399) / 4 = 0.2372em. Both
+   numbers are in em against a font size that is a fixed fraction of the icon,
+   so the match holds at every step of the clamp rather than at one width.
+   It comes out a hair wider than GHOST's figure for a word a hair narrower,
+   which is the whole reason this is measured per lockup and not inherited.
+
+   Poppins is the wall's one live-type treatment rather than the faculty's own
+   face, which was not supplied with the mark. A third face on a wall of logos
+   to set five letters nobody asked us to set would be the tile shouting; the
+   treatment GHOST established is already the answer to "this file has no name
+   in it", and this is the same problem. */
+.hw26-sponsor-lockup--mchtr {
+  --hw26-lockup-icon: clamp(46px, 3.9vw, 56px);
+  --hw26-lockup-track: 0.2372em;
+}
+
+/* Poppins Light, uppercase, tracked out until the word measures the icon
+   above it — that is how GHOST set it themselves, and it is the only thing
+   that makes an icon and a word read as one object rather than two things
+   that happen to be stacked.
+
+   The tracking is measured, not chosen. "GHOST" in Poppins 300 sets 3.342em
+   wide untracked, and letter-spacing opens the four gaps between five letters,
+   so the word measures (3.342 + 4s)em; the icon measures 1/0.23 = 4.348em at
+   this font size, and s = (4.348 − 3.342) / 4 = 0.2515em is what closes the
+   difference. Both numbers are in em against a font size that is a fixed
+   fraction of the icon, so the match survives every step of the clamp rather
+   than holding at one width — it comes out inside a hundredth of a pixel at
+   1440 and at the floor.
+
+   Letter-spacing is applied after the last letter as well as between, so the
+   box is a gap wider than the ink and a centred box would hang the word half a
+   gap left. The trailing gap is subtracted back off the end, which puts the
+   ink — not the box — on the icon's centreline and on its width.
+
+   The size is proportional rather than absolute. GHOST's own site sets this
+   word at 16px/26px, but those are their numbers at their scale: 16px under a
+   44px icon is the word shouting over the mark, and this tile sizes everything
+   by CSS height. What carries over is the style — the weight, and 26/16 of
+   leading — on a font size tied to the icon. 0.23 of it lands at 10.1px here,
+   which is where five tracked-out caps read as the base of a mark rather than
+   as a caption under a picture. The leading does a second job at that ratio:
+   the half-line above the caps is the gap between word and icon, which is why
+   the lockup sets none of its own. */
+.hw26-sponsor-wordmark {
+  font-family: var(--font-poppins), sans-serif;
+  font-weight: 300;
+  font-size: calc(var(--hw26-lockup-icon) * 0.23);
+  line-height: 1.625;
+  text-transform: uppercase;
+  letter-spacing: var(--hw26-lockup-track);
+  margin-inline-end: calc(var(--hw26-lockup-track) * -1);
+  white-space: nowrap;
+  color: var(--hw-snow);
 }
 
 /* The full lockup, where this used to be the bare monogram. The monogram
