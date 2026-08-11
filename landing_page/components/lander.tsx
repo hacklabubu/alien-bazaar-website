@@ -9,6 +9,7 @@ import {
 import Image from 'next/image'
 import {
   type CSSProperties,
+  type ReactNode,
   type RefObject,
   useEffect,
   useLayoutEffect,
@@ -21,9 +22,6 @@ import './lander.css'
 // intro.css are untouched and still build — uncomment this line and the
 // <HardwareIntro /> render at the top of the tree to bring it back.
 // import { HardwareIntro } from './intro'
-// The intro itself stays switched off; `useScramble` is the one thing in that
-// file the live page uses — see SecretLine below.
-import { useScramble } from './intro'
 import { type HardwareEvent } from '../lib/event'
 
 /**
@@ -84,8 +82,15 @@ const TICKER_RUNS = 4
  * The order runs by how the machine moves: wheels, then air, then water, then
  * legs — robodogs beside the humanoids because those are the two groups that
  * walk, and a quadruped filed under "other" was the leftovers bin holding a
- * machine the reader is specifically looking for. VR stays last, because it
- * is the one entry here that is not a machine on the floor at all.
+ * machine the reader is specifically looking for. Headsets stay last, because
+ * they are the one group here that is not a machine on the floor at all.
+ *
+ * That group is titled by the object and not by the technology, which is the
+ * shape every other title here already has — "Robot arms", "Drones". Called
+ * "VR" it was naming a technique, and half of what is in it is not that: a
+ * Quest is a VR headset and a HoloLens is a mixed-reality one, and a reader
+ * who came for the HoloLens would be looking for it under a heading that
+ * excludes it. "Headsets" is what both of them are.
  *
  * One line per entry, and for two of them one short caption under it. Not the
  * blurb that came off this section earlier — that was a paragraph per cell at
@@ -102,6 +107,13 @@ const TICKER_RUNS = 4
  * panel and it says the *entry* is unsettled, which is the opposite of what a
  * named machine with an open count is saying.
  *
+ * It is also not in the corner. `units` names the field, but on an
+ * `unannounced` cell what that field holds is not a figure about the machine,
+ * it is the only picture the cell has — so the stylesheet takes the `?` out
+ * of the numeral's corner slot and lays it across the panel as ground, on the
+ * plate's rules and with the plate's hover. A real count stays in the corner
+ * wherever there is one.
+ *
  * The per-entry status tag is gone with the split it described. "Ready to
  * use" against "Custom design by you" was the closed/open distinction said a
  * second time, and under these headings it would be saying it about groups
@@ -110,8 +122,8 @@ const TICKER_RUNS = 4
  *
  * `photo` is the plate behind the panel, and the rule is now the machine
  * rather than the group: a cell carries the picture of *its own* machine, and
- * the cells whose machine has not been settled yet carry none. Nine of
- * thirteen have one. This replaces the old rule that plates went on a whole
+ * the cells whose machine has not been settled yet carry none. Twelve of
+ * fourteen have one. This replaces the old rule that plates went on a whole
  * group or on none of it, which existed because the house had seven stock
  * photographs and dressing robo fish in a picture of a workshop bench was
  * worse than leaving the cell flat. There is a stylized render per machine
@@ -123,9 +135,14 @@ const TICKER_RUNS = 4
  *
  * `tba` is the marker: this exists but is not announced. `unannounced` is the
  * stronger case — the entry *is* the placeholder, so it takes `?` where a
- * count goes and the muted panel. The two are separate because VR is real,
- * there are two of them, and only the details are pending; muting that cell
- * would throw away a count the reader can use.
+ * count goes and the muted panel. Every cell that carries one now carries
+ * both: the headsets used to be the standing example of the weaker case, a
+ * cell flagged TBA that kept a real count and a live panel because only the
+ * details were pending, and they are two named, photographed, counted
+ * machines now. The fields stay separate because they say different things —
+ * `tba` prints the line, `unannounced` mutes the cell — and the day another
+ * machine is on the floor with its model still open, the weaker case is
+ * already spelled out rather than having to be reinvented.
  *
  * No `unannounced` cell carries a plate any more. Both of them used to, on the
  * argument that the machine was picked and only the count and the name were
@@ -144,6 +161,23 @@ type Rig = {
   photo?: string
   tba?: boolean
   unannounced?: boolean
+  /**
+   * The partner whose parts a cell is built out of, as a mark and the sentence
+   * that mark stands for. The two "Build your own" slots set it and nothing
+   * else does, which is the rule rather than the coincidence: a cell that
+   * names a machine is showing you a machine, and a cell that asks a team to
+   * build one has to say what they are building it out of. Arms come from MAB
+   * Robotics, drones from SPRTK.
+   *
+   * A field and not a flag, so the second one cost a file and a line of copy
+   * and no new mechanism.
+   *
+   * Both halves are required together, which is why it is one object and not
+   * two optional fields: a mark with no sentence is an unattributable logo on
+   * a card, and a sentence with no mark is not what this is for. The
+   * stylesheet's placement note is on `.hw26-rig-credit`.
+   */
+  credit?: { src: string; label: string }
 }
 
 const RIG_GROUPS: { label: string; items: Rig[] }[] = [
@@ -163,8 +197,15 @@ const RIG_GROUPS: { label: string; items: Rig[] }[] = [
       {
         name: 'Build your own',
         units: '2x',
-        note: 'Robo arms on a wheeled platform',
+        note: 'Robo arms on a wheeled platform. We provide components and tools, you design and assemble it.',
         photo: '/hardware/robo-arm-byo.png',
+        // The one credited cell on the floor. The parts a team builds this
+        // arm out of are MAB Robotics', so their mark is on it — the same
+        // lockup the partner wall carries, at a fraction of the height.
+        credit: {
+          src: '/sponsors/mab.png',
+          label: 'Parts supplied by MAB Robotics',
+        },
       },
       {
         name: 'TBA',
@@ -179,7 +220,21 @@ const RIG_GROUPS: { label: string; items: Rig[] }[] = [
     items: [
       { name: 'Tbot', units: '2x', photo: '/hardware/tbot.png' },
       { name: 'FPV', units: '1x', photo: '/hardware/drone-fpv.png' },
-      { name: 'Build your own', units: '1x', photo: '/hardware/drone-byo.png' },
+      {
+        name: 'Build your own',
+        units: '1x',
+        note: 'We provide components and tools, you design and assemble it',
+        photo: '/hardware/drone-byo.png',
+        // The white cut of SPRTK's mark rather than the green one the wall
+        // carries. On the wall the mark is a tile and its own colour is part
+        // of what identifies it; here it is a credit in the corner of a panel
+        // whose only two inks are snow and mint, and a green lockup would be
+        // the one thing on the sheet asserting a third.
+        credit: {
+          src: '/sponsors/sprtk-white.png',
+          label: 'Parts supplied by SPRTK',
+        },
+      },
     ],
   },
   {
@@ -200,10 +255,12 @@ const RIG_GROUPS: { label: string; items: Rig[] }[] = [
       // on it, and "ROBODOG W01-" over "TEK" reads as a hyphenated word
       // rather than as the machine's name. Wrapped before the model number
       // instead, it comes out as two whole tokens.
-      { name: 'Robodog W01‑TEK', units: '1x', photo: '/hardware/w01-tek.jpeg' },
-      // Named, on the floor, and no count published — so no count is
-      // printed. See the note on `units` above for why this is not a `?`.
-      { name: 'Unitree Go2' },
+      {
+        name: 'Robodog W01‑TEK',
+        units: '1x',
+        photo: '/hardware/robodog-w01-tek.jpeg',
+      },
+      { name: 'Unitree Go2', units: '1x', photo: '/hardware/robodog-unitree-go2.jpeg' },
     ],
   },
   {
@@ -218,8 +275,15 @@ const RIG_GROUPS: { label: string; items: Rig[] }[] = [
     ],
   },
   {
-    label: 'VR',
-    items: [{ name: 'VR', units: '2x', tba: true }],
+    label: 'Headsets',
+    items: [
+      { name: 'Meta Quest', units: '1x', photo: '/hardware/vr-meta.jpeg' },
+      {
+        name: 'Microsoft HoloLens',
+        units: '1x',
+        photo: '/hardware/vr-holo-lens.jpeg',
+      },
+    ],
   },
 ]
 
@@ -238,55 +302,102 @@ const RIG_GROUPS: { label: string; items: Rig[] }[] = [
  * `.hw26-cat` `h3`s, the entry names step down to `h4` — which is also the
  * reading that was always true: these are two facilities, not two objects.
  *
- * The first cell in each group is the facility itself, and it is the one
- * carrying the caption: the print deadline, and what the parts are for. Both
- * were their own cell before this split and both kept their copy through it —
- * what changed is the name, because "3D Printers" and "Components" have been
- * promoted to the headings above them and a cell echoing its own heading
- * reads as a duplicate rather than as an entry. "Print farm" and "Parts room"
- * are what this comment already called them.
+ * The printers are named machines now, one cell each, and there is no longer
+ * a "Print farm" cell in front of them. That cell was the facility standing in
+ * for its contents while its contents were three invented labels — "FDM
+ * printers", "Resin printer", "Large format" were the same made-up shelf
+ * problem `Components` is described as having below, and the farm was the only
+ * true thing in the group. With five real machines under the heading the farm
+ * *is* the five of them, and a further cell naming the collection they are the
+ * collection of reads as the heading said twice. What it was carrying that is
+ * not in a machine's name — the print deadline — was already off it and up in
+ * `intro` before this, which is why nothing had to be moved to drop it.
+ *
+ * The Carvera is a CNC and not a printer, and it is under this heading anyway
+ * because that is where the organizers put it. "3D Printers" is the name of a
+ * room here rather than a taxonomy, and a reader looking for the machine that
+ * cuts will find it filed with the machines that make.
+ *
+ * None of the five takes a `units`. A count here would be answering a question
+ * nobody is asking: these are not machines a team books one of, they are the
+ * farm's beds, and "1x" beside a printer would invite exactly the booking the
+ * section says is not on offer.
+ *
+ * "Parts room" stays a cell, because Components is still a facility with one
+ * unannounced shelf beside it rather than a list of named things — the case
+ * the printers have just left. What changed for both groups when the labels
+ * were promoted to headings is the naming: "3D Printers" and "Components" are
+ * the headings now, and a cell echoing its own heading reads as a duplicate
+ * rather than as an entry.
+ *
+ * `intro` is the other half of that promotion, and it is a *group* field
+ * rather than a card one because of what the sentence it holds is doing. The
+ * print deadline is not a fact about any one printer — it is the standing
+ * instruction for the whole subsection, true of the Formlabs and the H2D
+ * alike, and hung off the first card it read as a caption on that one card.
+ * (The Carvera is the one machine in the group nobody sends a file to for
+ * printing, and the sentence still belongs to the group: it is addressed to
+ * the reader about the room, not to a bed about its queue.)
+ * Under the heading it is what it is: how you use this group. It is also the
+ * only place that sentence now lives, which is the load-bearing part: the
+ * cell it used to sit on is gone. The parts room's caption stays on the parts room,
+ * because "use them to extend your hardware" *is* about that shelf, and
+ * moving it up would be claiming the same thing for a subsection that has one
+ * other card and it is a placeholder. Only `ADDON_GROUPS` carries the field:
+ * the categories above render from their own block, none of the six wants an
+ * intro line, and a field nobody sets is a field that reads as an oversight.
  *
  * The rest are the machines and the shelves, listed the way the floor lists
- * a manipulator: what it is, and nothing that is not settled.
+ * a manipulator: what it is, and nothing that is not settled. Which is why
+ * Components is two cells and not four: `Sensors`, `Motors and drivers` and
+ * `Cables and connectors` were invented to fill a row, and three made-up
+ * shelf labels are a claim about what is in the room. The single TBA card in
+ * their place is the same object the floor above uses for a category nobody
+ * has settled, and it says the honest thing — there is more coming and it is
+ * not announced.
  */
-const ADDON_GROUPS: { label: string; items: Rig[] }[] = [
+const ADDON_GROUPS: { label: string; intro?: string; items: Rig[] }[] = [
   {
     label: '3D Printers',
+    intro: "Send us your files by 18.09., select a printer and we'll print the items for you before you arrive.",
     items: [
-      {
-        name: 'Print farm',
-        note: "Send us your files by 18.09. and we'll print them for you",
-      },
-      { name: 'FDM printers' },
-      { name: 'Resin printer' },
-      { name: 'Large format' },
+      { name: 'Bambu Lab A1', photo: '/hardware/bambulab-a1.jpeg' },
+      { name: 'Bambu Lab P1S', photo: '/hardware/bambulab-p1s.jpeg' },
+      { name: 'Bambu Lab H2D', photo: '/hardware/bambulab-h2d.jpeg' },
+      { name: 'Formlabs', photo: '/hardware/formlabs.jpeg' },
+      { name: 'Makera Carvera', photo: '/hardware/makera-carvera.jpeg' },
     ],
   },
   {
     label: 'Components',
+    intro: 'During the hackathon, you will be able to unlock and pick up additional hardware. More information is coming soon.',
     items: [
       { name: 'Parts room', note: 'Use them to extend your hardware' },
-      { name: 'Sensors' },
-      { name: 'Motors and drivers' },
-      { name: 'Cables and connectors' },
+      { name: 'TBA', units: '?', tba: true, unannounced: true },
     ],
   },
 ]
 
 /**
- * The timeline: six stops between today and the doors opening.
+ * The timeline: five stops between today and the doors opening.
  *
  * The shape of the run in one line. A reader who has just seen what they can
  * book wants to know when they have to have booked it by, and gets that here
  * without reading a table.
  *
- * The undated stop sits third, between the two registration dates, rather
- * than at the head of the line where it used to be. Registration opens on
- * 1 September and closes on the 15th, and that stretch is the one the reader
- * is being asked to act inside; an unannounced beat reads as something that
- * happens while they are forming a team. Ahead of 1 SEP it would read as a
- * gate before registration rather than an event during it, which is not what
- * it is.
+ * Every stop is now a date. There used to be an undated one — "TBA, secret
+ * event" — sitting between the two registration dates, on the argument that
+ * an unannounced beat belongs inside the stretch the reader is being asked to
+ * act in rather than ahead of it. It is gone, and what it took with it is the
+ * one thing on the line that was not a commitment: a stop that names neither
+ * a date nor a thing is a gap in a sequence whose whole content is the order
+ * and the intervals. Five stops that all say when are a schedule; five plus a
+ * question mark is a schedule with a rumour in it.
+ *
+ * Its decrypt effect went with it. `SecretLine` and `.hw26-tl-secret` were
+ * built for that one line and had no second caller, and `useScramble` — the
+ * one thing the live page still imported out of the switched-off intro — has
+ * no caller here at all now.
  *
  * `live` is the mint flag, and only two stops carry it: NOW, because it is
  * the one thing on the line you can act on this second, and 25.09., because
@@ -298,7 +409,6 @@ const TIMELINE: {
   what: string
   live?: boolean
   cta?: boolean
-  secret?: boolean
 }[] = [
   {
     when: 'NOW',
@@ -310,7 +420,6 @@ const TIMELINE: {
     when: '1 SEP',
     what: 'Registration opens, and the full hardware list is published — subcategories, dimensions, documentation.',
   },
-  { when: 'TBA', what: 'Secret event', secret: true },
   { when: '15 SEP', what: 'Team creation and applications deadline' },
   { when: '18 SEP', what: 'We announce selected teams' },
   { when: '25.09.', what: 'The hackathon begins', live: true },
@@ -327,7 +436,10 @@ const TIMELINE: {
  * subgrids of one grid, so a bracket is placed by naming the rows it spans
  * and lands on its ticks whatever height the stops come out at. Nothing is
  * measured, in script or in CSS, and adding a stop moves the brackets by
- * changing these two numbers and nothing else.
+ * changing these two numbers and nothing else — as does taking one out, which
+ * is what happened when the undated stop went and is why these read 1–3, 3–4
+ * and 4–5 rather than 1–4, 4–5 and 5–6. The stretches they name did not
+ * change; the stops under them are one position earlier.
  *
  * `from` is the stop the stretch starts at and `to` is the stop it ends at,
  * both inclusive of the tick: the first bracket runs from today to the
@@ -335,9 +447,9 @@ const TIMELINE: {
  * queue between the announcement and the doors.
  */
 const TIMELINE_SPANS = [
-  { from: 1, to: 4, label: 'Chat, create teams, book hardware' },
-  { from: 4, to: 5, label: 'Selection process' },
-  { from: 5, to: 6, label: 'We print your requested objects' },
+  { from: 1, to: 3, label: 'Chat, create teams, book hardware' },
+  { from: 3, to: 4, label: 'Selection process' },
+  { from: 4, to: 5, label: 'We print your requested objects' },
 ]
 
 /**
@@ -557,6 +669,19 @@ const HARDWARE_PARTNERS: Partner[] = [
     mark: 'hw26-mark--mab',
   },
   {
+    name: 'Politechnika Wrocławska',
+    // The one mark on this wall that arrives finished: the university's crest
+    // over its own name, both baked into a single portrait file — so unlike
+    // GHOST and MCHTR below it needs no live wordmark under it, and unlike
+    // them it is not square. Two thirds of its height is crest and the last
+    // third is two lines of small type, which is what the sizing note in the
+    // stylesheet is about: at the row's base height that type would be
+    // illegible, so this runs taller than anything else here.
+    src: '/sponsors/pwr.png',
+    href: 'https://pwr.edu.pl/',
+    mark: 'hw26-mark--pwr',
+  },
+  {
     // The faculty's full name is the accessible name and the tooltip; the
     // tile shows "MCHTR", because a small tile that has to carry five Polish
     // words sets them at caption size and stops being a mark on a wall. The
@@ -610,6 +735,77 @@ const SPONSORS: Partner[] = [
     src: '/sponsors/prelint.svg',
     href: 'https://prelint.com/',
     mark: 'hw26-mark--prelint',
+  },
+]
+
+/**
+ * The questions, in the order they are asked rather than in any order the page
+ * would prefer. Cost and start time open the list because they are the two
+ * facts a reader checks before deciding whether the rest of the page is for
+ * them, and both answer in a line; then what they may book, where they will
+ * sleep, what they may bring, who pays for the journey — and the last is the
+ * escape hatch for everything not on the list.
+ *
+ * The start time is written out here as well as being counted down to in the
+ * hero, and the two are the same figure: `EVENT.startsAt` in `lib/event.ts` is
+ * 08:00 on the 25th. A reader who wants the hour rather than the remaining
+ * hours should not have to subtract one from the other.
+ *
+ * The answers are the organisers' own words and are left alone. Everything
+ * else on this page is written copy and reads like it; an FAQ answer is a fact
+ * being stated, and rewriting "Unfortunately, no." into the page's voice would
+ * make it longer and less useful and would risk changing what it says. The
+ * only markup in any of them is the address in the last one, which is a real
+ * link because a mail address that cannot be pressed is a string to copy out
+ * by hand.
+ *
+ * `a` is a node rather than a string for that one entry alone. It is cheaper
+ * than the alternatives — a second optional field for the link, or a parser
+ * over the copy — and it keeps the answers readable as answers.
+ */
+const FAQ: { q: string; a: ReactNode }[] = [
+  {
+    q: 'Is participation in the hackathon free?',
+    a: 'Yes.',
+  },
+  {
+    q: 'What time is it starting?',
+    a: '25.09.2026. at 08:00.',
+  },
+  {
+    q: 'Can I book more than one hardware unit?',
+    a: 'You can only book one main hardware unit (robot arm, drone, underwater drone, robodog, humanoid or headset). At the event you will be able to unlock extras: cables, Raspberry PIs, camera modules and more.',
+  },
+  {
+    q: 'Can I sleep at the hackathon?',
+    a: "Yes, but we won't provide beds or sleeping rooms. You can bring your own sleeping bag or sleeping pad.",
+  },
+  {
+    q: 'Can I bring my own hardware, tools, laptops?',
+    a: "Yes, bring the equipment you need. You can bring your laptop, mouse, screen, hardware and tools. Just be reasonable: it has to fit on your spot on your desk and it shouldn't bother others.",
+  },
+  {
+    q: 'Will Epikor or Hacklab cover my travel costs?',
+    a: 'Unfortunately, no.',
+  },
+  {
+    q: 'Will there be free Wi-Fi?',
+    a: "Yes, there is free 1Gbps Wi-Fi for all participants. Don't expect the highest speeds when 100 people start downloading Docker images!",
+  },
+  {
+    q: 'Can I take my final project home?',
+    a: 'No. You cannot take any of our hardware home.',
+  },
+  {
+    q: 'I have a different question, how can I contact you?',
+    a: (
+      <>
+        Contact us at{' '}
+        <a className='hw26-link' href='mailto:sos@hacklab.so'>
+          sos@hacklab.so
+        </a>
+      </>
+    ),
   },
 ]
 
@@ -951,7 +1147,7 @@ function useTimelinePin() {
       // reads it is keyed on the width, not on `data-pinned`, so a leftover
       // lead-in would indent the track by half a screen in exactly the states
       // this branch is for — reduced motion and a screen wide enough to hold
-      // all six stops — where nothing drives the track back off it again.
+      // all five stops — where nothing drives the track back off it again.
       trackEl.style.removeProperty('--tl-lead-start')
       trackEl.style.transform = ''
       if (pinEl) pinEl.style.transform = ''
@@ -1095,6 +1291,61 @@ function useTimelinePin() {
         : runway * (u - 0.5 - ramp(u))
     }
 
+    // ---- the approach ----
+    //
+    // The sweep does not wait for the pin. `progress` used to be defined only
+    // on the pinned window, `s` in `[0, travel]`, which meant the line sat
+    // dead still through the whole of the section's climb up the screen and
+    // then began the instant the frame locked. Nothing about that is a
+    // *jump* — `shape` starts from a standstill, so the first pixel of the pin
+    // is as gentle as it can be — but it is a coincidence the reader can see:
+    // one motion stops, in the same frame another starts, and the two events
+    // are the same event. The line reads as something the pin switched on.
+    //
+    // So the domain is widened in front of the pin. `lead` is how far above
+    // the viewport's top edge the section's own top edge can be and still be
+    // sweeping — scroll the reader was doing anyway, in ordinary page space,
+    // spent on the same curve. Nothing is added to the section's height for
+    // it: `--tl-pin` still buys exactly the pinned window, and `travel` is
+    // still read out of layout the same way. What changed is only how much of
+    // the sweep is left to spend inside it.
+    //
+    // Not a piece bolted in front of the old one. `shape` is untouched and is
+    // still the whole of the curve — it is handed a `t` measured over
+    // `lead + travel` instead of over `travel`, so there is no seam at
+    // `rect.top === 0` to make continuous: the value and every derivative
+    // cross that point as smoothly as they cross any other, because it is not
+    // a point the curve knows about. `lift`, `runway` and the vertical
+    // hand-off are given `s` and `travel` exactly as before and do not move.
+    //
+    // Two ceilings on `lead`:
+    //
+    //   half the pin — so the pin still has most of the sweep left to do. At
+    //                  this cap a third of the *scroll* and, through `shape`,
+    //                  28.6% of the *travel* is spent before the frame locks,
+    //                  which is enough that the line is plainly already
+    //                  running and not so much that arriving at the pin is an
+    //                  anticlimax. This is the one that binds, at every width
+    //                  the pin exists at.
+    //   a screen     — the guard. "About when the section comes into view"
+    //                  means `rect.top === innerHeight`, and starting earlier
+    //                  than that is starting on a section the reader cannot
+    //                  see. It would only bite on a sweep longer than two
+    //                  screens, which five stops do not make — 956px of pin
+    //                  against a 700px screen is the worst ratio the layout
+    //                  reaches. It is here because the figure it guards
+    //                  against is the track's width, and that is data.
+    //
+    // What "a longer ease-in" buys, in figures, at 1440×900 (travel 897):
+    // `lead` is 448px, the sweep runs over 1345px of scroll instead of 897,
+    // and `shape`'s ramp-in — the quartic, rate and acceleration both zero at
+    // its start — now occupies 296px of that instead of 197. All 296 of them
+    // fall before the pin, and the frame does not lock for another 152. Over
+    // the first 100px of the approach the track moves about 8px; over the
+    // first 200, about 52. It is deliberately beneath notice at the start and
+    // plainly running by the time the frame takes hold.
+    const LEAD_SHARE = 0.5
+
     // Where the scroll says the track and the frame should be, in pixels.
     const wanted = () => {
       const rect = sectionEl.getBoundingClientRect()
@@ -1103,7 +1354,14 @@ function useTimelinePin() {
       // `innerHeight` can disagree while a mobile toolbar is retracting.
       const travel = rect.height - window.innerHeight
       const s = -rect.top
-      const progress = travel <= 0 ? 0 : Math.min(1, Math.max(0, s / travel))
+      const lead = Math.min(window.innerHeight, travel * LEAD_SHARE)
+      // The sweep's whole domain: the approach in front of the pin and the
+      // pin itself. `s + lead` is 0 where the approach begins and `span` where
+      // the frame lets go, so `shape(1)` — which is exactly 1 by construction
+      // — still lands the track on exactly `-overflow` at the release.
+      const span = travel + lead
+      const progress =
+        span <= 0 ? 0 : Math.min(1, Math.max(0, (s + lead) / span))
       return { x: -(shape(progress) * overflow), y: lift(s, travel) }
     }
 
@@ -1187,7 +1445,7 @@ function useTimelinePin() {
       //
       // Whether there is a pin at all is still judged on the track's own
       // width, with the lead-in taken back off first: on a screen wide enough
-      // to hold all six stops there is nothing to sweep, and a lead-in would
+      // to hold all five stops there is nothing to sweep, and a lead-in would
       // otherwise manufacture a pin whose only content is itself.
       //
       // `scrollWidth` and `clientWidth` are layout figures and are not moved by
@@ -1363,6 +1621,92 @@ function SponsorTile({ partner }: { partner: Partner }) {
 }
 
 /**
+ * The FAQ, as one plate with nine rows in it.
+ *
+ * One open at a time. A multi-open accordion is the right call when the panels
+ * are things a reader compares against each other — two specs side by side —
+ * and these are not: they are nine unrelated answers, and a reader who has
+ * opened four of them has a page that scrolls like an article and no longer
+ * shows the list of questions the section exists to present. Single-open keeps
+ * the whole list on screen at every step, which is the thing an FAQ is for,
+ * and it is what the pattern does by default everywhere else. Closing the open
+ * row by pressing it again is kept — a section with no way back to "all shut"
+ * is a section that grows by one answer and never shrinks.
+ *
+ * State is the open index or null, not a flag per row, because "at most one"
+ * is then a fact about the shape of the state rather than a rule some future
+ * handler has to remember to enforce.
+ *
+ * The control is a real `button` inside the heading: it is what the platform
+ * gives focus, keyboard activation on both Enter and Space, and a role that
+ * says "this does something" — none of which a `div` with a click handler has,
+ * and all of which would otherwise have to be rebuilt by hand and got right.
+ * `aria-expanded` is the state, `aria-controls` names the panel it opens, and
+ * the panel points back at its button so a reader who lands inside an answer
+ * is told which question it answers.
+ *
+ * The panel is never removed from the tree and never carries `hidden` —
+ * it is collapsed in the stylesheet by a grid row going 0fr → 1fr, which is
+ * the one way to animate to a height nobody has measured. What keeps a
+ * collapsed answer out of the reading order and its link out of the tab order
+ * is `visibility: hidden` on the same rule; see the note there.
+ */
+function Faq() {
+  const [open, setOpen] = useState<number | null>(null)
+
+  return (
+    <div className='hw26-faq hw26-reveal'>
+      {/* The fill, one edge-width inside the outline and in the same chamfered
+          shape — the panel technique from the inventory cells, with the fill
+          on a real element rather than on a pseudo one because this one has
+          the rows in it and they have to be clipped by it. */}
+      <div className='hw26-faq-list'>
+        {FAQ.map((item, i) => {
+          const isOpen = open === i
+          const panelId = `hw26-faq-panel-${i}`
+          const labelId = `hw26-faq-q-${i}`
+
+          return (
+            <div
+              className={`hw26-faq-row${isOpen ? ' hw26-faq-row--open' : ''}`}
+              key={item.q}
+            >
+              <h3 className='hw26-faq-heading'>
+                <button
+                  aria-controls={panelId}
+                  aria-expanded={isOpen}
+                  className='hw26-faq-trigger'
+                  id={labelId}
+                  onClick={() => setOpen(isOpen ? null : i)}
+                  type='button'
+                >
+                  <span className='hw26-faq-q'>{item.q}</span>
+                  {/* Two hairlines crossed. The upright one turns flat as the
+                      row opens, so the mark goes from plus to minus by
+                      travelling rather than by being swapped. */}
+                  <span aria-hidden='true' className='hw26-faq-sign' />
+                </button>
+              </h3>
+
+              <div
+                aria-labelledby={labelId}
+                className='hw26-faq-panel'
+                id={panelId}
+                role='region'
+              >
+                <div className='hw26-faq-panel-in'>
+                  <p className='hw26-faq-a'>{item.a}</p>
+                </div>
+              </div>
+            </div>
+          )
+        })}
+      </div>
+    </div>
+  )
+}
+
+/**
  * One cell on the floor, used by both the categories and the add-ons.
  *
  * Shared because the two sections are the same object twice — a chamfered
@@ -1399,21 +1743,39 @@ function RigCell({ item, order }: { item: Rig; order: number }) {
       {/* The display figure is what there is: six manipulators, three robo
           fish, two of the big arms.
 
-          The placeholders' "?" is the same glyph slot in the same cut, so
-          the grid's rhythm holds across the group — but it is a shape
-          standing in for a number rather than a number, so it is out of the
-          accessibility tree and the marker below carries the meaning
-          instead. */}
+          On a placeholder the same element holds a "?" instead, in the same
+          cut — and the stylesheet moves it out of the corner and blows it up
+          into the cell's ground, because on a cell with no plate and no
+          number the glyph is the picture rather than a figure in the margin.
+          Either way it is a shape standing in for a number rather than a
+          number, so `unannounced` takes it out of the accessibility tree and
+          the marker below carries the meaning instead. */}
       {item.units ? (
         <div aria-hidden={item.unannounced} className='hw26-rig-no'>
           {item.units}
         </div>
       ) : null}
 
-      {/* The only status left. On a placeholder it is the whole content of
-          the cell; on VR it heads the name in a cell that also carries a real
-          count in the corner, which is the honest shape of "there are two of
-          these and nothing else is settled". */}
+      {/* The supplier's mark, in the corner opposite the count — see the
+          placement note on `.hw26-rig-credit`. A real `alt` rather than an
+          empty one: unlike the plate behind the copy, this is not texture,
+          it is the only place on the page that says where these parts come
+          from, and a reader who cannot see the lockup would otherwise get a
+          cell that is silently missing a fact the sighted one has. */}
+      {item.credit ? (
+        <img
+          alt={item.credit.label}
+          className='hw26-rig-credit'
+          src={item.credit.src}
+        />
+      ) : null}
+
+      {/* The only status left, and on every cell that carries it the cell is
+          a placeholder outright — the line is the whole of its content. It is
+          written off `tba` rather than off `unannounced` because the two are
+          not the same claim: this one says nothing here is settled yet, and
+          it would still be the right line on a named machine whose model is
+          open. See the note on RIG_GROUPS. */}
       {item.tba ? (
         <span className='hw26-label hw26-rig-units'>To be announced</span>
       ) : null}
@@ -1422,64 +1784,6 @@ function RigCell({ item, order }: { item: Rig; order: number }) {
 
       {item.note ? <p className='hw26-rig-note'>{item.note}</p> : null}
     </article>
-  )
-}
-
-/**
- * The one line on the page that arrives encrypted, for the one stop that has
- * nothing to announce yet.
- *
- * The effect is `useScramble` from the intro, held until the line is actually
- * on screen: a decrypt that finishes above the fold is a decrypt nobody sees.
- * An IntersectionObserver of its own rather than the page's reveal observer,
- * because the two want different things — reveal fires late, at 8% and 12%
- * up from the bottom edge, and this wants to be already running by the time
- * the words are readable. It disconnects on the first hit, so the line
- * resolves once and stays resolved.
- *
- * Under reduced motion the observer is never wired up at all, which leaves
- * the hook unarmed and the finished string on the page from the first render
- * — the same thing the server sent and the same thing a reader with
- * scripting off keeps.
- *
- * It sits scrambled for two seconds before it starts resolving, and that hold
- * is the effect rather than a delay before it. A line that decrypts the instant
- * it appears is a transition; a line that sits there as ciphertext long enough
- * to be read as ciphertext, and only then gives way, is the stop admitting it
- * is holding something back — which is the one thing this stop has to say.
- *
- * The hold is `useScramble`'s own `delay` argument and not a timer wrapped
- * around it, which matters for what is on screen during it: the hook clamps
- * progress at zero through the delay, so every character is a live random glyph
- * for those two seconds. A second timer gating `armed` would have held the
- * readable string instead and then scrambled it, which is the effect backwards.
- */
-function SecretLine({ text }: { text: string }) {
-  const line = useRef<HTMLSpanElement>(null)
-  const [armed, setArmed] = useState(false)
-  const out = useScramble(text, 2000, 900, armed)
-
-  useEffect(() => {
-    const node = line.current
-    if (!node) return
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
-    if (typeof IntersectionObserver === 'undefined') return
-
-    const io = new IntersectionObserver((entries) => {
-      for (const entry of entries) {
-        if (!entry.isIntersecting) continue
-        setArmed(true)
-        io.disconnect()
-      }
-    })
-    io.observe(node)
-    return () => io.disconnect()
-  }, [])
-
-  return (
-    <span className='hw26-tl-secret' ref={line}>
-      {out}
-    </span>
   )
 }
 
@@ -2059,46 +2363,83 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
             <h2>What is Alien Bazaar?</h2>
           </div>
 
-          {/* The place a reader arrives at wanting answers rather than a
-              thesis, which is why it is two paragraphs doing two jobs. The
-              first is what the event is: the house, the twenty teams, the
-              hardware they are handed, three days, no set task. The second is
-              what it costs you and what it is not going to cover.
+          {/* Two lines and a sheet, which is a split by *kind* rather than by
+              length. The paragraph before this one carried the whole event —
+              venue, team count, hardware, duration, theme — inside one run of
+              prose, and every fact in it was a fact a reader was scanning for
+              rather than reading: they arrived here to find out how many
+              teams and how many days, and had to parse a sentence to get a
+              number out of it. Prose is the wrong container for a figure.
 
-              The break between them is load-bearing. Free entry, the dates,
-              and the flat statement that travel and lodging are the
-              participant's own are what someone checks before committing to
-              anything. Left to run on at the end of the pitch they read as a
-              clause of it — a caveat softening a sales line rather than the
-              terms of coming. Standing apart, they are terms.
+              So the sentence keeps only what a sentence is better at — what
+              this is, where it happens, and what it is about, which is the
+              one thing here nobody can look up in a column — and everything
+              countable or namable goes into the block under it, where a
+              figure is a figure and a reader takes it at a glance.
 
-              The venue and the components and the team count are named here
-              as well as in the sections that go into them, and that
-              repetition is deliberate: this is the one place a reader should
-              not have to assemble the event out of four other sections.
+              Nothing was dropped in the move. Twenty teams, twenty units,
+              three days, the house, the tools and the theme are all still
+              stated; the venue and the components and the team count are
+              still named here as well as in the sections that go into them,
+              because this is the one place a reader should not have to
+              assemble the event out of four other sections.
 
               The measure is finally doing the job it was set for. 64ch was
               chosen for the one passage on the page that is genuinely read
-              rather than scanned, and for a while it was holding four
-              lines. */}
+              rather than scanned, and for a while it was holding four lines;
+              two is what that measure is actually for. */}
           <div className='hw26-brief hw26-reveal'>
+            {/* Two lines at this measure, which is 108 characters and not
+                128: `64ch` is resolved against `.hw26-brief`'s own inherited
+                16px and the sentence is set at 17.28, so the column holds
+                about 59 of the characters it is actually setting. It opens
+                without naming the event because the head above it just asked
+                the question. */}
             <p>
-              Alien Bazaar is a new kind of hardware hackathon, happening live
-              at Hacker Bloc — a 3-story hacker house in Warsaw. We're
-              bringing together the 20 best teams from Europe — engineers who
-              are deeply skilled in their category — giving them 20 pieces of
-              hardware, access to 3D printers, components, and tools, and
-              putting everyone under one roof for 3 days. All the equipment and
-              components you need are provided by us. No preset tasks — total
-              creative freedom. The main goal: team up and build solutions that
-              automate the home.
+              A hardware hackathon at Hacker Bloc in Warsaw. Twenty teams, one
+              machine each, three days on home automation.
             </p>
-            <p>
-              Participation in the hackathon is free. The hackathon will take
-              place on September 25–27, 2026. Travel and accommodation outside
-              the house are covered by participants themselves — the organizers
-              do not reimburse these costs.
-            </p>
+          </div>
+
+          {/* The facts, as a sheet rather than a sentence — see the note
+              above, and `.hw26-facts` in the stylesheet for why the band and
+              the list are two different shapes rather than one. */}
+          <div className='hw26-facts hw26-reveal'>
+            <dl className='hw26-stats'>
+              <div className='hw26-stat'>
+                <dt>Best teams in Europe</dt>
+                <dd>20</dd>
+              </div>
+              <div className='hw26-stat'>
+                <dt>Hardware units</dt>
+                <dd>20</dd>
+              </div>
+              <div className='hw26-stat'>
+                <dt>Days</dt>
+                <dd>3</dd>
+              </div>
+            </dl>
+
+            <span className='hw26-label hw26-spec-eyebrow'>The setup</span>
+
+            <dl className='hw26-spec'>
+              <div className='hw26-spec-row'>
+                <dt>Venue</dt>
+                <dd>Hacker Bloc, a 3-storey hacker house in Warsaw</dd>
+              </div>
+              <div className='hw26-spec-row'>
+                <dt>Provided</dt>
+                <dd>3D printers, components and tools</dd>
+              </div>
+              {/* The last row is centred rather than split, which is the one
+                  break in the pattern and is doing a job: the theme is not a
+                  spec of the event, it is what the event is for, and a
+                  left/right row would file it beside the printers. */}
+              <div className='hw26-spec-row hw26-spec-row--centred'>
+                <dt>Theme</dt>
+                <dd>Home automation</dd>
+              </div>
+            </dl>
           </div>
         </div>
       </section>
@@ -2124,6 +2465,16 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
           <div className='hw26-head hw26-reveal'>
             <h2>Hardware categories</h2>
           </div>
+
+          {/* The one rule that governs everything under this title, said
+              before the sheet rather than after it. It is the same object the
+              add-on groups' `intro` is, one level up: a line that belongs to
+              the whole list under a heading and not to any cell in it. Set at
+              the brief's size, because it is the brief's kind of sentence —
+              prose about the event, not a caption on a panel. */}
+          <p className='hw26-head-intro hw26-reveal'>
+            Each team can reserve 1 hardware unit
+          </p>
 
           {RIG_GROUPS.map((group) => (
             <div className='hw26-rig-group' key={group.label}>
@@ -2158,6 +2509,15 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
           {ADDON_GROUPS.map((group) => (
             <div className='hw26-rig-group' key={group.label}>
               <h3 className='hw26-cat hw26-reveal'>{group.label}</h3>
+
+              {/* The group's own line, under its title and above its cells —
+                  see the note on ADDON_GROUPS for why the print deadline is
+                  a fact about the subsection rather than about the first
+                  card in it. Rendered only where a group sets one, which is
+                  currently one of the two. */}
+              {group.intro ? (
+                <p className='hw26-cat-intro hw26-reveal'>{group.intro}</p>
+              ) : null}
 
               <div className='hw26-rigs'>
                 {group.items.map((item, i) => (
@@ -2229,7 +2589,7 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
                   ))}
                 </div>
 
-                {/* An ordered list, because that is what this is: six things in
+                {/* An ordered list, because that is what this is: five things in
                     an order that matters, and the order is the content. */}
                 <ol className='hw26-tl-items'>
                   {TIMELINE.map((stop, i) => (
@@ -2249,13 +2609,7 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
                       </span>
                       <span className='hw26-tl-when'>{stop.when}</span>
                       <div className='hw26-tl-body'>
-                        <p className='hw26-tl-what'>
-                          {stop.secret ? (
-                            <SecretLine text={stop.what} />
-                          ) : (
-                            stop.what
-                          )}
-                        </p>
+                        <p className='hw26-tl-what'>{stop.what}</p>
                         {/* This and the hero's control were deliberately
                             split — one closed, one open — and that split is
                             gone: both are closed now. So the stop still names
@@ -2280,6 +2634,22 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
               </div>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* ---------------- FAQ ---------------- */}
+      {/* Last of the sections that answer a question the reader arrived with,
+          and it sits here for that reason: everything above is the offer —
+          the machines, the add-ons, the dates — and everything below is the
+          people behind it and the way in. The leftovers a reader is still
+          holding after the timeline are exactly what this list is. */}
+      <section className='hw26-section'>
+        <div className='hw26-inner'>
+          <div className='hw26-head hw26-reveal'>
+            <h2>FAQ</h2>
+          </div>
+
+          <Faq />
         </div>
       </section>
 
@@ -2379,8 +2749,9 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
               `SponsorTile` above.
 
               Dealt again per visit, and unlike the ecosystem row this one has a
-              layout stake in how. Five tiles do not divide by three or by two,
-              so the stylesheet closes the short last row by spanning
+              layout stake in how. Seven tiles are seven across or nothing —
+              seven is prime — so every narrower count leaves one track over,
+              and the stylesheet closes the short last row by spanning
               `.hw26-sponsor:last-child` across the leftover track. `:last-child`
               is a claim about DOM position, not about where a tile ended up on
               screen — which rules out the tempting implementation, shuffling by
