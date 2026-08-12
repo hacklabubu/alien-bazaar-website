@@ -3015,6 +3015,9 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
           <div className='hw26-subhead hw26-reveal'>
             <span className='hw26-label hw26-label--mint'>Sponsors</span>
             <span className='hw26-poweredby-rule' />
+            <a className='hw26-label hw26-label--mint' href='/sponsor'>
+              Become a sponsor →
+            </a>
           </div>
 
           {/* The lead cell, not the wall's small tile: the tier is money, and

@@ -3646,6 +3646,24 @@ button.hw26-apply {
   margin: 0 0 1rem;
 }
 
+/* The "Become a sponsor" link on the partners wall — same label face as
+   the tier eyebrow, mint, no underline. Hover brightens to snow so it
+   reads as interactive without inventing a second accent. */
+.hw26-subhead a.hw26-label {
+  text-decoration: none;
+  flex-shrink: 0;
+  transition: color 200ms var(--hw-ease);
+}
+
+.hw26-subhead a.hw26-label:hover {
+  color: var(--hw-snow);
+}
+
+.hw26-subhead a.hw26-label:focus-visible {
+  outline: 1px solid var(--hw-mint);
+  outline-offset: 4px;
+}
+
 .hw26-sponsors-lead + .hw26-subhead,
 .hw26-sponsors-rest + .hw26-subhead {
   margin-top: 2.5rem;
