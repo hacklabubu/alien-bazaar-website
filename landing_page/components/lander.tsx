@@ -7,6 +7,7 @@ import {
   GeistPixelSquare,
 } from 'geist/font/pixel'
 import Image from 'next/image'
+import Link from 'next/link'
 import {
   type CSSProperties,
   type ReactNode,
@@ -46,27 +47,41 @@ import { type HardwareEvent } from '../lib/event'
  * much hardware, where — the questions a reader has before they have decided
  * to read anything else, answered in the width of one band.
  *
- * Mint goes on the team count and nowhere else. The unit count is the same
- * figure seen from the other side — one machine per team — so it is a fact
- * about the floor rather than a second cap, and this page reserves the accent
- * for the number that can cost you a seat.
+ * The accent goes on the city, and the team count is stated plainly. It was
+ * the other way round until recently.
  *
- * `emphasize` is the trailing run of a label that comes up in white and
- * heavy — the city, and only the city. The address is one label because a
- * street and a city split across two facts would read as two places, but the
- * street is where you go once you have already decided and the city is what
- * decides it, so the two halves of that label are not carrying the same
- * weight and they should not be set as though they were. A field rather than
- * a flag, holding the substring itself, so the render does not have to know
- * where the word ends. It is not `mint`: that accent is spoken for by the
- * team count and spending it a second time on a place would make the two read
- * as the same kind of fact.
+ * Elsewhere on the page mint marks what is interactive or counted, which is
+ * what put it on the cap here to begin with. Across four facts read at a
+ * glance that turned out to be the wrong one to light: the count is the fact
+ * a reader argues with, but the city is the fact that ends the argument —
+ * whoever cannot be in Warsaw that weekend is finished reading whatever the
+ * cap says. So the band spends its one accent on the word that decides, and
+ * the count comes up white at the weight of everything around it: still
+ * lifted out of the silver the other labels are set in, no longer shouting.
+ *
+ * The unit count is untouched by any of this. It is the same figure seen from
+ * the other side — one machine per team — so it is a fact about the floor
+ * rather than a second cap, and it has never needed marking.
+ *
+ * `snow` names the ink the way `mint` named it before, and covers the whole
+ * label rather than a run inside it. The render gives it a `b` because that
+ * tag was already the hook for "this label is set differently"; the weight it
+ * would otherwise arrive with is turned off in the CSS, exactly the way `i`'s
+ * slant is.
+ *
+ * `emphasize` is the trailing run of a label, a field rather than a flag so
+ * it can hold the substring itself and the render does not have to know where
+ * the word ends. The address is one label because a street and a city split
+ * across two facts would read as two places, but the street is where you go
+ * once you have already decided and the city is what decides it, so the two
+ * halves are not carrying the same weight and they are not set as though they
+ * were.
  */
 const TICKER = [
   { label: '25.09.–27.09.2026.' },
-  { label: '20 TEAMS', mint: true },
+  { label: '20 TEAMS', snow: true },
   { label: '20 HARDWARE UNITS' },
-  { label: 'KOSIARZY 21B, WARSAW', emphasize: 'WARSAW' },
+  { label: 'HACKER BLOC, WARSAW', emphasize: 'WARSAW' },
 ]
 
 /**
@@ -404,7 +419,7 @@ const RIG_GROUPS: { label: string; items: Rig[] }[] = [
 const ADDON_GROUPS: { label: string; intro?: string; items: Rig[] }[] = [
   {
     label: '3D Printers',
-    intro: "Send us your files by 18.09., select a printer and we'll print the items for you before you arrive.",
+    intro: "Send us your files after 18.09., select a printer and we'll print the items for you before you arrive.",
     items: [
       { name: 'Bambu Lab A1', photo: '/hardware/bambulab-a1.jpeg' },
       { name: 'Bambu Lab P1S', photo: '/hardware/bambulab-p1s.jpeg' },
@@ -509,25 +524,33 @@ const TIMELINE: {
  * and lands on its ticks whatever height the stops come out at. Nothing is
  * measured, in script or in CSS, and adding a stop moves the brackets by
  * changing these two numbers and nothing else — as does taking one out, which
- * is what happened when the undated stop went and is why these read 1–3, 3–4
- * and 4–5 rather than 1–4, 4–5 and 5–6. The stretches they name did not
- * change; the stops under them are one position earlier.
+ * is what happened when the undated stop went and is why the first three read
+ * 1–3, 3–4 and 4–5 rather than 1–4, 4–5 and 5–6. The stretches they name did
+ * not change; the stops under them are one position earlier.
  *
  * `from` is the stop the stretch starts at and `to` is the stop it ends at,
  * both inclusive of the tick: the first bracket runs from today to the
- * booking deadline, the second covers selection, and the third is the print
- * queue between the announcement and the doors.
+ * booking deadline, the second covers selection, the third is the print queue
+ * between the announcement and the doors, and the fourth is the hackathon
+ * itself, from the doors to the pitch.
  *
- * The sixth stop has no bracket after it and wants none. A bracket is what a
- * reader is doing between two dates while nothing on the line is happening,
- * and the stretch between the doors and the pitch is the event — it is the
- * thing the whole line leads to, not the wait before something. The strip is
- * three brackets over six stops and stops one short on purpose.
+ * That fourth one is new and it overturns an argument this comment used to
+ * make. The reasoning was that a bracket names a wait — what a reader is
+ * doing between two dates while nothing on the line is happening — and that
+ * the weekend is the opposite of a wait, so the last stretch was deliberately
+ * left bare. What that produced on the page was a strip of annotation that
+ * simply stopped two stops before the line did, and the gap read as an
+ * omission rather than as a statement: the one stretch a reader is actually
+ * coming for was the one stretch with nothing written over it. A bracket is
+ * better understood as naming a stretch than as naming a wait, and under that
+ * reading the weekend has the best claim of the four. Four brackets over six
+ * stops, and the strip now runs the whole length of the line.
  */
 const TIMELINE_SPANS = [
   { from: 1, to: 3, label: 'Chat, create teams, book hardware' },
   { from: 3, to: 4, label: 'Selection process' },
   { from: 4, to: 5, label: 'We print your requested objects' },
+  { from: 5, to: 6, label: 'Build, build, build' },
 ]
 
 /**
@@ -1416,25 +1439,42 @@ function useTimelinePin() {
     //                  28.6% of the *travel* is spent before the frame locks,
     //                  which is enough that the line is plainly already
     //                  running and not so much that arriving at the pin is an
-    //                  anticlimax. This is the one that binds, at every width
-    //                  the pin exists at.
+    //                  anticlimax. Both figures are ratios and neither moves
+    //                  with the layout: `lead/span` is 0.5/1.5 whenever this
+    //                  is the cap that binds, whatever the pin measures. It is
+    //                  the one that binds at every desktop window of ordinary
+    //                  height; see the note under the guard for where it stops
+    //                  being.
     //   a screen     — the guard. "About when the section comes into view"
     //                  means `rect.top === innerHeight`, and starting earlier
     //                  than that is starting on a section the reader cannot
-    //                  see. It would only bite on a sweep longer than two
-    //                  screens, which five stops do not make — 956px of pin
-    //                  against a 700px screen is the worst ratio the layout
-    //                  reaches. It is here because the figure it guards
-    //                  against is the track's width, and that is data.
+    //                  see. It bites on a sweep longer than two screens, which
+    //                  the pin now is on a short window: 1497px of pin at
+    //                  1440 wide wants a 748px lead and a 700px-tall window
+    //                  gives it 700. That is a recent change and it is the
+    //                  lead-in that caused it — starting the line on the
+    //                  centre of the screen rather than a third of the way
+    //                  across added ~240px to the track's width, and the pin
+    //                  is measured from that width. Nothing about the feel
+    //                  turns on it: at the crossover the two ceilings are
+    //                  within a few per cent of each other, and past it the
+    //                  guard is doing exactly what it was written to do.
     //
-    // What "a longer ease-in" buys, in figures, at 1440×900 (travel 897):
-    // `lead` is 448px, the sweep runs over 1345px of scroll instead of 897,
+    // What "a longer ease-in" buys, in figures, at 1440×900 (travel 1497):
+    // `lead` is 748px, the sweep runs over 2245px of scroll instead of 1497,
     // and `shape`'s ramp-in — the quartic, rate and acceleration both zero at
-    // its start — now occupies 296px of that instead of 197. All 296 of them
-    // fall before the pin, and the frame does not lock for another 152. Over
-    // the first 100px of the approach the track moves about 8px; over the
-    // first 200, about 52. It is deliberately beneath notice at the start and
+    // its start — now occupies 494px of that instead of 329. All 494 of them
+    // fall before the pin, and the frame does not lock for another 254. Over
+    // the first 100px of the approach the track moves about 3px; over the
+    // first 200, about 22. It is deliberately beneath notice at the start and
     // plainly running by the time the frame takes hold.
+    //
+    // Those pixel figures are the layout's, not the curve's, and they moved
+    // when the lead-in did — a longer track is a longer sweep over a longer
+    // scroll, so the same fraction of it buys more scroll and less travel per
+    // pixel. Everything the curve is judged on is unchanged: the ramp is
+    // still `RAMP` of the sweep, still entirely inside the approach, and the
+    // 28.6% above is still 28.6%.
     const LEAD_SHARE = 0.5
 
     // Where the scroll says the track and the frame should be, in pixels.
@@ -1516,12 +1556,20 @@ function useTimelinePin() {
       // so the first pixel of the pin immediately takes "NOW" off toward it,
       // and the stop the section opens on is the one stop the reader never
       // gets to see cross the screen. Leading the track in by the distance
-      // from the port's edge to a third of the way across the viewport starts
-      // it there instead, and gives the first stop a run across before it
-      // leaves. A third rather than the middle: it is far enough in that the
-      // stop is read as arriving rather than as already leaving, and it leaves
-      // the two thirds to its right showing what is coming, which a centred
-      // start spends on empty track.
+      // from the port's edge to the middle of the viewport starts it there
+      // instead, and gives the first stop a whole half-screen to cross before
+      // it leaves.
+      //
+      // The middle rather than a third, which is where this started. A third
+      // was argued for on the grounds that the half-screen to its right is
+      // spent on empty track — true, and it is the wrong thing to be counting.
+      // What the reader is being shown at `progress = 0` is one stop and the
+      // word NOW, and a stop that opens at a third has already used two thirds
+      // of its run before the sweep has moved a pixel. Opening on the centre
+      // line is what makes "NOW" read as the present rather than as something
+      // already on its way out, and the empty half is not empty for long: it
+      // is the runway the first stop is about to travel, and it is filled by
+      // the second stop arriving behind it.
       //
       // Padding rather than a starting translate, because padding is a
       // *layout* figure and the translate is not: it lands in `scrollWidth`,
@@ -1545,13 +1593,13 @@ function useTimelinePin() {
       trackEl.style.removeProperty('--tl-lead-start')
       if (trackEl.scrollWidth <= portEl.clientWidth) return unpin()
 
-      // Clamped at 0 for a port whose left edge is already past the third of
+      // Clamped at 0 for a port whose left edge is already past the middle of
       // the screen the line is meant to start on. Read from layout rather than
       // derived, so whatever the box model does with padding on a `max-content`
       // box is measured and not assumed.
       const lead = Math.max(
         0,
-        Math.round(window.innerWidth / 3 - portEl.getBoundingClientRect().left)
+        Math.round(window.innerWidth / 2 - portEl.getBoundingClientRect().left)
       )
       trackEl.style.setProperty('--tl-lead-start', `${lead}px`)
 
@@ -1815,12 +1863,20 @@ function Faq() {
  *
  * `order` is only the stagger. Cells fade in a row at a time and 90ms apart,
  * which is the same figure the about cells use.
+ *
+ * It is handed over as a custom property rather than as `transitionDelay`,
+ * and the difference is not cosmetic: an inline longhand applies to every
+ * transition the element has, so while this was `transitionDelay` the cell's
+ * own hover — the mint ring — inherited the stagger and a cell four along in
+ * its row lit up 270ms after the pointer reached it. `--reveal-delay` is
+ * spent by name, in the two places `.hw26-reveal` spends it, and nothing else
+ * on the cell is delayed by where it happens to sit in a row.
  */
 function RigCell({ item, order }: { item: Rig; order: number }) {
   return (
     <article
       className={`hw26-rig hw26-rig--compact${item.unannounced ? ' hw26-rig--tba' : ''}${item.blurPhoto ? ' hw26-rig--blur' : ''} hw26-reveal`}
-      style={{ transitionDelay: `${order * 90}ms` }}
+      style={{ '--reveal-delay': `${order * 90}ms` } as CSSProperties}
     >
       {/* Ground, not a product shot — see the note on RIG_GROUPS. Empty
           `alt` because a render that is 16% of a greyscale backdrop is
@@ -1973,6 +2029,85 @@ type RainColumn = {
   speed: number // rows per second
   tail: number // rows of fading trail behind the head
   cells: string[] // glyph per row index, so a character stays put as the trail passes over it
+}
+
+/**
+ * The end plate, as its own component because a second page renders it.
+ *
+ * A pure extraction and nothing else: the markup below is the footer the
+ * lander carried inline, moved rather than rewritten, so the two pages cannot
+ * drift into two footers. It stays in this file because everything it reads
+ * is here — `TITLE_BLOCK` above it, the `hw26-endplate` block in lander.css —
+ * and a footer in a file of its own would be one import chasing another for
+ * no gain.
+ *
+ * Three of the cells come off the event row rather than out of `TITLE_BLOCK`:
+ * seats, team max and the location are facts about this hackathon and not
+ * about the drawing, which is why the block is a const and these are props.
+ */
+export function Endplate({ hackathon }: { hackathon: HardwareEvent }) {
+  return (
+    <footer className='hw26-endplate'>
+      <div aria-hidden='true' className='hw26-endplate-hazard' />
+      <p aria-hidden='true' className='hw26-endplate-bleed'>
+        2026
+      </p>
+
+      <div className='hw26-endplate-body'>
+        <div className='hw26-endplate-top'>
+          <p className='hw26-endplate-mark'>
+            Alien Bazaar
+            <br />
+            <em>Warsaw 26</em>
+          </p>
+          {/* The stamp used to read "Registration open", which stopped
+              being true the moment registration got an opening date of its
+              own: for now it is not open, it is announced. Both dates on
+              the stamp rather than one, because the window is the fact. */}
+          <div className='hw26-stamp'>
+            Registration
+            <span>01 SEP — 15 SEP 2026</span>
+          </div>
+        </div>
+
+        <dl className='hw26-titleblock'>
+          {TITLE_BLOCK.map((cell) => (
+            <div
+              className={`hw26-tb${cell.tone ? ` hw26-tb--${cell.tone}` : ''}`}
+              key={cell.k}
+            >
+              <dt>{cell.k}</dt>
+              <dd>{cell.v}</dd>
+            </div>
+          ))}
+          <div className='hw26-tb hw26-tb--gate'>
+            <dt>Applications close</dt>
+            <dd>15 SEP 2026</dd>
+          </div>
+          <div className='hw26-tb'>
+            <dt>Seats</dt>
+            <dd>{hackathon.capacity ?? '—'}</dd>
+          </div>
+          <div className='hw26-tb'>
+            <dt>Team max</dt>
+            <dd>{hackathon.maxTeamSize}</dd>
+          </div>
+        </dl>
+      </div>
+
+      <div className='hw26-endplate-foot'>
+        <span className='hw26-label'>
+          {hackathon.location ?? 'Warsaw, Poland'}
+        </span>
+        <div aria-hidden='true' className='hw26-ticks'>
+          {Array.from({ length: 24 }, (_, i) => (
+            <i key={`tick-${i}`} />
+          ))}
+        </div>
+        <span className='hw26-label'>Epikor × Hacklab · AB—WAW—26</span>
+      </div>
+    </footer>
+  )
 }
 
 /**
@@ -2311,6 +2446,32 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
 
       {/* ---------------- HERO ---------------- */}
       <header className='hw26-hero'>
+        {/* The page's only navigation, in the corner of the art rather than
+            in a bar above it: this is a two-page site and a chrome bar for
+            one link would be a navigation system pretending there is
+            somewhere else to go. Absolutely positioned so the hero's
+            composition is untouched — the stage, the title and the countdown
+            all sit exactly where they did — and inset by the gutter every
+            other section pads from, so it lines up with the sheet below even
+            though it is floating over a photograph.
+
+            `z-index: 4` in the stylesheet, which is one above the hero's
+            topmost layer. The stage stacks bg 0, title 1, cutout 2, tittle 3;
+            a control that the cutout can paint over is a control the reader
+            cannot press.
+
+            Ghost rather than the filled mint the hero's own button wears.
+            That treatment is the page's primary action and there is one of
+            it; this is a nav link, and the outline says so while keeping the
+            chamfer every button here shares. `.hw26-apply--ghost` had no call
+            site before this — it was written for exactly this kind of
+            secondary control and never used. */}
+        {/* Hidden for now — re-enable by uncommenting.
+        <Link className='hw26-apply hw26-apply--ghost hw26-apply--nav' href='/team'>
+          Team
+        </Link>
+        */}
+
         {/* Three layers on one stage, back to front: the lit room, the name,
             then a cutout of the same frame that puts the people back in
             front of it. The stage is what holds the two plates in register —
@@ -2420,7 +2581,7 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
             disabled
             type='button'
           >
-            Join hackathon
+            Apply
           </button>
         </div>
       </header>
@@ -2443,10 +2604,10 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
                 {TICKER.map((item) => (
                   <span key={item.label}>
                     {/* Three ways a label can be set, and a label takes one:
-                        the mint `b` for the count that can cost you a seat,
-                        the white `i` for the tail of the address, plain
-                        silver for the rest. See TICKER. */}
-                    {item.mint ? (
+                        the white `b` for the whole of the team count, the
+                        mint `i` for the tail of the address, plain silver for
+                        the rest. See TICKER. */}
+                    {item.snow ? (
                       <b>{item.label}</b>
                     ) : item.emphasize ? (
                       <>
@@ -2509,8 +2670,8 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
                 without naming the event because the head above it just asked
                 the question. */}
             <p>
-              A hardware hackathon at Hacker Bloc in Warsaw. Twenty teams, one
-              machine each, three days on home automation.
+              A hardware hackathon at the Hacker Bloc, a 3-storey hacker house in Warsaw. 20 teams, one
+              machine each, locked in for three days. The theme is home automation: lighting, cleaning, security, a robot that brings beer or any interesting problem you find. Show us your most creative solution.
             </p>
           </div>
 
@@ -2538,11 +2699,11 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
             <dl className='hw26-spec'>
               <div className='hw26-spec-row'>
                 <dt>Venue</dt>
-                <dd>Hacker Bloc, a 3-storey hacker house in Warsaw</dd>
+                <dd>Hacker Bloc — Kosiarzy 21B, Warsaw</dd>
               </div>
               <div className='hw26-spec-row'>
                 <dt>Time</dt>
-                <dd>25.09.-27.09.2026.</dd>
+                <dd>25.09.–27.09.2026.</dd>
               </div>
               {/* The two names as two links, because they are two houses and a
                   single link round "Epikor and Hacklab" would be one door onto
@@ -2590,7 +2751,7 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
                   left/right row would file it beside the printers. */}
               <div className='hw26-spec-row'>
                 <dt>Theme</dt>
-                <dd>Home automation; choose your problem</dd>
+                <dd>Home automation</dd>
               </div>
             </dl>
           </div>
@@ -2646,7 +2807,17 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
 
           {RIG_GROUPS.map((group) => (
             <div className='hw26-rig-group' key={group.label}>
-              <h3 className='hw26-cat hw26-reveal'>{group.label}</h3>
+              {/* The mark before the name is punctuation and not a word — see
+                  the note on `.hw26-cat-mark`. Hidden from the tree for the
+                  same reason the timeline's ordinals are: a reader on a screen
+                  reader is given the group's name, and "dash dash Robot arms"
+                  is the decoration read out as if it were part of it. */}
+              <h3 className='hw26-cat hw26-reveal'>
+                <span aria-hidden='true' className='hw26-cat-mark'>
+                  --
+                </span>{' '}
+                {group.label}
+              </h3>
 
               <div className='hw26-rigs'>
                 {group.items.map((item, i) => (
@@ -2680,7 +2851,14 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
 
           {ADDON_GROUPS.map((group) => (
             <div className='hw26-rig-group' key={group.label}>
-              <h3 className='hw26-cat hw26-reveal'>{group.label}</h3>
+              {/* Same mark as the categories above, for the same reason they
+                  share the heading level: these are the same object. */}
+              <h3 className='hw26-cat hw26-reveal'>
+                <span aria-hidden='true' className='hw26-cat-mark'>
+                  --
+                </span>{' '}
+                {group.label}
+              </h3>
 
               {/* The group's own line, under its title and above its cells —
                   see the note on ADDON_GROUPS for why the print deadline is
@@ -3009,18 +3187,7 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
       {/* ---------------- CLOSER ---------------- */}
       <section className='hw26-section hw26-closer'>
         <div className='hw26-inner'>
-          <h2 className='hw26-reveal'>
-            Bring a problem
-            <br />
-            your house has
-          </h2>
-          <p className='hw26-reveal'>
-            {hackathon.capacity ? `${hackathon.capacity} seats. ` : ''}
-            Three days, one machine per team, and a floor full of other teams
-            to wire yours into. Components and benches throughout, and a pitch
-            day in front of investors. Applications open on 1 September and
-            close on the 15th.
-          </p>
+          <h2 className='hw26-reveal'>Join Alien Bazaar</h2>
           <div className='hw26-reveal'>
             <button
               className='hw26-apply hw26-apply--lg hw26-apply--disabled'
@@ -3034,66 +3201,7 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
       </section>
 
       {/* ---------------- END PLATE ---------------- */}
-      <footer className='hw26-endplate'>
-        <div aria-hidden='true' className='hw26-endplate-hazard' />
-        <p aria-hidden='true' className='hw26-endplate-bleed'>
-          2026
-        </p>
-
-        <div className='hw26-endplate-body'>
-          <div className='hw26-endplate-top'>
-            <p className='hw26-endplate-mark'>
-              Alien Bazaar
-              <br />
-              <em>Warsaw 26</em>
-            </p>
-            {/* The stamp used to read "Registration open", which stopped
-                being true the moment registration got an opening date of its
-                own: for now it is not open, it is announced. Both dates on
-                the stamp rather than one, because the window is the fact. */}
-            <div className='hw26-stamp'>
-              Registration
-              <span>01 SEP — 15 SEP 2026</span>
-            </div>
-          </div>
-
-          <dl className='hw26-titleblock'>
-            {TITLE_BLOCK.map((cell) => (
-              <div
-                className={`hw26-tb${cell.tone ? ` hw26-tb--${cell.tone}` : ''}`}
-                key={cell.k}
-              >
-                <dt>{cell.k}</dt>
-                <dd>{cell.v}</dd>
-              </div>
-            ))}
-            <div className='hw26-tb hw26-tb--gate'>
-              <dt>Applications close</dt>
-              <dd>15 SEP 2026</dd>
-            </div>
-            <div className='hw26-tb'>
-              <dt>Seats</dt>
-              <dd>{hackathon.capacity ?? '—'}</dd>
-            </div>
-            <div className='hw26-tb'>
-              <dt>Team max</dt>
-              <dd>{hackathon.maxTeamSize}</dd>
-            </div>
-          </dl>
-        </div>
-
-        <div className='hw26-endplate-foot'>
-          <span className='hw26-label'>
-            {hackathon.location ?? 'Warsaw, Poland'}
-          </span>
-          <div aria-hidden='true' className='hw26-ticks'>
-            {Array.from({ length: 24 }, (_, i) => (
-              <i key={`tick-${i}`} />
-            ))}
-          </div>
-          <span className='hw26-label'>Epikor × Hacklab · AB—WAW—26</span>
-        </div>
-      </footer>
+      <Endplate hackathon={hackathon} />
     </div>
   )
 }
