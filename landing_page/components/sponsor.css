@@ -1,0 +1,771 @@
+/* =============================================================
+   SPONSOR PAGE — scoped to .ab-sp inside .hw26
+
+   Same neoindustrial vocabulary as the lander. Tokens, type,
+   buttons, section heads and the end plate all come from
+   lander.css; this file only owns the sponsorship layout:
+   top bar, package cards, comparison matrix, deep-dives.
+   ============================================================= */
+
+/* -------------------------------------------------------------
+   Top bar
+   ------------------------------------------------------------- */
+
+.ab-sp-nav {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.85rem var(--hw-gutter);
+  background: color-mix(in srgb, var(--hw-void) 88%, transparent);
+  border-bottom: 1px solid var(--hw-line);
+  -webkit-backdrop-filter: blur(10px) saturate(130%);
+  backdrop-filter: blur(10px) saturate(130%);
+}
+
+.ab-sp-nav-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  text-decoration: none;
+  color: var(--hw-snow);
+  min-width: 0;
+}
+
+.ab-sp-nav-mark {
+  font-size: 1.15rem;
+  line-height: 1;
+}
+
+.ab-sp-nav-name {
+  font-family: var(--font-orbitron), sans-serif;
+  font-weight: 800;
+  font-size: 0.78rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ab-sp-nav-page {
+  margin-left: auto;
+  color: var(--hw-mint);
+}
+
+.ab-sp-nav-cta {
+  font-family: var(--font-jetbrains-mono), monospace;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--hw-on-mint);
+  background: var(--hw-mint);
+  padding: 0.55rem 0.9rem;
+  clip-path: polygon(
+    0 0,
+    calc(100% - 8px) 0,
+    100% 8px,
+    100% 100%,
+    8px 100%,
+    0 calc(100% - 8px)
+  );
+  transition: transform 220ms var(--hw-ease);
+}
+
+.ab-sp-nav-cta:hover {
+  transform: translate(-1px, -1px);
+}
+
+.ab-sp-nav-cta:focus-visible {
+  outline: 2px solid var(--hw-snow);
+  outline-offset: 3px;
+}
+
+/* -------------------------------------------------------------
+   Hero
+   ------------------------------------------------------------- */
+
+.ab-sp-hero {
+  position: relative;
+  padding: clamp(3.5rem, 10vh, 7rem) var(--hw-gutter)
+    clamp(3rem, 7vh, 5rem);
+  border-bottom: 1px solid var(--hw-line);
+  overflow: clip;
+  background:
+    radial-gradient(
+      ellipse 70% 55% at 70% 0%,
+      color-mix(in srgb, var(--hw-mint) 9%, transparent),
+      transparent 65%
+    ),
+    var(--hw-void);
+}
+
+.ab-sp-hero-grid {
+  opacity: 0.35;
+}
+
+.ab-sp-hero-inner {
+  position: relative;
+  margin-inline: auto;
+  width: 100%;
+  max-width: 1440px;
+}
+
+.ab-sp-hero-eyebrow {
+  margin: 0 0 1.25rem;
+}
+
+.ab-sp-hero-title {
+  font-family: var(--font-orbitron), sans-serif;
+  font-weight: 900;
+  text-transform: uppercase;
+  font-size: clamp(2.75rem, 9vw, 6.5rem);
+  line-height: 0.88;
+  letter-spacing: 0.01em;
+  color: var(--hw-snow);
+  margin: 0 0 1.5rem;
+}
+
+.ab-sp-hero-title em {
+  font-style: normal;
+  color: transparent;
+  -webkit-text-stroke: 1.5px var(--hw-mint);
+}
+
+.ab-sp-hero-lead {
+  max-width: 58ch;
+  margin: 0 0 clamp(2rem, 4vh, 3rem);
+  font-size: clamp(0.95rem, 1.2vw, 1.1rem);
+  line-height: 1.75;
+  color: var(--hw-bone);
+}
+
+/* Four quick price chips under the lead. */
+.ab-sp-hero-stats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1px;
+  background: var(--hw-line);
+  border: 1px solid var(--hw-line);
+  margin-bottom: clamp(1.75rem, 3.5vh, 2.5rem);
+  max-width: 920px;
+}
+
+.ab-sp-stat {
+  background: var(--hw-steel);
+  padding: 1rem 1.1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  min-width: 0;
+  transition: background 260ms var(--hw-ease);
+}
+
+.ab-sp-stat:hover {
+  background: var(--hw-steel-hi);
+}
+
+.ab-sp-stat-emoji {
+  font-size: 1.1rem;
+  line-height: 1;
+}
+
+.ab-sp-stat-price {
+  font-family: var(--font-geist-pixel-circle), var(--font-orbitron), sans-serif;
+  font-weight: 500;
+  font-size: clamp(1.15rem, 2.2vw, 1.65rem);
+  letter-spacing: 0.04em;
+  color: var(--hw-snow);
+  line-height: 1;
+}
+
+.ab-sp-stat--platinum .ab-sp-stat-price {
+  color: var(--hw-mint);
+}
+
+.ab-sp-hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.85rem 1rem;
+}
+
+@media (max-width: 720px) {
+  .ab-sp-hero-stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* -------------------------------------------------------------
+   Section lead
+   ------------------------------------------------------------- */
+
+.ab-sp-section-lead {
+  max-width: 58ch;
+  margin: -1.5rem 0 clamp(2rem, 4vw, 3rem);
+  font-size: clamp(0.92rem, 1.15vw, 1.05rem);
+  line-height: 1.7;
+  color: var(--hw-bone);
+}
+
+/* -------------------------------------------------------------
+   Package cards
+   ------------------------------------------------------------- */
+
+.ab-sp-cards {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: clamp(0.85rem, 1.5vw, 1.25rem);
+  align-items: stretch;
+}
+
+@media (max-width: 1100px) {
+  .ab-sp-cards {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .ab-sp-cards {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* Chamfered plate — same construction as .hw26-rig, smaller cut. */
+.ab-sp-card {
+  --sp-cut: 22px;
+  --sp-edge: 1px;
+  --sp-cut-inner: calc(var(--sp-cut) - 0.585786 * var(--sp-edge));
+  --sp-shape-inner: polygon(
+    0 0,
+    calc(100% - var(--sp-cut-inner)) 0,
+    100% var(--sp-cut-inner),
+    100% 100%,
+    var(--sp-cut-inner) 100%,
+    0 calc(100% - var(--sp-cut-inner))
+  );
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: clamp(1.25rem, 2vw, 1.65rem);
+  background: var(--hw-line);
+  clip-path: polygon(
+    0 0,
+    calc(100% - var(--sp-cut)) 0,
+    100% var(--sp-cut),
+    100% 100%,
+    var(--sp-cut) 100%,
+    0 calc(100% - var(--sp-cut))
+  );
+  isolation: isolate;
+  min-height: 100%;
+  transition: background-color 360ms var(--hw-ease);
+}
+
+.ab-sp-card::before {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  inset: var(--sp-edge);
+  background: var(--hw-steel);
+  clip-path: var(--sp-shape-inner);
+}
+
+.ab-sp-card:hover {
+  background: var(--hw-mint);
+}
+
+.ab-sp-card--featured {
+  background: color-mix(in srgb, var(--hw-mint) 55%, var(--hw-line));
+}
+
+.ab-sp-card--featured::before {
+  background:
+    radial-gradient(
+      ellipse 80% 50% at 100% 0%,
+      color-mix(in srgb, var(--hw-mint) 12%, transparent),
+      transparent 70%
+    ),
+    var(--hw-steel);
+}
+
+.ab-sp-card--featured:hover {
+  background: var(--hw-mint);
+}
+
+.ab-sp-card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.ab-sp-card-emoji {
+  font-size: 1.35rem;
+  line-height: 1;
+}
+
+.ab-sp-card-tier {
+  color: var(--hw-silver);
+}
+
+.ab-sp-card-price {
+  margin: 0.25rem 0 0;
+  font-family: var(--font-geist-pixel-circle), var(--font-orbitron), sans-serif;
+  font-weight: 500;
+  font-size: clamp(1.85rem, 3.2vw, 2.4rem);
+  line-height: 0.95;
+  letter-spacing: 0.03em;
+  color: var(--hw-snow);
+}
+
+.ab-sp-card--platinum .ab-sp-card-price,
+.ab-sp-card--gold .ab-sp-card-price {
+  color: var(--hw-mint);
+}
+
+.ab-sp-card-tag {
+  margin: 0;
+  font-family: var(--font-orbitron), sans-serif;
+  font-weight: 800;
+  text-transform: uppercase;
+  font-size: clamp(0.95rem, 1.4vw, 1.15rem);
+  line-height: 1.15;
+  letter-spacing: 0.04em;
+  color: var(--hw-snow);
+}
+
+.ab-sp-card-pos {
+  margin: 0;
+  font-size: 0.8rem;
+  line-height: 1.45;
+  color: var(--hw-bone);
+}
+
+.ab-sp-card-spots {
+  display: flex;
+  align-items: baseline;
+  gap: 0.55rem;
+  padding-block: 0.65rem;
+  border-block: 1px solid var(--hw-line);
+  margin-block: 0.15rem;
+}
+
+.ab-sp-card-spots-n {
+  font-family: var(--font-geist-pixel-circle), var(--font-orbitron), sans-serif;
+  font-weight: 500;
+  font-size: 1.65rem;
+  line-height: 1;
+  color: var(--hw-mint);
+  letter-spacing: 0.04em;
+}
+
+.ab-sp-card-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  flex: 1;
+}
+
+.ab-sp-card-list li {
+  position: relative;
+  padding-left: 1rem;
+  font-size: 0.78rem;
+  line-height: 1.45;
+  color: var(--hw-bone);
+}
+
+.ab-sp-card-list li::before {
+  content: '›';
+  position: absolute;
+  left: 0;
+  color: var(--hw-mint);
+  font-weight: 700;
+}
+
+.ab-sp-card-more {
+  color: var(--hw-silver) !important;
+  font-size: 0.72rem !important;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.ab-sp-card-cta {
+  margin-top: 0.5rem;
+  justify-content: center;
+  width: 100%;
+  padding: 0.95rem 1.1rem;
+  font-size: 0.72rem;
+}
+
+/* Ghost CTAs need the fill plate under them on the card, or the
+   transparent fill shows the steel and the border is fine — no change needed. */
+
+/* -------------------------------------------------------------
+   Comparison matrix
+   ------------------------------------------------------------- */
+
+.ab-sp-matrix-section {
+  background: var(--hw-pit);
+  border-block: 1px solid var(--hw-line);
+}
+
+.ab-sp-matrix-wrap {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  border: 1px solid var(--hw-line);
+  background: var(--hw-line);
+}
+
+.ab-sp-matrix {
+  width: 100%;
+  min-width: 720px;
+  border-collapse: separate;
+  border-spacing: 1px;
+  background: var(--hw-line);
+  font-size: 0.8rem;
+}
+
+.ab-sp-matrix th,
+.ab-sp-matrix td {
+  background: var(--hw-steel);
+  padding: 0.75rem 0.9rem;
+  text-align: left;
+  vertical-align: middle;
+}
+
+.ab-sp-matrix thead th {
+  background: var(--hw-steel-hi);
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+.ab-sp-matrix-cat {
+  font-family: var(--font-jetbrains-mono), monospace;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--hw-silver);
+  white-space: nowrap;
+  min-width: 11rem;
+  text-align: left !important;
+}
+
+tbody .ab-sp-matrix-cat {
+  position: sticky;
+  left: 0;
+  z-index: 1;
+  background: var(--hw-steel);
+  box-shadow: 1px 0 0 var(--hw-line);
+}
+
+.ab-sp-matrix-tier {
+  text-align: center !important;
+  min-width: 7.5rem;
+}
+
+.ab-sp-matrix-tier-name {
+  display: block;
+  font-family: var(--font-orbitron), sans-serif;
+  font-weight: 800;
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--hw-snow);
+  margin-top: 0.2rem;
+}
+
+.ab-sp-matrix-emoji {
+  font-size: 1.1rem;
+  line-height: 1;
+}
+
+.ab-sp-matrix-cell {
+  text-align: center;
+  color: var(--hw-bone);
+}
+
+.ab-sp-matrix-cell--platinum {
+  background: color-mix(in srgb, var(--hw-mint) 6%, var(--hw-steel));
+}
+
+.ab-sp-matrix tbody tr:hover th,
+.ab-sp-matrix tbody tr:hover td {
+  background: var(--hw-steel-hi);
+}
+
+.ab-sp-matrix tbody tr:hover .ab-sp-matrix-cell--platinum {
+  background: color-mix(in srgb, var(--hw-mint) 10%, var(--hw-steel-hi));
+}
+
+.ab-sp-check {
+  color: var(--hw-mint);
+  font-weight: 700;
+  font-size: 1rem;
+}
+
+.ab-sp-dash {
+  color: var(--hw-line-hi);
+  opacity: 0.85;
+}
+
+.ab-sp-cell-text {
+  font-size: 0.78rem;
+  line-height: 1.35;
+  color: var(--hw-snow);
+}
+
+/* First two rows (Price, Spots) get heavier type. */
+.ab-sp-matrix tbody tr:nth-child(1) .ab-sp-cell-text,
+.ab-sp-matrix tbody tr:nth-child(2) .ab-sp-cell-text {
+  font-family: var(--font-geist-pixel-circle), var(--font-orbitron), sans-serif;
+  font-size: 0.95rem;
+  color: var(--hw-mint);
+  letter-spacing: 0.04em;
+}
+
+/* -------------------------------------------------------------
+   Deep dives
+   ------------------------------------------------------------- */
+
+.ab-sp-dives {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(1.5rem, 3vw, 2.5rem);
+}
+
+.ab-sp-dive {
+  --sp-cut: 28px;
+  --sp-edge: 1px;
+  --sp-cut-inner: calc(var(--sp-cut) - 0.585786 * var(--sp-edge));
+  --sp-shape-inner: polygon(
+    0 0,
+    calc(100% - var(--sp-cut-inner)) 0,
+    100% var(--sp-cut-inner),
+    100% 100%,
+    var(--sp-cut-inner) 100%,
+    0 calc(100% - var(--sp-cut-inner))
+  );
+  position: relative;
+  padding: clamp(1.5rem, 3vw, 2.5rem);
+  background: var(--hw-line);
+  clip-path: polygon(
+    0 0,
+    calc(100% - var(--sp-cut)) 0,
+    100% var(--sp-cut),
+    100% 100%,
+    var(--sp-cut) 100%,
+    0 calc(100% - var(--sp-cut))
+  );
+  isolation: isolate;
+  scroll-margin-top: 5rem;
+}
+
+.ab-sp-dive::before {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  inset: var(--sp-edge);
+  background: var(--hw-steel);
+  clip-path: var(--sp-shape-inner);
+}
+
+.ab-sp-dive--platinum::before {
+  background:
+    radial-gradient(
+      ellipse 55% 60% at 100% 0%,
+      color-mix(in srgb, var(--hw-mint) 14%, transparent),
+      transparent 70%
+    ),
+    var(--hw-steel);
+}
+
+.ab-sp-dive-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem 1.5rem;
+  margin-bottom: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--hw-line);
+}
+
+.ab-sp-dive-title {
+  font-family: var(--font-orbitron), sans-serif;
+  font-weight: 900;
+  text-transform: uppercase;
+  font-size: clamp(1.5rem, 3.5vw, 2.6rem);
+  line-height: 0.95;
+  letter-spacing: 0.02em;
+  color: var(--hw-snow);
+  margin: 0.45rem 0 0;
+}
+
+.ab-sp-dive-spots {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.25rem;
+}
+
+.ab-sp-dive-spots-n {
+  font-family: var(--font-geist-pixel-circle), var(--font-orbitron), sans-serif;
+  font-weight: 500;
+  font-size: clamp(2.25rem, 4vw, 3.25rem);
+  line-height: 0.9;
+  letter-spacing: 0.04em;
+  color: var(--hw-mint);
+}
+
+.ab-sp-dive-summary {
+  margin: 0 0 1.5rem;
+  max-width: 62ch;
+  font-size: clamp(0.95rem, 1.15vw, 1.1rem);
+  line-height: 1.7;
+  color: var(--hw-bone);
+}
+
+.ab-sp-dive-body {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+  gap: clamp(1.5rem, 3vw, 2.5rem);
+  margin-bottom: 1.5rem;
+}
+
+@media (max-width: 800px) {
+  .ab-sp-dive-body {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.ab-sp-dive-list-label {
+  margin: 0 0 0.75rem;
+  color: var(--hw-mint);
+}
+
+.ab-sp-dive-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 0.45rem 1.25rem;
+}
+
+.ab-sp-dive-list li {
+  position: relative;
+  padding-left: 1.1rem;
+  font-size: 0.88rem;
+  line-height: 1.45;
+  color: var(--hw-bone);
+}
+
+.ab-sp-dive-list li::before {
+  content: '▸';
+  position: absolute;
+  left: 0;
+  color: var(--hw-mint);
+  font-size: 0.7rem;
+  top: 0.2em;
+}
+
+.ab-sp-dive-aside {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  padding: 1.15rem 1.25rem;
+  background: var(--hw-pit);
+  border: 1px solid var(--hw-line);
+}
+
+.ab-sp-dive-bestfor {
+  margin: 0;
+  font-size: 0.88rem;
+  line-height: 1.55;
+  color: var(--hw-snow);
+}
+
+.ab-sp-dive-titles-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.ab-sp-dive-titles-list li {
+  font-family: var(--font-orbitron), sans-serif;
+  font-weight: 700;
+  font-size: 0.78rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--hw-snow);
+  padding: 0.45rem 0.65rem;
+  border-left: 2px solid var(--hw-mint);
+  background: color-mix(in srgb, var(--hw-mint) 6%, transparent);
+}
+
+.ab-sp-dive-titles-list--mono li {
+  font-family: var(--font-jetbrains-mono), monospace;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  font-size: 0.72rem;
+}
+
+.ab-sp-dive-closer {
+  margin: 0 0 1.5rem;
+  max-width: 48ch;
+  font-family: var(--font-orbitron), sans-serif;
+  font-weight: 700;
+  font-size: clamp(1rem, 1.6vw, 1.25rem);
+  line-height: 1.35;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--hw-mint);
+}
+
+.ab-sp-dive-cta {
+  display: inline-flex;
+}
+
+/* -------------------------------------------------------------
+   Closer actions
+   ------------------------------------------------------------- */
+
+.ab-sp-closer-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: center;
+}
+
+/* Ghost large buttons need a bit less padding when side by side. */
+.ab-sp-closer .hw26-apply--ghost.hw26-apply--lg {
+  padding-inline: 2rem;
+}
+
+/* -------------------------------------------------------------
+   Smooth anchors under the sticky nav
+   ------------------------------------------------------------- */
+
+.ab-sp-card,
+#packages,
+#compare,
+#details {
+  scroll-margin-top: 4.5rem;
+}
+
+/* -------------------------------------------------------------
+   Reduced motion already covered by lander.css blanket rule
+   ------------------------------------------------------------- */
