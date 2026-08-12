@@ -1,16 +1,14 @@
 import type { Metadata, Viewport } from 'next'
 import { JetBrains_Mono, Orbitron, Poppins } from 'next/font/google'
-import localFont from 'next/font/local'
 
 import './globals.css'
 import { EVENT } from '../lib/event'
 
 /**
  * Orbitron for display, JetBrains Mono for everything else — the two-font
- * contrast the hacklab system is built on. Terminess is here for one job: the
- * ASCII craft in the hero, which needs a real terminal face to hold its shape.
- * The four Geist Pixel cuts are attached by the lander itself, not globally,
- * so they stay scoped to the elements that earn them.
+ * contrast the hacklab system is built on. The four Geist Pixel cuts are
+ * attached by the lander itself, not globally, so they stay scoped to the
+ * elements that earn them.
  */
 const orbitron = Orbitron({
   subsets: ['latin'],
@@ -37,13 +35,6 @@ const poppins = Poppins({
   subsets: ['latin'],
   variable: '--font-poppins',
   weight: ['300'],
-  display: 'swap',
-})
-
-const terminess = localFont({
-  src: './fonts/TerminessNerdFont-Regular.woff2',
-  variable: '--font-terminess',
-  weight: '400',
   display: 'swap',
 })
 
@@ -94,7 +85,7 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html
-      className={`${orbitron.variable} ${jetbrainsMono.variable} ${poppins.variable} ${terminess.variable}`}
+      className={`${orbitron.variable} ${jetbrainsMono.variable} ${poppins.variable}`}
       data-theme='dark'
       lang='en'
       suppressHydrationWarning

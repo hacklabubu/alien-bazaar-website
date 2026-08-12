@@ -237,21 +237,16 @@ html[data-theme='light'] .hw26 {
   min-width: 0;
 }
 
-/* The mark in front of a group title. Two hyphens, in mint, and nothing else
-   — same face, same size, same weight as the name it precedes, because it is
-   the same line of type and not a badge stuck on the front of one.
-
-   Mint is the one thing about it. The title stepped out of white into bone to
-   sit down as furniture, and a heading that is furniture still has to be
-   findable when a reader is scanning for the next division of the sheet; the
-   accent does that at the head of the line, in the colour the page already
-   uses for what it wants looked at, without lighting the whole title up.
-   Two hyphens rather than one because a single dash reads as a hyphen waiting
-   for a word, and rather than an em dash because this is the terminal's
-   punctuation — the same double hyphen a flag takes on a command line, which
-   is the register the rest of this page is set in. */
+/* The mark in front of a group title — the ticker's own divider, reused
+   rather than invented: same three slashes, same silver dimmed to 40%
+   opacity, same face/size/weight as the name it precedes since it is the
+   same line of type and not a badge stuck on the front of one. Grey rather
+   than mint because this is punctuation borrowed from the ribbon's own
+   rhythm, not a second accent competing with the one the page already
+   spends on what is interactive or counted. */
 .hw26-cat-mark {
-  color: var(--hw-mint);
+  color: var(--hw-silver);
+  opacity: 0.4;
 }
 
 /* The line a group opens with, under the title and above the cells. Both of

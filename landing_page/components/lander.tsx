@@ -2810,11 +2810,12 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
               {/* The mark before the name is punctuation and not a word — see
                   the note on `.hw26-cat-mark`. Hidden from the tree for the
                   same reason the timeline's ordinals are: a reader on a screen
-                  reader is given the group's name, and "dash dash Robot arms"
-                  is the decoration read out as if it were part of it. */}
+                  reader is given the group's name, and "slash slash slash
+                  Robot arms" is the decoration read out as if it were part of
+                  it. */}
               <h3 className='hw26-cat hw26-reveal'>
                 <span aria-hidden='true' className='hw26-cat-mark'>
-                  --
+                  ///
                 </span>{' '}
                 {group.label}
               </h3>
@@ -2855,7 +2856,7 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
                   share the heading level: these are the same object. */}
               <h3 className='hw26-cat hw26-reveal'>
                 <span aria-hidden='true' className='hw26-cat-mark'>
-                  --
+                  ///
                 </span>{' '}
                 {group.label}
               </h3>
