@@ -186,14 +186,20 @@ html[data-theme='light'] .hw26 {
    breaks the moment it is five — a 10px mint eyebrow cannot hold a group of
    panels apart, and a second `h2`-scale title would read as a second section.
 
-   So: Square, the stamped cut, at roughly 60% of the section title. The size
-   is set against the panel names below it rather than in the abstract: those
-   are Orbitron 900 and land at 2rem, and a group title that measures the
-   same is outweighed by them however much air it is given — the heavier face
-   wins at equal size. 2.5rem against their 2rem was the smallest gap that
-   worked at all; 3.75rem is that gap opened out so the group reads as a
-   division of the sheet rather than as the first thing in its own list, and
-   the ceiling and the slope are both scaled by the same half.
+   So: Orbitron, the display face, at roughly 60% of the section title. The
+   size is set against the panel names below it rather than in the abstract:
+   those land at 2rem, and a group title that measures the same is outweighed
+   by them however much air it is given — the stamped face wins at equal size
+   the way the heavier cut used to. 2.5rem against their 2rem was the smallest
+   gap that worked at all; 3.75rem is that gap opened out so the group reads
+   as a division of the sheet rather than as the first thing in its own list,
+   and the ceiling and the slope are both scaled by the same half.
+
+   The face here and the face on the names below were the other way round
+   until recently — see the Geist Pixel note for why they traded. The sizes
+   did not move with them: the gap was always doing the dividing, and it still
+   is. What changed is that the title no longer has to outrank the names on
+   face as well, which is what the step down out of white is for.
 
    The floor is not, and cannot be. At 390px the section `h2` is on its own
    floor at 2.5rem, so a group title at 2.4rem would measure the section head
@@ -201,10 +207,15 @@ html[data-theme='light'] .hw26 {
    what the phone takes: still a quarter up on where it was, still 1.5× the
    panel names beneath it, and still visibly under a heavier 2.5rem above.
 
-   White rather than mint, because mint on this page is
-   reserved for what is interactive or counted and a group title is neither;
-   white also keeps the three levels reading as one ladder — display title,
-   stamp, then the panels' own names — instead of as three unrelated systems.
+   Bone rather than mint, because mint on this page is reserved for what is
+   interactive or counted and a group title is neither; a neutral also keeps
+   the three levels reading as one ladder — display title, stamp, then the
+   panels' own names — instead of as three unrelated systems. Bone rather
+   than white for the reason above, and as a colour rather than as `opacity`:
+   these titles are `.hw26-reveal`, the reveal owns their opacity from 0 to 1,
+   and a second opinion about that channel was two rules fighting over one
+   number. Dimming with the token leaves the fade alone and lands the title
+   solid at the end of it.
 
    Word-spacing is opened because Square's space is narrow for a face set
    this loose, and `break-word` is the same backstop the section title
@@ -213,17 +224,34 @@ html[data-theme='light'] .hw26 {
    — but the section must never be what gives the page a horizontal
    scrollbar. */
 .hw26-cat {
-  font-family: var(--font-geist-pixel-square), var(--font-orbitron), sans-serif;
+  font-family: var(--font-orbitron), sans-serif;
   font-weight: 500;
   font-size: clamp(2rem, 4.5vw, 3.75rem);
   line-height: 1.05;
   letter-spacing: 0.06em;
   word-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--hw-snow);
+  color: var(--hw-bone);
   margin: 0 0 clamp(1rem, 1.8vw, 1.5rem);
   overflow-wrap: break-word;
   min-width: 0;
+}
+
+/* The mark in front of a group title. Two hyphens, in mint, and nothing else
+   — same face, same size, same weight as the name it precedes, because it is
+   the same line of type and not a badge stuck on the front of one.
+
+   Mint is the one thing about it. The title stepped out of white into bone to
+   sit down as furniture, and a heading that is furniture still has to be
+   findable when a reader is scanning for the next division of the sheet; the
+   accent does that at the head of the line, in the colour the page already
+   uses for what it wants looked at, without lighting the whole title up.
+   Two hyphens rather than one because a single dash reads as a hyphen waiting
+   for a word, and rather than an em dash because this is the terminal's
+   punctuation — the same double hyphen a flag takes on a command line, which
+   is the register the rest of this page is set in. */
+.hw26-cat-mark {
+  color: var(--hw-mint);
 }
 
 /* The line a group opens with, under the title and above the cells. Both of
@@ -257,10 +285,10 @@ html[data-theme='light'] .hw26 {
 /* The bottom margin is the group title's, stepped up. It was the same figure
    `.hw26-cat` carries, which was right while this was a bare line of type —
    the gap under a sentence and the gap under a heading are the same gap when
-   both are just words. It is a box now, with padding and a ring and a bloom
-   past the ring, and a box's edge sits closer to whatever is under it than a
-   baseline does at the same margin. Half a step more, so the first row of
-   cards clears the glow rather than starting at it. */
+   both are just words. It is a box now, with padding and a ring, and a box's
+   edge sits closer to whatever is under it than a baseline does at the same
+   margin. Half a step more, so the first row of cards clears the ring rather
+   than starting at it. */
 .hw26-cat-intro {
   margin: 0 0 clamp(1.75rem, 2.6vw, 2.25rem);
   max-width: 60ch;
@@ -282,17 +310,24 @@ html[data-theme='light'] .hw26 {
      Circle → the numerals that count — the hero countdown and the
               unit counts on the rig panels
      Grid   → title-block data cells
-     Square → the two things that are stamped rather than set —
-              the plate number huge at the foot of the sheet, and
-              the category titles inside a section (`.hw26-cat`)
+     Square → the plate number stamped huge at the foot of the
+              sheet (`.hw26-endplate-bleed`)
      Line   → the intro's terminal readout (matches shiplog)
    Triangle is unused.
 
-   Square is the one cut carrying two, and they are at opposite
-   ends of the scale — 22rem outlined and bled off the page
-   against 3.75rem solid over a row of panels. They read as the
-   same act at both sizes, which is why they are the same cut and
-   why nothing else has been let into it.
+   Square is down to that one job. It has twice been lent to the
+   inventory — first to the group titles (`.hw26-cat`), then to the
+   panel names (`.hw26-rig-name`) — and both times it came back.
+   On the titles it put the stamped face on the divider and the
+   display face on the thing being divided, the wrong way round for
+   a page whose panels are the objects and whose group titles are
+   only the shelf they sit on. On the names it cost a weight: the
+   face is one cut per shape, so a stamped name could only be set
+   at 500, and a panel name that has to outrank the title over it
+   would rather have Orbitron's 900 than the texture. Both levels
+   are Orbitron now, separated by weight and size and each stepped
+   down out of white into bone. What is left to Square is the one
+   thing on the sheet that is genuinely stamped rather than set.
 
    The section indices used to be a fourth Circle job. They are
    gone with the rest of the head furniture — see the section
@@ -417,16 +452,27 @@ html[data-theme='light'] .hw26 {
  * live cell on the wall — so the colour is not a new claim, it is the claim
  * these lines were already making without saying so.
  *
- * A plain rectangle, and the second one on the page: `box-shadow` is painted
- * inside the element's clip, so the chamfer the rig panels wear would take the
- * bloom off with the corners exactly the way it takes the countdown panel's
- * blur off. Straight edges are what buy an effect that has to reach past the
- * box — see `.hw26-hero-panel` for the other one and the same reason.
+ * Chamfered in two layers on the pseudo-elements rather than one clip on the
+ * element. `::before` is the outline in the outer chamfer, `::after` the fill
+ * one edge-width inside it in the inner — see the note on `.hw26-rig` for
+ * where the inner chamfer's constant comes from.
  *
- * The ring is inset rather than a zero-blur outer spread so the border box is
- * the whole of the footprint and nothing downstream has to allow for it; the
- * bloom outside it is the only thing that overruns, and it is 30px of nothing
- * that catches no pointer.
+ * The element itself stays unclipped, which is left over from the bloom these
+ * boxes used to throw and is worth keeping. The glow is gone — a ring and a
+ * tinted fill are enough of a callout at this size, and the bloom was the part
+ * that read as a light rather than as a plate — but the reason the clip sat on
+ * the pseudo-elements is still true and still cheap: `clip-path` clips an
+ * element's own background *and* every descendant it has, pseudo-elements
+ * included, so nothing painted inside a clipped box can leave the box at any
+ * depth. Clip the element and anything that ever wants to sit past its edge
+ * has to be rebuilt from here. The construction stands; only the glow layer
+ * came off.
+ *
+ * The cut is small because the box is. `--rig-cut` is 34px against a panel
+ * 420px tall at its shortest and the hero plate takes 28; this is one line of
+ * type and its padding — 64px, 82 when the sentence turns — so either figure
+ * would read as a bevel taking a third of the height off rather than as a
+ * clipped corner. 12px is the corner at this size.
  *
  * The type is untouched — same size, same leading, same measure. The measures
  * are restated below because they are character counts and `border-box` would
@@ -444,13 +490,105 @@ html[data-theme='light'] .hw26 {
 .hw26-head-intro,
 .hw26-cat-intro {
   --intro-pad-i: clamp(1rem, 2vw, 1.4rem);
+  --intro-cut: 12px;
+  --intro-edge: 1px;
+  --intro-cut-inner: calc(var(--intro-cut) - 0.585786 * var(--intro-edge));
+  position: relative;
+  /* The two layers below sit at negative z-index, which paints them above
+     this element's own background and below its text. That needs a stacking
+     context to be negative *within*, and the bloom's `filter` used to open one
+     as a side effect; with the bloom gone this line is the only thing holding
+     it, so it is load-bearing rather than belt-and-braces. Drop it and both
+     layers fall behind the section. */
+  isolation: isolate;
   width: fit-content;
   padding: clamp(0.85rem, 1.6vw, 1.15rem) var(--intro-pad-i);
   color: var(--hw-mint);
+}
+
+/* The outline. The element paints no background of its own — this is it. */
+.hw26-head-intro::before,
+.hw26-cat-intro::before {
+  content: "";
+  position: absolute;
+  z-index: -2;
+  inset: 0;
+  background: color-mix(in srgb, var(--hw-mint) 45%, transparent);
+  clip-path: polygon(
+    0 0,
+    calc(100% - var(--intro-cut)) 0,
+    100% var(--intro-cut),
+    100% 100%,
+    var(--intro-cut) 100%,
+    0 calc(100% - var(--intro-cut))
+  );
+}
+
+/* The fill, one edge-width inside the outline in the same shape.
+ *
+ * The countdown panel's fill, to the figure — `.hw26-hero-panel::before` is
+ * `rgba(6, 10, 8, 0.5)` and so is this. The two are the same object at
+ * different sizes: a chamfered plate whose ring is one ink and whose interior
+ * is a translucent near-black a step under the ground, and they were reading
+ * as two families only because this one filled with a mint-tinted steel while
+ * that one filled with darkness. The ring stays mint — the green is the
+ * identity of these boxes and it lives in the outline, not the interior — so
+ * what changes is only what the ring is drawn around.
+ *
+ * Translucent, and over the sheet's own ground rather than over whatever
+ * happens to be under it — which here is not the same thing. The outline
+ * layer beneath this one is not a ring, it is the whole chamfer filled with
+ * mint at 45%, and the ring is only the millimetre of it this fill does not
+ * cover. That worked while the fill was opaque. At 50% the mint came straight
+ * back up through it and the box went bottle green, which is not the
+ * countdown's interior and not anything anyone asked for. So `--hw-void` is
+ * restated underneath: the fill is the same 50% black the panel carries, laid
+ * on the page colour the box sits on, and the outline layer stops at the
+ * ring where it was always meant to.
+ *
+ * What that produces on this page is a very dark interior, close to the sheet
+ * itself, and that is the honest answer rather than a shortfall. The panel's
+ * fill looks like a frosted plate because there is a photograph under it to
+ * darken; on flat near-black, the same fill has almost nothing to do. The
+ * ring and the mint type are what make the callout, which is what they were
+ * doing before the bloom came off.
+ *
+ * No `backdrop-filter`. The panel frosts because it has a photograph behind
+ * it; these have flat ground and a hairline grid, where a 6px blur is a
+ * compositing layer per box for a difference nobody can see. It is the one
+ * part of the panel's construction not copied, and it is the part that was
+ * answering a problem this box does not have — if one of these ever lands on
+ * a picture, that is the line to bring across. */
+.hw26-head-intro::after,
+.hw26-cat-intro::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: var(--intro-edge);
+  background-color: var(--hw-void);
+  background-image: linear-gradient(rgba(6, 10, 8, 0.5), rgba(6, 10, 8, 0.5));
+  clip-path: polygon(
+    0 0,
+    calc(100% - var(--intro-cut-inner)) 0,
+    100% var(--intro-cut-inner),
+    100% 100%,
+    var(--intro-cut-inner) 100%,
+    0 calc(100% - var(--intro-cut-inner))
+  );
+}
+
+/* The one theme where the countdown's fill cannot be borrowed. The panel gets
+ * away with a near-black interior in light mode because it opts out of the
+ * palette entirely — it re-declares mint locally and sets its type white, on
+ * the grounds that it sits on a photograph that does not flip. These boxes do
+ * flip: their type is `--hw-mint`, which in light mode is the deep green
+ * `#00794c`, and deep green on a half-black plate is about 1.3:1. So light
+ * mode keeps the fill these had before — mint at 8% into the panel token,
+ * which is the same idea a step up rather than a step down: an interior just
+ * off the ground, with the ring still doing the work. */
+html[data-theme='light'] .hw26-head-intro::after,
+html[data-theme='light'] .hw26-cat-intro::after {
   background: color-mix(in srgb, var(--hw-mint) 8%, var(--hw-steel));
-  box-shadow:
-    inset 0 0 0 1px color-mix(in srgb, var(--hw-mint) 45%, transparent),
-    0 0 30px color-mix(in srgb, var(--hw-mint) 22%, transparent);
 }
 
 .hw26-head-intro {
@@ -1090,9 +1228,11 @@ html[data-theme='light'] .hw26 {
    compact cell's 24: this is a wide plate of no great height, which is what
    that number was cut for.
 
-   The intro callouts are the only square-cornered boxes left, and their reason
-   is a different property — a clipped element still cannot paint a glow
-   outside itself. */
+   The intro callouts wear the same corner now, built the same way but split
+   across their own pseudo-elements — a shape they arrived at while they still
+   threw a glow, since a clipped element cannot paint anything outside itself.
+   The glow is gone and the split construction stayed. See the note on
+   `.hw26-head-intro`. */
 .hw26-hero-panel {
   --panel-cut: 28px;
   --panel-edge: 1px;
@@ -1321,10 +1461,110 @@ button.hw26-apply {
   appearance: none;
 }
 
+/* The outline cut, for a control that goes somewhere rather than does
+   something. It sat unused for a long time; the two nav links — "Team" in the
+   hero's corner and "Home" at the top of the team page — are its first call
+   sites, and they are what it was written for.
+
+   The `border` it was written with does not survive the base rule's chamfer.
+   A border is painted on the four edges of the border box and the clip is
+   applied after it, so the corner comes off with two stubs either side of a
+   bare diagonal — the same thing that happens to the countdown panel and to
+   the inventory cells, and the same way out: the element's own background *is*
+   the outline, and `::before` inset by one edge-width paints the interior over
+   it. `::after` is the arrow and `::before` was free.
+
+   `isolation` is what makes that work. `position: relative` with an automatic
+   z-index does not open a stacking context, and without one the inset child
+   would paint behind the outline instead of over it.
+
+   The interior is a near-opaque dark rather than nothing, which is the one
+   liberty this takes with "ghost": a hole cannot be cut out of a filled shape
+   with a single pseudo-element, so the interior has to be painted, and it has
+   to be opaque enough to hide the mint it is painted over — at anything looser
+   the outline bleeds through and the button reads as a green chip. At 0.92 the
+   accent contributes under a tenth of the fill.
+
+   `--hw-void` is the page's own ground, so on the team page the button is an
+   outline and nothing else. Over the hero it is a dark chip on the art, which
+   is the treatment the countdown panel below it already uses, and mint type on
+   bare photograph was the harder thing to read anyway. */
 .hw26-apply--ghost {
-  background: transparent;
+  isolation: isolate;
+  background: var(--hw-mint);
+  border: 0;
   color: var(--hw-mint);
-  border: 1px solid var(--hw-mint);
+}
+
+.hw26-apply--ghost::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: 1px;
+  background: rgba(7, 7, 7, 0.92);
+  /* One edge-width in, so the diagonal is shortened by (2 − √2)·e — see the
+     note on `.hw26-rig`, which is where the constant comes from. */
+  clip-path: polygon(
+    0 0,
+    calc(100% - 13.414214px) 0,
+    100% 13.414214px,
+    100% 100%,
+    13.414214px 100%,
+    0 calc(100% - 13.414214px)
+  );
+}
+
+/* The `::after` on `.hw26-apply` is the arrow, and a nav link has no arrow to
+   draw: the base rule sets it from the button's own content and on a ghost cut
+   it would be a mint glyph with nothing after it. Withdrawn here rather than
+   conditioned in the markup. */
+.hw26-apply--ghost::after {
+  content: none;
+}
+
+/* Hover keeps it a ghost. Filling with mint would make it the loudest thing in
+   the corner of the hero and the same object as the page's primary button,
+   which is the one distinction this cut exists to hold. The interior lifts a
+   step towards the accent and the label goes to snow instead; the base rule's
+   lift comes along unchanged. */
+.hw26-apply--ghost:hover {
+  color: var(--hw-snow);
+}
+
+.hw26-apply--ghost:hover::before {
+  background: color-mix(in srgb, var(--hw-mint) 14%, rgba(7, 7, 7, 0.92));
+}
+
+/* Nav size: under the hero button's default padding, which is cut for a
+   control at the centre of a panel and reads as a banner in a corner. The
+   chamfer is the base rule's 14px and is deliberately not scaled down with the
+   box — it is the page's corner, one figure everywhere, and a smaller bevel on
+   a smaller button would read as a different shape rather than as the same one
+   less of. */
+.hw26-apply--nav {
+  padding: 0.65rem 1.4rem;
+  font-size: clamp(0.7rem, 0.9vw, 0.8rem);
+}
+
+/* In the hero, floating over the art. Not in the flow: the hero is a fixed
+   frame around a fixed composite and anything added to its column would push
+   the countdown off the plate. Inset by the gutter the sections below pad
+   from, and stacked one above the cutout — see the note at the call site. */
+.hw26-hero .hw26-apply--nav {
+  position: absolute;
+  z-index: 4;
+  top: var(--hw-gutter);
+  left: var(--hw-gutter);
+}
+
+/* The same link at the top of the team page, and here it is simply in the
+   flow. The gutter is the section's own `padding-inline`, so the button's left
+   edge falls on the section titles below it; the top is a half step, because
+   this is the first thing on the page and a full section's worth of air above
+   a control that small would read as a gap rather than as a margin. */
+.hw26-teamnav {
+  padding: clamp(1.5rem, 4vh, 2.75rem) var(--hw-gutter) 0;
+  display: flex;
 }
 
 /* Switched off. The button keeps its silhouette — same chamfer, same
@@ -1424,19 +1664,24 @@ button.hw26-apply {
   color: var(--hw-silver);
 }
 
+/* The team count, lifted out of the silver but not accented — white, and at
+   the same 400 the labels either side of it are set in. `b` brings 700 with
+   it from the UA sheet and that has to be said off explicitly, the same way
+   `i`'s slant is below: both tags are hooks here and nothing more, and a
+   count that arrives bold would be back to competing with the city. */
 .hw26-ticker span b {
-  color: var(--hw-mint);
-  font-weight: 500;
+  color: var(--hw-snow);
+  font-weight: 400;
 }
 
-/* The city, lifted out of the address. Snow and heavy is the only emphasis
-   left that is not the accent — mint is the team count's and nothing else's
-   — so the band can say the one word that decides whether the rest of the
-   line matters to you without spending the signal colour on a place. `i`
-   because `b` is already the mint's element here; the slant is turned off,
-   the tag is doing nothing but carrying a hook. */
+/* The city, lifted out of the address and given the band's one accent. Mint
+   marks the interactive and the counted everywhere else on the page; here it
+   marks the decisive, which is the city and not the cap — see TICKER in
+   lander.tsx for why those traded. `i` because `b` is spoken for by the
+   count; the slant is turned off, the tag is doing nothing but carrying a
+   hook. */
 .hw26-ticker span i {
-  color: var(--hw-snow);
+  color: var(--hw-mint);
   font-style: normal;
   font-weight: 700;
 }
@@ -1462,8 +1707,8 @@ button.hw26-apply {
    Six groups is what forced the middle heading level. Two mint
    eyebrows could divide a sheet in half; six of them read as
    captions floating over an undifferentiated grid. The group
-   title is `.hw26-cat` — Square, white, some three fifths of the
-   section head — and it does the dividing on its own, so the hairline
+   title is `.hw26-cat` — Orbitron in bone, some three fifths
+   of the section head — and it does the dividing on its own, so the hairline
    rule that came with the eyebrow is gone. The add-ons below take
    the same title now, so what is described here is both sections.
 
@@ -1775,10 +2020,49 @@ button.hw26-apply {
     var(--rig-cut) 100%,
     0 calc(100% - var(--rig-cut))
   );
-  transition: background-color 400ms var(--hw-ease);
+  /* 620ms, which is the photo's fade and not a figure of its own. The ring and
+     the picture are one response — the panel's background *is* the outline, so
+     what the reader sees is a green edge arriving as the render comes up — and
+     at 400 the edge was landing a fifth of a second before the thing it was
+     supposed to be arriving with, which reads as two events. Matched to the
+     opacity and filter fade rather than to the 900ms zoom on purpose: a colour
+     change is the same kind of change as a fade, the zoom is not, and a slow
+     drift behind a settled edge is what a plate leaning in looks like.
+
+     This declaration is the whole of the ring's timing only on a cell that is
+     not revealed — the team page's person tiles. Every inventory cell is also
+     `.hw26-reveal`, whose own `transition` is one class weight and later in
+     the file, so it replaces this list outright. See the rule immediately
+     below, which is where the ring on those cells actually gets its fade. */
+  transition: background-color 620ms var(--hw-ease);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+}
+
+/* The two lists joined, because `transition` is one property and the last
+ * declaration wins the whole of it.
+ *
+ * This is why the ring used to snap. `.hw26-reveal` sets `transition: opacity,
+ * transform` for the scroll fade-in; an inventory cell carries both classes,
+ * the reveal's rule is written later, and the two weigh the same — so the
+ * card's `background-color` line above was overwritten on every cell in both
+ * grids and the mint edge arrived in one frame. Neither figure was wrong;
+ * there was simply no transition on the property at all, which is not a thing
+ * either rule says out loud. Stated together here, at two classes, so the
+ * cascade cannot pick one.
+ *
+ * The reveal's own figures are restated rather than referenced — CSS has no
+ * way to add to a list — so they have to be kept in step by hand. They are
+ * 800ms and `--reveal-delay`, exactly as written below; if that rule moves,
+ * this one moves with it. The ring is deliberately not given the delay: the
+ * stagger is about when a card enters the page, and a reader pointing at the
+ * fourth cell in a row is not waiting 270ms for its edge. */
+.hw26-rig.hw26-reveal {
+  transition:
+    background-color 620ms var(--hw-ease),
+    opacity 800ms var(--hw-ease) var(--reveal-delay, 0ms),
+    transform 800ms var(--hw-ease) var(--reveal-delay, 0ms);
 }
 
 /* The fill. Sits one edge-width inside the outline in the same shape. */
@@ -1819,25 +2103,36 @@ button.hw26-apply {
    rather than tinting it. Paints above `::before` — same stacking level,
    later in the box tree.
 
-   A quarter of the original saturation at rest, not none. Full greyscale was
-   cut for stock photographs, where colour was the thing that gave away that
-   the plate was a picture of somewhere else; these are studio renders of the
-   actual machines, and the little colour they have — the orange manipulator,
-   the FPV drone's red props, the cobot's teal floor — is the machine's own
-   marking rather than a stray cast. A quarter of it survives the 16%
-   opacity as a tint you notice on the second look, which is the right
-   loudness for something sitting under type.
+   Most of the original saturation at rest, not a quarter of it. Full greyscale
+   was cut for stock photographs, where colour was the thing that gave away
+   that the plate was a picture of somewhere else; these are studio renders of
+   the actual machines, and the little colour they have — the orange
+   manipulator, the FPV drone's red props, the cobot's teal floor — is the
+   machine's own marking rather than a stray cast.
 
-   Hover opens further than it used to. Against a rest state that is already
-   slightly warm, the old 35% grey read as barely a move, so hover now goes
-   effectively full colour and takes the opacity a step higher with it. */
+   The rest state came up, and the gap to hover came down with it. At 16% and
+   three quarters grey a render was a dark smear that the pointer then turned
+   into a photograph — two states rather than one object under two lights, and
+   the resting one was the state the cell is in almost all of the time. 30%
+   and 40% grey is a picture that is plainly there and plainly held back;
+   hover is unchanged at 36% and effectively full colour, so what the pointer
+   buys now is the last step rather than the whole distance.
+
+   The figures are set against the darkest renders in the set, not the
+   brightest: the TBOT and the wheeled arm are near-black photographs and are
+   what decides whether the rest state reads as present, while the printers
+   and the Formlabs are what decides whether it stays under the type. Both
+   hold at these numbers. `contrast` comes down with the grey for the same
+   reason — 1.25 was crushing an image that was already being hidden, and at
+   30% it was the thing making the darks unreadable. 1.15 is a step over the
+   hover's 1.1 rather than a different treatment. */
 .hw26-rig-photo {
   position: absolute;
   inset: var(--rig-edge);
   clip-path: var(--rig-shape-inner);
   z-index: -1;
-  opacity: 0.16;
-  filter: grayscale(0.75) contrast(1.25);
+  opacity: 0.3;
+  filter: grayscale(0.4) contrast(1.15);
   transition:
     opacity 620ms var(--hw-ease),
     filter 620ms var(--hw-ease),
@@ -1867,7 +2162,18 @@ button.hw26-apply {
    comes back transparent there, so an unscaled plate would fade out a few
    pixels inside its own outline; oversizing the picture inside the frame puts
    that soft border outside the clip. */
+/* The opacity is restated here for the first time, and only to hold this cell
+   still while the announced cells moved. Those went from 16% to 30% at rest
+   because a machine render at 16% was a dark smear; this plate is not a
+   machine render and does not have that problem — it is a bright shelf, and
+   the same 30% took it from muted ground to the palest object in the grid,
+   which is the one thing a cell claiming "not announced yet" must not be. So
+   it keeps the figure it had. The two cells are not being held apart by a
+   whim: everything else here — the blur, the three quarters grey — exists to
+   say this picture is not a product shot, and the opacity is part of that
+   sentence rather than part of the treatment the renders share. */
 .hw26-rig--blur .hw26-rig-photo {
+  opacity: 0.16;
   filter: grayscale(0.75) contrast(1.25) blur(9px);
 }
 
@@ -1877,6 +2183,52 @@ button.hw26-apply {
 
 .hw26-rig--blur .hw26-rig-photo img {
   transform: scale(1.14);
+}
+
+/* -------------------------------------------------------------
+   People, in a hardware cell
+
+   The team page puts faces in the same panel the inventory puts machines in,
+   which is the right container — same chamfer, same grid, same page — with
+   exactly two things withdrawn. Everything else about the cell, the opacity
+   figures and the hover zoom included, is the panel's own and is left alone.
+   ------------------------------------------------------------- */
+
+/* The name at the foot of the panel, where every other card on the page puts
+   it. `.hw26-rig` spreads its children with `space-between`, which reads as
+   "count in one corner, name on the opposite edge" only while there are two of
+   them; a person tile has dropped the count, and one child under
+   `space-between` simply pins to the top. That is an artifact of the cell
+   having one thing in it rather than a decision about where a name goes, and
+   `flex-end` is the same instruction the compact cells already carry for the
+   same reason. */
+.hw26-rig--person {
+  justify-content: flex-end;
+}
+
+/* Colour, kept. The plate treatment desaturates to three quarters grey at rest
+   because a machine render behind type is ground and colour in it is a stray
+   cast — that argument inverts for a photograph of a person, where the colour
+   is most of what makes the image read as a person rather than as a shape. The
+   filter goes entirely rather than being tuned down: there is nothing about a
+   headshot this page wants to correct. The `opacity` and the `transform` stay
+   on the base rule's figures, so the fade-up and the zoom under the pointer
+   are the same motion every other cell makes. */
+.hw26-rig--person .hw26-rig-photo,
+.hw26-rig--person:is(:hover, .hw26-rig--active) .hw26-rig-photo {
+  filter: none;
+}
+
+/* No mint outline. On an inventory cell the panel's background *is* its
+   outline — see the construction note on `.hw26-rig` — so the hover flood is
+   what draws the green edge, and green edges on this page mean a thing you can
+   open. A person tile does not go anywhere, and an outline that lights up
+   under the pointer is a promise of a link that is not there. The hairline
+   holds at `--hw-line` through hover and through the scroll-driven active
+   state alike; the photo still answers the pointer, which is the reply the
+   cell actually has to give. */
+.hw26-rig--person:is(:hover, .hw26-rig--active) {
+  background: var(--hw-line);
 }
 
 .hw26-rig-photo img {
@@ -1913,13 +2265,25 @@ button.hw26-apply {
   display: block;
 }
 
+/* Orbitron at 900, back off the stamped face. Geist Pixel ships one weight
+   per shape, so the stamp could only ever be set at 500 and the name had to
+   hold its own against the group title above it on size and face alone; on
+   Orbitron the 900 is a real file again, and weight goes back to doing the
+   work face was standing in for.
+
+   Bone, not snow. The title above it is bone too — see `.hw26-cat` — and the
+   two do not need different greys to stay apart: this one is larger and four
+   weights heavier, and a name that is 900 against a 500 is already the louder
+   of the pair without also being a lighter colour. Silver was the alternative
+   and it is spoken for: it is what the TBA cells drop to, and a name that
+   started there would leave the placeholders nowhere to go. */
 .hw26-rig-name {
   font-family: var(--font-orbitron), sans-serif;
   font-weight: 900;
   text-transform: uppercase;
   font-size: clamp(2rem, 5.5vw, 4rem);
   line-height: 0.9;
-  color: var(--hw-snow);
+  color: var(--hw-bone);
   margin: 0.5rem 0 0;
 }
 
@@ -2104,7 +2468,7 @@ button.hw26-apply {
    beside it would be claiming a machine nobody has named.
 
    Dimmer on both counts, out of the palette already here — the outline steps
-   down from `--hw-line` to the panel highlight, and the name from snow to
+   down from `--hw-line` to the panel highlight, and the name from bone to
    silver. Still legible, not ghosted. The panel does not take the mint flood
    on hover the way an announced cell does: there is no machine here to go and
    look at, and a placeholder that lights up like the cell beside it is
@@ -2135,9 +2499,13 @@ button.hw26-apply {
    settled enough to be photographed, and it is the shape that claim has to
    take: the picture says we know what it is, the `?` and the silver name say
    we have not settled how many or what it is called. Left at the announced
-   cells' 16% the plate wins that argument — the panel reads as fully dressed
-   and the mute stops registering — so it sits a step under, at rest and on
-   hover both, and the muting stays the loudest thing about the cell.
+   cells' figure the plate wins that argument — the panel reads as fully
+   dressed and the mute stops registering — so it sits a step under, at rest
+   and on hover both, and the muting stays the loudest thing about the cell.
+   The step is wider than it was: the announced cells came up from 16% to 30%
+   at rest and these did not follow, on the same reasoning that kept them
+   under in the first place. Nothing on the floor is in this state today, so
+   the figures are a decision waiting rather than one on the page.
 
    The hover bloom is kept rather than killed. A cell with a visible picture
    that does not move under the pointer reads as broken, not as reserved; the
@@ -2300,8 +2668,9 @@ button.hw26-apply {
 
 /* Three sides of a box, opening toward the rule: a spine down the strip and
    an arm reaching right at each end, stopping just short of where the tick
-   starts. Drawn as borders because that is precisely the shape and needs no
-   pseudo-elements to get it.
+   starts. The two corners on the closed side are cut back at 45°, which is
+   the page's corner everywhere else — the panels, the plate, the callouts —
+   arriving on the one shape that could not have it by clipping.
 
    Dashed and in `--hw-line` rather than solid in `--hw-line-hi`: it has to
    read as the same hairline the rule beside it is drawn in, and a solid
@@ -2309,17 +2678,95 @@ button.hw26-apply {
    annotation. It is the largest shape in the section and it should be the
    quietest.
 
+   Not borders any more, and not `clip-path` either. A border is painted on
+   the four edges of the box and a clip is applied after it, so clipping a
+   bordered box down to a chamfered polygon cuts the border off at the notch
+   and draws nothing across it — the failure the filled panels answer with
+   background-is-outline plus an inset fill (see `.hw26-rig`), which needs a
+   fill to inset and this shape has none. What it has instead is four things
+   that are each just a line, so each one is drawn as a line: three of the
+   edges are background layers, sized and placed to stop `--brace-cut` short
+   of the corners they used to turn, and the diagonals are the two
+   pseudo-elements below.
+
+   The dash rhythm is stated rather than inherited, because a background
+   gradient cannot ask the browser for `dashed`. 3px on, 2.5px off is that
+   pattern measured off the native borders this replaces — the ticks and the
+   rule beside it are still real dashed borders, and the bracket has to sit in
+   the same rhythm as its neighbours.
+
    `top` is a relative shift, not a margin — it moves the bracket from the top
    of its first row down onto that row's tick, and the bottom edge travels the
    identical distance onto the tick of the row it ends at, all without costing
    the grid a pixel. */
 .hw26-tl-brace {
+  /* Small, because this is a hairline and not a plate. The panels take 34px
+     against a 420px cell; a bracket arm here is a couple of centimetres of
+     dashes, and a cut that reads as a chamfer on a card would take the whole
+     corner off this one. 10px is a notch you see and do not measure. */
+  --brace-cut: 10px;
+  --brace-dash: 3px;
+  --brace-step: 5.5px;
+  --brace-h: repeating-linear-gradient(
+    to right,
+    var(--hw-line) 0 var(--brace-dash),
+    transparent var(--brace-dash) var(--brace-step)
+  );
+  --brace-v: repeating-linear-gradient(
+    to bottom,
+    var(--hw-line) 0 var(--brace-dash),
+    transparent var(--brace-dash) var(--brace-step)
+  );
   grid-column: 1;
   grid-row: var(--tl-span-from) / var(--tl-span-to);
   position: relative;
   top: var(--tl-tick);
-  border: 1px dashed var(--hw-line);
-  border-right: 0;
+  /* Top arm, bottom arm, spine. The arms start one cut in from the left; the
+     spine stops one cut short at both ends, which is where the diagonals pick
+     it up. The open side — the right — has no layer at all, so the shape is
+     genuinely open rather than drawn and hidden. */
+  background-image: var(--brace-h), var(--brace-h), var(--brace-v);
+  background-size:
+    calc(100% - var(--brace-cut)) 1px,
+    calc(100% - var(--brace-cut)) 1px,
+    1px calc(100% - 2 * var(--brace-cut));
+  background-position:
+    left var(--brace-cut) top 0,
+    left var(--brace-cut) bottom 0,
+    left 0 top var(--brace-cut);
+  background-repeat: no-repeat;
+}
+
+/* The two diagonals, one per cut corner. A rotated box carrying nothing but a
+   dashed top border, which is the only way to get a *dashed* 45° hairline —
+   a gradient can draw the line but repeats across it rather than along it, so
+   the notch would be the one solid segment on a dashed shape.
+   `transform-origin` is the end the segment starts from, so each one is
+   positioned by its anchor point and then swung; the width is the hypotenuse
+   of the cut, so it lands exactly on the other edge's new end.
+   `::before` is the top-left corner in both layouts. `::after` is the second
+   cut, and which corner that is depends on which way the bracket opens — see
+   the horizontal block. */
+.hw26-tl-brace::before,
+.hw26-tl-brace::after {
+  content: "";
+  position: absolute;
+  width: calc(var(--brace-cut) * 1.41421);
+  border-top: 1px dashed var(--hw-line);
+  transform-origin: 0 0;
+}
+
+.hw26-tl-brace::before {
+  left: 0;
+  top: 0;
+  transform: translateY(var(--brace-cut)) rotate(-45deg);
+}
+
+/* Bottom-left, which is the second corner of a bracket opening to the right. */
+.hw26-tl-brace::after {
+  left: 0;
+  top: calc(100% - var(--brace-cut));
+  transform: rotate(45deg);
 }
 
 /* Centred on the span, which is the same point as the midpoint of the stretch
@@ -2666,9 +3113,9 @@ button.hw26-apply {
        that has nothing in it. */
     --tl-runout: 12.5rem;
     /* The lead-in: blank track ahead of the first tick, so the pin opens with
-       the start of the line a third of the way across the screen rather than
-       against the port's left edge. Written by the driver in lander.tsx, which
-       is the only thing that can know where that third of the viewport falls
+       the start of the line on the middle of the screen rather than against
+       the port's left edge. Written by the driver in lander.tsx, which is the
+       only thing that can know where the middle of the viewport falls
        relative to the port, and cleared by the same driver when the pin lets go —
        there is no pin to justify the indent in the fallback, and this rule is
        keyed on the width alone, so an uncleared value would simply push the
@@ -2695,14 +3142,33 @@ button.hw26-apply {
 
   /* Three sides of a box opening *downward*, toward the rule below it — the
      same shape as the vertical bracket, turned a quarter. The `row-gap` above
-     is what stops the arms landing on the rule itself. */
+     is what stops the arms landing on the rule itself.
+
+     The layers turn with the shape: the top edge is now the one that stops
+     short at both ends, and the two arms are what run from a cut down to the
+     open side. Same three segments, same cut, re-pointed. */
   .hw26-tl-brace {
     grid-column: var(--tl-span-from) / var(--tl-span-to);
     grid-row: 1;
     top: 0;
     left: var(--tl-tick);
-    border: 1px dashed var(--hw-line);
-    border-bottom: 0;
+    background-image: var(--brace-h), var(--brace-v), var(--brace-v);
+    background-size:
+      calc(100% - 2 * var(--brace-cut)) 1px,
+      1px calc(100% - var(--brace-cut)),
+      1px calc(100% - var(--brace-cut));
+    background-position:
+      left var(--brace-cut) top 0,
+      left 0 top var(--brace-cut),
+      right 0 top var(--brace-cut);
+  }
+
+  /* The second cut moves to the top-right, the other end of the edge that now
+     carries both of them. Same swing as the vertical layout's second diagonal
+     — only the corner it is anchored to changes. */
+  .hw26-tl-brace::after {
+    left: calc(100% - var(--brace-cut));
+    top: 0;
   }
 
   /* Room to set the label properly: a bracket up here spans as much as three
@@ -3330,14 +3796,54 @@ button.hw26-apply {
   }
 }
 
-/* One across, where a fifth of a phone is not a tile, it is a stamp. */
-@media (max-width: 480px) {
-  .hw26-sponsors-lead--eco {
-    grid-template-columns: minmax(0, 1fr);
+/* Two across is the floor. There used to be a further step to one at 480px, on
+   the argument that a fifth of a phone is not a tile but a stamp — which was
+   an argument about a fifth, not about a half. Half of a 390px sheet is a
+   ~173px plate, which is wider than the tile this row carries at 1440, and the
+   marks are `contain`ed into it. What one across actually bought was a column
+   of full-bleed plates with a mark floating in the middle of each, which reads
+   as five banners rather than as one wall. So the 720px arrangement runs all
+   the way down and the spans stay with it. */
+
+/* The Organizers row, held at two across for the same reason.
+ *
+ * It is the one row on the wall with no explicit count: two children on the
+ * base rule's `auto-fit` track, which collapses to one column the moment the
+ * sheet is narrower than two 280px tracks and a gap. Nothing was deciding
+ * that — 280 was a figure for the wide layout — and what it produced at 390
+ * was two full-bleed plates under three rows of paired tiles.
+ *
+ * 600px is where the collapse actually happens rather than a round number:
+ * two 280px tracks and the gap between them need 561px of container, which
+ * the sheet still has at about 600px of viewport once the gutter is off it.
+ * Wider than this the row is already two across on its own and the rule only
+ * restates what `auto-fit` was giving; narrower is the case being fixed.
+ *
+ * The cell figures come down with the row, both borrowed from the Ecosystem
+ * tiles rather than invented — those are the same width at the same widths,
+ * so a half-sheet plate here gets the inset a half-sheet plate there gets.
+ * Without the pair a mark keeps the lead cell's 40px inset and its natural
+ * width at a fixed height, which in a 173px tile is a wordmark wider than the
+ * plate it sits on.
+ *
+ * `:not()` twice, because the two modifiers on this class have counts of
+ * their own: `--eco` states five and steps down to two by its own ladder, and
+ * `--one` is a single cell sized by arithmetic a second track would break.
+ * This is the unmodified row and the only one that needs telling. */
+@media (max-width: 600px) {
+  .hw26-sponsors-lead:not(.hw26-sponsors-lead--eco):not(.hw26-sponsors-lead--one) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .hw26-sponsors-lead--eco > :nth-child(5) {
-    grid-column: auto;
+  .hw26-sponsors-lead:not(.hw26-sponsors-lead--eco):not(.hw26-sponsors-lead--one)
+    .hw26-sponsor-lead {
+    padding: clamp(1.75rem, 3vw, 2.75rem);
+  }
+
+  .hw26-sponsors-lead:not(.hw26-sponsors-lead--eco):not(.hw26-sponsors-lead--one)
+    img {
+    max-width: 100%;
+    object-fit: contain;
   }
 }
 
@@ -3560,18 +4066,12 @@ html[data-theme='light'] .hw26-sponsor-lead:hover {
   }
 }
 
-/* One across, and nothing is left over — so the span has to go with the
-   leftover it was closing, or the last tile would be asked for a second track
-   on a single-track grid. */
-@media (max-width: 480px) {
-  .hw26-sponsors-rest {
-    grid-template-columns: minmax(0, 1fr);
-  }
-
-  .hw26-sponsors-rest:not(.hw26-sponsors-rest--solo) > .hw26-sponsor:last-child {
-    grid-column: auto;
-  }
-}
+/* Two across is the floor here too — there is no step down to one. Seven tiles
+   on two tracks is three full rows and a seventh that takes both, which is the
+   same close the span performs at every other count and leaves no lit track;
+   one across left every tile the width of the phone, which is what this change
+   was asked to stop. The span therefore stays live all the way down, and the
+   solo row keeps its own exclusion for the reason it always had. */
 
 /* A row holding one tile. Media partners and Sponsors are a name each so far,
    and both of the obvious things to do with that are wrong: a full-width plate
@@ -3603,13 +4103,10 @@ html[data-theme='light'] .hw26-sponsor-lead:hover {
   }
 }
 
-/* One across up there too, so the solo row is the same width as every other
-   row on the wall and there is nothing left to subtract. */
-@media (max-width: 480px) {
-  .hw26-sponsors-rest--solo {
-    width: auto;
-  }
-}
+/* Two across up there all the way down, so there is no width left to restate:
+   the half-sheet track above is what the solo tile keeps at every width under
+   720px, and it goes on lining up with the wall it belongs to instead of
+   stretching to the sheet the moment the phone gets narrow. */
 
 /* Small tiles, and links like every other cell on this wall. They used to be
    inert divs holding a name and a TBC tag; the names are real now and each one
@@ -4154,12 +4651,23 @@ html[data-theme='light'] .hw26-sponsor--static:hover {
    Scroll reveal
    ------------------------------------------------------------- */
 
+/* The stagger arrives as a variable rather than as `transition-delay`.
+ *
+ * It used to be written inline, `style={{ transitionDelay }}`, which is a
+ * longhand and therefore beats every shorthand in this file — including the
+ * one a card writes for its own hover. An element that wanted a fourth
+ * transition with no delay could not have one: the inline figure applied to
+ * every property in the list, so a cell four along in its row would have had
+ * its ring start 270ms after the pointer arrived. As a custom property the
+ * stagger lands only where it is spent, which is the two properties the
+ * reveal owns. See `.hw26-rig` for the rule that needed the way out, and
+ * RigCell for where the figure is set. */
 .hw26-reveal {
   opacity: 0;
   transform: translateY(26px);
   transition:
-    opacity 800ms var(--hw-ease),
-    transform 800ms var(--hw-ease);
+    opacity 800ms var(--hw-ease) var(--reveal-delay, 0ms),
+    transform 800ms var(--hw-ease) var(--reveal-delay, 0ms);
 }
 
 .hw26-reveal[data-shown="true"] {
@@ -4175,6 +4683,7 @@ html[data-theme='light'] .hw26-sponsor--static:hover {
     opacity: 1;
     transform: none;
   }
+
 }
 
 /* -------------------------------------------------------------
