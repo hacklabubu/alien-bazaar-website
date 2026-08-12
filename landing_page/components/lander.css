@@ -61,6 +61,15 @@
      the viewport as its reference. */
   overflow-x: clip;
   -webkit-font-smoothing: antialiased;
+
+  /* The page's own pointer: a registration crosshair, the same mark the
+     stencil plates and the corner ticks are drawn from. `16 16` puts the
+     hotspot at the centre of the 32×32 art, so the gap in the middle of the
+     cross is what is actually pointing at things — an image cursor with a
+     top-left hotspot reads as offset by half its own size. `auto` behind it
+     is not decoration: a browser that will not load the SVG falls through to
+     it, and the alternative is no cursor at all. */
+  cursor: url('/cursors/crosshair.svg') 16 16, auto;
 }
 
 /* Light theme. Dark is the default (no attribute, or data-theme='dark');
@@ -92,6 +101,68 @@ html[data-theme='light'] .hw26 {
 .hw26 *::before,
 .hw26 *::after {
   box-sizing: border-box;
+}
+
+/* -------------------------------------------------------------
+   Cursors
+
+   Three marks, one hotspot. The idle crosshair is set on `.hw26`
+   above and inherits everywhere; the two rules below are the
+   exceptions — copy you would select, and things you can press.
+
+   Order matters and is the whole mechanism. `.hw26 dd` and
+   `.hw26 a` carry the same specificity, so the link inside the
+   "Organized by" value is decided by which rule comes last: the
+   clickable block is written second, deliberately, and nothing
+   below it in this stylesheet touches `cursor` except the
+   disabled button's `not-allowed`.
+   ------------------------------------------------------------- */
+
+/* Body copy. Block-level prose tags only — headings, paragraphs, list
+   items, the definition rows, table cells. Bare `span` is left out on
+   purpose: on this page a span is as likely to be a stencil mark, a
+   ticker run, a brace label or a turned index as it is to be a word,
+   and an I-beam over the timeline's brackets would promise a selection
+   nobody wants. The decorative prose that does exist — the endplate's
+   giant outlined plate number — is `pointer-events: none`, so it never
+   sees a cursor either way. */
+.hw26 p,
+.hw26 h1,
+.hw26 h2,
+.hw26 h3,
+.hw26 h4,
+.hw26 h5,
+.hw26 h6,
+.hw26 dt,
+.hw26 dd,
+.hw26 li,
+.hw26 th,
+.hw26 td,
+.hw26 blockquote,
+.hw26 figcaption {
+  cursor: url('/cursors/text-beam.svg') 16 16, text;
+}
+
+/* Things you can actually press. The closed crosshair — the same plus as
+   the idle mark with its gap shut, so the state change is the gap and
+   nothing else: no rotation, no second shape to read. It has to reach the
+   children too: the FAQ trigger wraps its question in a span and the
+   sponsor tiles wrap a wordmark, and a control whose label contradicts its
+   own frame is worse than one with no cursor at all. Text nested inside a
+   link keeps the pointer for the same reason.
+
+   `:not(:disabled)` is the honest part. Three buttons on this site are
+   `disabled` — the hero's Apply, the timeline's Join the chat, the
+   closer's Apply now — and they are excluded here so they keep the
+   `not-allowed` their modifier sets rather than borrowing a mark that
+   says "press me". */
+.hw26 a,
+.hw26 a *,
+.hw26 button:not(:disabled),
+.hw26 button:not(:disabled) *,
+.hw26 [role='button'],
+.hw26 [role='button'] * {
+  cursor: url('/cursors/crosshair-active.svg') 16 16, pointer;
 }
 
 /* -------------------------------------------------------------
