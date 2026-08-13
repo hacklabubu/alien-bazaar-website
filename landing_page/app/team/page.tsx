@@ -8,7 +8,7 @@ import { EVENT } from '../../lib/event'
  * is indistinguishable from the homepage in a row of tabs.
  */
 export const metadata = {
-  title: `Our team — ${EVENT.title}`,
+  title: `Team — ${EVENT.title}`,
 }
 
 export default function Page() {

@@ -45,19 +45,20 @@ import { type HardwareEvent } from '../lib/event'
  * The roster, such as it is.
  *
  * Placeholder names, and deliberately shaped like placeholders. The
- * alternative is inventing plausible ones, which puts thirteen fictional
+ * alternative is inventing plausible ones, which puts nine fictional
  * people on a real page under a real heading — and a name that reads as a name
  * is the kind of stand-in that survives to production because nobody scanning
  * the page can tell it is one. "Team Member 4" cannot.
  *
- * One photograph for all thirteen, which is the same admission said in
+ * One photograph for all nine, which is the same admission said in
  * pictures: there is no roster yet. It is a stock frame, so it is `alt=''` —
  * see the note on the tile.
  */
 const PERSON_PHOTO = '/team/person.jpeg'
 
-const TEAM = Array.from({ length: 8 }, (_, i) => `Team Member ${i + 1}`)
-const SUPERVISORS = Array.from({ length: 5 }, (_, i) => `Supervisor ${i + 1}`)
+const ORGANIZERS = Array.from({ length: 3 }, (_, i) => `Team Member ${i + 1}`)
+const MENTORS = Array.from({ length: 3 }, (_, i) => `Team Member ${i + 4}`)
+const VOLUNTEERS = Array.from({ length: 3 }, (_, i) => `Team Member ${i + 7}`)
 
 /**
  * One face in a hardware cell.
@@ -153,8 +154,9 @@ export function TeamPage({ hackathon }: { hackathon: HardwareEvent }) {
         </Link>
       </div>
 
-      <PeopleSection people={TEAM} title='Our team' />
-      <PeopleSection people={SUPERVISORS} title='Supervisors' />
+      <PeopleSection people={ORGANIZERS} title='Organizers' />
+      <PeopleSection people={MENTORS} title='Mentors' />
+      <PeopleSection people={VOLUNTEERS} title='Volunteers' />
 
       <Endplate hackathon={hackathon} />
     </div>
