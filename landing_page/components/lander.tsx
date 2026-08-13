@@ -43,6 +43,13 @@ import { APPLY_URL, type HardwareEvent } from "../lib/event";
  */
 
 /**
+ * Where every call to action on this page sends the reader. Three controls
+ * point at it — the hero, the timeline stop, the closer — and one constant
+ * keeps them from drifting apart when the destination moves.
+ */
+const JOIN_URL = 'https://hacklab.so/hackathons/alien-bazaar-warsaw-2026/join'
+
+/**
  * The ribbon under the hero. Four facts, not nine: when, how many teams, how
  * much hardware, where — the questions a reader has before they have decided
  * to read anything else, answered in the width of one band.
@@ -2862,19 +2869,12 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
               below it. */}
           <Countdown target={hackathon.startsAt} />
 
-          {/* A real <button>, not the anchor this used to be. The control is
-              closed for now, and `disabled` is the only thing that makes that
-              true rather than merely painted: an anchor with a dimmed class is
-              still focusable, still clickable, and still announced as a link
-              you can follow. The button takes the same `.hw26-apply` chrome so
-              nothing about the panel moves, plus the modifier that dims it. */}
-          <button
-            className="hw26-apply hw26-apply--disabled"
-            disabled
-            type="button"
-          >
-            Apply
-          </button>
+          {/* Applications are open, so the control is a link again. Same tab:
+              the reader is being handed off to the form, not sent to read
+              something on the side. */}
+          <a className='hw26-apply' href={JOIN_URL}>
+            Join
+          </a>
         </div>
       </header>
 
@@ -3258,25 +3258,16 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
                       >
                         {String(i + 1).padStart(2, "0")}
                       </span>
-                      <span className="hw26-tl-when">{stop.when}</span>
-                      <div className="hw26-tl-body">
-                        <p className="hw26-tl-what">{stop.what}</p>
-                        {/* This and the hero's control were deliberately
-                            split — one closed, one open — and that split is
-                            gone: both are closed now. So the stop still names
-                            the thing to do without pretending it can be done
-                            yet, and like the hero's it is a real <button>
-                            carrying `disabled` rather than an anchor wearing
-                            a dimmed class. Keeps both chrome classes so the
-                            note-width sizing survives the change. */}
+                      <span className='hw26-tl-when'>{stop.when}</span>
+                      <div className='hw26-tl-body'>
+                        <p className='hw26-tl-what'>{stop.what}</p>
+                        {/* Same destination as the hero, reached from the
+                            stop that names it. Keeps `.hw26-tl-cta` on top of
+                            the shared chrome for the note-width sizing. */}
                         {stop.cta ? (
-                          <button
-                            className="hw26-apply hw26-tl-cta hw26-apply--disabled"
-                            disabled
-                            type="button"
-                          >
+                          <a className='hw26-apply hw26-tl-cta' href={JOIN_URL}>
                             Join the chat
-                          </button>
+                          </a>
                         ) : null}
                       </div>
                     </li>
@@ -3503,17 +3494,15 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
       </section>
 
       {/* ---------------- CLOSER ---------------- */}
-      <section className="hw26-section hw26-closer">
-        <div className="hw26-inner">
-          <h2 className="hw26-reveal">Join Alien Bazaar</h2>
-          <div className="hw26-reveal">
-            <button
-              className="hw26-apply hw26-apply--lg hw26-apply--disabled"
-              disabled
-              type="button"
-            >
-              Apply now
-            </button>
+      <section className='hw26-section hw26-closer'>
+        <div className='hw26-inner'>
+          <h2 className='hw26-reveal'>Join Alien Bazaar</h2>
+          <div className='hw26-reveal'>
+            {/* The last thing on the page, so it gets the large cut of the
+                same link the hero opens with. */}
+            <a className='hw26-apply hw26-apply--lg' href={JOIN_URL}>
+              Join now
+            </a>
           </div>
         </div>
       </section>
