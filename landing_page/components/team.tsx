@@ -54,7 +54,7 @@ import { type HardwareEvent } from '../lib/event'
  * pictures: there is no roster yet. It is a stock frame, so it is `alt=''` —
  * see the note on the tile.
  */
-const PERSON_PHOTO = '/team/person.jpeg'
+const PERSON_PHOTO = '/team/tba.svg'
 
 const ORGANIZERS = Array.from({ length: 3 }, (_, i) => `Team Member ${i + 1}`)
 const MENTORS = Array.from({ length: 3 }, (_, i) => `Team Member ${i + 4}`)
