@@ -151,11 +151,9 @@ html[data-theme='light'] .hw26 {
    own frame is worse than one with no cursor at all. Text nested inside a
    link keeps the pointer for the same reason.
 
-   `:not(:disabled)` is the honest part. Three buttons on this site are
-   `disabled` — the hero's Apply, the timeline's Join the chat, the
-   closer's Apply now — and they are excluded here so they keep the
-   `not-allowed` their modifier sets rather than borrowing a mark that
-   says "press me". */
+   `:not(:disabled)` is the honest part. Nothing on the page is closed at
+   the moment, but a switched-off control must not borrow a mark that says
+   "press me", so the guard stays for whenever one comes back. */
 .hw26 a,
 .hw26 a *,
 .hw26 button:not(:disabled),
@@ -1514,11 +1512,12 @@ html[data-theme='light'] .hw26-cat-intro::after {
   outline-offset: 4px;
 }
 
-/* The hero's control is a real <button> so it can carry `disabled`; the rest
-   of the page's are anchors. The class already sets the face, size, weight and
-   tracking, so all a button needs back is the two things the UA stylesheet
-   takes off it rather than inherits: the page's line-height, and the native
-   control painting that would otherwise fight the mint fill on Safari.
+/* Every call to action on the page is an anchor at the moment, so nothing
+   matches this — it is kept for the next one that has to be a real <button>.
+   The class already sets the face, size, weight and tracking, so all a button
+   needs back is the two things the UA stylesheet takes off it rather than
+   inherits: the page's line-height, and the native control painting that
+   would otherwise fight the mint fill on Safari.
    Selector is `button.hw26-apply` rather than a second class because it is a
    correction for the element, not a variant of the design. */
 button.hw26-apply {
@@ -1631,32 +1630,6 @@ button.hw26-apply {
 .hw26-teamnav {
   padding: clamp(1.5rem, 4vh, 2.75rem) var(--hw-gutter) 0;
   display: flex;
-}
-
-/* Switched off. The button keeps its silhouette — same chamfer, same
-   tracking, same place in the panel — and loses everything that says it will
-   do something: the phosphor fill drops to a desaturated plate, the label to
-   a muted grey-green that still clears 4.5:1 against it, and the hover lift
-   and its shadow are withdrawn so the pointer gets no reply. `not-allowed`
-   over the whole thing, including the arrow.
-
-   Paired with the `disabled` attribute in the markup, never a substitute for
-   it: this rule is what the sighted reader gets, the attribute is what the
-   keyboard and the screen reader get, and a control that is only one of the
-   two is broken for whoever is on the other side. */
-.hw26-apply--disabled {
-  background: #33413a;
-  color: #9fb3a9;
-  cursor: not-allowed;
-}
-
-.hw26-apply--disabled:hover {
-  transform: none;
-  box-shadow: none;
-}
-
-.hw26-apply--disabled:hover::after {
-  transform: none;
 }
 
 .hw26-apply--lg {
