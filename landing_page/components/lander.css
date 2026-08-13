@@ -61,6 +61,15 @@
      the viewport as its reference. */
   overflow-x: clip;
   -webkit-font-smoothing: antialiased;
+
+  /* The page's own pointer: a registration crosshair, the same mark the
+     stencil plates and the corner ticks are drawn from. `16 16` puts the
+     hotspot at the centre of the 32×32 art, so the gap in the middle of the
+     cross is what is actually pointing at things — an image cursor with a
+     top-left hotspot reads as offset by half its own size. `auto` behind it
+     is not decoration: a browser that will not load the SVG falls through to
+     it, and the alternative is no cursor at all. */
+  cursor: url('/cursors/crosshair.svg') 16 16, auto;
 }
 
 /* Light theme. Dark is the default (no attribute, or data-theme='dark');
@@ -92,6 +101,66 @@ html[data-theme='light'] .hw26 {
 .hw26 *::before,
 .hw26 *::after {
   box-sizing: border-box;
+}
+
+/* -------------------------------------------------------------
+   Cursors
+
+   Three marks, one hotspot. The idle crosshair is set on `.hw26`
+   above and inherits everywhere; the two rules below are the
+   exceptions — copy you would select, and things you can press.
+
+   Order matters and is the whole mechanism. `.hw26 dd` and
+   `.hw26 a` carry the same specificity, so the link inside the
+   "Organized by" value is decided by which rule comes last: the
+   clickable block is written second, deliberately, and nothing
+   below it in this stylesheet touches `cursor` except the
+   disabled button's `not-allowed`.
+   ------------------------------------------------------------- */
+
+/* Body copy. Block-level prose tags only — headings, paragraphs, list
+   items, the definition rows, table cells. Bare `span` is left out on
+   purpose: on this page a span is as likely to be a stencil mark, a
+   ticker run, a brace label or a turned index as it is to be a word,
+   and an I-beam over the timeline's brackets would promise a selection
+   nobody wants. The decorative prose that does exist — the endplate's
+   giant outlined plate number — is `pointer-events: none`, so it never
+   sees a cursor either way. */
+.hw26 p,
+.hw26 h1,
+.hw26 h2,
+.hw26 h3,
+.hw26 h4,
+.hw26 h5,
+.hw26 h6,
+.hw26 dt,
+.hw26 dd,
+.hw26 li,
+.hw26 th,
+.hw26 td,
+.hw26 blockquote,
+.hw26 figcaption {
+  cursor: url('/cursors/text-beam.svg') 16 16, text;
+}
+
+/* Things you can actually press. The closed crosshair — the same plus as
+   the idle mark with its gap shut, so the state change is the gap and
+   nothing else: no rotation, no second shape to read. It has to reach the
+   children too: the FAQ trigger wraps its question in a span and the
+   sponsor tiles wrap a wordmark, and a control whose label contradicts its
+   own frame is worse than one with no cursor at all. Text nested inside a
+   link keeps the pointer for the same reason.
+
+   `:not(:disabled)` is the honest part. Nothing on the page is closed at
+   the moment, but a switched-off control must not borrow a mark that says
+   "press me", so the guard stays for whenever one comes back. */
+.hw26 a,
+.hw26 a *,
+.hw26 button:not(:disabled),
+.hw26 button:not(:disabled) *,
+.hw26 [role='button'],
+.hw26 [role='button'] * {
+  cursor: url('/cursors/crosshair-active.svg') 16 16, pointer;
 }
 
 /* -------------------------------------------------------------
@@ -1443,11 +1512,12 @@ html[data-theme='light'] .hw26-cat-intro::after {
   outline-offset: 4px;
 }
 
-/* The hero's control is a real <button> so it can carry `disabled`; the rest
-   of the page's are anchors. The class already sets the face, size, weight and
-   tracking, so all a button needs back is the two things the UA stylesheet
-   takes off it rather than inherits: the page's line-height, and the native
-   control painting that would otherwise fight the mint fill on Safari.
+/* Every call to action on the page is an anchor at the moment, so nothing
+   matches this — it is kept for the next one that has to be a real <button>.
+   The class already sets the face, size, weight and tracking, so all a button
+   needs back is the two things the UA stylesheet takes off it rather than
+   inherits: the page's line-height, and the native control painting that
+   would otherwise fight the mint fill on Safari.
    Selector is `button.hw26-apply` rather than a second class because it is a
    correction for the element, not a variant of the design. */
 button.hw26-apply {
@@ -1560,32 +1630,6 @@ button.hw26-apply {
 .hw26-teamnav {
   padding: clamp(1.5rem, 4vh, 2.75rem) var(--hw-gutter) 0;
   display: flex;
-}
-
-/* Switched off. The button keeps its silhouette — same chamfer, same
-   tracking, same place in the panel — and loses everything that says it will
-   do something: the phosphor fill drops to a desaturated plate, the label to
-   a muted grey-green that still clears 4.5:1 against it, and the hover lift
-   and its shadow are withdrawn so the pointer gets no reply. `not-allowed`
-   over the whole thing, including the arrow.
-
-   Paired with the `disabled` attribute in the markup, never a substitute for
-   it: this rule is what the sighted reader gets, the attribute is what the
-   keyboard and the screen reader get, and a control that is only one of the
-   two is broken for whoever is on the other side. */
-.hw26-apply--disabled {
-  background: #33413a;
-  color: #9fb3a9;
-  cursor: not-allowed;
-}
-
-.hw26-apply--disabled:hover {
-  transform: none;
-  box-shadow: none;
-}
-
-.hw26-apply--disabled:hover::after {
-  transform: none;
 }
 
 .hw26-apply--lg {
