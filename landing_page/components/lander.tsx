@@ -317,6 +317,16 @@ const RIG_GROUPS: { label: string; items: Rig[] }[] = [
     ],
   },
   {
+    label: "Quadruped robots",
+    items: [
+      {
+        name: "RealAnt",
+        units: "1x",
+        photo: "/hardware/realant.png",
+      },
+    ],
+  },
+  {
     label: "Robodogs",
     items: [
       // Non-breaking hyphen: the cell's measure puts the line break exactly
