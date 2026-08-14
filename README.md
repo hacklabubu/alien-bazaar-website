@@ -1,21 +1,25 @@
-# Hardware Hackathon Warsaw 2026
+# Alien Bazaar — Warsaw 2026
 
-Dedicated landing page for **Hardware Hackathon Warsaw 2026** — 12–13 September
-2026, at the Hacker House powered by Hacklab and Epikor.
+Dedicated landing page for **Alien Bazaar — Warsaw 2026** — 25–27 September
+2026, at Hacker Bloc powered by Epikor and Hacklab, Warsaw, Poland.
 
-Two days, four tracks, and a lab of robots, drones and printers that teams book
-in slots for the whole weekend. Applications are handled on
-[hacklab.so](https://hacklab.so/hackathons/hardware-hackathon-warsaw-2026); this
-repo is only the poster.
+Three days of home automation. Every team books one machine, teams wire their
+machines into each other, and what gets pitched to investors after 48 work
+hours is the combined system. Room for 100, teams of up to four. Applications
+are handled on
+[hacklab.so](https://hacklab.so/hackathons/alien-bazaar-warsaw-2026); this repo
+is only the poster.
 
-```
-landing_page/     Next.js app — the landing page
-```
+The Next.js app is the repository root — there is no wrapper directory.
 
 ## Running it
 
+pnpm is the package manager for this project. It is pinned in `package.json`
+via `packageManager`, and `pnpm-lock.yaml` is the only lockfile — `npm install`
+here is a mistake, and `package-lock.json` is gitignored so it cannot come back
+by accident.
+
 ```bash
-cd landing_page
 pnpm install
 pnpm dev            # http://localhost:3000
 ```
@@ -23,26 +27,41 @@ pnpm dev            # http://localhost:3000
 `pnpm build && pnpm start` for a production build. The page is fully static —
 there is no database and no API.
 
-To point "Apply now" at a local hacklab instance instead of production:
+`lib/event.ts` exports `JOIN_URL`, which can be aimed at a local hacklab
+instance with `NEXT_PUBLIC_APPLY_URL`:
 
 ```bash
-NEXT_PUBLIC_APPLY_URL=http://localhost:3000/hackathons/hardware-hackathon-warsaw-2026 pnpm dev
+NEXT_PUBLIC_APPLY_URL=http://localhost:3000/hackathons/alien-bazaar-warsaw-2026 pnpm dev
 ```
+
+The override sets the base and `/join` is appended to it, so it reaches every
+join control on the site — the hero, the timeline stop, the closer and the
+menu overlay's "Apply now".
 
 ## How it is put together
 
 ```
-landing_page/
 ├── app/
-│   ├── layout.tsx      Orbitron + JetBrains Mono + Terminess
+│   ├── layout.tsx      Orbitron + JetBrains Mono + Poppins
 │   ├── page.tsx        renders the lander
-│   └── globals.css     reset only — the page owns its own palette
+│   ├── globals.css     reset only — the page owns its own palette
+│   ├── team/           the team page
+│   ├── sponsor/        sponsorship packages
+│   └── partners/       partners page
 ├── components/
 │   ├── lander.tsx      the page
 │   ├── lander.css      scoped to .hw26
-│   ├── intro.tsx       2.5s intro sequence
-│   └── intro.css       scoped to .hw26-intro
-├── lib/event.ts        the event: dates, venue, capacity
+│   ├── team.tsx        the team page
+│   ├── sponsor.tsx     the sponsor page
+│   ├── sponsor.css
+│   ├── partners.tsx    the partners page
+│   ├── cursor.tsx      the DOM cursor
+│   ├── cursor.css
+│   ├── intro.tsx       load sequence, currently disabled
+│   └── intro.css
+├── lib/
+│   ├── event.ts        the event: dates, venue, capacity
+│   └── packages.ts     sponsorship tiers
 └── public/             photos and sponsor marks
 ```
 
@@ -52,8 +71,10 @@ object from the database instead; the shape is identical so it moves back
 without edits.
 
 All CSS is namespaced under `.hw26` / `.hw26-intro` and the palette is declared
-locally, so the page renders identically regardless of the visitor's light or
-dark preference. A poster does not flip to light mode.
+locally. `app/layout.tsx` stamps `data-theme='dark'` on `<html>` and nothing on
+the page changes it, so the page renders dark regardless of the visitor's light
+or dark preference — the `html[data-theme='light']` palette in `lander.css` is
+still there, but dormant. A poster does not flip to light mode.
 
 ### Design
 
@@ -75,10 +96,10 @@ Type is Orbitron for display and JetBrains Mono for everything else, plus four
 numerals that count, Grid for title-block cells, Square for the stamped plate
 number, Line for the intro's readout.
 
-The intro runs 2.5s in three acts — handshake, arming, lock. Press `1` or `R`
-to replay it, `Esc` or click to skip. It mounts client-side only, so the page
-is fully readable without JavaScript, and it is skipped entirely under
-`prefers-reduced-motion`.
+The 2.5s intro sequence — handshake, arming, lock — is still in the repo but
+switched off: the `HardwareIntro` import at the top of `components/lander.tsx`
+is commented out. Uncomment it, and the `<HardwareIntro />` render at the top
+of the tree, to bring it back.
 
 ## Credits
 

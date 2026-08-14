@@ -41,9 +41,17 @@ export const EVENT: HardwareEvent = {
 }
 
 /**
- * Where "Apply now" goes. Points at the event page on hacklab.so; override
- * with NEXT_PUBLIC_APPLY_URL to aim it at a local instance while developing.
+ * Where every join control on the site points — the hero, the timeline stop,
+ * the closer, and the menu overlay's "Apply now" all read this one constant,
+ * so the destination cannot drift between them.
+ *
+ * The base is the event page on hacklab.so, derived from the slug so a slug
+ * change carries; NEXT_PUBLIC_APPLY_URL overrides that base to aim it at a
+ * local instance while developing. The `/join` segment is appended to
+ * whichever base is in force, so the override reaches every control.
  */
-export const APPLY_URL =
+const APPLY_BASE =
   process.env.NEXT_PUBLIC_APPLY_URL ??
   `https://hacklab.so/hackathons/${EVENT.slug}`
+
+export const JOIN_URL = `${APPLY_BASE}/join`

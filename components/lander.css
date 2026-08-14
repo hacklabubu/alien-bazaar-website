@@ -61,14 +61,18 @@
      the viewport as its reference. */
   overflow-x: clip;
   -webkit-font-smoothing: antialiased;
+}
 
-  /* The page's own pointer: a registration crosshair, the same mark the
-     stencil plates and the corner ticks are drawn from. `16 16` puts the
-     hotspot at the centre of the 32×32 art, so the gap in the middle of the
-     cross is what is actually pointing at things — an image cursor with a
-     top-left hotspot reads as offset by half its own size. `auto` behind it
-     is not decoration: a browser that will not load the SVG falls through to
-     it, and the alternative is no cursor at all. */
+/* The page's own pointer: a registration crosshair, the same mark the
+   stencil plates and the corner ticks are drawn from. `16 16` puts the
+   hotspot at the centre of the 32×32 art, so the gap in the middle of the
+   cross is what is actually pointing at things — an image cursor with a
+   top-left hotspot reads as offset by half its own size. `auto` behind it
+   is not decoration: a browser that will not load the SVG falls through to
+   it, and the alternative is no cursor at all.
+
+   Split out of the block above and gated: see the Cursors section below. */
+html:not(.hw26-cursor-dom) .hw26 {
   cursor: url('/cursors/crosshair.svg') 16 16, auto;
 }
 
@@ -112,13 +116,18 @@ html[data-theme='light'] .hw26 {
   border: 0;
   background: var(--hw-mint);
   color: var(--hw-mint);
-  cursor: pointer;
   clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 12px 100%, 0 calc(100% - 12px));
   isolation: isolate;
   transition:
     background 220ms var(--hw-ease),
     color 220ms var(--hw-ease),
     transform 220ms var(--hw-ease);
+}
+
+/* Split out of the block above so it can be gated with the rest of the
+   native cursor rules — see the Cursors section below. */
+html:not(.hw26-cursor-dom) .hw26-menu-trigger {
+  cursor: pointer;
 }
 
 .hw26-menu-trigger::before {
@@ -397,7 +406,24 @@ html[data-theme='light'] .hw26 {
 }
 
 /* -------------------------------------------------------------
-   Cursors
+   Cursors — the fallback path
+
+   These are no longer what the page normally shows. components/
+   cursor.tsx draws the same three marks as two stacked fixed
+   elements that threshold their own backdrop, so the crosshair
+   comes out mint over the dark field and black over the mint
+   apply button instead of disappearing into it. Everything here
+   is what is left when that cannot run.
+
+   The switch is `hw26-cursor-dom`, stamped on <html> by cursor.tsx
+   and only when its capability gate passes — a real pointing
+   device, and backdrop-filter support. Every `cursor` declaration
+   on this page is therefore scoped `html:not(.hw26-cursor-dom)`
+   and simply stops matching once the DOM cursor takes over, which
+   is why cursor.css can say `cursor: none` with no `!important`
+   and no specificity climb: with these gated off it only has to
+   beat the UA stylesheet. Touch devices, and any browser without
+   backdrop-filter, never get the class and land here instead.
 
    Three marks, one hotspot. The idle crosshair is set on `.hw26`
    above and inherits everywhere; the two rules below are the
@@ -406,9 +432,13 @@ html[data-theme='light'] .hw26 {
    Order matters and is the whole mechanism. `.hw26 dd` and
    `.hw26 a` carry the same specificity, so the link inside the
    "Organized by" value is decided by which rule comes last: the
-   clickable block is written second, deliberately, and nothing
-   below it in this stylesheet touches `cursor` except the
-   disabled button's `not-allowed`.
+   clickable block is written second, deliberately. The only other
+   declarations that touch `cursor` are two single-line rules
+   lifted out of their own blocks so they could be gated the same
+   way — `.hw26-menu-trigger` above, `.hw26-faq-trigger` below —
+   and neither competes with these. cursor.tsx reproduces the
+   precedence explicitly, by testing the pressable selector before
+   the prose one.
    ------------------------------------------------------------- */
 
 /* Body copy. Block-level prose tags only — headings, paragraphs, list
@@ -419,20 +449,20 @@ html[data-theme='light'] .hw26 {
    nobody wants. The decorative prose that does exist — the endplate's
    giant outlined plate number — is `pointer-events: none`, so it never
    sees a cursor either way. */
-.hw26 p,
-.hw26 h1,
-.hw26 h2,
-.hw26 h3,
-.hw26 h4,
-.hw26 h5,
-.hw26 h6,
-.hw26 dt,
-.hw26 dd,
-.hw26 li,
-.hw26 th,
-.hw26 td,
-.hw26 blockquote,
-.hw26 figcaption {
+html:not(.hw26-cursor-dom) .hw26 p,
+html:not(.hw26-cursor-dom) .hw26 h1,
+html:not(.hw26-cursor-dom) .hw26 h2,
+html:not(.hw26-cursor-dom) .hw26 h3,
+html:not(.hw26-cursor-dom) .hw26 h4,
+html:not(.hw26-cursor-dom) .hw26 h5,
+html:not(.hw26-cursor-dom) .hw26 h6,
+html:not(.hw26-cursor-dom) .hw26 dt,
+html:not(.hw26-cursor-dom) .hw26 dd,
+html:not(.hw26-cursor-dom) .hw26 li,
+html:not(.hw26-cursor-dom) .hw26 th,
+html:not(.hw26-cursor-dom) .hw26 td,
+html:not(.hw26-cursor-dom) .hw26 blockquote,
+html:not(.hw26-cursor-dom) .hw26 figcaption {
   cursor: url('/cursors/text-beam.svg') 16 16, text;
 }
 
@@ -447,12 +477,12 @@ html[data-theme='light'] .hw26 {
    `:not(:disabled)` is the honest part. Nothing on the page is closed at
    the moment, but a switched-off control must not borrow a mark that says
    "press me", so the guard stays for whenever one comes back. */
-.hw26 a,
-.hw26 a *,
-.hw26 button:not(:disabled),
-.hw26 button:not(:disabled) *,
-.hw26 [role='button'],
-.hw26 [role='button'] * {
+html:not(.hw26-cursor-dom) .hw26 a,
+html:not(.hw26-cursor-dom) .hw26 a *,
+html:not(.hw26-cursor-dom) .hw26 button:not(:disabled),
+html:not(.hw26-cursor-dom) .hw26 button:not(:disabled) *,
+html:not(.hw26-cursor-dom) .hw26 [role='button'],
+html:not(.hw26-cursor-dom) .hw26 [role='button'] * {
   cursor: url('/cursors/crosshair-active.svg') 16 16, pointer;
 }
 
@@ -3717,13 +3747,18 @@ button.hw26-apply {
   min-height: 60px;
   padding: var(--faq-pad-y) var(--faq-pad-x);
   text-align: left;
-  cursor: pointer;
   color: inherit;
   /* The ring below is the row's own background, so the two states the row can
      be in are two background colours and nothing else moves. */
   position: relative;
   isolation: isolate;
   transition: background 300ms var(--hw-ease);
+}
+
+/* Split out of the block above so it can be gated with the rest of the
+   native cursor rules — see the Cursors section. */
+html:not(.hw26-cursor-dom) .hw26-faq-trigger {
+  cursor: pointer;
 }
 
 /* The row's fill, and the reason the hover ring is drawn the way it is.
@@ -5229,5 +5264,153 @@ html[data-theme='light'] .hw26-sponsor--static:hover {
   .hw26-hero-tittle {
     animation: none;
     opacity: 1;
+  }
+}
+
+/* -------------------------------------------------------------
+   Phone rendering budget
+   ------------------------------------------------------------- */
+
+/* Everything below is a performance budget for phone GPUs, and it is not a
+   design variant. The phone gets a cheaper *rendering of the same design* —
+   the same plate in the same place holding the same countdown, the same
+   wordmark on the same tube — drawn with fewer passes over fewer pixels than a
+   laptop's compositor can afford to spend. Nothing here changes what the page
+   is; it changes how much silicon has to be woken up per frame to put it on a
+   screen. If a rule in this block reads as a different look rather than a
+   cheaper draw of the same one, it is wrong and should be taken out.
+
+   It is one block on purpose, and it is last on purpose. The three costs it
+   pays down — a live backdrop filter, a five-pass filter chain, and an
+   animation that never stops — are separate mechanisms in three different
+   parts of the stylesheet, and collecting them here means the budget can be
+   read, argued with and reverted as a single unit rather than found three
+   times by grep. The existing 900px block above stays what it is: layout that
+   has to change on a narrow screen. This one is spend.
+
+   Gated at 900px because that is the width the rest of the file already uses
+   for "not a desktop", and because every device this is aimed at is under it.
+   Desktop is deliberately untouched, byte for byte. */
+@media (max-width: 900px) {
+  /* ---- 1. the countdown panel stops frosting the photograph ----
+
+     `backdrop-filter` is not a paint, it is a standing instruction to the
+     compositor: resample everything behind this element's box, blur it, and
+     keep the result in step with whatever moves under there. Over a full-bleed
+     photograph on a page that scrolls, "whatever moves" is the entire hero, so
+     the blur is recomputed the whole way down. Worse, the countdown inside the
+     panel rewrites itself once a second forever, and each of those writes
+     dirties the panel's region — so even parked at the top of the page with
+     nothing moving, a phone is re-blurring a wide plate on a 1Hz beat for as
+     long as the tab is open.
+
+     The frost goes and the fill takes over its second job. Blur was never only
+     texture here: a 6px blur of a bright photograph is also a *darkening* of
+     it, and that is what the white type and the mint button were sitting on.
+     Take the blur away and leave the fill at 0.5 and the panel becomes a
+     translucent smear with faces and highlights legible through it, straight
+     under the clock. So the fill goes nearly opaque — 0.92 — and does that
+     work alone. The photograph still shows through at the edges of the plate
+     and in the 8% the fill gives back, which is enough for the panel to read
+     as sitting *on* the picture rather than as a card dropped over it.
+
+     The outline (the panel's own background) and the chamfer are untouched:
+     they are the plate's shape, they cost nothing, and they are what makes
+     this the same object it is on a desktop. */
+  .hw26-hero-panel {
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+
+  .hw26-hero-panel::before {
+    background: rgba(6, 10, 8, 0.92);
+  }
+
+  /* ---- 2. the tube's optics come down to one pass ----
+
+     Each `drop-shadow()` in a filter chain is a full offscreen pass over the
+     element: rasterise, blur by the radius, composite, hand the result to the
+     next one. Five of them on the wordmark means the hero's largest piece of
+     type is drawn five times over before it is drawn once. See the long note
+     above `.hw26-hero-title`'s filter for what each pass is meant to be; what
+     follows is which of them survive a phone and why the rest do not.
+
+     Dropped, and each for a reason that is about the phone rather than about
+     the effect being unwanted:
+
+     - Passes 2 and 3, the convergence error (the red gun a hair left, the
+       blue-cyan gun a hair right). These are specified in `em` at ±0.006em,
+       which is sub-pixel at desktop type sizes by design and *further* under a
+       pixel at the size the wordmark takes on a phone. They cost two complete
+       blur passes over the element to produce colour fringing that is finer
+       than the screen can resolve. Nobody is looking at something they cannot
+       see; they are paying for it.
+     - Pass 1, the directional beam-softness smear. Same argument, less
+       starkly: a 0.014em rightward white offset with a 0.011em blur is the
+       tube's horizontal beam decay, and at phone sizes it is a fraction of a
+       pixel of asymmetry bought with a third full pass.
+     - Pass 5, the wide mint room-glow at 0.3em. This is the single most
+       expensive rule in the hero. Blur cost scales with the *area* the kernel
+       touches, so a radius six times the tight halo's is not six times the
+       work — and it is a radius that large over the width of a wordmark set at
+       viewport scale. It is also the pass whose whole purpose is to light the
+       dark room around the letters, i.e. it is atmosphere and nothing depends
+       on it.
+
+     What is kept is pass 4, the tight near-white core halo, and it is kept for
+     legibility rather than for the effect. The wordmark is white type sitting
+     directly on a photograph with faces and highlights in it; without a halo
+     the letters lose their edge wherever the picture goes pale behind them.
+     One 0.1em white bloom is the cheapest thing that gives every letter its
+     own ground — slightly wider than the desktop's 0.05em core precisely
+     because it is now doing alone what the core and the wide glow did between
+     them.
+
+     Not touched on mobile, and deliberately: the scanline mask, the grille
+     fill on `.hw26-glitch`, and the glitch burst on `.hw26-glitch::before` /
+     `::after`. Those are gradients and transforms — cheap, composited, and
+     they are the tube. Stripping the filter chain takes the *light* off the
+     letters; stripping those would take the screen away, and the phone would
+     be looking at a different design. */
+  .hw26-hero-title {
+    filter: drop-shadow(0 0 0.1em rgba(255, 255, 255, 0.38));
+  }
+
+  /* Same surgery on the alien mark, sized to the object rather than copied
+     across. The mark is 0.38em tall against the wordmark's 0.72em caps, and
+     its surviving halo is scaled to that: 0.05em, in the neighbourhood of the
+     0.035em tight bloom it already had, nudged up a little now that it is the
+     only pass left. Its green smear and its own wide 0.14em glow go for the
+     same reasons as the wordmark's — and the mark's is the version of the
+     argument that decides itself, since a mark this small next to type this
+     large has the least to show for the passes it was spending. */
+  .hw26-hero-tittle {
+    filter: drop-shadow(0 0 0.05em rgba(150, 255, 205, 0.5));
+  }
+
+  /* ---- 3. the flicker stops when nobody is looking at it ----
+
+     `hw26-crt-flicker` is `infinite` on both the wordmark and the mark, and
+     `infinite` means exactly that: scroll to the FAQ and the hero is still
+     animating two elements off the top of the screen, forever. It is an
+     opacity animation and therefore composited and cheap per frame, but the
+     frames never stop being asked for.
+
+     The observer in `useHeroIdle` puts `hw26-hero--idle` on the hero whenever
+     it leaves the viewport, and it runs on every device unconditionally —
+     watching one element with an IntersectionObserver is close to free, and a
+     script that only sometimes maintains a class is a script whose class you
+     cannot trust. What is gated to phones is this rule, the part that actually
+     stops the animation, because mobile-only was the brief.
+
+     Worth saying plainly for whoever reads this next: extending the pause to
+     desktop would be both safe and free. `animation-play-state: paused` holds
+     the current frame and resumes from it, the element is off screen in every
+     case where the class is set, and the class is already being maintained
+     there. It is left mobile-only because that is what was asked for, not
+     because desktop is a case that needs the animation to keep running. */
+  .hw26-hero--idle .hw26-hero-title,
+  .hw26-hero--idle .hw26-hero-tittle {
+    animation-play-state: paused;
   }
 }
