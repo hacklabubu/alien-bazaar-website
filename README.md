@@ -27,17 +27,16 @@ pnpm dev            # http://localhost:3000
 `pnpm build && pnpm start` for a production build. The page is fully static —
 there is no database and no API.
 
-`lib/event.ts` exports `APPLY_URL`, which can be aimed at a local hacklab
+`lib/event.ts` exports `JOIN_URL`, which can be aimed at a local hacklab
 instance with `NEXT_PUBLIC_APPLY_URL`:
 
 ```bash
 NEXT_PUBLIC_APPLY_URL=http://localhost:3000/hackathons/alien-bazaar-warsaw-2026 pnpm dev
 ```
 
-Note that this only moves the "Apply now" control in the menu overlay. The
-hero, the timeline stop and the closer point at a separate `JOIN_URL` constant
-hardcoded in `components/lander.tsx`, and the env var does not reach them.
-There are two sources of truth for the apply destination; they should be one.
+The override sets the base and `/join` is appended to it, so it reaches every
+join control on the site — the hero, the timeline stop, the closer and the
+menu overlay's "Apply now".
 
 ## How it is put together
 

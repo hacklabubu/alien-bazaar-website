@@ -23,7 +23,7 @@ import "./lander.css";
 // intro.css are untouched and still build — uncomment this line and the
 // <HardwareIntro /> render at the top of the tree to bring it back.
 // import { HardwareIntro } from './intro'
-import { APPLY_URL, type HardwareEvent } from "../lib/event";
+import { JOIN_URL, type HardwareEvent } from "../lib/event";
 
 /**
  * Alien Bazaar — Warsaw 2026. The event's own landing page.
@@ -41,13 +41,6 @@ import { APPLY_URL, type HardwareEvent } from "../lib/event";
  * Facts come from the event row, so the page cannot drift from
  * `/hackathons/<slug>`. Copy that is not in the database lives here.
  */
-
-/**
- * Where every call to action on this page sends the reader. Three controls
- * point at it — the hero, the timeline stop, the closer — and one constant
- * keeps them from drifting apart when the destination moves.
- */
-const JOIN_URL = 'https://hacklab.so/hackathons/alien-bazaar-warsaw-2026/join'
 
 /**
  * The ribbon under the hero. Four facts, not nine: when, how many teams, how
@@ -2449,9 +2442,7 @@ function SiteMenu() {
             <div className="hw26-menu-actions">
               <a
                 className="hw26-menu-action hw26-menu-action--primary"
-                href={APPLY_URL}
-                rel="noopener noreferrer"
-                target="_blank"
+                href={JOIN_URL}
               >
                 Apply now <span aria-hidden="true">→</span>
               </a>
