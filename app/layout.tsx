@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from 'next'
 import { JetBrains_Mono, Orbitron, Poppins } from 'next/font/google'
 
 import './globals.css'
+import { Cursor } from '../components/cursor'
 import { EVENT } from '../lib/event'
 
 /**
@@ -93,6 +94,14 @@ export default function RootLayout({
       <body>
         <script dangerouslySetInnerHTML={{ __html: SCROLL_RESET_SCRIPT }} />
         {children}
+        {/* The page's pointer, drawn in the DOM. Mounted from the layout so
+            every route gets it, and it brings cursor.css with it — lander.css
+            is imported per page, so the cursor's own rules cannot ride along
+            with it. A client component inside a server layout is fine; this
+            one renders nothing at all until its capability gate passes, and
+            when it does not, lander.css's native `cursor: url()` marks stay
+            in force. */}
+        <Cursor />
       </body>
     </html>
   )

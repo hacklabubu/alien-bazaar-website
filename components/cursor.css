@@ -1,0 +1,159 @@
+/* =============================================================
+   DOM CURSOR — the crosshair that reads its own backdrop
+
+   The native `cursor: url()` marks in lander.css are one colour,
+   fixed at authoring time, and the page they sit on is not: the
+   crosshair is phosphor mint over the near-black field and mint
+   again over the mint apply button, where it disappears. The art
+   cannot know what is behind it. A DOM element can.
+
+   So the mark is drawn twice, as two fixed siblings that move
+   together, and the colour of every one of its pixels is decided
+   by the luminance of the pixel behind it. Over anything dark it
+   is mint; over anything light it is black. Two colours, hard
+   threshold, decided per pixel — one arm of the cross crossing a
+   white glyph goes black only for the width of that glyph.
+
+   ---- The threshold chain ----
+
+   `--thr` carries `backdrop-filter: grayscale(1) contrast(1000)
+   invert(1)`, applied in that order:
+
+     grayscale(1)   throw away hue; what is left is luminance
+     contrast(1000) push every pixel away from mid-grey until it
+                    lands on 0 or 1 — a hard cut at the 0.5
+                    luminance line, which is the "dark or light"
+                    question asked and answered
+     invert(1)      light backdrop -> black, dark backdrop -> white
+
+   `--tint` then paints flat mint over that with `mix-blend-mode:
+   multiply`. Multiply against black is black; multiply against
+   white is the mint untouched. That single blend is the whole of
+   the two-colour rule — there is no branch anywhere, and no
+   intermediate value can survive the contrast step to produce a
+   blend.
+
+   The invert is what makes the multiply land the right way round.
+   Without it a light backdrop would come out white and take the
+   mint, and a dark one would come out black — mint over the field
+   and black over the apply button, exactly backwards.
+
+   ---- Sibling, not child ----
+
+   `--tint` MUST be a sibling painted after `--thr`, never a child
+   of it. An element with `backdrop-filter` is a Backdrop Root: it
+   isolates its own subtree, so a child's `mix-blend-mode` would
+   blend against the child's own empty group rather than against
+   the filtered image below. Nesting them looks tidier and renders
+   flat mint.
+
+   ---- Why the portal ----
+
+   For the same reason, nothing between these two elements and the
+   document root may establish a Backdrop Root — that means no
+   `filter`, no `backdrop-filter`, no `opacity` below 1, no `mask`,
+   no `mix-blend-mode`, no `isolation: isolate` on any ancestor.
+   `.hw26` and most of its section wrappers use several of those.
+   So cursor.tsx renders these through `createPortal` straight
+   into `document.body`, where the only ancestors are body and
+   html. Moving the render back inside the page tree breaks the
+   effect silently.
+
+   ---- The mint literal ----
+
+   `--hw-mint` is declared on `.hw26` in lander.css, not on :root,
+   so an element parented to document.body does not inherit it and
+   `var(--hw-mint)` here would resolve to nothing. The value is
+   stated literally instead, and deliberately not themed: the
+   light palette swaps `--hw-mint` to the deep green #00794c, but
+   the tint only ever survives the multiply over a *dark* backdrop,
+   and a deep green on near-black is a mark you cannot see. The
+   cursor stays phosphor mint in both themes for the same reason
+   the brief panel re-declares the token locally.
+   ============================================================= */
+
+.hw26-cur {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 32px;
+  height: 32px;
+  /* Never a hit target: the whole point is that the thing under it
+     keeps receiving the pointer, including the `closest()` reads
+     that pick which mark to show. */
+  pointer-events: none;
+  /* Above everything, including the menu overlay and the intro. */
+  z-index: 2147483647;
+
+  /* The mark itself. The SVGs are used as masks, so only their
+     alpha matters here — their green is for the native fallback,
+     which is why they are unchanged. */
+  -webkit-mask-image: url('/cursors/crosshair.svg');
+  mask-image: url('/cursors/crosshair.svg');
+  -webkit-mask-size: 32px 32px;
+  mask-size: 32px 32px;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+
+  /* Hidden until the first real pointermove, so it never sits
+     parked at the top-left corner of a page nobody has moved a
+     mouse across yet. The class comes off in the move handler. */
+  opacity: 0;
+
+  /* Moved by transform only — writing left/top would lay out. */
+  will-change: transform;
+}
+
+.hw26-cur--on {
+  opacity: 1;
+}
+
+/* Layer 1, painted first: the backdrop, crushed and flipped. */
+.hw26-cur--thr {
+  -webkit-backdrop-filter: grayscale(1) contrast(1000) invert(1);
+  backdrop-filter: grayscale(1) contrast(1000) invert(1);
+}
+
+/* Layer 2, painted second: mint multiplied over layer 1. */
+.hw26-cur--tint {
+  background: #82f5c6;
+  mix-blend-mode: multiply;
+}
+
+/* ---- The three marks ----
+
+   Same three files, same hotspot and same precedence as the
+   native rules they replace: pressable beats text, because an
+   anchor inside a `<dd>` is a thing you press first and copy
+   second. The state is a class swapped only when it actually
+   changes, so a pointermove that stays over the same kind of
+   thing touches nothing but the transform. */
+
+.hw26-cur--text {
+  -webkit-mask-image: url('/cursors/text-beam.svg');
+  mask-image: url('/cursors/text-beam.svg');
+}
+
+.hw26-cur--press {
+  -webkit-mask-image: url('/cursors/crosshair-active.svg');
+  mask-image: url('/cursors/crosshair-active.svg');
+}
+
+/* ---- Retiring the native cursor ----
+
+   Not an override war. cursor.tsx stamps `hw26-cursor-dom` on
+   <html> only when the capability gate passes, and every native
+   `cursor` rule in lander.css is scoped `html:not(.hw26-cursor-dom)`
+   so it simply stops matching. With the page's own declarations
+   gated off, this one only has to beat the UA stylesheet, which
+   any author declaration does — no specificity climb, no
+   `!important`, and removing the class restores the native marks
+   exactly.
+
+   The universal selector is needed because `cursor` is inherited
+   but plenty of UA defaults (text on inputs, pointer on links)
+   are set per element and would otherwise win on their own. */
+html.hw26-cursor-dom,
+html.hw26-cursor-dom * {
+  cursor: none;
+}
