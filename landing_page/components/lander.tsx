@@ -1,13 +1,13 @@
-'use client'
+"use client";
 
 import {
   GeistPixelCircle,
   GeistPixelGrid,
   GeistPixelLine,
   GeistPixelSquare,
-} from 'geist/font/pixel'
-import Image from 'next/image'
-import Link from 'next/link'
+} from "geist/font/pixel";
+import Image from "next/image";
+import Link from "next/link";
 import {
   type CSSProperties,
   type ReactNode,
@@ -16,14 +16,14 @@ import {
   useLayoutEffect,
   useRef,
   useState,
-} from 'react'
+} from "react";
 
-import './lander.css'
+import "./lander.css";
 // The load sequence is intentionally disabled for now. intro.tsx and
 // intro.css are untouched and still build — uncomment this line and the
 // <HardwareIntro /> render at the top of the tree to bring it back.
 // import { HardwareIntro } from './intro'
-import { type HardwareEvent } from '../lib/event'
+import { APPLY_URL, type HardwareEvent } from "../lib/event";
 
 /**
  * Alien Bazaar — Warsaw 2026. The event's own landing page.
@@ -85,11 +85,11 @@ const JOIN_URL = 'https://hacklab.so/hackathons/alien-bazaar-warsaw-2026/join'
  * were.
  */
 const TICKER = [
-  { label: '25.09.–27.09.2026.' },
-  { label: '20 TEAMS', snow: true },
-  { label: '20 HARDWARE UNITS' },
-  { label: 'HACKER BLOC, WARSAW', emphasize: 'WARSAW' },
-]
+  { label: "25.09.–27.09.2026." },
+  { label: "20 TEAMS", snow: true },
+  { label: "20 HARDWARE UNITS" },
+  { label: "HACKER BLOC, WARSAW", emphasize: "WARSAW" },
+];
 
 /**
  * How many times the four facts are laid end to end inside one marquee
@@ -99,7 +99,13 @@ const TICKER = [
  * show a hole every cycle. Four runs clear any ordinary monitor; the
  * `min-width` on the track in the stylesheet is what covers the rest.
  */
-const TICKER_RUNS = 4
+const TICKER_RUNS = 4;
+
+const CONTACT_EMAIL = "tymofiigusak@epikor.eu";
+
+function contactHref(subject: string) {
+  return `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(subject)}`;
+}
 
 /**
  * The floor, by what the machine is.
@@ -196,12 +202,13 @@ const TICKER_RUNS = 4
  * about that cell that is settled. See the note on ADDON_GROUPS.
  */
 type Rig = {
-  name: string
-  units?: string
-  note?: string
-  photo?: string
-  tba?: boolean
-  unannounced?: boolean
+  name: string;
+  units?: string;
+  note?: string;
+  photo?: string;
+  tba?: boolean;
+  dropShadow?: boolean;
+  unannounced?: boolean;
   /**
    * Throws the plate out of focus. One cell sets it: the Components card,
    * whose picture is a stock shot of a shelf rather than a render of the
@@ -218,7 +225,7 @@ type Rig = {
    * not compose with `unannounced`: that one already has a picture, the `?`,
    * and it owns the same slot.
    */
-  blurPhoto?: boolean
+  blurPhoto?: boolean;
   /**
    * The partner whose parts a cell is built out of, as a mark and the sentence
    * that mark stands for. The two "Build your own" slots set it and nothing
@@ -235,115 +242,139 @@ type Rig = {
    * a card, and a sentence with no mark is not what this is for. The
    * stylesheet's placement note is on `.hw26-rig-credit`.
    */
-  credit?: { src: string; label: string }
-}
+  credit?: { src: string; label: string };
+};
 
 const RIG_GROUPS: { label: string; items: Rig[] }[] = [
   {
-    label: 'Robot arms',
+    label: "Drones",
     items: [
       {
-        name: 'Big arms on wheeled platform',
-        units: '2x',
-        photo: '/hardware/robo-arm-big.png',
+        name: "Tbot",
+        units: "2x",
+        photo: "/hardware/tbot.jpg",
+        dropShadow: true,
       },
+      { name: "FPV", units: "1x", photo: "/hardware/drone-fpv.png" },
       {
-        name: 'Manipulators',
-        units: '6x',
-        photo: '/hardware/robo-arm.png',
-      },
-      {
-        name: 'Build your own',
-        units: '2x',
-        note: 'Robo arms on a wheeled platform. We provide components and tools, you design and assemble it.',
-        photo: '/hardware/robo-arm-byo.png',
-        // The one credited cell on the floor. The parts a team builds this
-        // arm out of are MAB Robotics', so their mark is on it — the same
-        // lockup the partner wall carries, at a fraction of the height.
-        credit: {
-          src: '/sponsors/mab.png',
-          label: 'Parts supplied by MAB Robotics',
-        },
-      },
-      {
-        name: 'TBA',
-        units: '?',
-        tba: true,
-        unannounced: true,
-      },
-    ],
-  },
-  {
-    label: 'Drones',
-    items: [
-      { name: 'Tbot', units: '2x', photo: '/hardware/tbot.png' },
-      { name: 'FPV', units: '1x', photo: '/hardware/drone-fpv.png' },
-      {
-        name: 'Build your own',
-        units: '1x',
-        note: 'We provide components and tools, you design and assemble it',
-        photo: '/hardware/drone-byo.png',
+        name: "Build your own",
+        units: "1x",
+        note: "We provide components and tools, you design and assemble it",
+        photo: "/hardware/drone-byo.png",
         // The white cut of SPRTK's mark rather than the green one the wall
         // carries. On the wall the mark is a tile and its own colour is part
         // of what identifies it; here it is a credit in the corner of a panel
         // whose only two inks are snow and mint, and a green lockup would be
         // the one thing on the sheet asserting a third.
         credit: {
-          src: '/sponsors/sprtk-white.png',
-          label: 'Parts supplied by SPRTK',
+          src: "/sponsors/sprtk-white.png",
+          label: "Parts supplied by SPRTK",
         },
       },
     ],
   },
   {
-    label: 'Underwater drones',
+    label: "Robot arms",
     items: [
-      { name: 'Robo fish', units: '3x', photo: '/hardware/robo-fish.png' },
       {
-        name: 'Underwater drone',
-        units: '1x',
-        photo: '/hardware/underwater-drone.png',
+        name: "AgileX Piper",
+        units: "2x",
+        photo: "/hardware/robo-arm-new.png",
       },
-    ],
-  },
-  {
-    label: 'Robodogs',
-    items: [
-      // Non-breaking hyphen: the cell's measure puts the line break exactly
-      // on it, and "ROBODOG W01-" over "TEK" reads as a hyphenated word
-      // rather than as the machine's name. Wrapped before the model number
-      // instead, it comes out as two whole tokens.
       {
-        name: 'W01‑TEK',
-        units: '1x',
-        photo: '/hardware/robodog-w01-tek.jpeg',
+        name: "Robot arms on platform",
+        units: "2x",
+        photo: "/hardware/robo-arm-big.png",
       },
-      { name: 'Unitree Go2', units: '1x', photo: '/hardware/robodog-unitree-go2.jpeg' },
-    ],
-  },
-  {
-    label: 'Humanoids',
-    items: [
       {
-        name: 'TBA',
-        units: '?',
+        name: "Manipulators",
+        units: "6x",
+        photo: "/hardware/robo-arm.png",
+      },
+      {
+        name: "Build your own",
+        units: "2x",
+        note: "Robo arms on a wheeled platform. We provide components and tools, you design and assemble it.",
+        photo: "/hardware/robo-arm-byo.png",
+        // The one credited cell on the floor. The parts a team builds this
+        // arm out of are MAB Robotics', so their mark is on it — the same
+        // lockup the partner wall carries, at a fraction of the height.
+        credit: {
+          src: "/sponsors/mab.png",
+          label: "Parts supplied by MAB Robotics",
+        },
+      },
+      {
+        name: "TBA",
+        units: "?",
         tba: true,
         unannounced: true,
       },
     ],
   },
   {
-    label: 'Headsets',
+    label: "Underwater drones",
     items: [
-      { name: 'Meta Quest', units: '1x', photo: '/hardware/vr-meta.jpeg' },
+      { name: "Robo fish", units: "3x", photo: "/hardware/robo-fish.png" },
       {
-        name: 'Microsoft HoloLens',
-        units: '1x',
-        photo: '/hardware/vr-holo-lens.jpeg',
+        name: "Underwater drone",
+        units: "1x",
+        photo: "/hardware/underwater-drone.png",
       },
     ],
   },
-]
+  {
+    label: "Quadruped robots",
+    items: [
+      {
+        name: "RealAnt",
+        units: "1x",
+        photo: "/hardware/realant.png",
+      },
+    ],
+  },
+  {
+    label: "Robodogs",
+    items: [
+      // Non-breaking hyphen: the cell's measure puts the line break exactly
+      // on it, and "ROBODOG W01-" over "TEK" reads as a hyphenated word
+      // rather than as the machine's name. Wrapped before the model number
+      // instead, it comes out as two whole tokens.
+      {
+        name: "W01‑TEK",
+        units: "1x",
+        photo: "/hardware/robodog-w01-tek.jpeg",
+      },
+      {
+        name: "Unitree Go2",
+        units: "1x",
+        photo: "/hardware/robodog-unitree-go2.jpeg",
+      },
+    ],
+  },
+  {
+    label: "Humanoids",
+    items: [
+      {
+        name: "TBA",
+        units: "?",
+        tba: true,
+        unannounced: true,
+      },
+    ],
+  },
+  {
+    label: "Headsets",
+    items: [
+      { name: "Meta Quest", units: "1x", photo: "/hardware/vr-meta.jpeg" },
+      {
+        name: "Microsoft HoloLens",
+        units: "1x",
+        photo: "/hardware/vr-holo-lens.jpeg",
+      },
+    ],
+  },
+];
 
 /**
  * The add-ons: what is on the floor besides a machine to book.
@@ -425,29 +456,31 @@ const RIG_GROUPS: { label: string; items: Rig[] }[] = [
  */
 const ADDON_GROUPS: { label: string; intro?: string; items: Rig[] }[] = [
   {
-    label: '3D Printers',
-    intro: "Send us your files after 18.09., select a printer and we'll print the items for you before you arrive.",
+    label: "3D Printers",
+    intro:
+      "Send us your files after 18.09., select a printer and we'll print the items for you before you arrive.",
     items: [
-      { name: 'Bambu Lab A1', photo: '/hardware/bambulab-a1.jpeg' },
-      { name: 'Bambu Lab P1S', photo: '/hardware/bambulab-p1s.jpeg' },
-      { name: 'Bambu Lab H2D', photo: '/hardware/bambulab-h2d.jpeg' },
-      { name: 'Formlabs', photo: '/hardware/formlabs.jpeg' },
-      { name: 'Makera Carvera', photo: '/hardware/makera-carvera.jpeg' },
+      { name: "Bambu Lab A1", photo: "/hardware/bambulab-a1.jpeg" },
+      { name: "Bambu Lab P1S", photo: "/hardware/bambulab-p1s.jpeg" },
+      { name: "Bambu Lab H2D", photo: "/hardware/bambulab-h2d.jpeg" },
+      { name: "Formlabs", photo: "/hardware/formlabs.jpeg" },
+      { name: "Makera Carvera", photo: "/hardware/makera-carvera.jpeg" },
     ],
   },
   {
-    label: 'Extra components',
-    intro: 'During the hackathon, you will be able to unlock and pick up additional hardware. More information is coming soon.',
+    label: "Extra components",
+    intro:
+      "During the hackathon, you will be able to unlock and pick up additional hardware. More information is coming soon.",
     items: [
       {
-        name: 'TBA',
-        photo: '/hardware/components.jpeg',
+        name: "TBA",
+        photo: "/hardware/components.jpeg",
         blurPhoto: true,
-        note: 'Use them to extend your hardware',
+        note: "Use them to extend your hardware",
       },
     ],
   },
-]
+];
 
 /**
  * The timeline: six stops, from today to the pitch.
@@ -494,30 +527,30 @@ const ADDON_GROUPS: { label: string; intro?: string; items: Rig[] }[] = [
  * are dates when something happens to you, and they are silver.
  */
 const TIMELINE: {
-  when: string
-  what: string
-  live?: boolean
-  cta?: boolean
+  when: string;
+  what: string;
+  live?: boolean;
+  cta?: boolean;
 }[] = [
   {
-    when: 'NOW',
-    what: 'Join the platform, meet builders, and start putting a team together.',
+    when: "NOW",
+    what: "Join the platform, meet builders, and start putting a team together.",
     live: true,
     cta: true,
   },
   {
-    when: '1 SEP',
-    what: 'Registration opens, and the full hardware list is published — subcategories, dimensions, documentation.',
+    when: "1 SEP",
+    what: "Registration opens, and the full hardware list is published — subcategories, dimensions, documentation.",
   },
-  { when: '15 SEP', what: 'Team creation and applications deadline' },
-  { when: '18 SEP', what: 'We announce selected teams' },
-  { when: '25 SEP', what: 'The hackathon begins', live: true },
+  { when: "15 SEP", what: "Team creation and applications deadline" },
+  { when: "18 SEP", what: "We announce selected teams" },
+  { when: "25 SEP", what: "The hackathon begins", live: true },
   {
-    when: '27 SEP',
-    what: 'Submission deadline and pitch day in front of investors',
+    when: "27 SEP",
+    what: "Submission deadline and pitch day in front of investors",
     live: true,
   },
-]
+];
 
 /**
  * The brackets beside the line, each one a stretch of time rather than a
@@ -554,11 +587,11 @@ const TIMELINE: {
  * stops, and the strip now runs the whole length of the line.
  */
 const TIMELINE_SPANS = [
-  { from: 1, to: 3, label: 'Chat, create teams, book hardware' },
-  { from: 3, to: 4, label: 'Selection process' },
-  { from: 4, to: 5, label: 'We print your requested objects' },
-  { from: 5, to: 6, label: 'Build, build, build' },
-]
+  { from: 1, to: 3, label: "Chat, create teams, book hardware" },
+  { from: 3, to: 4, label: "Selection process" },
+  { from: 4, to: 5, label: "We print your requested objects" },
+  { from: 5, to: 6, label: "Build, build, build" },
+];
 
 /**
  * The two organizers, as marks and nothing else. Each carried a line saying
@@ -570,13 +603,13 @@ const TIMELINE_SPANS = [
  * tile is the link. See the sponsor wall in the tree below.
  */
 const ORGANIZERS: {
-  name: string
-  src: string
-  href: string
-  mark?: string
+  name: string;
+  src: string;
+  href: string;
+  mark?: string;
 }[] = [
   {
-    name: 'Epikor',
+    name: "Epikor",
     // The full horizontal lockup as they publish it — mark plus wordmark,
     // already white, used unmodified. It replaces the bare glyph this cell
     // carried before, which was their site's inline mark recoloured by hand
@@ -584,18 +617,18 @@ const ORGANIZERS: {
     //
     // A lockup is not the same object as a glyph, so it cannot keep the
     // glyph's height: see the sizing note in the stylesheet.
-    src: '/sponsors/epikor.svg',
-    href: 'https://epikor.eu',
-    mark: 'hw26-org-logo--epikor',
+    src: "/sponsors/epikor.svg",
+    href: "https://epikor.eu",
+    mark: "hw26-org-logo--epikor",
   },
   {
-    name: 'Hacklab',
+    name: "Hacklab",
     // White mark, drawn for the dark plate the organizer cells keep in
     // both themes.
-    src: '/sponsors/hacklab.png',
-    href: 'https://hacklab.so',
+    src: "/sponsors/hacklab.png",
+    href: "https://hacklab.so",
   },
-]
+];
 
 /**
  * A cell on the partner wall.
@@ -628,13 +661,13 @@ const ORGANIZERS: {
  * tuned to the word in it and cannot be one figure for every partner.
  */
 type Partner = {
-  name: string
-  href?: string
-  src: string
-  mark?: string
-  lockup?: string
-  wordmark?: string
-}
+  name: string;
+  href?: string;
+  src: string;
+  mark?: string;
+  lockup?: string;
+  wordmark?: string;
+};
 
 /**
  * The two Ecosystem Partners that are not dealt.
@@ -667,32 +700,27 @@ type Partner = {
  */
 const LEAD_SPONSORS: Partner[] = [
   {
-    name: 'NVIDIA',
-    src: '/sponsors/nvidia.svg',
-    href: 'https://www.nvidia.com',
+    name: "NVIDIA",
+    src: "/sponsors/nvidia.svg",
+    href: "https://www.nvidia.com",
     // Their two-colour mark is the stacked lockup, so matching a horizontal
     // wordmark's height would leave it reading half the size.
-    mark: 'hw26-mark--stacked',
+    mark: "hw26-mark--stacked",
   },
   {
-    name: 'ESRA — European Student Robotics Association',
-    src: '/sponsors/esra.png',
-    href: 'https://www.studentrobotics.eu/',
-    mark: 'hw26-mark--esra',
+    name: "ESRA — European Student Robotics Association",
+    src: "/sponsors/esra.png",
+    href: "https://www.studentrobotics.eu/",
+    mark: "hw26-mark--esra",
   },
-]
+];
 
 /**
- * The second tier: the same cell at half a lead's width, three of them.
+ * The shuffled part of the ecosystem row: three partners behind the two pinned
+ * names above.
  *
- * Three tiles on a four-column track leaves one track spare, and the gap
- * between these cells is the container showing through — so that track would
- * come out as a lit rectangle the size of a plate. The wall has met this twice
- * already and answered it two ways: span the leftover, or shrink the
- * container so there is no leftover. Spanning is out here, because a tile at
- * two tracks is a lead cell and the tier is defined by not being one. So the
- * container is three tracks wide on a four-track measure — see the arithmetic
- * in the stylesheet, which is the same sum the solo rows below run.
+ * Five cells stay equal on desktop; the responsive layouts let the last cell
+ * close the one leftover track.
  *
  * Each mark is re-sized rather than scaled: a cell at half the width is not
  * the same cell smaller, and the two plates in particular carry ink across
@@ -700,45 +728,41 @@ const LEAD_SPONSORS: Partner[] = [
  */
 const SMALL_SPONSORS: Partner[] = [
   {
-    name: 'Eurotech Federation',
-    src: '/sponsors/eurotech.png',
-    href: 'https://www.eurotech-federation.com/',
+    name: "Eurotech Federation",
+    src: "/sponsors/eurotech.png",
+    href: "https://www.eurotech-federation.com/",
     // Cropped to the lockup on its own deep blue, not a cut-out mark: every
     // pixel of it is ink, so it reads far heavier per unit of height than the
     // transparent marks beside it and is sized down to compensate.
-    mark: 'hw26-mark--eurotech',
+    mark: "hw26-mark--eurotech",
   },
   {
-    name: 'Oxbridge Frontier Intelligence',
-    src: '/sponsors/ofi.png',
-    href: 'https://www.oxbridgefrontier.com/',
-    mark: 'hw26-mark--ofi',
+    name: "Oxbridge Frontier Intelligence",
+    src: "/sponsors/ofi.png",
+    href: "https://www.oxbridgefrontier.com/",
+    mark: "hw26-mark--ofi",
   },
   {
-    name: 'SPRTK',
-    src: '/sponsors/sprtk.png',
-    href: 'https://sprtk.com/',
-    // The only mark on the wall that is taller than it is wide — five letters
-    // overlapped into one monogram, no wordmark under it. At the row's height
-    // it would come out narrower than a favicon.
-    mark: 'hw26-mark--sprtk',
+    name: "Hackathon Hub",
+    src: "/sponsors/hackathonhub.png",
+    href: "https://hackathonhub.eu/",
   },
-]
+];
 
 /**
  * The fixed half of the end plate's title block. The cells that depend on the
  * event row are rendered beside these so both halves stay one grid.
  */
 const TITLE_BLOCK = [
-  { k: 'Project', v: 'AB—WAW—26' },
-  { k: 'Sheet', v: '07 / 07' },
-  { k: 'Rev', v: '03' },
-  { k: 'Status', v: 'Issued', tone: 'mint' },
-  { k: 'Theme', v: 'Home automation' },
-  { k: 'Venue', v: 'Hacker Bloc' },
-  { k: 'Coord', v: '52.2297°N 21.0122°E' },
-  { k: 'Duration', v: '48 WORK H' },
-]
+  { k: "Project", v: "AB—WAW—26" },
+  { k: "Sheet", v: "07 / 07" },
+  { k: "Rev", v: "03" },
+  { k: "Status", v: "Issued", tone: "mint" },
+  { k: "Theme", v: "Home automation" },
+  { k: "Venue", v: "Hacker Bloc" },
+  { k: "Coord", v: "52.2297°N 21.0122°E" },
+  { k: "Duration", v: "48 WORK H" },
+];
 
 /**
  * The hardware partners — the outfits putting machines and parts on the floor.
@@ -747,50 +771,62 @@ const TITLE_BLOCK = [
  */
 const HARDWARE_PARTNERS: Partner[] = [
   {
-    name: 'BMF — Brave Mind Fighters',
-    src: '/sponsors/bmf.png',
-    href: 'https://bravemindfighters.com/',
-    // A helmet stacked over its wordmark: nearly square, so it needs well
-    // over the row's height to read at the row's size.
-    mark: 'hw26-mark--bmf',
+    name: "Lute",
+    src: "/sponsors/lute.svg",
+    href: "https://www.lute.one/",
+    mark: "hw26-mark--lute",
   },
   {
-    name: 'W01-TEK',
-    src: '/sponsors/w01tek.png',
-    href: 'https://machinekind.ai/',
+    name: "SPRTK",
+    src: "/sponsors/sprtk.png",
+    href: "https://sprtk.com/",
+    mark: "hw26-mark--sprtk",
+  },
+  {
+    name: "BMF — Brave Mind Fighters",
+    src: "/sponsors/bmf.png",
+    href: "https://bravemindfighters.com/",
+    // A helmet stacked over its wordmark: nearly square, so it needs well
+    // over the row's height to read at the row's size.
+    mark: "hw26-mark--bmf",
+  },
+  {
+    name: "W01-TEK",
+    src: "/sponsors/w01tek.png",
+    href: "https://machinekind.ai/",
     // A bare wordmark at 5.3:1 in its own face — no symbol beside it, so all
     // of its height is cap height and it grows fast per pixel. The widest
     // thing in this row, and held down accordingly.
-    mark: 'hw26-mark--w01tek',
+    mark: "hw26-mark--w01tek",
   },
   {
-    name: 'SkyMav',
-    src: '/sponsors/skymav.png',
-    href: 'https://skymav.pl/',
+    name: "SkyMav",
+    src: "/sponsors/skymav.png",
+    href: "https://skymav.pl/",
   },
   {
-    name: 'GHOST',
-    src: '/sponsors/ghost-icon.png',
-    href: 'https://ghostpai.github.io/',
+    name: "GHOST",
+    src: "/sponsors/ghost-icon.png",
+    href: "https://ghostpai.github.io/",
     // Their official icon, untouched: white line art on the red plate they
     // publish it on, square. It is not a lockup on its own — no name in it —
     // so the name is set beneath it in their own face rather than cut into a
     // second bitmap, which is what `wordmark` below is for.
-    mark: 'hw26-mark--ghost',
-    wordmark: 'GHOST',
+    mark: "hw26-mark--ghost",
+    wordmark: "GHOST",
   },
   {
-    name: 'MAB Robotics',
-    src: '/sponsors/mab.png',
-    href: 'https://www.mabrobotics.pl/',
+    name: "MAB Robotics",
+    src: "/sponsors/mab.png",
+    href: "https://www.mabrobotics.pl/",
     // The full lockup rather than the bare monogram it used to be: a heavy
     // three-letter mark with "robotics" tucked under its right shoulder, and
     // 3:1 overall. Wide marks grow fast per pixel of height, so this one now
     // runs under the row's base rather than over it.
-    mark: 'hw26-mark--mab',
+    mark: "hw26-mark--mab",
   },
   {
-    name: 'Politechnika Wrocławska',
+    name: "Politechnika Wrocławska",
     // The one mark on this wall that arrives finished: the university's crest
     // over its own name, both baked into a single portrait file — so unlike
     // GHOST and MCHTR below it needs no live wordmark under it, and unlike
@@ -798,9 +834,9 @@ const HARDWARE_PARTNERS: Partner[] = [
     // third is two lines of small type, which is what the sizing note in the
     // stylesheet is about: at the row's base height that type would be
     // illegible, so this runs taller than anything else here.
-    src: '/sponsors/pwr.png',
-    href: 'https://pwr.edu.pl/',
-    mark: 'hw26-mark--pwr',
+    src: "/sponsors/pwr.png",
+    href: "https://pwr.edu.pl/",
+    mark: "hw26-mark--pwr",
   },
   {
     // The faculty's full name is the accessible name and the tooltip; the
@@ -808,17 +844,17 @@ const HARDWARE_PARTNERS: Partner[] = [
     // words sets them at caption size and stops being a mark on a wall. The
     // long form is not lost — it is what a screen reader reads and what a
     // pointer surfaces.
-    name: 'MCHTR — Wydział Mechatroniki Politechnika Warszawska',
+    name: "MCHTR — Wydział Mechatroniki Politechnika Warszawska",
     // White line art on transparent, keyed off the black-on-white source they
     // publish, and square. Like GHOST's, the file is a symbol with no name in
     // it, so the word is set live underneath rather than cut into a bitmap.
-    src: '/sponsors/mchtr.png',
-    href: 'https://www.mchtr.pw.edu.pl/',
-    mark: 'hw26-mark--mchtr',
-    lockup: 'hw26-sponsor-lockup--mchtr',
-    wordmark: 'MCHTR',
+    src: "/sponsors/mchtr.png",
+    href: "https://www.mchtr.pw.edu.pl/",
+    mark: "hw26-mark--mchtr",
+    lockup: "hw26-sponsor-lockup--mchtr",
+    wordmark: "MCHTR",
   },
-]
+];
 
 /**
  * The media partners. Their own heading rather than a sixth hardware tile:
@@ -832,12 +868,21 @@ const HARDWARE_PARTNERS: Partner[] = [
  */
 const MEDIA_PARTNERS: Partner[] = [
   {
-    name: 'Przygody Przedsiębiorców',
-    src: '/sponsors/przygody.png',
-    href: 'https://youtube.com/@przygodyprzedsiebiorcow',
-    mark: 'hw26-mark--przygody',
+    name: "Przygody Przedsiębiorców",
+    src: "/sponsors/przygody.png",
+    href: "https://youtube.com/@przygodyprzedsiebiorcow",
+    mark: "hw26-mark--przygody",
   },
-]
+];
+
+const PRIZE_PARTNERS: Partner[] = [
+  {
+    name: "ChronoTap",
+    src: "/sponsors/chronotap.png",
+    href: "https://chronotap.co",
+    mark: "hw26-mark--chronotap",
+  },
+];
 
 /**
  * The sponsors proper — money rather than machines or coverage, which is why
@@ -851,13 +896,12 @@ const MEDIA_PARTNERS: Partner[] = [
  */
 const SPONSORS: Partner[] = [
   {
-    name: 'prelint',
-    src: '/sponsors/prelint.svg',
-    href: 'https://prelint.com/',
-    mark: 'hw26-mark--prelint',
+    name: "prelint",
+    src: "/sponsors/prelint.svg",
+    href: "https://prelint.com/",
+    mark: "hw26-mark--prelint",
   },
-]
-
+];
 
 /**
  * The questions, in the order they are asked rather than in any order the page
@@ -886,49 +930,49 @@ const SPONSORS: Partner[] = [
  */
 const FAQ: { q: string; a: ReactNode }[] = [
   {
-    q: 'Is participation in the hackathon free?',
-    a: 'Yes.',
+    q: "Is participation in the hackathon free?",
+    a: "Yes.",
   },
   {
-    q: 'What time is it starting?',
-    a: '25.09.2026. at 08:00.',
+    q: "What time is it starting?",
+    a: "25.09.2026. at 08:00.",
   },
   {
-    q: 'Can I book more than one hardware unit?',
-    a: 'You can only book one main hardware unit (robot arm, drone, underwater drone, robodog, humanoid or VR headset). At the event you will be able to unlock extras: cables, Raspberry PIs, camera modules and more.',
+    q: "Can I book more than one hardware unit?",
+    a: "You can only book one main hardware unit (robot arm, drone, underwater drone, robodog, humanoid or VR headset). At the event you will be able to unlock extras: cables, Raspberry PIs, camera modules and more.",
   },
   {
-    q: 'Can I sleep at the hackathon?',
+    q: "Can I sleep at the hackathon?",
     a: "Yes, but we won't provide beds or sleeping rooms. You can bring your own sleeping bag or sleeping pad.",
   },
   {
-    q: 'Can I bring my own hardware, tools, laptops?',
+    q: "Can I bring my own hardware, tools, laptops?",
     a: "Yes, bring the equipment you need. You can bring your laptop, mouse, screen, hardware and tools. Just be reasonable: it has to fit on your spot on your desk and it shouldn't bother others.",
   },
   {
-    q: 'Will you pay for my trip?',
-    a: 'We will not reimburse travel costs nor accommodation.',
+    q: "Will you pay for my trip?",
+    a: "We will not reimburse travel costs nor accommodation.",
   },
   {
-    q: 'Will there be free Wi-Fi?',
+    q: "Will there be free Wi-Fi?",
     a: "Yes, there is free 1Gbps Wi-Fi for all participants. Don't expect the highest speeds when 100 people start downloading Docker images!",
   },
   {
-    q: 'Can I take my final project home?',
-    a: 'No. Everything created during the hackathon stays here.',
+    q: "Can I take my final project home?",
+    a: "No. Everything created during the hackathon stays here.",
   },
   {
-    q: 'I have a different question, how can I contact you?',
+    q: "I have a different question, how can I contact you?",
     a: (
       <>
-        Contact us at{' '}
-        <a className='hw26-link' href='mailto:sos@hacklab.so'>
+        Contact us at{" "}
+        <a className="hw26-link" href="mailto:sos@hacklab.so">
           sos@hacklab.so
         </a>
       </>
     ),
   },
-]
+];
 
 /**
  * Fisher–Yates, on a copy.
@@ -948,12 +992,12 @@ const FAQ: { q: string; a: ReactNode }[] = [
  * the section would be shuffling an already-shuffled list.
  */
 function shuffled<T>(items: readonly T[]): readonly T[] {
-  const out = items.slice()
+  const out = items.slice();
   for (let i = out.length - 1; i > 0; i--) {
-    const j = (Math.random() * (i + 1)) | 0
-    ;[out[i], out[j]] = [out[j], out[i]]
+    const j = (Math.random() * (i + 1)) | 0;
+    [out[i], out[j]] = [out[j], out[i]];
   }
-  return out
+  return out;
 }
 
 /**
@@ -965,7 +1009,7 @@ function shuffled<T>(items: readonly T[]): readonly T[] {
  * cannot go stale: nothing grows a `window` halfway through a process.
  */
 const useIsoLayoutEffect =
-  typeof window === 'undefined' ? useEffect : useLayoutEffect
+  typeof window === "undefined" ? useEffect : useLayoutEffect;
 
 /**
  * A partner row in a different order on every visit.
@@ -989,47 +1033,47 @@ const useIsoLayoutEffect =
  * changes and the effect runs once per mount rather than once per render.
  */
 function useShuffled<T>(items: readonly T[]): readonly T[] {
-  const [order, setOrder] = useState(items)
+  const [order, setOrder] = useState(items);
 
   useIsoLayoutEffect(() => {
-    setOrder(shuffled(items))
-  }, [items])
+    setOrder(shuffled(items));
+  }, [items]);
 
-  return order
+  return order;
 }
 
 function useReveal() {
-  const root = useRef<HTMLDivElement>(null)
+  const root = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const nodes = root.current?.querySelectorAll('.hw26-reveal')
-    if (!nodes?.length) return
+    const nodes = root.current?.querySelectorAll(".hw26-reveal");
+    if (!nodes?.length) return;
 
     // No IntersectionObserver (or reduced motion) must never leave the page
     // blank — everything starts hidden, so the fallback is to show it all.
     const reduced = window.matchMedia(
-      '(prefers-reduced-motion: reduce)'
-    ).matches
-    if (reduced || typeof IntersectionObserver === 'undefined') {
-      for (const n of nodes) n.setAttribute('data-shown', 'true')
-      return
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+    if (reduced || typeof IntersectionObserver === "undefined") {
+      for (const n of nodes) n.setAttribute("data-shown", "true");
+      return;
     }
 
     const io = new IntersectionObserver(
       (entries) => {
         for (const entry of entries) {
-          if (!entry.isIntersecting) continue
-          entry.target.setAttribute('data-shown', 'true')
-          io.unobserve(entry.target)
+          if (!entry.isIntersecting) continue;
+          entry.target.setAttribute("data-shown", "true");
+          io.unobserve(entry.target);
         }
       },
-      { rootMargin: '0px 0px -12% 0px', threshold: 0.08 }
-    )
-    for (const n of nodes) io.observe(n)
-    return () => io.disconnect()
-  }, [])
+      { rootMargin: "0px 0px -12% 0px", threshold: 0.08 },
+    );
+    for (const n of nodes) io.observe(n);
+    return () => io.disconnect();
+  }, []);
 
-  return root
+  return root;
 }
 
 /**
@@ -1080,102 +1124,102 @@ function useReveal() {
  */
 function useRigFocus(root: RefObject<HTMLDivElement | null>) {
   useEffect(() => {
-    const rootEl = root.current
-    if (!rootEl) return
-    if (typeof IntersectionObserver === 'undefined') return
+    const rootEl = root.current;
+    if (!rootEl) return;
+    if (typeof IntersectionObserver === "undefined") return;
 
     // In DOM order, which is what makes the tie-break below stable. Both grids
     // — the categories and the add-ons — wear the same cell and behave the
     // same, so this is one flat list rather than a list per section.
     const cells = Array.from(
-      rootEl.querySelectorAll<HTMLElement>('.hw26-rig--compact')
-    )
-    if (!cells.length) return
+      rootEl.querySelectorAll<HTMLElement>(".hw26-rig--compact"),
+    );
+    if (!cells.length) return;
 
-    const touch = window.matchMedia('(hover: none)')
+    const touch = window.matchMedia("(hover: none)");
 
-    let frame = 0
-    let armed = false
-    let lit: HTMLElement | null = null
-    const onscreen = new Set<HTMLElement>()
+    let frame = 0;
+    let armed = false;
+    let lit: HTMLElement | null = null;
+    const onscreen = new Set<HTMLElement>();
 
     // One writer for the class, so exactly one cell can carry it and an
     // unchanged pick does not touch the DOM at all.
     const light = (next: HTMLElement | null) => {
-      if (next === lit) return
-      lit?.classList.remove('hw26-rig--active')
-      next?.classList.add('hw26-rig--active')
-      lit = next
-    }
+      if (next === lit) return;
+      lit?.classList.remove("hw26-rig--active");
+      next?.classList.add("hw26-rig--active");
+      lit = next;
+    };
 
     const pick = () => {
-      frame = 0
-      const middle = window.innerHeight / 2
-      let best: HTMLElement | null = null
-      let bestGap = Number.POSITIVE_INFINITY
+      frame = 0;
+      const middle = window.innerHeight / 2;
+      let best: HTMLElement | null = null;
+      let bestGap = Number.POSITIVE_INFINITY;
       for (const cell of cells) {
-        if (!onscreen.has(cell)) continue
-        const rect = cell.getBoundingClientRect()
-        const gap = Math.abs(rect.top + rect.height / 2 - middle)
+        if (!onscreen.has(cell)) continue;
+        const rect = cell.getBoundingClientRect();
+        const gap = Math.abs(rect.top + rect.height / 2 - middle);
         // Strictly closer, so a tie leaves the earlier cell holding it.
         if (gap < bestGap) {
-          bestGap = gap
-          best = cell
+          bestGap = gap;
+          best = cell;
         }
       }
-      light(best)
-    }
+      light(best);
+    };
 
     const schedule = () => {
-      if (!frame) frame = requestAnimationFrame(pick)
-    }
+      if (!frame) frame = requestAnimationFrame(pick);
+    };
 
     const io = new IntersectionObserver((entries) => {
       for (const entry of entries) {
-        if (entry.isIntersecting) onscreen.add(entry.target as HTMLElement)
-        else onscreen.delete(entry.target as HTMLElement)
+        if (entry.isIntersecting) onscreen.add(entry.target as HTMLElement);
+        else onscreen.delete(entry.target as HTMLElement);
       }
-      schedule()
-    })
+      schedule();
+    });
 
     const arm = () => {
-      if (armed) return
-      armed = true
-      for (const cell of cells) io.observe(cell)
-      window.addEventListener('scroll', schedule, { passive: true })
-      window.addEventListener('resize', schedule)
-      schedule()
-    }
+      if (armed) return;
+      armed = true;
+      for (const cell of cells) io.observe(cell);
+      window.addEventListener("scroll", schedule, { passive: true });
+      window.addEventListener("resize", schedule);
+      schedule();
+    };
 
     // Everything the armed state put anywhere comes back off here, the class
     // included: a cell left lit after the reader has plugged in a mouse or
     // turned the tablet into a desktop-width window is a cell stuck in a state
     // nothing can now leave.
     const disarm = () => {
-      if (!armed) return
-      armed = false
-      io.disconnect()
-      window.removeEventListener('scroll', schedule)
-      window.removeEventListener('resize', schedule)
-      if (frame) cancelAnimationFrame(frame)
-      frame = 0
-      onscreen.clear()
-      light(null)
-    }
+      if (!armed) return;
+      armed = false;
+      io.disconnect();
+      window.removeEventListener("scroll", schedule);
+      window.removeEventListener("resize", schedule);
+      if (frame) cancelAnimationFrame(frame);
+      frame = 0;
+      onscreen.clear();
+      light(null);
+    };
 
     const sync = () => {
-      if (touch.matches) arm()
-      else disarm()
-    }
+      if (touch.matches) arm();
+      else disarm();
+    };
 
-    sync()
-    touch.addEventListener('change', sync)
+    sync();
+    touch.addEventListener("change", sync);
 
     return () => {
-      touch.removeEventListener('change', sync)
-      disarm()
-    }
-  }, [root])
+      touch.removeEventListener("change", sync);
+      disarm();
+    };
+  }, [root]);
 }
 
 /**
@@ -1228,64 +1272,62 @@ function useRigFocus(root: RefObject<HTMLDivElement | null>) {
  * that same standing state is what ships.
  */
 function useTimelinePin() {
-  const section = useRef<HTMLElement>(null)
-  const port = useRef<HTMLDivElement>(null)
-  const track = useRef<HTMLDivElement>(null)
+  const section = useRef<HTMLElement>(null);
+  const port = useRef<HTMLDivElement>(null);
+  const track = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const sectionEl = section.current
-    const portEl = port.current
-    const trackEl = track.current
-    if (!sectionEl || !portEl || !trackEl) return
+    const sectionEl = section.current;
+    const portEl = port.current;
+    const trackEl = track.current;
+    if (!sectionEl || !portEl || !trackEl) return;
 
-    const wide = window.matchMedia('(min-width: 900px)')
-    const still = window.matchMedia('(prefers-reduced-motion: reduce)')
+    const wide = window.matchMedia("(min-width: 900px)");
+    const still = window.matchMedia("(prefers-reduced-motion: reduce)");
     // The frame the stylesheet sticks. Looked up rather than handed a ref of
     // its own so the markup does not have to know the driver moves it.
-    const pinEl = portEl.closest<HTMLElement>('.hw26-tl-pin')
+    const pinEl = portEl.closest<HTMLElement>(".hw26-tl-pin");
 
-    let overflow = 0
-    let frame = 0
-    let last = 0
+    let overflow = 0;
+    let frame = 0;
+    let last = 0;
     // Where the track actually is, against where the scroll says it should be.
     // Two numbers rather than one because the whole of the smoothing is the
     // gap between them.
-    let at = 0
+    let at = 0;
     // The scroll distance each vertical hand-off is given — half of it before
     // the boundary and half after — and the frame offset last written, so an
     // unchanged offset is not rewritten.
-    let runway = 0
-    let lifted = 0
+    let runway = 0;
+    let lifted = 0;
 
     const unpin = () => {
-      overflow = 0
-      runway = 0
-      at = 0
-      lifted = 0
-      sectionEl.removeAttribute('data-pinned')
-      sectionEl.style.removeProperty('--tl-pin')
+      overflow = 0;
+      runway = 0;
+      at = 0;
+      lifted = 0;
+      sectionEl.removeAttribute("data-pinned");
+      sectionEl.style.removeProperty("--tl-pin");
       // Cleared rather than left stale, and that is load-bearing: the rule that
       // reads it is keyed on the width, not on `data-pinned`, so a leftover
       // lead-in would indent the track by half a screen in exactly the states
       // this branch is for — reduced motion and a screen wide enough to hold
       // all five stops — where nothing drives the track back off it again.
-      trackEl.style.removeProperty('--tl-lead-start')
-      trackEl.style.transform = ''
-      if (pinEl) pinEl.style.transform = ''
-    }
+      trackEl.style.removeProperty("--tl-lead-start");
+      trackEl.style.transform = "";
+      if (pinEl) pinEl.style.transform = "";
+    };
 
     const paint = (x: number) => {
-      trackEl.style.transform = `translate3d(${x.toFixed(2)}px, 0, 0)`
-    }
+      trackEl.style.transform = `translate3d(${x.toFixed(2)}px, 0, 0)`;
+    };
 
     // The frame's own vertical offset, which is the whole of the hand-off.
     const raise = (y: number) => {
-      if (!pinEl || y === lifted) return
-      lifted = y
-      pinEl.style.transform = y
-        ? `translate3d(0, ${y.toFixed(2)}px, 0)`
-        : ''
-    }
+      if (!pinEl || y === lifted) return;
+      lifted = y;
+      pinEl.style.transform = y ? `translate3d(0, ${y.toFixed(2)}px, 0)` : "";
+    };
 
     // The shape of the sweep: an ease-in-out on progress, defined by its *rate*
     // rather than by a curve picked for its formula.
@@ -1314,18 +1356,18 @@ function useTimelinePin() {
     // outranks the feel: `ramp(0)` is 0, so `shape(0)` is 0, and `shape(1)` is
     // written as `1 − v·a·ramp(0)`, so it is exactly 1 — not a curve that
     // approaches 1 and leaves the last stop a few pixels offscreen forever.
-    const RAMP = 0.22
+    const RAMP = 0.22;
 
     // The integral of smoothstep over [0, 1], normalised to reach 1/2 — which
     // is the area under a rate that starts at 0 and ends at 1.
-    const ramp = (u: number) => u * u * u - (u * u * u * u) / 2
+    const ramp = (u: number) => u * u * u - (u * u * u * u) / 2;
 
     const shape = (t: number) => {
-      const v = 1 / (1 - RAMP) // flat-middle rate, set so the whole sweep is 1
-      if (t <= RAMP) return v * RAMP * ramp(t / RAMP)
-      if (t >= 1 - RAMP) return 1 - v * RAMP * ramp((1 - t) / RAMP)
-      return v * (t - RAMP / 2)
-    }
+      const v = 1 / (1 - RAMP); // flat-middle rate, set so the whole sweep is 1
+      if (t <= RAMP) return v * RAMP * ramp(t / RAMP);
+      if (t >= 1 - RAMP) return 1 - v * RAMP * ramp((1 - t) / RAMP);
+      return v * (t - RAMP / 2);
+    };
 
     // ---- the vertical hand-off ----
     //
@@ -1383,34 +1425,32 @@ function useTimelinePin() {
     // anchors, none of them approached, all of them assigned. `ramp` is
     // `u − glide(u)`, which is the same integral read from the other side, and
     // is the identity that makes the two halves meet without a seam at 3/32.
-    const glide = (u: number) => u - ramp(u)
+    const glide = (u: number) => u - ramp(u);
 
     // The peak offset, as a share of the runway: `ramp(1/2)`, exactly 3/32.
-    const PEAK = 3 / 32
+    const PEAK = 3 / 32;
 
     // `s` is how far the scroll has run into the section: 0 when the frame
     // sticks, `travel` when it lets go. One runway is centred on each of those
     // two pixels; everywhere else — including the whole middle of the pin —
     // there is no offset at all.
     const lift = (s: number, travel: number) => {
-      if (runway <= 0) return 0
-      const half = runway / 2
+      if (runway <= 0) return 0;
+      const half = runway / 2;
 
       // Coming in. Below −half the page has not been touched yet; above
       // +half the frame is stuck and square in its box.
       if (s < half) {
-        if (s <= -half) return 0
-        const u = (s + half) / runway
-        return s < 0 ? runway * ramp(u) : runway * (0.5 - glide(u))
+        if (s <= -half) return 0;
+        const u = (s + half) / runway;
+        return s < 0 ? runway * ramp(u) : runway * (0.5 - glide(u));
       }
 
       // Going out: the same curve, mirrored, centred on the release.
-      const u = (s - travel + half) / runway
-      if (u <= 0 || u >= 1) return 0
-      return s < travel
-        ? -runway * ramp(u)
-        : runway * (u - 0.5 - ramp(u))
-    }
+      const u = (s - travel + half) / runway;
+      if (u <= 0 || u >= 1) return 0;
+      return s < travel ? -runway * ramp(u) : runway * (u - 0.5 - ramp(u));
+    };
 
     // ---- the approach ----
     //
@@ -1482,26 +1522,26 @@ function useTimelinePin() {
     // pixel. Everything the curve is judged on is unchanged: the ramp is
     // still `RAMP` of the sweep, still entirely inside the approach, and the
     // 28.6% above is still 28.6%.
-    const LEAD_SHARE = 0.5
+    const LEAD_SHARE = 0.5;
 
     // Where the scroll says the track and the frame should be, in pixels.
     const wanted = () => {
-      const rect = sectionEl.getBoundingClientRect()
+      const rect = sectionEl.getBoundingClientRect();
       // The section is one screen plus the overflow, so this is the overflow
       // again — read from layout rather than assumed, since `100svh` and
       // `innerHeight` can disagree while a mobile toolbar is retracting.
-      const travel = rect.height - window.innerHeight
-      const s = -rect.top
-      const lead = Math.min(window.innerHeight, travel * LEAD_SHARE)
+      const travel = rect.height - window.innerHeight;
+      const s = -rect.top;
+      const lead = Math.min(window.innerHeight, travel * LEAD_SHARE);
       // The sweep's whole domain: the approach in front of the pin and the
       // pin itself. `s + lead` is 0 where the approach begins and `span` where
       // the frame lets go, so `shape(1)` — which is exactly 1 by construction
       // — still lands the track on exactly `-overflow` at the release.
-      const span = travel + lead
+      const span = travel + lead;
       const progress =
-        span <= 0 ? 0 : Math.min(1, Math.max(0, (s + lead) / span))
-      return { x: -(shape(progress) * overflow), y: lift(s, travel) }
-    }
+        span <= 0 ? 0 : Math.min(1, Math.max(0, (s + lead) / span));
+      return { x: -(shape(progress) * overflow), y: lift(s, travel) };
+    };
 
     // The chase. Each frame closes a fixed *share* of the remaining distance,
     // which is an exponential approach: quick while the gap is wide, gentle as
@@ -1518,45 +1558,45 @@ function useTimelinePin() {
     // remainder is assigned rather than approached, the frame loop is not
     // renewed, and the position is exactly what `wanted()` returned. That is
     // what makes 0 at the start and full travel at the end exact figures.
-    const SETTLE = 0.2
-    const EPSILON = 0.25
+    const SETTLE = 0.2;
+    const EPSILON = 0.25;
 
     const draw = (now: number) => {
-      frame = 0
-      if (!overflow) return
-      const dt = Math.min(50, Math.max(1, now - last))
-      last = now
+      frame = 0;
+      if (!overflow) return;
+      const dt = Math.min(50, Math.max(1, now - last));
+      last = now;
 
-      const { x: target, y } = wanted()
+      const { x: target, y } = wanted();
       // The frame's offset is assigned, never chased. It is a pure function of
       // the scroll position, so it is exactly 0 on both the pixel the pin takes
       // hold and the pixel the runway ends — and chasing it would put lag into
       // the one motion whose entire job is to match the reader's gesture.
-      raise(y)
-      const gap = target - at
+      raise(y);
+      const gap = target - at;
       if (Math.abs(gap) <= EPSILON) {
         // Settled: land on the target exactly and let the loop die.
-        at = target
-        paint(at)
-        return
+        at = target;
+        paint(at);
+        return;
       }
-      at += gap * (1 - (1 - SETTLE) ** (dt / 16.667))
-      paint(at)
-      frame = requestAnimationFrame(draw)
-    }
+      at += gap * (1 - (1 - SETTLE) ** (dt / 16.667));
+      paint(at);
+      frame = requestAnimationFrame(draw);
+    };
 
     // Scroll only ever wakes the loop; it never paints. If a frame is already
     // pending the chase is running and will read the newest scroll position
     // itself, which is why one handle is enough for both jobs.
     const schedule = () => {
       if (!frame) {
-        last = performance.now()
-        frame = requestAnimationFrame(draw)
+        last = performance.now();
+        frame = requestAnimationFrame(draw);
       }
-    }
+    };
 
     const measure = () => {
-      if (!wide.matches || still.matches) return unpin()
+      if (!wide.matches || still.matches) return unpin();
 
       // Where the line starts. Untouched, the track's first tick sits on the
       // scrollport's left edge — a hand's width from the edge of the screen —
@@ -1597,8 +1637,8 @@ function useTimelinePin() {
       // `scrollWidth` and `clientWidth` are layout figures and are not moved by
       // the transform already on the track, so the measurement does not have to
       // undo its own effect first.
-      trackEl.style.removeProperty('--tl-lead-start')
-      if (trackEl.scrollWidth <= portEl.clientWidth) return unpin()
+      trackEl.style.removeProperty("--tl-lead-start");
+      if (trackEl.scrollWidth <= portEl.clientWidth) return unpin();
 
       // Clamped at 0 for a port whose left edge is already past the middle of
       // the screen the line is meant to start on. Read from layout rather than
@@ -1606,18 +1646,18 @@ function useTimelinePin() {
       // box is measured and not assumed.
       const lead = Math.max(
         0,
-        Math.round(window.innerWidth / 2 - portEl.getBoundingClientRect().left)
-      )
-      trackEl.style.setProperty('--tl-lead-start', `${lead}px`)
+        Math.round(window.innerWidth / 2 - portEl.getBoundingClientRect().left),
+      );
+      trackEl.style.setProperty("--tl-lead-start", `${lead}px`);
 
       const next = Math.max(
         0,
-        Math.round(trackEl.scrollWidth - portEl.clientWidth)
-      )
-      if (!next) return unpin()
-      overflow = next
-      sectionEl.style.setProperty('--tl-pin', `${next}px`)
-      sectionEl.setAttribute('data-pinned', 'true')
+        Math.round(trackEl.scrollWidth - portEl.clientWidth),
+      );
+      if (!next) return unpin();
+      overflow = next;
+      sectionEl.style.setProperty("--tl-pin", `${next}px`);
+      sectionEl.setAttribute("data-pinned", "true");
 
       // How long each hand-off runway gets, held down by three ceilings, all
       // three re-derived for a runway that straddles its boundary rather than
@@ -1643,57 +1683,59 @@ function useTimelinePin() {
       // works out at nearly ten runways per unit of slack, and it stops being
       // the binding constraint at every desktop size the page sees, which is
       // the whole point of moving the runway.
-      const inner = pinEl?.firstElementChild
+      const inner = pinEl?.firstElementChild;
       const room = inner
         ? Math.max(
             0,
-            (pinEl!.clientHeight - inner.getBoundingClientRect().height) / 2
+            (pinEl!.clientHeight - inner.getBoundingClientRect().height) / 2,
           )
-        : 0
+        : 0;
       runway = pinEl
         ? Math.round(
-            Math.min(next * 0.95, window.innerHeight, (room * 0.9) / PEAK)
+            Math.min(next * 0.95, window.innerHeight, (room * 0.9) / PEAK),
           )
-        : 0
+        : 0;
 
       // A cut, not a chase. Measuring happens on mount, on resize and when the
       // track reflows — none of which is motion the reader performed, and all
       // of which would otherwise slide the line from a position that is no
       // longer where anything is.
-      const now = wanted()
-      at = now.x
-      raise(now.y)
-      paint(at)
-    }
+      const now = wanted();
+      at = now.x;
+      raise(now.y);
+      paint(at);
+    };
 
-    measure()
+    measure();
 
-    window.addEventListener('scroll', schedule, { passive: true })
-    window.addEventListener('resize', measure)
-    wide.addEventListener('change', measure)
-    still.addEventListener('change', measure)
+    window.addEventListener("scroll", schedule, { passive: true });
+    window.addEventListener("resize", measure);
+    wide.addEventListener("change", measure);
+    still.addEventListener("change", measure);
 
     // The listener covers the viewport changing; the observer covers the track
     // changing under it — a web font landing, or the copy reflowing — which
     // resizes nothing else and would otherwise leave the pin travelling the
     // wrong distance for the rest of the session.
     const ro =
-      typeof ResizeObserver === 'undefined' ? null : new ResizeObserver(measure)
-    ro?.observe(portEl)
-    ro?.observe(trackEl)
+      typeof ResizeObserver === "undefined"
+        ? null
+        : new ResizeObserver(measure);
+    ro?.observe(portEl);
+    ro?.observe(trackEl);
 
     return () => {
-      if (frame) cancelAnimationFrame(frame)
-      window.removeEventListener('scroll', schedule)
-      window.removeEventListener('resize', measure)
-      wide.removeEventListener('change', measure)
-      still.removeEventListener('change', measure)
-      ro?.disconnect()
-      unpin()
-    }
-  }, [])
+      if (frame) cancelAnimationFrame(frame);
+      window.removeEventListener("scroll", schedule);
+      window.removeEventListener("resize", measure);
+      wide.removeEventListener("change", measure);
+      still.removeEventListener("change", measure);
+      ro?.disconnect();
+      unpin();
+    };
+  }, []);
 
-  return { section, port, track }
+  return { section, port, track };
 }
 
 /**
@@ -1728,48 +1770,161 @@ function useTimelinePin() {
  * the same string.
  */
 function SponsorTile({ partner }: { partner: Partner }) {
-  const named = Boolean(partner.href) && Boolean(partner.wordmark)
+  const named = Boolean(partner.href) && Boolean(partner.wordmark);
 
   const logo = (
     <img
-      alt={named ? '' : partner.name}
-      className={`hw26-sponsor-logo${partner.mark ? ` ${partner.mark}` : ''}`}
+      alt={named ? "" : partner.name}
+      className={`hw26-sponsor-logo${partner.mark ? ` ${partner.mark}` : ""}`}
       src={partner.src}
     />
-  )
+  );
 
   const inside = partner.wordmark ? (
     <span
-      className={`hw26-sponsor-lockup${partner.lockup ? ` ${partner.lockup}` : ''}`}
+      className={`hw26-sponsor-lockup${partner.lockup ? ` ${partner.lockup}` : ""}`}
     >
       {logo}
-      <span aria-hidden='true' className='hw26-sponsor-wordmark'>
+      <span aria-hidden="true" className="hw26-sponsor-wordmark">
         {partner.wordmark}
       </span>
     </span>
   ) : (
     logo
-  )
+  );
 
   if (!partner.href) {
     return (
-      <div className='hw26-sponsor hw26-sponsor--static' title={partner.name}>
+      <div className="hw26-sponsor hw26-sponsor--static" title={partner.name}>
         {inside}
       </div>
-    )
+    );
   }
 
   return (
     <a
       aria-label={partner.name}
-      className='hw26-sponsor'
+      className="hw26-sponsor"
       href={partner.href}
-      rel='noopener noreferrer'
-      target='_blank'
+      rel="noopener noreferrer"
+      target="_blank"
     >
       {inside}
     </a>
-  )
+  );
+}
+
+function LeadPartnerTile({ partner }: { partner: Partner }) {
+  return (
+    <a
+      aria-label={partner.name}
+      className="hw26-sponsor-lead"
+      href={partner.href}
+      rel="noopener noreferrer"
+      target="_blank"
+    >
+      <img alt={partner.name} className={partner.mark} src={partner.src} />
+    </a>
+  );
+}
+
+/** The complete partner wall, reused by the dedicated Partners page. */
+export function PartnerDirectory() {
+  const ecosystem = useShuffled(SMALL_SPONSORS);
+  const hardware = useShuffled(HARDWARE_PARTNERS);
+
+  return (
+    <section className="hw26-section">
+      <div aria-hidden="true" className="hw26-grid" />
+      <div className="hw26-inner">
+        <div className="hw26-head">
+          <h2>Partners &amp; Organizers</h2>
+        </div>
+
+        <div className="hw26-subhead">
+          <span className="hw26-label hw26-label--mint">Sponsors</span>
+          <span className="hw26-poweredby-rule" />
+          <a className="hw26-sponsor-cta" href="/sponsor">
+            Become a sponsor →
+          </a>
+        </div>
+        <div className="hw26-sponsors-lead hw26-sponsors-lead--one">
+          {SPONSORS.map((partner) => (
+            <LeadPartnerTile key={partner.name} partner={partner} />
+          ))}
+        </div>
+
+        <div className="hw26-subhead">
+          <span className="hw26-label hw26-label--mint">
+            Ecosystem Partners
+          </span>
+          <span className="hw26-poweredby-rule" />
+        </div>
+        <div className="hw26-sponsors-lead hw26-sponsors-lead--eco">
+          {[LEAD_SPONSORS[0], LEAD_SPONSORS[1], ...ecosystem].map(
+            (partner) => (
+              <LeadPartnerTile key={partner.name} partner={partner} />
+            ),
+          )}
+        </div>
+
+        <div className="hw26-subhead">
+          <span className="hw26-label hw26-label--mint">
+            Hardware partners
+          </span>
+          <span className="hw26-poweredby-rule" />
+        </div>
+        <div className="hw26-sponsors-rest">
+          {hardware.map((partner) => (
+            <SponsorTile key={partner.name} partner={partner} />
+          ))}
+        </div>
+
+        <div className="hw26-subhead">
+          <span className="hw26-label hw26-label--mint">Media partners</span>
+          <span className="hw26-poweredby-rule" />
+        </div>
+        <div className="hw26-sponsors-lead hw26-sponsors-lead--one">
+          {MEDIA_PARTNERS.map((partner) => (
+            <LeadPartnerTile key={partner.name} partner={partner} />
+          ))}
+        </div>
+
+        <div className="hw26-subhead">
+          <span className="hw26-label hw26-label--mint">Prize partners</span>
+          <span className="hw26-poweredby-rule" />
+        </div>
+        <div className="hw26-sponsors-lead hw26-sponsors-lead--one">
+          {PRIZE_PARTNERS.map((partner) => (
+            <LeadPartnerTile key={partner.name} partner={partner} />
+          ))}
+        </div>
+
+        <div className="hw26-subhead">
+          <span className="hw26-label hw26-label--mint">Organizers</span>
+          <span className="hw26-poweredby-rule" />
+        </div>
+        <div className="hw26-sponsors-lead">
+          {ORGANIZERS.map((organizer) => (
+            <a
+              aria-label={organizer.name}
+              className="hw26-sponsor-lead"
+              href={organizer.href}
+              key={organizer.name}
+              rel="noopener noreferrer"
+              target="_blank"
+            >
+              <img
+                alt={organizer.name}
+                className={`hw26-org-logo${organizer.mark ? ` ${organizer.mark}` : ""}`}
+                src={organizer.src}
+              />
+            </a>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
 }
 
 /**
@@ -1804,58 +1959,58 @@ function SponsorTile({ partner }: { partner: Partner }) {
  * is `visibility: hidden` on the same rule; see the note there.
  */
 function Faq() {
-  const [open, setOpen] = useState<number | null>(null)
+  const [open, setOpen] = useState<number | null>(null);
 
   return (
-    <div className='hw26-faq hw26-reveal'>
+    <div className="hw26-faq hw26-reveal">
       {/* The fill, one edge-width inside the outline and in the same chamfered
           shape — the panel technique from the inventory cells, with the fill
           on a real element rather than on a pseudo one because this one has
           the rows in it and they have to be clipped by it. */}
-      <div className='hw26-faq-list'>
+      <div className="hw26-faq-list">
         {FAQ.map((item, i) => {
-          const isOpen = open === i
-          const panelId = `hw26-faq-panel-${i}`
-          const labelId = `hw26-faq-q-${i}`
+          const isOpen = open === i;
+          const panelId = `hw26-faq-panel-${i}`;
+          const labelId = `hw26-faq-q-${i}`;
 
           return (
             <div
-              className={`hw26-faq-row${isOpen ? ' hw26-faq-row--open' : ''}`}
+              className={`hw26-faq-row${isOpen ? " hw26-faq-row--open" : ""}`}
               key={item.q}
             >
-              <h3 className='hw26-faq-heading'>
+              <h3 className="hw26-faq-heading">
                 <button
                   aria-controls={panelId}
                   aria-expanded={isOpen}
-                  className='hw26-faq-trigger'
+                  className="hw26-faq-trigger"
                   id={labelId}
                   onClick={() => setOpen(isOpen ? null : i)}
-                  type='button'
+                  type="button"
                 >
-                  <span className='hw26-faq-q'>{item.q}</span>
+                  <span className="hw26-faq-q">{item.q}</span>
                   {/* Two hairlines crossed. The upright one turns flat as the
                       row opens, so the mark goes from plus to minus by
                       travelling rather than by being swapped. */}
-                  <span aria-hidden='true' className='hw26-faq-sign' />
+                  <span aria-hidden="true" className="hw26-faq-sign" />
                 </button>
               </h3>
 
               <div
                 aria-labelledby={labelId}
-                className='hw26-faq-panel'
+                className="hw26-faq-panel"
                 id={panelId}
-                role='region'
+                role="region"
               >
-                <div className='hw26-faq-panel-in'>
-                  <p className='hw26-faq-a'>{item.a}</p>
+                <div className="hw26-faq-panel-in">
+                  <p className="hw26-faq-a">{item.a}</p>
                 </div>
               </div>
             </div>
-          )
+          );
         })}
       </div>
     </div>
-  )
+  );
 }
 
 /**
@@ -1881,20 +2036,23 @@ function Faq() {
  */
 function RigCell({ item, order }: { item: Rig; order: number }) {
   return (
-    <article
-      className={`hw26-rig hw26-rig--compact${item.unannounced ? ' hw26-rig--tba' : ''}${item.blurPhoto ? ' hw26-rig--blur' : ''} hw26-reveal`}
-      style={{ '--reveal-delay': `${order * 90}ms` } as CSSProperties}
+    <div
+      className={`hw26-rig-shell${item.dropShadow ? " hw26-rig-shell--accent" : ""}`}
     >
+      <article
+        className={`hw26-rig hw26-rig--compact${item.unannounced ? " hw26-rig--tba" : ""}${item.blurPhoto ? " hw26-rig--blur" : ""}${item.dropShadow ? " hw26-rig--accent" : ""} hw26-reveal`}
+        style={{ "--reveal-delay": `${order * 90}ms` } as CSSProperties}
+      >
       {/* Ground, not a product shot — see the note on RIG_GROUPS. Empty
           `alt` because a render that is 16% of a greyscale backdrop is
           texture rather than something anyone is being shown; the name below
           it is what identifies the machine. */}
       {item.photo ? (
-        <div className='hw26-rig-photo'>
+        <div className="hw26-rig-photo">
           <Image
-            alt=''
+            alt=""
             fill
-            sizes='(max-width: 720px) 100vw, (max-width: 1100px) 50vw, 33vw'
+            sizes="(max-width: 720px) 100vw, (max-width: 1100px) 50vw, 33vw"
             src={item.photo}
           />
         </div>
@@ -1911,7 +2069,7 @@ function RigCell({ item, order }: { item: Rig; order: number }) {
           number, so `unannounced` takes it out of the accessibility tree and
           the marker below carries the meaning instead. */}
       {item.units ? (
-        <div aria-hidden={item.unannounced} className='hw26-rig-no'>
+        <div aria-hidden={item.unannounced} className="hw26-rig-no">
           {item.units}
         </div>
       ) : null}
@@ -1925,7 +2083,7 @@ function RigCell({ item, order }: { item: Rig; order: number }) {
       {item.credit ? (
         <img
           alt={item.credit.label}
-          className='hw26-rig-credit'
+          className="hw26-rig-credit"
           src={item.credit.src}
         />
       ) : null}
@@ -1937,14 +2095,15 @@ function RigCell({ item, order }: { item: Rig; order: number }) {
           it would still be the right line on a named machine whose model is
           open. See the note on RIG_GROUPS. */}
       {item.tba ? (
-        <span className='hw26-label hw26-rig-units'>To be announced</span>
+        <span className="hw26-label hw26-rig-units">To be announced</span>
       ) : null}
 
-      <h4 className='hw26-rig-name'>{item.name}</h4>
+      <h4 className="hw26-rig-name">{item.name}</h4>
 
-      {item.note ? <p className='hw26-rig-note'>{item.note}</p> : null}
-    </article>
-  )
+        {item.note ? <p className="hw26-rig-note">{item.note}</p> : null}
+      </article>
+    </div>
+  );
 }
 
 /**
@@ -1953,11 +2112,11 @@ function RigCell({ item, order }: { item: Rig; order: number }) {
  * step with each other.
  */
 const COUNTDOWN_UNITS = [
-  { key: 'days', label: 'Days' },
-  { key: 'hours', label: 'Hrs' },
-  { key: 'minutes', label: 'Min' },
-  { key: 'seconds', label: 'Sec' },
-] as const
+  { key: "days", label: "Days" },
+  { key: "hours", label: "Hrs" },
+  { key: "minutes", label: "Min" },
+  { key: "seconds", label: "Sec" },
+] as const;
 
 /**
  * Whole days/hours/minutes/seconds left until `target`, clamped at zero: once
@@ -1966,17 +2125,17 @@ const COUNTDOWN_UNITS = [
  * event starts.
  */
 function untilParts(target: Date, now: number) {
-  const total = Math.max(0, Math.floor((target.getTime() - now) / 1000))
+  const total = Math.max(0, Math.floor((target.getTime() - now) / 1000));
   return {
     days: Math.floor(total / 86400),
     hours: Math.floor(total / 3600) % 24,
     minutes: Math.floor(total / 60) % 60,
     seconds: total % 60,
-  }
+  };
 }
 
 /** Two digits minimum, so the numerals never reflow as they tick down. */
-const pad = (n: number) => String(n).padStart(2, '0')
+const pad = (n: number) => String(n).padStart(2, "0");
 
 /**
  * The countdown to the first morning.
@@ -1992,34 +2151,34 @@ const pad = (n: number) => String(n).padStart(2, '0')
  * remounting the tree in development.
  */
 function Countdown({ target }: { target: Date }) {
-  const [now, setNow] = useState<number | null>(null)
+  const [now, setNow] = useState<number | null>(null);
 
   useEffect(() => {
-    setNow(Date.now())
-    const id = window.setInterval(() => setNow(Date.now()), 1000)
-    return () => window.clearInterval(id)
-  }, [])
+    setNow(Date.now());
+    const id = window.setInterval(() => setNow(Date.now()), 1000);
+    return () => window.clearInterval(id);
+  }, []);
 
-  const parts = now === null ? null : untilParts(target, now)
+  const parts = now === null ? null : untilParts(target, now);
 
   return (
-    <div className='hw26-count'>
+    <div className="hw26-count">
       {COUNTDOWN_UNITS.map((unit) => (
-        <div className='hw26-count-cell' key={unit.key}>
+        <div className="hw26-count-cell" key={unit.key}>
           {/* Dashes, not zeros, for the pre-hydration frame: a zero would
               claim the event had already started for the split second before
               the clock takes over. En dashes rather than the em dashes this
               used to be — an em dash is a full em, so the pair was half
               again as wide as two digits and the panel visibly snapped
               narrower the moment the clock took over. */}
-          <span className='hw26-count-n'>
-            {parts ? pad(parts[unit.key]) : '––'}
+          <span className="hw26-count-n">
+            {parts ? pad(parts[unit.key]) : "––"}
           </span>
-          <span className='hw26-label hw26-count-u'>{unit.label}</span>
+          <span className="hw26-label hw26-count-u">{unit.label}</span>
         </div>
       ))}
     </div>
-  )
+  );
 }
 
 /**
@@ -2028,15 +2187,15 @@ function Countdown({ target }: { target: Date }) {
  * column of them reads as a word half-forming, and the point of the field is
  * that it is output rather than language.
  */
-const RAIN_GLYPHS = '0123456789ABCDEFGHJKLMNPRSTUVWXYZ+-=/\\|<>#·×'
+const RAIN_GLYPHS = "0123456789ABCDEFGHJKLMNPRSTUVWXYZ+-=/\\|<>#·×";
 
 type RainColumn = {
-  x: number
-  head: number // row index of the leading glyph, fractional
-  speed: number // rows per second
-  tail: number // rows of fading trail behind the head
-  cells: string[] // glyph per row index, so a character stays put as the trail passes over it
-}
+  x: number;
+  head: number; // row index of the leading glyph, fractional
+  speed: number; // rows per second
+  tail: number; // rows of fading trail behind the head
+  cells: string[]; // glyph per row index, so a character stays put as the trail passes over it
+};
 
 /**
  * The end plate, as its own component because a second page renders it.
@@ -2054,15 +2213,15 @@ type RainColumn = {
  */
 export function Endplate({ hackathon }: { hackathon: HardwareEvent }) {
   return (
-    <footer className='hw26-endplate'>
-      <div aria-hidden='true' className='hw26-endplate-hazard' />
-      <p aria-hidden='true' className='hw26-endplate-bleed'>
+    <footer className="hw26-endplate">
+      <div aria-hidden="true" className="hw26-endplate-hazard" />
+      <p aria-hidden="true" className="hw26-endplate-bleed">
         2026
       </p>
 
-      <div className='hw26-endplate-body'>
-        <div className='hw26-endplate-top'>
-          <p className='hw26-endplate-mark'>
+      <div className="hw26-endplate-body">
+        <div className="hw26-endplate-top">
+          <p className="hw26-endplate-mark">
             Alien Bazaar
             <br />
             <em>Warsaw 26</em>
@@ -2071,50 +2230,182 @@ export function Endplate({ hackathon }: { hackathon: HardwareEvent }) {
               being true the moment registration got an opening date of its
               own: for now it is not open, it is announced. Both dates on
               the stamp rather than one, because the window is the fact. */}
-          <div className='hw26-stamp'>
+          <div className="hw26-stamp">
             Registration
             <span>01 SEP — 15 SEP 2026</span>
           </div>
         </div>
 
-        <dl className='hw26-titleblock'>
+        <dl className="hw26-titleblock">
           {TITLE_BLOCK.map((cell) => (
             <div
-              className={`hw26-tb${cell.tone ? ` hw26-tb--${cell.tone}` : ''}`}
+              className={`hw26-tb${cell.tone ? ` hw26-tb--${cell.tone}` : ""}`}
               key={cell.k}
             >
               <dt>{cell.k}</dt>
               <dd>{cell.v}</dd>
             </div>
           ))}
-          <div className='hw26-tb hw26-tb--gate'>
+          <div className="hw26-tb hw26-tb--gate">
             <dt>Applications close</dt>
             <dd>15 SEP 2026</dd>
           </div>
-          <div className='hw26-tb'>
+          <div className="hw26-tb">
             <dt>Seats</dt>
-            <dd>{hackathon.capacity ?? '—'}</dd>
+            <dd>{hackathon.capacity ?? "—"}</dd>
           </div>
-          <div className='hw26-tb'>
+          <div className="hw26-tb">
             <dt>Team max</dt>
             <dd>{hackathon.maxTeamSize}</dd>
           </div>
         </dl>
       </div>
 
-      <div className='hw26-endplate-foot'>
-        <span className='hw26-label'>
-          {hackathon.location ?? 'Warsaw, Poland'}
+      <div className="hw26-endplate-foot">
+        <span className="hw26-label">
+          {hackathon.location ?? "Warsaw, Poland"}
         </span>
-        <div aria-hidden='true' className='hw26-ticks'>
+        <a
+          className="hw26-support-link"
+          href={contactHref("Alien Bazaar support")}
+        >
+          <span>Support</span> {CONTACT_EMAIL}
+        </a>
+        <div aria-hidden="true" className="hw26-ticks">
           {Array.from({ length: 24 }, (_, i) => (
             <i key={`tick-${i}`} />
           ))}
         </div>
-        <span className='hw26-label'>Epikor × Hacklab · AB—WAW—26</span>
+        <span className="hw26-label">Epikor × Hacklab · AB—WAW—26</span>
       </div>
     </footer>
-  )
+  );
+}
+
+function SiteMenu() {
+  const [open, setOpen] = useState(false);
+  const trigger = useRef<HTMLButtonElement>(null);
+  const firstLink = useRef<HTMLAnchorElement>(null);
+
+  useEffect(() => {
+    if (!open) return;
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    firstLink.current?.focus();
+
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setOpen(false);
+        requestAnimationFrame(() => trigger.current?.focus());
+        return;
+      }
+
+      if (event.key !== "Tab") return;
+      const overlay = document.getElementById("hw26-site-menu");
+      const focusable = Array.from(
+        overlay?.querySelectorAll<HTMLElement>(
+          "a[href], button:not([disabled])",
+        ) ?? [],
+      );
+      if (!focusable.length) return;
+
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    };
+
+    window.addEventListener("keydown", onKeyDown);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener("keydown", onKeyDown);
+    };
+  }, [open]);
+
+  const close = () => setOpen(false);
+
+  return (
+    <>
+      <button
+        aria-controls="hw26-site-menu"
+        aria-expanded={open}
+        aria-label={open ? "Close navigation" : "Open navigation"}
+        className={`hw26-menu-trigger${open ? " hw26-menu-trigger--open" : ""}`}
+        onClick={() => setOpen((value) => !value)}
+        ref={trigger}
+        type="button"
+      >
+        <span />
+        <span />
+        <span />
+      </button>
+
+      {open ? (
+        <div
+          aria-label="Site navigation"
+          aria-modal="true"
+          className="hw26-menu-overlay"
+          id="hw26-site-menu"
+          role="dialog"
+        >
+          <div aria-hidden="true" className="hw26-menu-grid" />
+          <div className="hw26-menu-shell">
+            <div className="hw26-menu-main">
+              <nav className="hw26-menu-links">
+                <Link href="/#home" onClick={close} ref={firstLink}>
+                  <span>01</span> Home
+                </Link>
+                <Link href="/#hardware" onClick={close}>
+                  <span>02</span> Hardware
+                </Link>
+                <Link href="/#timeline" onClick={close}>
+                  <span>03</span> Timeline
+                </Link>
+                <Link href="/#faq" onClick={close}>
+                  <span>04</span> FAQ
+                </Link>
+                <Link href="/partners" onClick={close}>
+                  <span>05</span> Partners
+                </Link>
+                <Link href="/team" onClick={close}>
+                  <span>06</span> Team
+                </Link>
+              </nav>
+            </div>
+
+            <div className="hw26-menu-actions">
+              <a
+                className="hw26-menu-action hw26-menu-action--primary"
+                href={APPLY_URL}
+                rel="noopener noreferrer"
+                target="_blank"
+              >
+                Apply now <span aria-hidden="true">→</span>
+              </a>
+              <a
+                className="hw26-menu-action"
+                href={contactHref("Alien Bazaar sponsorship")}
+              >
+                Become a sponsor <span aria-hidden="true">→</span>
+              </a>
+              <a
+                className="hw26-menu-action"
+                href={contactHref("Alien Bazaar partnership")}
+              >
+                Become a partner <span aria-hidden="true">→</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      ) : null}
+    </>
+  );
 }
 
 /**
@@ -2144,43 +2435,43 @@ export function Endplate({ hackathon }: { hackathon: HardwareEvent }) {
  * touches it, so there is no hydration mismatch to arrange around.
  */
 function BriefRain() {
-  const canvas = useRef<HTMLCanvasElement>(null)
-  const [reduced, setReduced] = useState(false)
+  const canvas = useRef<HTMLCanvasElement>(null);
+  const [reduced, setReduced] = useState(false);
 
   // Read in an effect rather than at first render for the usual reason — the
   // server has no media queries — and kept live, because the setting can be
   // changed while the page is open and this is precisely the kind of thing
   // somebody turns it off for.
   useEffect(() => {
-    const mq = window.matchMedia('(prefers-reduced-motion: reduce)')
-    setReduced(mq.matches)
-    const onChange = () => setReduced(mq.matches)
-    mq.addEventListener('change', onChange)
-    return () => mq.removeEventListener('change', onChange)
-  }, [])
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    setReduced(mq.matches);
+    const onChange = () => setReduced(mq.matches);
+    mq.addEventListener("change", onChange);
+    return () => mq.removeEventListener("change", onChange);
+  }, []);
 
   useEffect(() => {
-    const el = canvas.current
-    if (!el) return
-    const ctx = el.getContext('2d')
-    if (!ctx) return
+    const el = canvas.current;
+    if (!el) return;
+    const ctx = el.getContext("2d");
+    if (!ctx) return;
 
-    let raf = 0
-    let timer = 0
-    let cols: RainColumn[] = []
-    let rows = 0
-    let colW = 26
-    let rowH = 19
-    let fontSize = 13
-    let frameMs = 1000 / 20
-    let cssW = 0
-    let cssH = 0
-    let family = 'monospace'
-    let last = 0
-    let cancelled = false
-    let narrow = false
+    let raf = 0;
+    let timer = 0;
+    let cols: RainColumn[] = [];
+    let rows = 0;
+    let colW = 26;
+    let rowH = 19;
+    let fontSize = 13;
+    let frameMs = 1000 / 20;
+    let cssW = 0;
+    let cssH = 0;
+    let family = "monospace";
+    let last = 0;
+    let cancelled = false;
+    let narrow = false;
 
-    const pick = () => RAIN_GLYPHS[(Math.random() * RAIN_GLYPHS.length) | 0]
+    const pick = () => RAIN_GLYPHS[(Math.random() * RAIN_GLYPHS.length) | 0];
 
     // `seeded` is for the very first field only: the columns are scattered down
     // the section so the rain is already falling when it is first looked at,
@@ -2196,52 +2487,52 @@ function BriefRain() {
     // as broken rather than as sparse. Sparseness is the column pitch's job;
     // this only has to hide the seam.
     const respawn = (c: RainColumn, seeded: boolean) => {
-      c.speed = narrow ? 4 + Math.random() * 4 : 5 + Math.random() * 6
+      c.speed = narrow ? 4 + Math.random() * 4 : 5 + Math.random() * 6;
       c.tail = narrow
         ? 9 + ((Math.random() * 7) | 0)
-        : 14 + ((Math.random() * 11) | 0)
-      c.cells.length = 0
+        : 14 + ((Math.random() * 11) | 0);
+      c.cells.length = 0;
       c.head = seeded
         ? Math.random() * rows
-        : -c.tail - Math.random() * rows * 0.05
-    }
+        : -c.tail - Math.random() * rows * 0.05;
+    };
 
     const measure = () => {
-      const rect = el.getBoundingClientRect()
-      cssW = rect.width
-      cssH = rect.height
-      if (cssW < 1 || cssH < 1) return
+      const rect = el.getBoundingClientRect();
+      cssW = rect.width;
+      cssH = rect.height;
+      if (cssW < 1 || cssH < 1) return;
 
       // Phones get fewer, slower, shorter columns and half the frame rate: the
       // section is a third of the width and the whole effect is background, so
       // there is nothing to be gained by spending a battery on it.
-      narrow = window.innerWidth < 640
-      fontSize = narrow ? 11 : 13
-      colW = 26
-      rowH = narrow ? 17 : 19
-      frameMs = narrow ? 1000 / 12 : 1000 / 20
-      rows = Math.ceil(cssH / rowH)
+      narrow = window.innerWidth < 640;
+      fontSize = narrow ? 11 : 13;
+      colW = 26;
+      rowH = narrow ? 17 : 19;
+      frameMs = narrow ? 1000 / 12 : 1000 / 20;
+      rows = Math.ceil(cssH / rowH);
 
       // Capped at 2 — a third of a device pixel per CSS pixel buys nothing at
       // this weight and costs the whole bitmap again.
-      const dpr = Math.min(window.devicePixelRatio || 1, 2)
-      el.width = Math.round(cssW * dpr)
-      el.height = Math.round(cssH * dpr)
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      el.width = Math.round(cssW * dpr);
+      el.height = Math.round(cssH * dpr);
       // setTransform rather than scale: this runs again on every resize, and
       // scale multiplies into whatever is already there, so the second call
       // would draw at dpr² and every one after that would be worse.
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       // A 2d context cannot read a CSS custom property, so the page's mono
       // stack is inherited onto the canvas element and read back off it here
       // already resolved to real family names.
-      family = getComputedStyle(el).fontFamily || 'monospace'
+      family = getComputedStyle(el).fontFamily || "monospace";
 
       // Laid out centred rather than flush left: the remainder of the division
       // is split between the two edges, so the field is symmetrical about the
       // section instead of leaving a column-wide gutter down the right.
-      const n = Math.max(1, Math.floor(cssW / colW))
-      const edge = (cssW - n * colW) / 2
-      cols = []
+      const n = Math.max(1, Math.floor(cssW / colW));
+      const edge = (cssW - n * colW) / 2;
+      cols = [];
       for (let i = 0; i < n; i++) {
         const c: RainColumn = {
           x: edge + i * colW,
@@ -2249,33 +2540,33 @@ function BriefRain() {
           speed: 0,
           tail: 0,
           cells: [],
-        }
-        respawn(c, true)
-        cols.push(c)
+        };
+        respawn(c, true);
+        cols.push(c);
       }
-    }
+    };
 
     // Glyphs are chosen per row and kept, not chosen per frame. Rerolling every
     // frame turns the trail into static; holding the character means the trail
     // is a light passing down a column of fixed text, which is the thing being
     // imitated.
-    const glyphAt = (c: RainColumn, row: number) => (c.cells[row] ??= pick())
+    const glyphAt = (c: RainColumn, row: number) => (c.cells[row] ??= pick());
 
     const draw = () => {
-      ctx.clearRect(0, 0, cssW, cssH)
-      ctx.font = fontSize + 'px ' + family
-      ctx.textBaseline = 'top'
+      ctx.clearRect(0, 0, cssW, cssH);
+      ctx.font = fontSize + "px " + family;
+      ctx.textBaseline = "top";
 
       for (const c of cols) {
         for (let i = 0; i < c.tail; i++) {
-          const row = Math.floor(c.head) - i
-          if (row < 0 || row > rows) continue
+          const row = Math.floor(c.head) - i;
+          if (row < 0 || row > rows) continue;
           if (i === 0) {
             // The leading glyph, mint lifted towards white so the head of a
             // column reads as brighter rather than merely as more opaque.
-            ctx.fillStyle = 'rgba(205,255,235,0.24)'
+            ctx.fillStyle = "rgba(205,255,235,0.24)";
           } else {
-            const f = 1 - i / c.tail
+            const f = 1 - i / c.tail;
             // Linear, not curved — and at this strength there is no longer the
             // room to be anything else. On a near-black ground anything under
             // about four percent alpha is off the screen entirely, and the
@@ -2289,26 +2580,26 @@ function BriefRain() {
             // to spend that way. Linear holds the hue nearly the whole way down
             // and only reaches the floor at the very end, which is the entire
             // point of colouring it mint. 130,245,198 is --hw-mint, #82f5c6.
-            ctx.fillStyle = 'rgba(130,245,198,' + (0.13 * f).toFixed(3) + ')'
+            ctx.fillStyle = "rgba(130,245,198," + (0.13 * f).toFixed(3) + ")";
           }
-          ctx.fillText(glyphAt(c, row), c.x, row * rowH)
+          ctx.fillText(glyphAt(c, row), c.x, row * rowH);
         }
       }
-    }
+    };
 
     const step = (dt: number) => {
       for (const c of cols) {
-        c.head += c.speed * dt
-        if (c.head - c.tail > rows) respawn(c, false)
+        c.head += c.speed * dt;
+        if (c.head - c.tail > rows) respawn(c, false);
         // One character somewhere in the live trail flips per frame or so.
         // Without it the columns are rigid strings sliding past; with it the
         // field keeps twitching even where nothing is moving into view.
         if (Math.random() < 0.25) {
-          const r = Math.floor(c.head) - ((Math.random() * c.tail) | 0)
-          if (r >= 0) c.cells[r] = pick()
+          const r = Math.floor(c.head) - ((Math.random() * c.tail) | 0);
+          if (r >= 0) c.cells[r] = pick();
         }
       }
-    }
+    };
 
     // The loop runs at 20fps on a desktop and 12 on a phone — the low rate is
     // the effect rather than a concession, since a terminal repainting is what
@@ -2323,47 +2614,47 @@ function BriefRain() {
     // the tab after a minute, an unclamped delta would teleport every column
     // several screens down in one step.
     const frame = (t: number) => {
-      raf = 0
-      const dt = last ? Math.min((t - last) / 1000, 0.2) : 1 / 30
-      last = t
-      step(dt)
-      draw()
-      timer = window.setTimeout(tick, frameMs)
-    }
+      raf = 0;
+      const dt = last ? Math.min((t - last) / 1000, 0.2) : 1 / 30;
+      last = t;
+      step(dt);
+      draw();
+      timer = window.setTimeout(tick, frameMs);
+    };
 
     const tick = () => {
-      timer = 0
-      raf = requestAnimationFrame(frame)
-    }
+      timer = 0;
+      raf = requestAnimationFrame(frame);
+    };
 
     const start = () => {
-      if (raf || timer) return
-      last = 0
-      tick()
-    }
+      if (raf || timer) return;
+      last = 0;
+      tick();
+    };
 
     const stop = () => {
-      if (raf) cancelAnimationFrame(raf)
-      if (timer) clearTimeout(timer)
-      raf = 0
-      timer = 0
-    }
+      if (raf) cancelAnimationFrame(raf);
+      if (timer) clearTimeout(timer);
+      raf = 0;
+      timer = 0;
+    };
 
     // Reduced motion keeps the field and drops the motion: one static frame,
     // no observer, no loop at all. Redrawn once when the webfont lands, since
     // the only frame there is would otherwise be stuck in the fallback face.
     if (reduced) {
-      measure()
-      draw()
+      measure();
+      draw();
       document.fonts?.ready.then(() => {
-        if (!cancelled) draw()
-      })
+        if (!cancelled) draw();
+      });
       return () => {
-        cancelled = true
-      }
+        cancelled = true;
+      };
     }
 
-    measure()
+    measure();
 
     // Its own observer rather than the page's reveal one. That one is a
     // one-shot — it marks an element shown and unobserves it — and this has to
@@ -2372,57 +2663,57 @@ function BriefRain() {
     // screen. The margin starts it just before the section arrives, so the
     // field is already falling by the time it is looked at rather than filling
     // in from an empty canvas.
-    let io: IntersectionObserver | null = null
-    if (typeof IntersectionObserver === 'undefined') {
-      start()
+    let io: IntersectionObserver | null = null;
+    if (typeof IntersectionObserver === "undefined") {
+      start();
     } else {
       io = new IntersectionObserver(
         (entries) => {
-          const entry = entries[entries.length - 1]
-          if (!entry) return
-          if (entry.isIntersecting) start()
-          else stop()
+          const entry = entries[entries.length - 1];
+          if (!entry) return;
+          if (entry.isIntersecting) start();
+          else stop();
         },
-        { rootMargin: '150px 0px' }
-      )
-      io.observe(el)
+        { rootMargin: "150px 0px" },
+      );
+      io.observe(el);
     }
 
     // Re-measure on resize: the bitmap has a fixed pixel size and the element
     // does not, so the two have to be brought back into step or the field
     // stretches. This cannot feed back into itself — setting `width` and
     // `height` changes the bitmap, not the CSS box the observer is watching.
-    let ro: ResizeObserver | null = null
+    let ro: ResizeObserver | null = null;
     const onResize = () => {
-      measure()
-      draw()
-    }
-    if (typeof ResizeObserver !== 'undefined') {
-      ro = new ResizeObserver(onResize)
-      ro.observe(el)
+      measure();
+      draw();
+    };
+    if (typeof ResizeObserver !== "undefined") {
+      ro = new ResizeObserver(onResize);
+      ro.observe(el);
     } else {
-      window.addEventListener('resize', onResize)
+      window.addEventListener("resize", onResize);
     }
 
     return () => {
-      cancelled = true
-      stop()
-      if (io) io.disconnect()
-      if (ro) ro.disconnect()
-      else window.removeEventListener('resize', onResize)
-    }
-  }, [reduced])
+      cancelled = true;
+      stop();
+      if (io) io.disconnect();
+      if (ro) ro.disconnect();
+      else window.removeEventListener("resize", onResize);
+    };
+  }, [reduced]);
 
-  return <canvas aria-hidden className='hw26-rain' ref={canvas} />
+  return <canvas aria-hidden className="hw26-rain" ref={canvas} />;
 }
 
 export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
-  const root = useReveal()
-  const timeline = useTimelinePin()
+  const root = useReveal();
+  const timeline = useTimelinePin();
   // Hung off the page root the reveal observer already holds, rather than a
   // ref of its own on the same element — the cells are two sections apart and
   // the only thing this needs is a node that contains both.
-  useRigFocus(root)
+  useRigFocus(root);
 
   // Two of the partner rows are dealt again on every visit, so no name owns the
   // first plate. Only these two: the sponsor row and the media row hold one
@@ -2430,8 +2721,8 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
   // Ecosystem cells are a tier of their own where position is the tier — those
   // four stay exactly as written. See `useShuffled` for why the order arrives
   // after the first render rather than during it.
-  const ecosystem = useShuffled(SMALL_SPONSORS)
-  const hardware = useShuffled(HARDWARE_PARTNERS)
+  const ecosystem = useShuffled(SMALL_SPONSORS);
+  const hardware = useShuffled(HARDWARE_PARTNERS);
 
   return (
     /*
@@ -2445,6 +2736,7 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
       className={`hw26 ${GeistPixelCircle.variable} ${GeistPixelGrid.variable} ${GeistPixelSquare.variable} ${GeistPixelLine.variable}`}
       ref={root}
     >
+      <SiteMenu />
       {/* The load sequence is disabled for now — see the commented import at
           the top of this file. Restoring it is those two lines and nothing
           else; intro.tsx and intro.css are unchanged.
@@ -2452,7 +2744,7 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
           <HardwareIntro /> */}
 
       {/* ---------------- HERO ---------------- */}
-      <header className='hw26-hero'>
+      <header className="hw26-hero" id="home">
         {/* The page's only navigation, in the corner of the art rather than
             in a bar above it: this is a two-page site and a chrome bar for
             one link would be a navigation system pretending there is
@@ -2495,15 +2787,15 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
             `alt` is empty on both: they are two halves of one picture, the
             name in it is the h1 between them, and describing either would
             announce the event twice. */}
-        <div className='hw26-hero-stage'>
+        <div className="hw26-hero-stage">
           <Image
-            alt=''
-            className='hw26-hero-layer hw26-hero-layer--bg'
+            alt=""
+            className="hw26-hero-layer hw26-hero-layer--bg"
             fill
             priority
             quality={90}
-            sizes='100vw'
-            src='/hero/ab-hero-bg.png'
+            sizes="100vw"
+            src="/hero/ab-hero-bg.png"
           />
 
           {/* The document's only h1, and now real text rather than a hidden
@@ -2514,23 +2806,23 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
               them is explicit so the accessible name is not "AlienBazaar".
               Whitespace-only text is never a flex item, so it costs no
               layout. */}
-          <h1 className='hw26-hero-title'>
-            <span className='hw26-title-word hw26-glitch' data-text='Alien'>
+          <h1 className="hw26-hero-title">
+            <span className="hw26-title-word hw26-glitch" data-text="Alien">
               Alien
-            </span>{' '}
-            <span className='hw26-title-word hw26-glitch' data-text='Bazaar'>
+            </span>{" "}
+            <span className="hw26-title-word hw26-glitch" data-text="Bazaar">
               Bazaar
             </span>
           </h1>
 
           <Image
-            alt=''
-            className='hw26-hero-layer hw26-hero-layer--fg'
+            alt=""
+            className="hw26-hero-layer hw26-hero-layer--fg"
             fill
             priority
             quality={90}
-            sizes='100vw'
-            src='/hero/ab-hero-fg.png'
+            sizes="100vw"
+            src="/hero/ab-hero-fg.png"
           />
 
           {/* The mark, worn as the tittle of ALIEN's I. Last in the stage and
@@ -2546,27 +2838,27 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
               optics and the image inside it carries the mask, which is the
               same split the wordmark makes between the h1 and the two words.
               See the two blocks in the stylesheet. */}
-          <span className='hw26-hero-tittle'>
+          <span className="hw26-hero-tittle">
             <Image
-              alt=''
-              className='hw26-hero-tittle-img'
+              alt=""
+              className="hw26-hero-tittle-img"
               height={379}
               priority
               quality={90}
-              src='/hero/ab-logo.png'
+              src="/hero/ab-logo.png"
               width={274}
             />
           </span>
         </div>
 
-        <div className='hw26-hero-panel'>
+        <div className="hw26-hero-panel">
           {/* The line above the clock says what is being counted towards.
               The when and the where moved to the ribbon directly below the
               fold, which left this line free to make the claim instead —
               the countdown reads as a countdown either way, and a number
               with a claim attached is worth more than a number with a date
               the reader is about to see again. */}
-          <p className='hw26-label hw26-hero-when'>
+          <p className="hw26-label hw26-hero-when">
             The boldest hardware hackathon in Europe starts in:
           </p>
 
@@ -2587,18 +2879,18 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
       </header>
 
       {/* ---------------- TICKER ---------------- */}
-      <div className='hw26-ticker'>
+      <div className="hw26-ticker">
         {/* Two tracks so the loop has something to follow it in, and several
             runs of the facts inside each so a track is never narrower than
             the screen — see TICKER_RUNS. Everything after the very first run
             is the same four labels again, so only that one is left in the
             accessibility tree; the rest is texture. */}
         {[0, 1].map((copy) => (
-          <div className='hw26-ticker-track' key={copy}>
+          <div className="hw26-ticker-track" key={copy}>
             {Array.from({ length: TICKER_RUNS }, (_, run) => (
               <span
                 aria-hidden={copy > 0 || run > 0}
-                className='hw26-ticker-run'
+                className="hw26-ticker-run"
                 key={run}
               >
                 {TICKER.map((item) => (
@@ -2620,7 +2912,7 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
                     ) : (
                       item.label
                     )}
-                    <span style={{ opacity: 0.4 }}>{' ///'}</span>
+                    <span style={{ opacity: 0.4 }}>{" ///"}</span>
                   </span>
                 ))}
               </span>
@@ -2630,10 +2922,10 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
       </div>
 
       {/* ---------------- THE BRIEF ---------------- */}
-      <section className='hw26-section hw26-section--rain hw26-section--centred'>
+      <section className="hw26-section hw26-section--rain hw26-section--centred">
         <BriefRain />
-        <div className='hw26-inner'>
-          <div className='hw26-head hw26-reveal'>
+        <div className="hw26-inner">
+          <div className="hw26-head hw26-reveal">
             <h2>What is Alien Bazaar?</h2>
           </div>
 
@@ -2662,7 +2954,7 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
               chosen for the one passage on the page that is genuinely read
               rather than scanned, and for a while it was holding four lines;
               two is what that measure is actually for. */}
-          <div className='hw26-brief hw26-reveal'>
+          <div className="hw26-brief hw26-reveal">
             {/* Two lines at this measure, which is 108 characters and not
                 128: `64ch` is resolved against `.hw26-brief`'s own inherited
                 16px and the sentence is set at 17.28, so the column holds
@@ -2670,38 +2962,41 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
                 without naming the event because the head above it just asked
                 the question. */}
             <p>
-              A hardware hackathon at the Hacker Bloc, a 3-storey hacker house in Warsaw. 20 teams, one
-              machine each, locked in for three days. The theme is home automation: lighting, cleaning, security, a robot that brings beer or any interesting problem you find. Show us your most creative solution.
+              A hardware hackathon at the Hacker Bloc, a 3-storey hacker house
+              in Warsaw. 20 teams, one machine each, locked in for three days.
+              The theme is home automation: lighting, cleaning, security, a
+              robot that brings beer or any interesting problem you find. Show
+              us your most creative solution.
             </p>
           </div>
 
           {/* The facts, as a sheet rather than a sentence — see the note
               above, and `.hw26-facts` in the stylesheet for why the band and
               the list are two different shapes rather than one. */}
-          <div className='hw26-facts hw26-reveal'>
-            <dl className='hw26-stats'>
-              <div className='hw26-stat'>
+          <div className="hw26-facts hw26-reveal">
+            <dl className="hw26-stats">
+              <div className="hw26-stat">
                 <dt>Best teams in Europe</dt>
                 <dd>20</dd>
               </div>
-              <div className='hw26-stat'>
+              <div className="hw26-stat">
                 <dt>Hardware units</dt>
                 <dd>20+</dd>
               </div>
-              <div className='hw26-stat'>
+              <div className="hw26-stat">
                 <dt>Days</dt>
                 <dd>3</dd>
               </div>
             </dl>
 
-            <span className='hw26-label hw26-spec-eyebrow'>The setup</span>
+            <span className="hw26-label hw26-spec-eyebrow">The setup</span>
 
-            <dl className='hw26-spec'>
-              <div className='hw26-spec-row'>
+            <dl className="hw26-spec">
+              <div className="hw26-spec-row">
                 <dt>Venue</dt>
                 <dd>Hacker Bloc — Kosiarzy 21B, Warsaw</dd>
               </div>
-              <div className='hw26-spec-row'>
+              <div className="hw26-spec-row">
                 <dt>Time</dt>
                 <dd>25.09.–27.09.2026.</dd>
               </div>
@@ -2723,23 +3018,23 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
                   it is not leaving. The FAQ's `.hw26-link` stays in place
                   because it is a `mailto:` and opens a mail client, not a
                   page. */}
-              <div className='hw26-spec-row'>
+              <div className="hw26-spec-row">
                 <dt>Organized by</dt>
                 <dd>
                   <a
-                    className='hw26-spec-link'
+                    className="hw26-spec-link"
                     href={ORGANIZERS[0].href}
-                    rel='noopener noreferrer'
-                    target='_blank'
+                    rel="noopener noreferrer"
+                    target="_blank"
                   >
                     Epikor
-                  </a>{' '}
-                  and{' '}
+                  </a>{" "}
+                  and{" "}
                   <a
-                    className='hw26-spec-link'
+                    className="hw26-spec-link"
                     href={ORGANIZERS[1].href}
-                    rel='noopener noreferrer'
-                    target='_blank'
+                    rel="noopener noreferrer"
+                    target="_blank"
                   >
                     Hacklab
                   </a>
@@ -2749,7 +3044,7 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
                   break in the pattern and is doing a job: the theme is not a
                   spec of the event, it is what the event is for, and a
                   left/right row would file it beside the printers. */}
-              <div className='hw26-spec-row'>
+              <div className="hw26-spec-row">
                 <dt>Theme</dt>
                 <dd>Home automation</dd>
               </div>
@@ -2786,12 +3081,12 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
           between them is what keeps it texture — behind every section it
           stops being noticed, and a page that is uniformly ruled is a page
           with no ruled sections in it. */}
-      <section className='hw26-section'>
-        <div aria-hidden='true' className='hw26-grid hw26-grid--tall' />
+      <section className="hw26-section" id="hardware">
+        <div aria-hidden="true" className="hw26-grid hw26-grid--tall" />
 
         {/* ---------------- HARDWARE CATEGORIES ---------------- */}
-        <div className='hw26-inner'>
-          <div className='hw26-head hw26-reveal'>
+        <div className="hw26-inner">
+          <div className="hw26-head hw26-reveal">
             <h2>Hardware categories</h2>
           </div>
 
@@ -2801,26 +3096,26 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
               the whole list under a heading and not to any cell in it. Set at
               the brief's size, because it is the brief's kind of sentence —
               prose about the event, not a caption on a panel. */}
-          <p className='hw26-head-intro hw26-reveal'>
+          <p className="hw26-head-intro hw26-reveal">
             Each team can reserve 1 hardware unit
           </p>
 
           {RIG_GROUPS.map((group) => (
-            <div className='hw26-rig-group' key={group.label}>
+            <div className="hw26-rig-group" key={group.label}>
               {/* The mark before the name is punctuation and not a word — see
                   the note on `.hw26-cat-mark`. Hidden from the tree for the
                   same reason the timeline's ordinals are: a reader on a screen
                   reader is given the group's name, and "slash slash slash
                   Robot arms" is the decoration read out as if it were part of
                   it. */}
-              <h3 className='hw26-cat hw26-reveal'>
-                <span aria-hidden='true' className='hw26-cat-mark'>
+              <h3 className="hw26-cat hw26-reveal">
+                <span aria-hidden="true" className="hw26-cat-mark">
                   ///
-                </span>{' '}
+                </span>{" "}
                 {group.label}
               </h3>
 
-              <div className='hw26-rigs'>
+              <div className="hw26-rigs">
                 {group.items.map((item, i) => (
                   <RigCell item={item} key={`${item.name}-${i}`} order={i} />
                 ))}
@@ -2845,19 +3140,19 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
             boundary was carrying: two sections meeting put two `padding-block`s
             between the last card and this head, and padding does not collapse,
             so the modifier owes the pair back. */}
-        <div className='hw26-inner hw26-inner--stacked'>
-          <div className='hw26-head hw26-reveal'>
+        <div className="hw26-inner hw26-inner--stacked">
+          <div className="hw26-head hw26-reveal">
             <h2>Add-ons</h2>
           </div>
 
           {ADDON_GROUPS.map((group) => (
-            <div className='hw26-rig-group' key={group.label}>
+            <div className="hw26-rig-group" key={group.label}>
               {/* Same mark as the categories above, for the same reason they
                   share the heading level: these are the same object. */}
-              <h3 className='hw26-cat hw26-reveal'>
-                <span aria-hidden='true' className='hw26-cat-mark'>
+              <h3 className="hw26-cat hw26-reveal">
+                <span aria-hidden="true" className="hw26-cat-mark">
                   ///
-                </span>{' '}
+                </span>{" "}
                 {group.label}
               </h3>
 
@@ -2868,10 +3163,10 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
                   optional for the group that arrives without a condition on
                   it rather than because either of these is that group. */}
               {group.intro ? (
-                <p className='hw26-cat-intro hw26-reveal'>{group.intro}</p>
+                <p className="hw26-cat-intro hw26-reveal">{group.intro}</p>
               ) : null}
 
-              <div className='hw26-rigs'>
+              <div className="hw26-rigs">
                 {group.items.map((item, i) => (
                   <RigCell item={item} key={item.name} order={i} />
                 ))}
@@ -2886,14 +3181,18 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
           question it answers: you have just been told there is one machine
           per team and a finite sheet, and the next thing worth knowing is by
           when. */}
-      <section className='hw26-section hw26-tl-section' ref={timeline.section}>
+      <section
+        className="hw26-section hw26-tl-section"
+        id="timeline"
+        ref={timeline.section}
+      >
         {/* The frame that sticks. It is an ordinary block until the driver in
             useTimelinePin decides otherwise, which is why a phone, a reader
             under reduced motion and a page with no script all get the plain
             section and none of the machinery. */}
-        <div className='hw26-tl-pin'>
-          <div className='hw26-inner'>
-            <div className='hw26-head hw26-reveal'>
+        <div className="hw26-tl-pin">
+          <div className="hw26-inner">
+            <div className="hw26-head hw26-reveal">
               <h2>Timeline</h2>
             </div>
 
@@ -2902,7 +3201,7 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
                 pin is not running this is what the reader can push to reach the
                 far end. It sits inside `.hw26-inner` so the line and the
                 heading above it start on the same column at every width. */}
-            <div className='hw26-tl-port' ref={timeline.port}>
+            <div className="hw26-tl-port" ref={timeline.port}>
               {/* One grid, two subgrids: the bracket strip and the stops share
                   a track, which is the whole reason a bracket can be placed by
                   naming the stops it spans instead of by measuring anything —
@@ -2914,27 +3213,27 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
                   the parent grid and TIMELINE cannot disagree about how many
                   tracks there are. */}
               <div
-                className='hw26-tl-track'
+                className="hw26-tl-track"
                 ref={timeline.track}
-                style={{ '--tl-stops': TIMELINE.length } as CSSProperties}
+                style={{ "--tl-stops": TIMELINE.length } as CSSProperties}
               >
                 {/* The brackets. `aria-hidden` because each label is an
                     annotation on a shape — read out of the line it brackets it
                     is a fragment, and the stops themselves already carry the
                     whole sequence in order. */}
-                <div aria-hidden='true' className='hw26-tl-braces'>
+                <div aria-hidden="true" className="hw26-tl-braces">
                   {TIMELINE_SPANS.map((span) => (
                     <div
-                      className='hw26-tl-brace'
+                      className="hw26-tl-brace"
                       key={span.label}
                       style={
                         {
-                          '--tl-span-from': span.from,
-                          '--tl-span-to': span.to,
+                          "--tl-span-from": span.from,
+                          "--tl-span-to": span.to,
                         } as CSSProperties
                       }
                     >
-                      <span className='hw26-label hw26-tl-brace-label'>
+                      <span className="hw26-label hw26-tl-brace-label">
                         {span.label}
                       </span>
                     </div>
@@ -2943,10 +3242,10 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
 
                 {/* An ordered list, because that is what this is: five things in
                     an order that matters, and the order is the content. */}
-                <ol className='hw26-tl-items'>
+                <ol className="hw26-tl-items">
                   {TIMELINE.map((stop, i) => (
                     <li
-                      className={`hw26-tl-item${stop.live ? ' hw26-tl-item--live' : ''}`}
+                      className={`hw26-tl-item${stop.live ? " hw26-tl-item--live" : ""}`}
                       key={stop.when + stop.what}
                     >
                       {/* The ordinal, spelled out because the list is not
@@ -2954,10 +3253,10 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
                           `ol` already announces the position, so the glyph
                           would be said twice. */}
                       <span
-                        aria-hidden='true'
-                        className='hw26-label hw26-tl-step'
+                        aria-hidden="true"
+                        className="hw26-label hw26-tl-step"
                       >
-                        {String(i + 1).padStart(2, '0')}
+                        {String(i + 1).padStart(2, "0")}
                       </span>
                       <span className='hw26-tl-when'>{stop.when}</span>
                       <div className='hw26-tl-body'>
@@ -2986,9 +3285,9 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
           the machines, the add-ons, the dates — and everything below is the
           people behind it and the way in. The leftovers a reader is still
           holding after the timeline are exactly what this list is. */}
-      <section className='hw26-section'>
-        <div className='hw26-inner'>
-          <div className='hw26-head hw26-reveal'>
+      <section className="hw26-section" id="faq">
+        <div className="hw26-inner">
+          <div className="hw26-head hw26-reveal">
             <h2>FAQ</h2>
           </div>
 
@@ -2997,17 +3296,17 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
       </section>
 
       {/* ---------------- ORGANIZERS & SPONSORS ---------------- */}
-      <section className='hw26-section'>
-        <div aria-hidden='true' className='hw26-grid' />
-        <div className='hw26-inner'>
-          <div className='hw26-head hw26-reveal'>
+      <section className="hw26-section" id="organizers">
+        <div aria-hidden="true" className="hw26-grid" />
+        <div className="hw26-inner">
+          <div className="hw26-head hw26-reveal">
             <h2>Partners &amp; Organizers</h2>
           </div>
 
-          <div className='hw26-subhead hw26-reveal'>
-            <span className='hw26-label hw26-label--mint'>Sponsors</span>
-            <span className='hw26-poweredby-rule' />
-            <a className='hw26-label hw26-label--mint' href='/sponsor'>
+          <div className="hw26-subhead hw26-reveal">
+            <span className="hw26-label hw26-label--mint">Sponsors</span>
+            <span className="hw26-poweredby-rule" />
+            <a className="hw26-sponsor-cta" href="/sponsor">
               Become a sponsor →
             </a>
           </div>
@@ -3019,37 +3318,37 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
               a banner rather than as the first name under a heading that will
               take more. The container shrinks; see `--one` in the
               stylesheet. */}
-          <div className='hw26-sponsors-lead hw26-sponsors-lead--one hw26-reveal'>
+          <div className="hw26-sponsors-lead hw26-sponsors-lead--one hw26-reveal">
             {SPONSORS.map((s) => (
               <a
                 aria-label={s.name}
-                className='hw26-sponsor-lead'
+                className="hw26-sponsor-lead"
                 href={s.href}
                 key={s.name}
-                rel='noopener noreferrer'
-                target='_blank'
+                rel="noopener noreferrer"
+                target="_blank"
               >
                 <img alt={s.name} className={s.mark} src={s.src} />
               </a>
             ))}
           </div>
 
-          <div className='hw26-subhead hw26-reveal'>
-            <span className='hw26-label hw26-label--mint'>
+          <div className="hw26-subhead hw26-reveal">
+            <span className="hw26-label hw26-label--mint">
               Ecosystem Partners
             </span>
-            <span className='hw26-poweredby-rule' />
+            <span className="hw26-poweredby-rule" />
           </div>
 
           {/* One row of five, and it used to be two rows of two and three.
               The split was a tier: NVIDIA and ESRA took a plate twice the
-              linear size of the other three, and the stylesheet carried a
+              linear size of the partners below, and the stylesheet carried a
               paragraph of arithmetic making the small row's three columns land
               exactly on the large row's two so the two rows read as one block
               anyway. That is the tell. A layout that has to be engineered back
               into looking like one row is one row with a rank drawn through
               it, and the rank was the page's own invention — the organizers
-              publish these five under one heading. So: one grid, five tiles,
+              publish these partners under one heading. So: one grid, five tiles,
               one size, and the arithmetic goes with the thing it was
               reconciling.
 
@@ -3066,26 +3365,26 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
               partner names, so React moves the existing nodes rather than
               rebuilding them — which matters because the reveal observer has
               already been handed these elements. */}
-          <div className='hw26-sponsors-lead hw26-sponsors-lead--eco hw26-reveal'>
+          <div className="hw26-sponsors-lead hw26-sponsors-lead--eco hw26-reveal">
             {[LEAD_SPONSORS[0], LEAD_SPONSORS[1], ...ecosystem].map((s) => (
               <a
                 aria-label={s.name}
-                className='hw26-sponsor-lead'
+                className="hw26-sponsor-lead"
                 href={s.href}
                 key={s.name}
-                rel='noopener noreferrer'
-                target='_blank'
+                rel="noopener noreferrer"
+                target="_blank"
               >
                 <img alt={s.name} className={s.mark} src={s.src} />
               </a>
             ))}
           </div>
 
-          <div className='hw26-subhead hw26-reveal'>
-            <span className='hw26-label hw26-label--mint'>
+          <div className="hw26-subhead hw26-reveal">
+            <span className="hw26-label hw26-label--mint">
               Hardware partners
             </span>
-            <span className='hw26-poweredby-rule' />
+            <span className="hw26-poweredby-rule" />
           </div>
 
           {/* The wall's smaller tile, and the three rows that use it are the
@@ -3093,49 +3392,64 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
               `SponsorTile` above.
 
               Dealt again per visit, and unlike the ecosystem row this one has a
-              layout stake in how. Seven tiles are seven across or nothing —
-              seven is prime — so every narrower count leaves one track over,
-              and the stylesheet closes the short last row by spanning
-              `.hw26-sponsor:last-child` across the leftover track. `:last-child`
-              is a claim about DOM position, not about where a tile ended up on
-              screen — which rules out the tempting implementation, shuffling by
-              handing each tile a CSS `order`. That leaves the DOM-last tile
-              sitting somewhere in the middle of the grid wearing a double-width
-              span, and the actual last tile short. Reordering the array instead
-              moves the nodes themselves, and since grid auto-placement follows
-              DOM order the visually-last tile and the DOM-last tile stay the
-              same element under every permutation, so the span lands where it
-              is meant to.
+              layout stake in how. Nine tiles divide cleanly into the wall's
+              nine- and three-column layouts. On phones the final tile closes
+              the one leftover track. Reordering the array instead of using CSS
+              `order` also keeps visual and DOM order aligned.
 
               `key` is the partner name, which is unique here, so React reorders
               the existing DOM nodes rather than tearing them down and building
               new ones — and the reveal observer in `useReveal` is already
               holding these exact elements. */}
-          <div className='hw26-sponsors-rest hw26-reveal'>
+          <div className="hw26-sponsors-rest hw26-reveal">
             {hardware.map((p) => (
               <SponsorTile key={p.name} partner={p} />
             ))}
           </div>
 
-          <div className='hw26-subhead hw26-reveal'>
-            <span className='hw26-label hw26-label--mint'>Media partners</span>
-            <span className='hw26-poweredby-rule' />
+          <div className="hw26-subhead hw26-reveal">
+            <span className="hw26-label hw26-label--mint">Media partners</span>
+            <span className="hw26-poweredby-rule" />
           </div>
 
-          {/* One tile, at the width a tile has in the row above — see the
-              `--solo` note in the stylesheet. A group of one stretched across
-              the sheet would read as a lead partner filed under the wrong
-              heading; at the wall's own tile width it reads as what it is,
-              which is the first name under a heading that will take more. */}
-          <div className='hw26-sponsors-rest hw26-sponsors-rest--solo hw26-reveal'>
+          <div className="hw26-sponsors-lead hw26-sponsors-lead--one hw26-reveal">
             {MEDIA_PARTNERS.map((p) => (
-              <SponsorTile key={p.name} partner={p} />
+              <a
+                aria-label={p.name}
+                className="hw26-sponsor-lead"
+                href={p.href}
+                key={p.name}
+                rel="noopener noreferrer"
+                target="_blank"
+              >
+                <img alt={p.name} className={p.mark} src={p.src} />
+              </a>
             ))}
           </div>
 
-          <div className='hw26-subhead hw26-reveal'>
-            <span className='hw26-label hw26-label--mint'>Organizers</span>
-            <span className='hw26-poweredby-rule' />
+          <div className="hw26-subhead hw26-reveal">
+            <span className="hw26-label hw26-label--mint">Prize partners</span>
+            <span className="hw26-poweredby-rule" />
+          </div>
+
+          <div className="hw26-sponsors-lead hw26-sponsors-lead--one hw26-reveal">
+            {PRIZE_PARTNERS.map((p) => (
+              <a
+                aria-label={p.name}
+                className="hw26-sponsor-lead"
+                href={p.href}
+                key={p.name}
+                rel="noopener noreferrer"
+                target="_blank"
+              >
+                <img alt={p.name} className={p.mark} src={p.src} />
+              </a>
+            ))}
+          </div>
+
+          <div className="hw26-subhead hw26-reveal">
+            <span className="hw26-label hw26-label--mint">Organizers</span>
+            <span className="hw26-poweredby-rule" />
           </div>
 
           {/* The whole tile is the link, not the mark inside it. A logo in a
@@ -3158,19 +3472,19 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
               page still opens in place. `rel='noopener noreferrer'` comes with
               it and is not optional: an opened tab can otherwise reach back
               through `window.opener` and repoint the one it came from. */}
-          <div className='hw26-sponsors-lead hw26-reveal'>
+          <div className="hw26-sponsors-lead hw26-reveal">
             {ORGANIZERS.map((org) => (
               <a
                 aria-label={org.name}
-                className='hw26-sponsor-lead'
+                className="hw26-sponsor-lead"
                 href={org.href}
                 key={org.name}
-                rel='noopener noreferrer'
-                target='_blank'
+                rel="noopener noreferrer"
+                target="_blank"
               >
                 <img
                   alt={org.name}
-                  className={`hw26-org-logo${org.mark ? ` ${org.mark}` : ''}`}
+                  className={`hw26-org-logo${org.mark ? ` ${org.mark}` : ""}`}
                   src={org.src}
                 />
               </a>
@@ -3196,5 +3510,5 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
       {/* ---------------- END PLATE ---------------- */}
       <Endplate hackathon={hackathon} />
     </div>
-  )
+  );
 }

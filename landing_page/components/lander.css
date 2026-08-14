@@ -97,6 +97,299 @@ html[data-theme='light'] .hw26 {
   --hw-pine: #0a3d28;
 }
 
+/* -------------------------------------------------------------
+   Full-screen navigation
+   ------------------------------------------------------------- */
+
+.hw26-menu-trigger {
+  position: fixed;
+  z-index: 1002;
+  top: clamp(1.25rem, 4vw, 3rem);
+  right: var(--hw-gutter);
+  width: 58px;
+  height: 58px;
+  padding: 0;
+  border: 0;
+  background: var(--hw-mint);
+  color: var(--hw-mint);
+  cursor: pointer;
+  clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 12px 100%, 0 calc(100% - 12px));
+  isolation: isolate;
+  transition:
+    background 220ms var(--hw-ease),
+    color 220ms var(--hw-ease),
+    transform 220ms var(--hw-ease);
+}
+
+.hw26-menu-trigger::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: 1px;
+  background: color-mix(in srgb, var(--hw-void) 94%, transparent);
+  clip-path: polygon(0 0, calc(100% - 11.4px) 0, 100% 11.4px, 100% 100%, 11.4px 100%, 0 calc(100% - 11.4px));
+  transition: background 220ms var(--hw-ease);
+}
+
+.hw26-menu-trigger:hover {
+  color: var(--hw-snow);
+  transform: translate(-2px, -2px);
+}
+
+.hw26-menu-trigger:hover::before {
+  background: color-mix(in srgb, var(--hw-mint) 14%, var(--hw-void));
+}
+
+.hw26-menu-trigger:focus-visible {
+  outline: 2px solid var(--hw-snow);
+  outline-offset: 4px;
+}
+
+.hw26-menu-trigger span {
+  position: absolute;
+  left: 50%;
+  width: 25px;
+  height: 2px;
+  background: currentColor;
+  transform: translateX(-50%);
+  transform-origin: center;
+  transition:
+    top 220ms var(--hw-ease),
+    transform 220ms var(--hw-ease),
+    opacity 160ms ease;
+}
+
+.hw26-menu-trigger span:nth-child(1) {
+  top: 19px;
+}
+
+.hw26-menu-trigger span:nth-child(2) {
+  top: 27px;
+}
+
+.hw26-menu-trigger span:nth-child(3) {
+  top: 35px;
+}
+
+.hw26-menu-trigger--open span:nth-child(1),
+.hw26-menu-trigger--open span:nth-child(3) {
+  top: 27px;
+}
+
+.hw26-menu-trigger--open span:nth-child(1) {
+  transform: translateX(-50%) rotate(45deg);
+}
+
+.hw26-menu-trigger--open span:nth-child(2) {
+  opacity: 0;
+  transform: translateX(-50%) scaleX(0);
+}
+
+.hw26-menu-trigger--open span:nth-child(3) {
+  transform: translateX(-50%) rotate(-45deg);
+}
+
+.hw26-menu-overlay {
+  position: fixed;
+  z-index: 1001;
+  inset: 0;
+  overflow-y: auto;
+  background: rgba(3, 3, 3, 0.98);
+  color: #fff;
+  animation: hw26-menu-in 360ms var(--hw-ease) both;
+  isolation: isolate;
+}
+
+@keyframes hw26-menu-in {
+  from {
+    opacity: 0;
+    clip-path: inset(0 0 100% 0);
+  }
+  to {
+    opacity: 1;
+    clip-path: inset(0);
+  }
+}
+
+.hw26-menu-grid {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  background-image:
+    linear-gradient(to right, rgba(130, 245, 198, 0.07) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(130, 245, 198, 0.07) 1px, transparent 1px);
+  background-size: 88px 88px;
+  -webkit-mask-image: radial-gradient(circle at 78% 26%, #000, transparent 72%);
+  mask-image: radial-gradient(circle at 78% 26%, #000, transparent 72%);
+}
+
+.hw26-menu-shell {
+  width: min(100%, 1440px);
+  min-height: 100%;
+  margin-inline: auto;
+  padding: clamp(1.25rem, 3vh, 2.25rem) var(--hw-gutter);
+  display: grid;
+  grid-template-rows: 1fr auto;
+  gap: clamp(1.5rem, 4vh, 3rem);
+}
+
+.hw26-menu-main {
+  align-self: center;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(0.75rem, 1.8vh, 1.25rem);
+  width: 100%;
+  min-height: 0;
+}
+
+.hw26-menu-links {
+  align-self: stretch;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1px;
+  border: 1px solid var(--hw-line-hi);
+  background: var(--hw-line-hi);
+}
+
+.hw26-menu-links a {
+  display: flex;
+  align-items: baseline;
+  gap: clamp(1rem, 3vw, 3rem);
+  padding: clamp(0.55rem, 1.5vh, 1.2rem) 0;
+  border-bottom: 1px solid var(--hw-line-hi);
+  color: var(--hw-snow);
+  font-family: var(--font-orbitron), sans-serif;
+  font-size: clamp(2.1rem, 6.8vw, 6.5rem);
+  font-weight: 900;
+  line-height: 0.95;
+  letter-spacing: -0.04em;
+  text-decoration: none;
+  text-transform: uppercase;
+  transition:
+    color 220ms var(--hw-ease),
+    padding-left 220ms var(--hw-ease);
+}
+
+.hw26-menu-links a:first-child {
+  border-top: 1px solid var(--hw-line-hi);
+}
+
+.hw26-menu-links a > span {
+  min-width: 2.5ch;
+  color: var(--hw-mint);
+  font-family: var(--font-jetbrains-mono), monospace;
+  font-size: clamp(0.65rem, 1vw, 0.85rem);
+  font-weight: 500;
+  letter-spacing: 0.12em;
+}
+
+.hw26-menu-links a:hover,
+.hw26-menu-links a:focus-visible {
+  color: var(--hw-mint);
+  padding-left: 1.25rem;
+  outline: 0;
+}
+
+.hw26-menu-main .hw26-menu-links a {
+  flex: none;
+  align-items: center;
+  justify-content: flex-start;
+  min-height: clamp(78px, 13vh, 128px);
+  padding-inline: clamp(0.5rem, 1.5vw, 1.25rem);
+  border: 0;
+  background: rgba(3, 3, 3, 0.96);
+  font-size: clamp(1.8rem, 4.5vw, 4.8rem);
+}
+
+.hw26-menu-main .hw26-menu-links a:first-child {
+  border: 0;
+}
+
+.hw26-menu-actions {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1px;
+  border: 1px solid var(--hw-line-hi);
+  background: var(--hw-line-hi);
+}
+
+/* The world map now owns a page instead of filling the navigation overlay.
+   Its frame remains the only outlined object in the composition, while the
+   responsive assets keep Europe legible on a portrait phone and trim the
+   unused vertical field on a short landscape screen. */
+.hw26-partners-map {
+  position: relative;
+  min-width: 0;
+  padding: clamp(2rem, 4vw, 3.25rem) clamp(0.5rem, 1.5vw, 1.25rem)
+    clamp(0.5rem, 1.5vw, 1.25rem);
+  background: rgba(3, 3, 3, 0.96);
+  border: 1px solid var(--hw-line-hi);
+  overflow: hidden;
+}
+
+.hw26-partners-map-meta {
+  position: absolute;
+  z-index: 1;
+  top: clamp(0.65rem, 1.3vw, 1rem);
+  left: clamp(0.75rem, 1.5vw, 1.25rem);
+  right: clamp(0.75rem, 1.5vw, 1.25rem);
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  color: var(--hw-silver);
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.hw26-partners-map picture,
+.hw26-partners-map img {
+  display: block;
+  width: 100%;
+}
+
+.hw26-partners-map img {
+  height: auto;
+}
+
+.hw26-menu-action {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  min-height: 76px;
+  padding: 1.2rem 1.5rem;
+  background: #0f1110;
+  color: var(--hw-snow);
+  font-family: var(--font-orbitron), sans-serif;
+  font-size: clamp(0.75rem, 1.2vw, 0.95rem);
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-decoration: none;
+  text-transform: uppercase;
+  transition:
+    background 220ms var(--hw-ease),
+    color 220ms var(--hw-ease);
+}
+
+.hw26-menu-action--primary {
+  background: var(--hw-mint);
+  color: var(--hw-on-mint);
+}
+
+.hw26-menu-action:hover,
+.hw26-menu-action:focus-visible {
+  background: var(--hw-steel-hi);
+  color: var(--hw-mint);
+  outline: 0;
+}
+
+.hw26-menu-action--primary:hover,
+.hw26-menu-action--primary:focus-visible {
+  background: var(--hw-snow);
+  color: var(--hw-on-mint);
+}
+
 .hw26 *,
 .hw26 *::before,
 .hw26 *::after {
@@ -2138,6 +2431,45 @@ button.hw26-apply {
   background: var(--hw-mint);
 }
 
+/* The shell is deliberately not clipped. The card inside it has to keep
+   `overflow: hidden` for its photo and chamfer, so any shadow drawn on that
+   same element is cut away before it reaches the page. */
+.hw26-rig-shell {
+  position: relative;
+  min-width: 0;
+}
+
+.hw26-rig-shell > .hw26-rig {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+}
+
+/* The filter belongs to the unclipped wrapper, not the clipped card or a
+   clipped pseudo-element. It therefore reads the card's chamfered alpha
+   silhouette and is still free to paint the bloom beyond that silhouette. */
+.hw26-rig-shell--accent {
+  filter:
+    drop-shadow(0 0 7px color-mix(in srgb, var(--hw-mint) 56%, transparent))
+    drop-shadow(0 0 18px color-mix(in srgb, var(--hw-mint) 34%, transparent))
+    drop-shadow(0 0 34px color-mix(in srgb, var(--hw-mint) 18%, transparent));
+}
+
+.hw26-rig--accent {
+  background: var(--hw-line);
+  box-shadow: none;
+}
+
+/* Preserve the standard interaction: Tbot glows at rest, and its ordinary
+   one-pixel card edge still turns mint on hover or touch-focus. */
+.hw26-rig--accent:is(:hover, .hw26-rig--active) {
+  background: var(--hw-mint);
+}
+
+.hw26-rig--accent::before {
+  background: var(--hw-steel);
+}
+
 /* Inset and clipped to match the fill, so the photo stops at the outline
    rather than tinting it. Paints above `::before` — same stacking level,
    later in the box tree.
@@ -2243,6 +2575,12 @@ button.hw26-apply {
    same reason. */
 .hw26-rig--person {
   justify-content: flex-end;
+}
+
+/* Team-card labels sit below a portrait rather than naming a machine, so they
+   use a slightly quieter measure than the inventory names they inherit. */
+.hw26-rig--person .hw26-rig-name {
+  font-size: clamp(1.75rem, 4.5vw, 3.4rem);
 }
 
 /* Colour, kept. The plate treatment desaturates to three quarters grey at rest
@@ -3685,9 +4023,7 @@ button.hw26-apply {
   margin: 0 0 1rem;
 }
 
-/* The "Become a sponsor" link on the partners wall — same label face as
-   the tier eyebrow, mint, no underline. Hover brightens to snow so it
-   reads as interactive without inventing a second accent. */
+/* The small text links used by partner subheads. */
 .hw26-subhead a.hw26-label {
   text-decoration: none;
   flex-shrink: 0;
@@ -3701,6 +4037,33 @@ button.hw26-apply {
 .hw26-subhead a.hw26-label:focus-visible {
   outline: 1px solid var(--hw-mint);
   outline-offset: 4px;
+}
+
+/* The sponsorship action is deliberately louder than the tier labels: this
+   is the second conversion point requested for the partner wall. */
+.hw26-sponsor-cta {
+  flex-shrink: 0;
+  padding: 0.7rem 1rem;
+  background: var(--hw-mint);
+  color: var(--hw-on-mint);
+  font-family: var(--font-orbitron), sans-serif;
+  font-size: clamp(0.62rem, 0.8vw, 0.72rem);
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-decoration: none;
+  text-transform: uppercase;
+  clip-path: polygon(0 0, calc(100% - 9px) 0, 100% 9px, 100% 100%, 9px 100%, 0 calc(100% - 9px));
+  transition:
+    background 180ms var(--hw-ease),
+    transform 180ms var(--hw-ease);
+}
+
+.hw26-sponsor-cta:hover,
+.hw26-sponsor-cta:focus-visible {
+  background: var(--hw-snow);
+  color: var(--hw-on-mint);
+  transform: translate(-2px, -2px);
+  outline: 0;
 }
 
 .hw26-sponsors-lead + .hw26-subhead,
@@ -3767,9 +4130,9 @@ button.hw26-apply {
    what it should have been. The tier was the page's, not the organizers'.
 
    Five columns, stated rather than fitted. `auto-fit` on the base rule's 280px
-   track happens to give five at 1440, and would give a different number at any
-   other width — and every count that is not five leaves an empty track, which
-   on this container is not empty: the gaps are the `--hw-line` background
+   track would give a different number at different widths and can leave an
+   empty track, which on this container is not empty: the gaps are the
+   `--hw-line` background
    showing through, so a short row comes out as a lit rectangle the size of a
    plate. Five children, five tracks, no leftover.
 
@@ -3816,12 +4179,8 @@ button.hw26-apply {
   width: calc((100% - 3px) / 2 + 2px);
 }
 
-/* Five is only clean at five and at one — every count between them leaves a
-   track over, and a track over on this container is a lit plate. So each step
-   down closes its own leftover by spanning the last cell into it: three across
-   puts 1-2-3 on the first row and lets the fourth take two tracks so the second
-   row is full, and two across does the same with the fifth. One across has no
-   leftover to close, and the spans are handed back on the way down. */
+/* Five leaves one track over at both responsive counts, so the last cell closes
+   the short row instead of leaving a lit empty plate. */
 @media (max-width: 1100px) {
   .hw26-sponsors-lead--eco {
     grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -3860,7 +4219,7 @@ button.hw26-apply {
    marks are `contain`ed into it. What one across actually bought was a column
    of full-bleed plates with a mark floating in the middle of each, which reads
    as five banners rather than as one wall. So the 720px arrangement runs all
-   the way down and the spans stay with it. */
+   the way down. */
 
 /* The Organizers row, held at two across for the same reason.
  *
@@ -3979,7 +4338,7 @@ html[data-theme='light'] .hw26-sponsor-lead:hover {
    symbol and the wordmark are stacked, so half its height is spent on each and
    neither reads at the full figure.
 
-   Re-decided for the five-across row, not scaled into it. At the old lead
+   Re-decided for the ecosystem row, not scaled into it. At the old lead
    tile's ~532px this ran 98px tall and covered about 11,500px² of ink, against
    5,000–6,800 for the three it now stands beside; in a 264px cell that is the
    one mark in the row asserting a rank the row was flattened to stop
@@ -3996,7 +4355,7 @@ html[data-theme='light'] .hw26-sponsor-lead:hover {
    All of them are the Ecosystem row's figures now, and prelint's is the solo
    Sponsors cell's. Each was re-decided against the cell it sits in rather than
    scaled into it — a fifth of the sheet is not a half of it made smaller. At
-   1440 a track here gives a mark 177px of clear space, against the ~532px the
+   1440 a track here gives a mark about 199px of clear space, against the ~532px the
    two-column lead row used to give NVIDIA and ESRA, which is why those two
    moved furthest when the two tiers became one. */
 
@@ -4022,6 +4381,21 @@ html[data-theme='light'] .hw26-sponsor-lead:hover {
    horizontal mark this wide does not have. */
 .hw26-sponsor-lead img.hw26-mark--prelint {
   height: clamp(34px, 4.2vw, 50px);
+}
+
+/* Media and prize partners use the same half-sheet lead plate as Sponsors.
+   Both marks are especially wide, so their height stays below the generic
+   lead figure while the larger card gives them the intended visual weight. */
+.hw26-sponsor-lead img.hw26-mark--przygody {
+  height: clamp(42px, 4.2vw, 56px);
+  max-width: 100%;
+  object-fit: contain;
+}
+
+.hw26-sponsor-lead img.hw26-mark--chronotap {
+  height: clamp(28px, 3vw, 38px);
+  max-width: 100%;
+  object-fit: contain;
 }
 
 /* The one mark on this wall that is a plate: cropped to the lockup on its own
@@ -4051,64 +4425,25 @@ html[data-theme='light'] .hw26-sponsor-lead:hover {
   height: clamp(34px, 4vw, 50px);
 }
 
-/* Five letters overlapped into one monogram and nothing else — no wordmark, no
-   tagline, and taller than it is wide, which no other mark on this wall is.
-   Height is the wrong axis to match it on: matched to its neighbours it would
-   come out under half their width. It stays the tallest figure in the tier and
-   is still the narrowest object in it, which is what a portrait mark among
-   landscape ones costs. */
-.hw26-sponsor-lead img.hw26-mark--sprtk {
-  height: clamp(56px, 6.6vw, 84px);
-}
-
-/* The gap between tiles is the container showing through — so an unfilled
-   track at the end of the last row is not empty space, it is a lit rectangle
-   the size of a tile, and every column count this row is drawn at has to
-   divide the tiles exactly.
-
-   At five it never did: five is prime, so every count between one and five
-   left a hole, and the row closed them by spanning the last tile across
-   whatever was left over. MCHTR made six, and six is the friendliest number
-   this wall could have been handed — 6, 3, 2 and 1 all divide it — so for as
-   long as the wall was six the spans were gone and the count was simply
-   stated per breakpoint.
-
-   Politechnika Wrocławska makes seven, and seven is prime, so the spans are
-   back and the counts have moved with them. Nothing divides seven except
-   seven and one, which rules out keeping six across — that leaves a single
-   tile alone on the second row with five lit rectangles beside it, the exact
-   failure this rule exists to prevent, and no span can close it that does not
-   draw one partner across the whole sheet. So the wide layout is seven across
-   and every narrower one leaves a hole of exactly one track, which the last
-   tile closes by taking two.
-
-   `:last-child` is a claim about DOM position, not about where a tile ended
-   up on screen — which is why the shuffle reorders the array and never hands
-   out a CSS `order`. Grid auto-placement follows DOM order, so the DOM-last
-   tile and the visually-last tile are the same element under every
-   permutation and the span lands where it is meant to. See the note beside
-   the deal in lander.tsx.
-
-   The breakpoints are set by the narrowest tile the count produces, not by
-   round numbers. Seven across at 1200px is a 156px tile, which is the
-   tightest measure the marks below are tuned against; below that the row goes
-   to four and the tile jumps back to 269px. */
+/* The gap between tiles is the container showing through, so the wide and
+   tablet column counts divide the nine partners exactly. */
 .hw26-sponsors-rest {
   display: grid;
-  grid-template-columns: repeat(7, minmax(0, 1fr));
+  grid-template-columns: repeat(9, minmax(0, 1fr));
   gap: 1px;
   background: var(--hw-line);
   border: 1px solid var(--hw-line);
 }
 
-/* The span, written once and switched off where it is not needed. The solo
-   row is excluded outright: it holds a single tile, which is also its
-   `:last-child`, and a one-tile row on a one-track grid would be told to take
-   two tracks it does not have. */
-@media (max-width: 1200px) {
-  /* 4 across: four, then three and the leftover. */
+@media (max-width: 1580px) {
   .hw26-sponsors-rest {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 720px) {
+  .hw26-sponsors-rest {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .hw26-sponsors-rest:not(.hw26-sponsors-rest--solo) > .hw26-sponsor:last-child {
@@ -4116,41 +4451,29 @@ html[data-theme='light'] .hw26-sponsor-lead:hover {
   }
 }
 
-/* 2 across: three full rows, then the last tile across both tracks. */
-@media (max-width: 720px) {
-  .hw26-sponsors-rest {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-
-/* Two across is the floor here too — there is no step down to one. Seven tiles
-   on two tracks is three full rows and a seventh that takes both, which is the
-   same close the span performs at every other count and leaves no lit track;
-   one across left every tile the width of the phone, which is what this change
-   was asked to stop. The span therefore stays live all the way down, and the
-   solo row keeps its own exclusion for the reason it always had. */
+/* Two across is the floor here too: it keeps every mobile row balanced without
+   turning each partner into a full-width banner. */
 
 /* A row holding one tile. Media partners and Sponsors are a name each so far,
    and both of the obvious things to do with that are wrong: a full-width plate
    turns a small tile into a lead cell nobody was given, and one tile in a
-   five-track grid leaves four lit rectangles beside it.
+   nine-track grid leaves eight lit rectangles beside it.
 
-   So the row is one track wide instead of seven, and the track is exactly the
+   So the row is one track wide instead of nine, and the track is exactly the
    width it would have had in the rows above — the container shrinks, not the
    tile. `100%` is the sheet, `2px` is the container's own two borders and the
-   `6px` is the six 1px gaps between seven tiles, so the arithmetic is the
+   `8px` is the eight 1px gaps between nine tiles, so the arithmetic is the
    same one the grid does and the tile lands on the column above it. It tracks
-   the wall's count, and has now twice: six when MCHTR landed, seven with
-   Politechnika Wrocławska. A solo tile still cut to a sixth of the sheet
+   the wall's count. A solo tile still cut to a ninth of the sheet
    would sit wider than every tile it is meant to line up with. */
 .hw26-sponsors-rest--solo {
   grid-template-columns: minmax(0, 1fr);
-  width: calc((100% - 2px - 6px) / 7 + 2px);
+  width: calc((100% - 2px - 8px) / 9 + 2px);
 }
 
-@media (max-width: 1200px) {
+@media (max-width: 1580px) {
   .hw26-sponsors-rest--solo {
-    width: calc((100% - 2px - 3px) / 4 + 2px);
+    width: calc((100% - 2px - 2px) / 3 + 2px);
   }
 }
 
@@ -4232,6 +4555,19 @@ html[data-theme='light'] .hw26-sponsor--static:hover {
   width: auto;
   max-width: 100%;
   object-fit: contain;
+}
+
+/* Lute's supplied lockup is wide and airy, so the base wordmark height makes
+   it read smaller than its neighbours. Give it more vertical measure while
+   preserving the artwork's aspect ratio. */
+.hw26-sponsor img.hw26-mark--lute {
+  height: clamp(46px, 4vw, 56px);
+}
+
+/* SPRTK is a portrait monogram rather than a horizontal wordmark. It needs
+   extra height in the smaller hardware tile to carry comparable visual mass. */
+.hw26-sponsor img.hw26-mark--sprtk {
+  height: clamp(56px, 5vw, 72px);
 }
 
 /* A helmet stacked over its wordmark, nearly square: at the row's height it
@@ -4413,6 +4749,105 @@ html[data-theme='light'] .hw26-sponsor--static:hover {
    hairline round it only reads as a crop. */
 .hw26-sponsor img.hw26-mark--przygody {
   height: clamp(32px, 2.7vw, 38px);
+}
+
+.hw26-sponsor img.hw26-mark--chronotap {
+  height: clamp(18px, 1.8vw, 23px);
+}
+
+#organizers {
+  scroll-margin-top: 2rem;
+}
+
+@media (max-width: 900px) {
+  .hw26-menu-links {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .hw26-menu-main .hw26-menu-links a {
+    min-height: 72px;
+  }
+}
+
+@media (max-width: 720px) {
+  .hw26-menu-trigger {
+    width: 52px;
+    height: 52px;
+  }
+
+  .hw26-menu-trigger span:nth-child(1) {
+    top: 16px;
+  }
+
+  .hw26-menu-trigger span:nth-child(2),
+  .hw26-menu-trigger--open span:nth-child(1),
+  .hw26-menu-trigger--open span:nth-child(3) {
+    top: 24px;
+  }
+
+  .hw26-menu-trigger span:nth-child(3) {
+    top: 32px;
+  }
+
+  .hw26-menu-links a {
+    gap: 0.85rem;
+    font-size: clamp(1.75rem, 9.4vw, 3rem);
+  }
+
+  .hw26-menu-actions {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .hw26-menu-action {
+    min-height: 64px;
+  }
+
+}
+
+/* A phone in landscape can be wider than the portrait breakpoint while still
+   having less than half a desktop's vertical room. Give it the wide, cropped
+   map asset and compress the chrome by height instead of treating it as a
+   desktop merely because its long edge happens to clear 900px. */
+@media (orientation: landscape) and (max-height: 700px) {
+  .hw26-menu-shell {
+    padding-block: 0.65rem;
+    gap: 0.65rem;
+  }
+
+  .hw26-menu-main {
+    gap: 0.4rem;
+  }
+
+  .hw26-menu-main .hw26-menu-links a {
+    min-height: 46px;
+    padding-block: 0;
+    font-size: clamp(1.8rem, 8vh, 3.25rem);
+  }
+
+  .hw26-menu-action {
+    min-height: 50px;
+    padding-block: 0.65rem;
+  }
+
+  .hw26-menu-trigger {
+    top: 0.75rem;
+    width: 46px;
+    height: 46px;
+  }
+
+  .hw26-menu-trigger span:nth-child(1) {
+    top: 13px;
+  }
+
+  .hw26-menu-trigger span:nth-child(2),
+  .hw26-menu-trigger--open span:nth-child(1),
+  .hw26-menu-trigger--open span:nth-child(3) {
+    top: 22px;
+  }
+
+  .hw26-menu-trigger span:nth-child(3) {
+    top: 31px;
+  }
 }
 
 /* -------------------------------------------------------------
@@ -4681,6 +5116,30 @@ html[data-theme='light'] .hw26-sponsor--static:hover {
   justify-content: space-between;
   align-items: center;
   background: var(--hw-pit);
+}
+
+.hw26-support-link {
+  color: var(--hw-bone);
+  font-size: clamp(0.64rem, 0.9vw, 0.78rem);
+  letter-spacing: 0.05em;
+  text-decoration: none;
+  transition: color 180ms var(--hw-ease);
+}
+
+.hw26-support-link span {
+  margin-right: 0.45rem;
+  color: var(--hw-mint);
+  font-family: var(--font-orbitron), sans-serif;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.hw26-support-link:hover,
+.hw26-support-link:focus-visible {
+  color: var(--hw-mint);
+  outline: 0;
 }
 
 /* Registration ticks along the bottom rule — the marks a plate

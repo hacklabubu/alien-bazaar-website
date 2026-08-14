@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1200" role="img" aria-labelledby="title description">
+  <title id="title">Team member to be announced</title>
+  <desc id="description">A dark technical placeholder with the letters TBA.</desc>
+  <defs>
+    <linearGradient id="field" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#090b0a"/>
+      <stop offset="0.55" stop-color="#111713"/>
+      <stop offset="1" stop-color="#050605"/>
+    </linearGradient>
+    <radialGradient id="signal" cx="50%" cy="48%" r="52%">
+      <stop offset="0" stop-color="#82f5c6" stop-opacity=".14"/>
+      <stop offset=".58" stop-color="#82f5c6" stop-opacity=".035"/>
+      <stop offset="1" stop-color="#82f5c6" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="grid" width="80" height="80" patternUnits="userSpaceOnUse">
+      <path d="M80 0H0V80" fill="none" stroke="#82f5c6" stroke-opacity=".08"/>
+    </pattern>
+    <pattern id="scan" width="4" height="4" patternUnits="userSpaceOnUse">
+      <path d="M0 3.5H1200" stroke="#000" stroke-opacity=".22"/>
+    </pattern>
+    <filter id="glow" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="13" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <rect width="1200" height="1200" fill="url(#field)"/>
+  <rect width="1200" height="1200" fill="url(#signal)"/>
+  <rect width="1200" height="1200" fill="url(#grid)"/>
+
+  <g fill="none" stroke="#82f5c6" stroke-opacity=".34" stroke-width="2">
+    <path d="M70 210V70h140M990 70h140v140M1130 990v140H990M210 1130H70V990"/>
+    <circle cx="600" cy="580" r="302" stroke-dasharray="4 15" stroke-opacity=".16"/>
+    <circle cx="600" cy="580" r="242" stroke-opacity=".1"/>
+    <path d="M600 245v65M600 850v65M265 580h65M870 580h65" stroke-opacity=".24"/>
+  </g>
+
+  <g font-family="Arial, Helvetica, sans-serif" text-anchor="middle">
+    <text x="600" y="640" fill="#82f5c6" fill-opacity=".18" font-size="270" font-weight="800" letter-spacing="24" filter="url(#glow)">TBA</text>
+    <text x="600" y="640" fill="#dce8e1" font-size="270" font-weight="800" letter-spacing="24">TBA</text>
+    <text x="600" y="720" fill="#82f5c6" font-size="22" font-weight="700" letter-spacing="12">IDENTITY PENDING</text>
+  </g>
+
+  <g fill="#82f5c6" font-family="monospace" font-size="18" letter-spacing="4" opacity=".55">
+    <text x="72" y="1120">TEAM // WAW-26</text>
+    <text x="1128" y="1120" text-anchor="end">PROFILE LOCKED</text>
+  </g>
+
+  <rect width="1200" height="1200" fill="url(#scan)" opacity=".6"/>
+</svg>
