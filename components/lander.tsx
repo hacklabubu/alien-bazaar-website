@@ -1223,6 +1223,73 @@ function useRigFocus(root: RefObject<HTMLDivElement | null>) {
 }
 
 /**
+ * Marks the hero as idle whenever it is off screen, so the CRT flicker can be
+ * stopped instead of animating a header nobody is looking at.
+ *
+ * The flicker on the wordmark and on the alien mark is declared `infinite`,
+ * which is the right declaration — a tube does not settle — but it is a promise
+ * the page keeps long after the hero has left the screen. Scrolled down to the
+ * FAQ, a phone is still being asked for frames on two elements a thousand
+ * pixels above the viewport. The animation itself is composited and cheap; what
+ * is not free is never being allowed to stop.
+ *
+ * All this does is write one class. The pause lives in the stylesheet as
+ * `animation-play-state: paused`, which holds the frame the element is on and
+ * carries on from there — so a hero scrolled back to does not restart its
+ * flicker from the top of the keyframes, it simply starts moving again. See the
+ * phone budget block at the end of lander.css, where that rule is, and why it
+ * is gated to phones even though the observer here is not.
+ *
+ * It observes unconditionally, on every device, with no media query of its own.
+ * Watching a single element with an IntersectionObserver at the default
+ * threshold costs approximately nothing — the callback fires twice per pass of
+ * the hero, not per scroll event — and a class that is only maintained on some
+ * devices is a class no stylesheet can safely read. Whether anything is done
+ * with the state is the stylesheet's decision, which is the same division of
+ * labour `useRigFocus` makes: script settles which element is in which state,
+ * CSS decides what a state looks like.
+ *
+ * `root: null` is the viewport, and the default threshold means "any part of it
+ * visible" — the hero is idle only once its last pixel has gone. That is the
+ * conservative end of the choice on purpose: pausing a flicker that is still
+ * half on screen would be visible, and there is nothing to be won by pausing a
+ * fraction of a second earlier.
+ *
+ * The class is written only when it changes, for the same reason `useRigFocus`
+ * routes every write through one `light()` — an observer callback that touches
+ * `classList` on every entry is a style invalidation the browser has to take
+ * seriously whether or not anything actually differs.
+ */
+function useHeroIdle(hero: RefObject<HTMLElement | null>) {
+  useEffect(() => {
+    const el = hero.current;
+    if (!el) return;
+    if (typeof IntersectionObserver === "undefined") return;
+
+    let idle = false;
+
+    const mark = (next: boolean) => {
+      if (next === idle) return;
+      el.classList.toggle("hw26-hero--idle", next);
+      idle = next;
+    };
+
+    const io = new IntersectionObserver((entries) => {
+      for (const entry of entries) mark(!entry.isIntersecting);
+    });
+
+    io.observe(el);
+
+    // The class goes back off with the observer. A hero left marked idle by a
+    // teardown is a hero whose flicker nothing will ever start again.
+    return () => {
+      io.disconnect();
+      mark(false);
+    };
+  }, [hero]);
+}
+
+/**
  * The timeline's desktop pin: vertical page scroll spent travelling the line
  * sideways.
  *
@@ -2715,6 +2782,12 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
   // the only thing this needs is a node that contains both.
   useRigFocus(root);
 
+  // The hero's own ref, held so the flicker can be parked once the header has
+  // scrolled off. Its own element rather than the page root, because "is the
+  // hero on screen" is the entire question. See `useHeroIdle`.
+  const hero = useRef<HTMLElement>(null);
+  useHeroIdle(hero);
+
   // Two of the partner rows are dealt again on every visit, so no name owns the
   // first plate. Only these two: the sponsor row and the media row hold one
   // name each, the organizers are a fixed pair of hosts, and the two lead
@@ -2744,7 +2817,7 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
           <HardwareIntro /> */}
 
       {/* ---------------- HERO ---------------- */}
-      <header className="hw26-hero" id="home">
+      <header className="hw26-hero" id="home" ref={hero}>
         {/* The page's only navigation, in the corner of the art rather than
             in a bar above it: this is a two-page site and a chrome bar for
             one link would be a navigation system pretending there is
@@ -2786,7 +2859,26 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
 
             `alt` is empty on both: they are two halves of one picture, the
             name in it is the h1 between them, and describing either would
-            announce the event twice. */}
+            announce the event twice.
+
+            `sizes` is the same string on both layers and it is not `100vw`,
+            because the stage is not the viewport. It is `max(100%, calc(100svh
+            * var(--hero-ar)))` at a 1920/1074 aspect — cover geometry, so on a
+            portrait phone it is far wider than the screen it is shown on. On a
+            390x844 phone the stage measures ~1509 CSS px across, i.e. ~4526
+            device px at DPR 3, while `100vw` told the browser to ask for 390 and
+            it was served the 1200 candidate. The art was being upscaled about
+            3.8x on every phone.
+
+            650px is a deliberate under-ask rather than the true figure. 650 x
+            DPR 3 = 1950, which lands on Next's 2048 candidate: about 1.7x the
+            linear resolution of today's 1200, and the pair grows 233 KB -> 422
+            KB (bg 80->152, fg 152->269), +189 KB. Asking for what the geometry
+            strictly implies would land on 3840 instead, and that is several
+            times the decode, the memory and the LCP for sharpness a phone
+            cannot show — this is the hero, so those are the frames that decide
+            what the page feels like. Desktop keeps `100vw`, which is correct
+            there: at 1440x900 DPR2 it already resolves to the 3840 candidate. */}
         <div className="hw26-hero-stage">
           <Image
             alt=""
@@ -2794,7 +2886,7 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
             fill
             priority
             quality={90}
-            sizes="100vw"
+            sizes="(max-width: 700px) 650px, 100vw"
             src="/hero/ab-hero-bg.png"
           />
 
@@ -2821,7 +2913,7 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
             fill
             priority
             quality={90}
-            sizes="100vw"
+            sizes="(max-width: 700px) 650px, 100vw"
             src="/hero/ab-hero-fg.png"
           />
 
