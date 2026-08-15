@@ -95,6 +95,7 @@ const TICKER = [
 const TICKER_RUNS = 4;
 
 const CONTACT_EMAIL = "tymofiigusak@epikor.eu";
+const SUPPORT_EMAIL = "sos@hacklab.so";
 
 function contactHref(subject: string) {
   return `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(subject)}`;
@@ -281,7 +282,7 @@ const RIG_GROUPS: { label: string; items: Rig[] }[] = [
       },
       {
         name: "Manipulators",
-        units: "6x",
+        units: "2x",
         photo: "/hardware/robo-arm.png",
       },
       {
@@ -317,16 +318,6 @@ const RIG_GROUPS: { label: string; items: Rig[] }[] = [
     ],
   },
   {
-    label: "Quadruped robots",
-    items: [
-      {
-        name: "RealAnt",
-        units: "1x",
-        photo: "/hardware/realant.png",
-      },
-    ],
-  },
-  {
     label: "Robodogs",
     items: [
       // Non-breaking hyphen: the cell's measure puts the line break exactly
@@ -342,6 +333,16 @@ const RIG_GROUPS: { label: string; items: Rig[] }[] = [
         name: "Unitree Go2",
         units: "1x",
         photo: "/hardware/robodog-unitree-go2.jpeg",
+      },
+    ],
+  },
+  {
+    label: "Quadruped robots",
+    items: [
+      {
+        name: "RealAnt",
+        units: "1x",
+        photo: "/hardware/realant.png",
       },
     ],
   },
@@ -1888,6 +1889,56 @@ function LeadPartnerTile({ partner }: { partner: Partner }) {
   );
 }
 
+function PartnerSubhead({
+  action,
+  reveal = false,
+  title,
+}: {
+  action?: "partner" | "sponsor";
+  reveal?: boolean;
+  title: string;
+}) {
+  return (
+    <div
+      className={`hw26-partner-subhead${reveal ? " hw26-reveal" : ""}`}
+    >
+      <h3 className="hw26-cat hw26-partner-cat">
+        <span aria-hidden="true" className="hw26-cat-mark">
+          ///
+        </span>{" "}
+        {title}
+      </h3>
+      {action ? (
+        <a
+          className="hw26-sponsor-cta"
+          href={
+            action === "sponsor"
+              ? "/sponsor"
+              : "/partner"
+          }
+        >
+          Become a {action} →
+        </a>
+      ) : null}
+    </div>
+  );
+}
+
+function PartnerTierSubhead({
+  reveal = false,
+  title,
+}: {
+  reveal?: boolean;
+  title: string;
+}) {
+  return (
+    <div className={`hw26-subhead${reveal ? " hw26-reveal" : ""}`}>
+      <span className="hw26-label hw26-label--mint">{title}</span>
+      <span aria-hidden="true" className="hw26-poweredby-rule" />
+    </div>
+  );
+}
+
 /** The complete partner wall, reused by the dedicated Partners page. */
 export function PartnerDirectory() {
   const ecosystem = useShuffled(SMALL_SPONSORS);
@@ -1901,69 +1952,48 @@ export function PartnerDirectory() {
           <h2>Partners &amp; Organizers</h2>
         </div>
 
-        <div className="hw26-subhead">
-          <span className="hw26-label hw26-label--mint">Sponsors</span>
-          <span className="hw26-poweredby-rule" />
-          <a className="hw26-sponsor-cta" href="/sponsor">
-            Become a sponsor →
-          </a>
-        </div>
+        <PartnerSubhead action="sponsor" title="Sponsors" />
         <div className="hw26-sponsors-lead hw26-sponsors-lead--one">
           {SPONSORS.map((partner) => (
             <LeadPartnerTile key={partner.name} partner={partner} />
           ))}
         </div>
 
-        <div className="hw26-subhead">
-          <span className="hw26-label hw26-label--mint">
-            Ecosystem Partners
-          </span>
-          <span className="hw26-poweredby-rule" />
-        </div>
-        <div className="hw26-sponsors-lead hw26-sponsors-lead--eco">
-          {[LEAD_SPONSORS[0], LEAD_SPONSORS[1], ...ecosystem].map(
-            (partner) => (
+        <div className="hw26-partner-family">
+          <PartnerSubhead action="partner" title="Partners" />
+
+          <PartnerTierSubhead title="Ecosystem Partners" />
+          <div className="hw26-sponsors-lead hw26-sponsors-lead--eco">
+            {[LEAD_SPONSORS[0], LEAD_SPONSORS[1], ...ecosystem].map(
+              (partner) => (
+                <LeadPartnerTile key={partner.name} partner={partner} />
+              ),
+            )}
+          </div>
+
+          <PartnerTierSubhead title="Hardware Partners" />
+          <div className="hw26-sponsors-rest">
+            {hardware.map((partner) => (
+              <SponsorTile key={partner.name} partner={partner} />
+            ))}
+          </div>
+
+          <PartnerTierSubhead title="Media Partners" />
+          <div className="hw26-sponsors-lead hw26-sponsors-lead--one">
+            {MEDIA_PARTNERS.map((partner) => (
               <LeadPartnerTile key={partner.name} partner={partner} />
-            ),
-          )}
+            ))}
+          </div>
+
+          <PartnerTierSubhead title="Prize Partners" />
+          <div className="hw26-sponsors-lead hw26-sponsors-lead--one">
+            {PRIZE_PARTNERS.map((partner) => (
+              <LeadPartnerTile key={partner.name} partner={partner} />
+            ))}
+          </div>
         </div>
 
-        <div className="hw26-subhead">
-          <span className="hw26-label hw26-label--mint">
-            Hardware partners
-          </span>
-          <span className="hw26-poweredby-rule" />
-        </div>
-        <div className="hw26-sponsors-rest">
-          {hardware.map((partner) => (
-            <SponsorTile key={partner.name} partner={partner} />
-          ))}
-        </div>
-
-        <div className="hw26-subhead">
-          <span className="hw26-label hw26-label--mint">Media partners</span>
-          <span className="hw26-poweredby-rule" />
-        </div>
-        <div className="hw26-sponsors-lead hw26-sponsors-lead--one">
-          {MEDIA_PARTNERS.map((partner) => (
-            <LeadPartnerTile key={partner.name} partner={partner} />
-          ))}
-        </div>
-
-        <div className="hw26-subhead">
-          <span className="hw26-label hw26-label--mint">Prize partners</span>
-          <span className="hw26-poweredby-rule" />
-        </div>
-        <div className="hw26-sponsors-lead hw26-sponsors-lead--one">
-          {PRIZE_PARTNERS.map((partner) => (
-            <LeadPartnerTile key={partner.name} partner={partner} />
-          ))}
-        </div>
-
-        <div className="hw26-subhead">
-          <span className="hw26-label hw26-label--mint">Organizers</span>
-          <span className="hw26-poweredby-rule" />
-        </div>
+        <PartnerSubhead title="Organizers" />
         <div className="hw26-sponsors-lead">
           {ORGANIZERS.map((organizer) => (
             <a
@@ -2327,9 +2357,9 @@ export function Endplate({ hackathon }: { hackathon: HardwareEvent }) {
         </span>
         <a
           className="hw26-support-link"
-          href={contactHref("Alien Bazaar support")}
+          href={`mailto:${SUPPORT_EMAIL}?subject=${encodeURIComponent("Alien Bazaar support")}`}
         >
-          <span>Support</span> {CONTACT_EMAIL}
+          <span>Support</span> {SUPPORT_EMAIL}
         </a>
         <div aria-hidden="true" className="hw26-ticks">
           {Array.from({ length: 24 }, (_, i) => (
@@ -2448,13 +2478,13 @@ function SiteMenu() {
               </a>
               <a
                 className="hw26-menu-action"
-                href={contactHref("Alien Bazaar sponsorship")}
+                href="/sponsor"
               >
                 Become a sponsor <span aria-hidden="true">→</span>
               </a>
               <a
                 className="hw26-menu-action"
-                href={contactHref("Alien Bazaar partnership")}
+                href="/partner"
               >
                 Become a partner <span aria-hidden="true">→</span>
               </a>
@@ -3060,7 +3090,7 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
             <dl className="hw26-stats">
               <div className="hw26-stat">
                 <dt>Best teams in Europe</dt>
-                <dd>20</dd>
+                <dd>5</dd>
               </div>
               <div className="hw26-stat">
                 <dt>Hardware units</dt>
@@ -3386,13 +3416,7 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
             <h2>Partners &amp; Organizers</h2>
           </div>
 
-          <div className="hw26-subhead hw26-reveal">
-            <span className="hw26-label hw26-label--mint">Sponsors</span>
-            <span className="hw26-poweredby-rule" />
-            <a className="hw26-sponsor-cta" href="/sponsor">
-              Become a sponsor →
-            </a>
-          </div>
+          <PartnerSubhead action="sponsor" reveal title="Sponsors" />
 
           {/* The lead cell, not the wall's small tile: the tier is money, and
               the page says so in the size of the plate rather than in the
@@ -3416,12 +3440,10 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
             ))}
           </div>
 
-          <div className="hw26-subhead hw26-reveal">
-            <span className="hw26-label hw26-label--mint">
-              Ecosystem Partners
-            </span>
-            <span className="hw26-poweredby-rule" />
-          </div>
+          <div className="hw26-partner-family">
+            <PartnerSubhead action="partner" reveal title="Partners" />
+
+            <PartnerTierSubhead reveal title="Ecosystem Partners" />
 
           {/* One row of five, and it used to be two rows of two and three.
               The split was a tier: NVIDIA and ESRA took a plate twice the
@@ -3463,12 +3485,7 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
             ))}
           </div>
 
-          <div className="hw26-subhead hw26-reveal">
-            <span className="hw26-label hw26-label--mint">
-              Hardware partners
-            </span>
-            <span className="hw26-poweredby-rule" />
-          </div>
+            <PartnerTierSubhead reveal title="Hardware Partners" />
 
           {/* The wall's smaller tile, and the three rows that use it are the
               same grid with a different count in it. The tile itself is
@@ -3490,10 +3507,7 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
             ))}
           </div>
 
-          <div className="hw26-subhead hw26-reveal">
-            <span className="hw26-label hw26-label--mint">Media partners</span>
-            <span className="hw26-poweredby-rule" />
-          </div>
+            <PartnerTierSubhead reveal title="Media Partners" />
 
           <div className="hw26-sponsors-lead hw26-sponsors-lead--one hw26-reveal">
             {MEDIA_PARTNERS.map((p) => (
@@ -3510,10 +3524,7 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
             ))}
           </div>
 
-          <div className="hw26-subhead hw26-reveal">
-            <span className="hw26-label hw26-label--mint">Prize partners</span>
-            <span className="hw26-poweredby-rule" />
-          </div>
+            <PartnerTierSubhead reveal title="Prize Partners" />
 
           <div className="hw26-sponsors-lead hw26-sponsors-lead--one hw26-reveal">
             {PRIZE_PARTNERS.map((p) => (
@@ -3529,11 +3540,9 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
               </a>
             ))}
           </div>
-
-          <div className="hw26-subhead hw26-reveal">
-            <span className="hw26-label hw26-label--mint">Organizers</span>
-            <span className="hw26-poweredby-rule" />
           </div>
+
+          <PartnerSubhead reveal title="Organizers" />
 
           {/* The whole tile is the link, not the mark inside it. A logo in a
               cell that is otherwise inert gives the reader a target the size

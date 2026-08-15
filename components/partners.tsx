@@ -22,11 +22,13 @@ export function PartnersPage({ hackathon }: { hackathon: HardwareEvent }) {
       </div>
 
       <main>
+        <PartnerDirectory />
+
         <section className='hw26-section'>
           <div aria-hidden='true' className='hw26-grid' />
           <div className='hw26-inner'>
             <div className='hw26-head'>
-              <h2>Partners</h2>
+              <h2>Partner network</h2>
             </div>
 
             <div className='hw26-partners-map'>
@@ -51,8 +53,6 @@ export function PartnersPage({ hackathon }: { hackathon: HardwareEvent }) {
             </div>
           </div>
         </section>
-
-        <PartnerDirectory />
       </main>
 
       <Endplate hackathon={hackathon} />

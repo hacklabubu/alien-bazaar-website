@@ -36,7 +36,7 @@ export const EVENT: HardwareEvent = {
   endsAt: new Date('2026-09-27T20:00:00+02:00'),
   timezone: 'Europe/Warsaw',
   location: 'Hacker Bloc powered by Epikor and Hacklab — Warsaw, Poland',
-  maxTeamSize: 4,
+  maxTeamSize: 5,
   capacity: 100,
 }
 
