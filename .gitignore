@@ -4,6 +4,7 @@ out/
 next-env.d.ts
 *.tsbuildinfo
 .env*
+!.env.example
 .DS_Store
 .vercel
 # pnpm is this project's package manager — pnpm-lock.yaml is the only lockfile.

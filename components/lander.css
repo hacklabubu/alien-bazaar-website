@@ -4050,7 +4050,22 @@ html:not(.hw26-cursor-dom) .hw26-faq-trigger {
    not around us.
    ------------------------------------------------------------- */
 
-/* Sub-headers dividing organizers from partners inside the section. */
+/* The three top-level groups use the same middle heading as the hardware
+   categories. The four partner types remain compact labels inside one shared
+   Partners group. */
+.hw26-partner-subhead {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: clamp(1rem, 3vw, 2rem);
+  margin: 0 0 clamp(1rem, 1.8vw, 1.5rem);
+}
+
+.hw26-partner-cat {
+  font-size: clamp(1.75rem, 3.8vw, 3.15rem);
+  margin: 0;
+}
+
 .hw26-subhead {
   display: flex;
   align-items: center;
@@ -4058,20 +4073,12 @@ html:not(.hw26-cursor-dom) .hw26-faq-trigger {
   margin: 0 0 1rem;
 }
 
-/* The small text links used by partner subheads. */
-.hw26-subhead a.hw26-label {
-  text-decoration: none;
-  flex-shrink: 0;
-  transition: color 200ms var(--hw-ease);
+.hw26-partner-family {
+  margin-top: clamp(2.5rem, 5vw, 4rem);
 }
 
-.hw26-subhead a.hw26-label:hover {
-  color: var(--hw-snow);
-}
-
-.hw26-subhead a.hw26-label:focus-visible {
-  outline: 1px solid var(--hw-mint);
-  outline-offset: 4px;
+.hw26-partner-family > .hw26-partner-subhead {
+  margin-bottom: clamp(1.5rem, 3vw, 2.5rem);
 }
 
 /* The sponsorship action is deliberately louder than the tier labels: this
@@ -4101,9 +4108,22 @@ html:not(.hw26-cursor-dom) .hw26-faq-trigger {
   outline: 0;
 }
 
+.hw26-sponsors-lead + .hw26-partner-subhead,
+.hw26-sponsors-rest + .hw26-partner-subhead,
+.hw26-partner-family + .hw26-partner-subhead {
+  margin-top: clamp(2.5rem, 5vw, 4rem);
+}
+
 .hw26-sponsors-lead + .hw26-subhead,
 .hw26-sponsors-rest + .hw26-subhead {
-  margin-top: 2.5rem;
+  margin-top: clamp(2rem, 4vw, 3rem);
+}
+
+@media (max-width: 600px) {
+  .hw26-partner-subhead {
+    align-items: flex-start;
+    flex-direction: column;
+  }
 }
 
 /* Organizer logo. Slightly larger than the partner marks below — this is

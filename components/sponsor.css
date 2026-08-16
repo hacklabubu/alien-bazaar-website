@@ -64,6 +64,8 @@
   text-decoration: none;
   color: var(--hw-on-mint);
   background: var(--hw-mint);
+  border: 0;
+  cursor: pointer;
   padding: 0.55rem 0.9rem;
   clip-path: polygon(
     0 0,
@@ -144,10 +146,10 @@
   color: var(--hw-bone);
 }
 
-/* Four quick price chips under the lead. */
+/* Three quick price chips under the lead. */
 .ab-sp-hero-stats {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 1px;
   background: var(--hw-line);
   border: 1px solid var(--hw-line);
@@ -183,7 +185,7 @@
   line-height: 1;
 }
 
-.ab-sp-stat--platinum .ab-sp-stat-price {
+.ab-sp-stat--uranium .ab-sp-stat-price {
   color: var(--hw-mint);
 }
 
@@ -195,7 +197,7 @@
 
 @media (max-width: 720px) {
   .ab-sp-hero-stats {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: minmax(0, 1fr);
   }
 }
 
@@ -217,7 +219,7 @@
 
 .ab-sp-cards {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: clamp(0.85rem, 1.5vw, 1.25rem);
   align-items: stretch;
 }
@@ -323,7 +325,7 @@
   color: var(--hw-snow);
 }
 
-.ab-sp-card--platinum .ab-sp-card-price,
+.ab-sp-card--uranium .ab-sp-card-price,
 .ab-sp-card--gold .ab-sp-card-price {
   color: var(--hw-mint);
 }
@@ -344,24 +346,6 @@
   font-size: 0.8rem;
   line-height: 1.45;
   color: var(--hw-bone);
-}
-
-.ab-sp-card-spots {
-  display: flex;
-  align-items: baseline;
-  gap: 0.55rem;
-  padding-block: 0.65rem;
-  border-block: 1px solid var(--hw-line);
-  margin-block: 0.15rem;
-}
-
-.ab-sp-card-spots-n {
-  font-family: var(--font-geist-pixel-circle), var(--font-orbitron), sans-serif;
-  font-weight: 500;
-  font-size: 1.65rem;
-  line-height: 1;
-  color: var(--hw-mint);
-  letter-spacing: 0.04em;
 }
 
 .ab-sp-card-list {
@@ -494,7 +478,7 @@ tbody .ab-sp-matrix-cat {
   color: var(--hw-bone);
 }
 
-.ab-sp-matrix-cell--platinum {
+.ab-sp-matrix-cell--uranium {
   background: color-mix(in srgb, var(--hw-mint) 6%, var(--hw-steel));
 }
 
@@ -503,7 +487,7 @@ tbody .ab-sp-matrix-cat {
   background: var(--hw-steel-hi);
 }
 
-.ab-sp-matrix tbody tr:hover .ab-sp-matrix-cell--platinum {
+.ab-sp-matrix tbody tr:hover .ab-sp-matrix-cell--uranium {
   background: color-mix(in srgb, var(--hw-mint) 10%, var(--hw-steel-hi));
 }
 
@@ -579,7 +563,7 @@ tbody .ab-sp-matrix-cat {
   clip-path: var(--sp-shape-inner);
 }
 
-.ab-sp-dive--platinum::before {
+.ab-sp-dive--uranium::before {
   background:
     radial-gradient(
       ellipse 55% 60% at 100% 0%,
@@ -609,22 +593,6 @@ tbody .ab-sp-matrix-cat {
   letter-spacing: 0.02em;
   color: var(--hw-snow);
   margin: 0.45rem 0 0;
-}
-
-.ab-sp-dive-spots {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 0.25rem;
-}
-
-.ab-sp-dive-spots-n {
-  font-family: var(--font-geist-pixel-circle), var(--font-orbitron), sans-serif;
-  font-weight: 500;
-  font-size: clamp(2.25rem, 4vw, 3.25rem);
-  line-height: 0.9;
-  letter-spacing: 0.04em;
-  color: var(--hw-mint);
 }
 
 .ab-sp-dive-summary {

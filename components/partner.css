@@ -1,0 +1,108 @@
+.ab-partner-nav {
+  gap: 0.75rem;
+}
+
+.ab-partner-hero {
+  min-height: min(760px, 82vh);
+}
+
+.ab-partner-lead {
+  max-width: 62ch;
+  margin: -1.25rem 0 clamp(2rem, 5vw, 4rem);
+  color: var(--hw-bone);
+  font-size: clamp(0.92rem, 1.2vw, 1.05rem);
+  line-height: 1.7;
+}
+
+.ab-partner-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1px;
+  border: 1px solid var(--hw-line);
+  background: var(--hw-line);
+}
+
+.ab-partner-card {
+  position: relative;
+  display: flex;
+  min-height: 290px;
+  flex-direction: column;
+  padding: clamp(1.4rem, 3vw, 2.5rem);
+  background:
+    radial-gradient(circle at 100% 0%, color-mix(in srgb, var(--hw-mint) 8%, transparent), transparent 42%),
+    var(--hw-steel);
+  transition: background-color 220ms var(--hw-ease);
+}
+
+.ab-partner-card:hover {
+  background-color: var(--hw-steel-hi);
+}
+
+.ab-partner-index {
+  color: var(--hw-mint);
+  font-family: var(--font-jetbrains-mono), monospace;
+  font-size: 0.68rem;
+  letter-spacing: 0.18em;
+}
+
+.ab-partner-card h3 {
+  margin: auto 0 0.8rem;
+  color: var(--hw-snow);
+  font-family: var(--font-orbitron), sans-serif;
+  font-size: clamp(1.35rem, 2.5vw, 2.15rem);
+  line-height: 1.05;
+  text-transform: uppercase;
+}
+
+.ab-partner-card p {
+  max-width: 48ch;
+  margin: 0 0 1.5rem;
+  color: var(--hw-bone);
+  font-size: 0.84rem;
+  line-height: 1.6;
+}
+
+.ab-partner-card-cta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 1rem;
+  border-top: 1px solid var(--hw-line);
+  border-right: 0;
+  border-bottom: 0;
+  border-left: 0;
+  background: transparent;
+  color: var(--hw-mint);
+  font-family: var(--font-orbitron), sans-serif;
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-decoration: none;
+  text-transform: uppercase;
+  cursor: pointer;
+  width: 100%;
+}
+
+.ab-partner-card-cta span {
+  transition: transform 180ms var(--hw-ease);
+}
+
+.ab-partner-card-cta:hover span,
+.ab-partner-card-cta:focus-visible span {
+  transform: translateX(5px);
+}
+
+.ab-partner-card-cta:focus-visible {
+  outline: 2px solid var(--hw-mint);
+  outline-offset: 5px;
+}
+
+@media (max-width: 700px) {
+  .ab-partner-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .ab-partner-card {
+    min-height: 245px;
+  }
+}

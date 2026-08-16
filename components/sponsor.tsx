@@ -6,29 +6,28 @@ import {
   GeistPixelSquare,
 } from 'geist/font/pixel'
 import Link from 'next/link'
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 import './lander.css'
 import './sponsor.css'
+import { InquiryModal } from './inquiry-modal'
 import {
   MATRIX,
   PACKAGES,
-  SPONSOR_CONTACT_URL,
   type Package,
   type TierId,
 } from '../lib/packages'
 import { EVENT } from '../lib/event'
 
-const TIERS: TierId[] = ['bronze', 'silver', 'gold', 'platinum']
+const TIERS: TierId[] = ['gold', 'diamond', 'uranium']
 
 const TIER_META: Record<
   TierId,
   { emoji: string; short: string; label: string }
 > = {
-  bronze: { emoji: '🥉', short: 'BRZ', label: 'Bronze' },
-  silver: { emoji: '🥈', short: 'SLV', label: 'Silver' },
-  gold: { emoji: '🥇', short: 'GLD', label: 'Gold' },
-  platinum: { emoji: '👽', short: 'PLT', label: 'Platinum' },
+  gold: { emoji: 'Au', short: 'GLD', label: 'Gold' },
+  diamond: { emoji: '◇', short: 'DIA', label: 'Diamond' },
+  uranium: { emoji: 'U', short: 'URN', label: 'Uranium' },
 }
 
 function useReveal() {
@@ -82,13 +81,15 @@ function MatrixCell({ value }: { value: string | boolean | null }) {
 }
 
 function PackageCard({
+  onSelect,
   pkg,
   order,
 }: {
+  onSelect: (pkg: Package) => void
   pkg: Package
   order: number
 }) {
-  const featured = pkg.id === 'platinum'
+  const featured = pkg.id === 'uranium'
 
   return (
     <article
@@ -107,28 +108,24 @@ function PackageCard({
       <p className='ab-sp-card-tag'>{pkg.tagline}</p>
       <p className='ab-sp-card-pos'>{pkg.positioning}</p>
 
-      <div className='ab-sp-card-spots'>
-        <span className='ab-sp-card-spots-n'>{pkg.spots}</span>
-        <span className='hw26-label'>spots available</span>
-      </div>
-
       <ul className='ab-sp-card-list'>
-        {pkg.benefits.slice(0, pkg.id === 'bronze' ? 2 : 5).map((b) => (
+        {pkg.benefits.slice(0, 5).map((b) => (
           <li key={b}>{b}</li>
         ))}
-        {pkg.benefits.length > (pkg.id === 'bronze' ? 2 : 5) ? (
+        {pkg.benefits.length > 5 ? (
           <li className='ab-sp-card-more'>
-            +{pkg.benefits.length - (pkg.id === 'bronze' ? 2 : 5)} more
+            +{pkg.benefits.length - 5} more
           </li>
         ) : null}
       </ul>
 
-      <a
+      <button
         className={`hw26-apply${featured ? '' : ' hw26-apply--ghost'} ab-sp-card-cta`}
-        href={SPONSOR_CONTACT_URL}
+        onClick={() => onSelect(pkg)}
+        type='button'
       >
         Claim {pkg.tier}
-      </a>
+      </button>
     </article>
   )
 }
@@ -138,11 +135,21 @@ function PackageCard({
  *
  * Same neoindustrial shell as the lander — phosphor mint, Orbitron display,
  * JetBrains Mono body, chamfered plates — applied to a commercial page
- * rather than an event brochure. The four packages are the product; the
+ * rather than an event brochure. The three packages are the product; the
  * matrix is the proof; the deep-dives are the pitch.
  */
 export function SponsorPage() {
   const root = useReveal()
+  const [formOpen, setFormOpen] = useState(false)
+  const [selectedPackage, setSelectedPackage] = useState<string | undefined>()
+  const packageOptions = PACKAGES.map(
+    (pkg) => `${pkg.tier} — ${pkg.priceLabel}`,
+  )
+
+  const openForm = (pkg?: Package) => {
+    setSelectedPackage(pkg ? `${pkg.tier} — ${pkg.priceLabel}` : undefined)
+    setFormOpen(true)
+  }
 
   return (
     <div
@@ -158,9 +165,9 @@ export function SponsorPage() {
           <span className='ab-sp-nav-name'>Alien Bazaar</span>
         </Link>
         <span className='hw26-label ab-sp-nav-page'>Sponsorship</span>
-        <a className='ab-sp-nav-cta' href={SPONSOR_CONTACT_URL}>
+        <button className='ab-sp-nav-cta' onClick={() => openForm()} type='button'>
           Get in touch
-        </a>
+        </button>
       </nav>
 
       {/* ---------------- HERO ---------------- */}
@@ -177,9 +184,9 @@ export function SponsorPage() {
           </h1>
           <p className='ab-sp-hero-lead hw26-reveal'>
             Put your brand inside Europe&apos;s sharpest hardware hackathon —
-            20 teams, 20 machines, three days at Hacker Bloc in Warsaw. Four
-            tiers. Forty-five spots. From a logo on the site to owning a piece
-            of the event.
+            20 teams, 20 machines, three days at Hacker Bloc in Warsaw. Three
+            packages. From final-day visibility to full product integration,
+            event intelligence and an official seat on the judging panel.
           </p>
 
           <div className='ab-sp-hero-stats hw26-reveal'>
@@ -189,7 +196,7 @@ export function SponsorPage() {
                   {pkg.emoji}
                 </span>
                 <span className='ab-sp-stat-price'>{pkg.priceLabel}</span>
-                <span className='hw26-label'>{pkg.spots} spots</span>
+                <span className='hw26-label'>{pkg.tier}</span>
               </div>
             ))}
           </div>
@@ -210,17 +217,22 @@ export function SponsorPage() {
         <div aria-hidden className='hw26-grid' />
         <div className='hw26-inner'>
           <div className='hw26-head hw26-reveal'>
-            <h2>The four tiers</h2>
+            <h2>The three tiers</h2>
           </div>
           <p className='ab-sp-section-lead hw26-reveal'>
-            Pick the level of integration. Bronze is digital support. Silver
-            puts you in the room. Gold makes you part of the build. Platinum
-            puts your name on the culture.
+            Pick the level of integration. Gold joins the final day. Diamond
+            works alongside the teams. Uranium becomes part of the event
+            infrastructure and the intelligence produced around it.
           </p>
 
           <div className='ab-sp-cards'>
             {PACKAGES.map((pkg, i) => (
-              <PackageCard key={pkg.id} order={i} pkg={pkg} />
+              <PackageCard
+                key={pkg.id}
+                onSelect={openForm}
+                order={i}
+                pkg={pkg}
+              />
             ))}
           </div>
         </div>
@@ -305,10 +317,6 @@ export function SponsorPage() {
                     </span>
                     <h3 className='ab-sp-dive-title'>{pkg.tagline}</h3>
                   </div>
-                  <div className='ab-sp-dive-spots'>
-                    <span className='ab-sp-dive-spots-n'>{pkg.spots}</span>
-                    <span className='hw26-label'>spots</span>
-                  </div>
                 </header>
 
                 <p className='ab-sp-dive-summary'>{pkg.summary}</p>
@@ -323,51 +331,24 @@ export function SponsorPage() {
                     </ul>
                   </div>
 
-                  {(pkg.titles || pkg.positionings || pkg.bestFor) && (
+                  {pkg.bestFor ? (
                     <aside className='ab-sp-dive-aside'>
-                      {pkg.bestFor ? (
-                        <p className='ab-sp-dive-bestfor'>{pkg.bestFor}</p>
-                      ) : null}
-
-                      {pkg.titles ? (
-                        <div>
-                          <p className='hw26-label ab-sp-dive-list-label'>
-                            Possible titles
-                          </p>
-                          <ul className='ab-sp-dive-titles-list'>
-                            {pkg.titles.map((t) => (
-                              <li key={t}>{t}</li>
-                            ))}
-                          </ul>
-                        </div>
-                      ) : null}
-
-                      {pkg.positionings ? (
-                        <div>
-                          <p className='hw26-label ab-sp-dive-list-label'>
-                            Possible positioning
-                          </p>
-                          <ul className='ab-sp-dive-titles-list ab-sp-dive-titles-list--mono'>
-                            {pkg.positionings.map((t) => (
-                              <li key={t}>{t}</li>
-                            ))}
-                          </ul>
-                        </div>
-                      ) : null}
+                      <p className='ab-sp-dive-bestfor'>{pkg.bestFor}</p>
                     </aside>
-                  )}
+                  ) : null}
                 </div>
 
                 {pkg.closer ? (
                   <p className='ab-sp-dive-closer'>{pkg.closer}</p>
                 ) : null}
 
-                <a
-                  className={`hw26-apply${pkg.id === 'platinum' ? '' : ' hw26-apply--ghost'} ab-sp-dive-cta`}
-                  href={SPONSOR_CONTACT_URL}
+                <button
+                  className={`hw26-apply${pkg.id === 'uranium' ? '' : ' hw26-apply--ghost'} ab-sp-dive-cta`}
+                  onClick={() => openForm(pkg)}
+                  type='button'
                 >
                   Claim {pkg.tier} · {pkg.priceLabel}
-                </a>
+                </button>
               </article>
             ))}
           </div>
@@ -384,15 +365,19 @@ export function SponsorPage() {
           </h2>
           <p className='hw26-reveal'>
             Alien Bazaar is twenty teams, twenty machines, and three days of
-            building home automation under one roof in Warsaw. Platinum puts
-            you inside that culture. Gold makes you part of the hackathon.
-            Silver puts you in the room. Bronze puts your mark on the wall.
-            Forty-five spots total — claim yours.
+            building home automation under one roof in Warsaw. Gold brings you
+            to the final pitches. Diamond puts you beside the teams for all
+            three days. Uranium integrates your product, gives you the data and
+            puts you on the judging panel.
           </p>
           <div className='ab-sp-closer-actions hw26-reveal'>
-            <a className='hw26-apply hw26-apply--lg' href={SPONSOR_CONTACT_URL}>
+            <button
+              className='hw26-apply hw26-apply--lg'
+              onClick={() => openForm()}
+              type='button'
+            >
               Become a sponsor
-            </a>
+            </button>
             <Link className='hw26-apply hw26-apply--ghost hw26-apply--lg' href='/'>
               Back to event
             </Link>
@@ -416,7 +401,7 @@ export function SponsorPage() {
             </p>
             <div className='hw26-stamp'>
               Open for partners
-              <span>45 SPOTS · 4 TIERS</span>
+              <span>3 PARTNERSHIP TIERS</span>
             </div>
           </div>
 
@@ -446,20 +431,16 @@ export function SponsorPage() {
               <dd>Warsaw</dd>
             </div>
             <div className='hw26-tb'>
-              <dt>Bronze</dt>
-              <dd>24 × $2.5K</dd>
-            </div>
-            <div className='hw26-tb'>
-              <dt>Silver</dt>
-              <dd>12 × $5K</dd>
-            </div>
-            <div className='hw26-tb'>
               <dt>Gold</dt>
-              <dd>6 × $10K</dd>
+              <dd>$5K</dd>
+            </div>
+            <div className='hw26-tb'>
+              <dt>Diamond</dt>
+              <dd>$10K</dd>
             </div>
             <div className='hw26-tb hw26-tb--mint'>
-              <dt>Platinum</dt>
-              <dd>3 × $20K</dd>
+              <dt>Uranium</dt>
+              <dd>$20K</dd>
             </div>
           </dl>
         </div>
@@ -474,6 +455,15 @@ export function SponsorPage() {
           <span className='hw26-label'>Epikor × Hacklab · AB—WAW—26</span>
         </div>
       </footer>
+
+      {formOpen ? (
+        <InquiryModal
+          initialCategory={selectedPackage}
+          kind='sponsor'
+          onClose={() => setFormOpen(false)}
+          options={packageOptions}
+        />
+      ) : null}
     </div>
   )
 }
