@@ -55,7 +55,6 @@ function field(value: unknown) {
 function clientIdentifier(request: Request) {
   const headers = request.headers
   const ip =
-    headers.get('cf-connecting-ip') ??
     headers.get('x-real-ip') ??
     headers.get('x-forwarded-for')?.split(',')[0]?.trim()
   return ip || `unknown:${headers.get('user-agent') ?? 'no-user-agent'}`
