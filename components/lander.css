@@ -672,10 +672,10 @@ html:not(.hw26-cursor-dom) .hw26 [role='button'] * {
 /* The bottom margin is the group title's, stepped up. It was the same figure
    `.hw26-cat` carries, which was right while this was a bare line of type —
    the gap under a sentence and the gap under a heading are the same gap when
-   both are just words. It is a box now, with padding and a ring, and a box's
-   edge sits closer to whatever is under it than a baseline does at the same
-   margin. Half a step more, so the first row of cards clears the ring rather
-   than starting at it. */
+   both are just words. It is a box now, with padding and a ground of its own,
+   and a box's edge sits closer to whatever is under it than a baseline does at
+   the same margin. Half a step more, so the first row of cards clears the box
+   rather than starting at it. */
 .hw26-cat-intro {
   margin: 0 0 clamp(1.75rem, 2.6vw, 2.25rem);
   max-width: 60ch;
@@ -809,7 +809,7 @@ html:not(.hw26-cursor-dom) .hw26 [role='button'] * {
    now, and still a step over `.hw26-cat-intro` — the gap between the two is
    the part that was carrying the argument, and it survives at the smaller
    pair. The box is what changed the sums: a lit panel does not need to be set
-   large to be read first, and at the old size it was a paragraph in a frame
+   large to be read first, and at the old size it was a paragraph on a plate
    rather than a line in a callout. The 64ch measure stays for the reason it
    was set: the face is monospace and the constraint is a character count. */
 .hw26-head:has(+ .hw26-head-intro) {
@@ -837,29 +837,32 @@ html:not(.hw26-cursor-dom) .hw26 [role='button'] * {
  * Mint is the page's signal for the counted and the conditional and it is
  * already spent on exactly this kind of fact — the team cap in the ticker, the
  * live cell on the wall — so the colour is not a new claim, it is the claim
- * these lines were already making without saying so.
+ * these lines were already making without saying so. It is the whole device
+ * now: a tint of it behind the line and the line itself in it, with no edge
+ * drawn round either. The ring came off and the dark interior it enclosed came
+ * off with it, which leaves one translucent green doing both jobs.
  *
- * Chamfered in two layers on the pseudo-elements rather than one clip on the
- * element. `::before` is the outline in the outer chamfer, `::after` the fill
- * one edge-width inside it in the inner — see the note on `.hw26-rig` for
- * where the inner chamfer's constant comes from.
- *
- * The element itself stays unclipped, which is left over from the bloom these
- * boxes used to throw and is worth keeping. The glow is gone — a ring and a
- * tinted fill are enough of a callout at this size, and the bloom was the part
- * that read as a light rather than as a plate — but the reason the clip sat on
- * the pseudo-elements is still true and still cheap: `clip-path` clips an
+ * One layer, on `::before`, chamfered there rather than by a clip on the
+ * element. The element itself stays unclipped, which is left over from the
+ * bloom these boxes used to throw and is worth keeping: `clip-path` clips an
  * element's own background *and* every descendant it has, pseudo-elements
  * included, so nothing painted inside a clipped box can leave the box at any
  * depth. Clip the element and anything that ever wants to sit past its edge
- * has to be rebuilt from here. The construction stands; only the glow layer
- * came off.
+ * has to be rebuilt from here.
  *
  * The cut is small because the box is. `--rig-cut` is 34px against a panel
  * 420px tall at its shortest and the hero plate takes 28; this is one line of
  * type and its padding — 64px, 82 when the sentence turns — so either figure
  * would read as a bevel taking a third of the height off rather than as a
  * clipped corner. 12px is the corner at this size.
+ *
+ * One fill for both themes, and translucency is what buys that. Mint flips
+ * with the palette — a pale green on the sheet's near-black, the deep
+ * `#00794c` on light mode's paper — so a tint of it lands a step off whatever
+ * ground it is over in either direction, and there is nothing for a
+ * `data-theme` override to correct. 12% is as far as it goes: enough that the
+ * panel reads as tinted rather than as a shadow, little enough that the mint
+ * type keeps its contrast against it.
  *
  * The type is untouched — same size, same leading, same measure. The measures
  * are restated below because they are character counts and `border-box` would
@@ -868,39 +871,38 @@ html:not(.hw26-cursor-dom) .hw26 [role='button'] * {
  * `fit-content` is what turns the measure back into a ceiling. A `<p>` is a
  * block and takes the whole column whether or not it has anything to put in
  * it, which was invisible while these were bare lines of type and is not once
- * they have an edge: "Each team can reserve 1 hardware unit" is thirty-seven
- * characters and the box round it was drawn at sixty-four, so a third of it
- * was a lit rectangle containing nothing. Sized to its content the box is the
- * sentence, which is the only thing it was ever supposed to be around. The
- * `max-width` rules below stay as the cap they were always written as — they
- * just stop being the width as well. */
+ * they have a ground of their own: "Each team can reserve 1 hardware unit" is
+ * thirty-seven characters and the box round it was drawn at sixty-four, so a
+ * third of it was a lit rectangle containing nothing. Sized to its content
+ * the box is the sentence, which is the only thing it was ever supposed to be
+ * around. The `max-width` rules below stay as the cap they were always
+ * written as — they just stop being the width as well. */
 .hw26-head-intro,
 .hw26-cat-intro {
   --intro-pad-i: clamp(1rem, 2vw, 1.4rem);
   --intro-cut: 12px;
-  --intro-edge: 1px;
-  --intro-cut-inner: calc(var(--intro-cut) - 0.585786 * var(--intro-edge));
   position: relative;
-  /* The two layers below sit at negative z-index, which paints them above
-     this element's own background and below its text. That needs a stacking
+  /* The layer below sits at negative z-index, which paints it above this
+     element's own background and below its text. That needs a stacking
      context to be negative *within*, and the bloom's `filter` used to open one
      as a side effect; with the bloom gone this line is the only thing holding
-     it, so it is load-bearing rather than belt-and-braces. Drop it and both
-     layers fall behind the section. */
+     it, so it is load-bearing rather than belt-and-braces. Drop it and the
+     fill falls behind the section. */
   isolation: isolate;
   width: fit-content;
   padding: clamp(0.85rem, 1.6vw, 1.15rem) var(--intro-pad-i);
   color: var(--hw-mint);
 }
 
-/* The outline. The element paints no background of its own — this is it. */
+/* The fill, and the whole of the box. The element paints no background of its
+   own — this is it. */
 .hw26-head-intro::before,
 .hw26-cat-intro::before {
   content: "";
   position: absolute;
-  z-index: -2;
+  z-index: -1;
   inset: 0;
-  background: color-mix(in srgb, var(--hw-mint) 45%, transparent);
+  background: color-mix(in srgb, var(--hw-mint) 12%, transparent);
   clip-path: polygon(
     0 0,
     calc(100% - var(--intro-cut)) 0,
@@ -909,73 +911,6 @@ html:not(.hw26-cursor-dom) .hw26 [role='button'] * {
     var(--intro-cut) 100%,
     0 calc(100% - var(--intro-cut))
   );
-}
-
-/* The fill, one edge-width inside the outline in the same shape.
- *
- * The countdown panel's fill, to the figure — `.hw26-hero-panel::before` is
- * `rgba(6, 10, 8, 0.5)` and so is this. The two are the same object at
- * different sizes: a chamfered plate whose ring is one ink and whose interior
- * is a translucent near-black a step under the ground, and they were reading
- * as two families only because this one filled with a mint-tinted steel while
- * that one filled with darkness. The ring stays mint — the green is the
- * identity of these boxes and it lives in the outline, not the interior — so
- * what changes is only what the ring is drawn around.
- *
- * Translucent, and over the sheet's own ground rather than over whatever
- * happens to be under it — which here is not the same thing. The outline
- * layer beneath this one is not a ring, it is the whole chamfer filled with
- * mint at 45%, and the ring is only the millimetre of it this fill does not
- * cover. That worked while the fill was opaque. At 50% the mint came straight
- * back up through it and the box went bottle green, which is not the
- * countdown's interior and not anything anyone asked for. So `--hw-void` is
- * restated underneath: the fill is the same 50% black the panel carries, laid
- * on the page colour the box sits on, and the outline layer stops at the
- * ring where it was always meant to.
- *
- * What that produces on this page is a very dark interior, close to the sheet
- * itself, and that is the honest answer rather than a shortfall. The panel's
- * fill looks like a frosted plate because there is a photograph under it to
- * darken; on flat near-black, the same fill has almost nothing to do. The
- * ring and the mint type are what make the callout, which is what they were
- * doing before the bloom came off.
- *
- * No `backdrop-filter`. The panel frosts because it has a photograph behind
- * it; these have flat ground and a hairline grid, where a 6px blur is a
- * compositing layer per box for a difference nobody can see. It is the one
- * part of the panel's construction not copied, and it is the part that was
- * answering a problem this box does not have — if one of these ever lands on
- * a picture, that is the line to bring across. */
-.hw26-head-intro::after,
-.hw26-cat-intro::after {
-  content: "";
-  position: absolute;
-  z-index: -1;
-  inset: var(--intro-edge);
-  background-color: var(--hw-void);
-  background-image: linear-gradient(rgba(6, 10, 8, 0.5), rgba(6, 10, 8, 0.5));
-  clip-path: polygon(
-    0 0,
-    calc(100% - var(--intro-cut-inner)) 0,
-    100% var(--intro-cut-inner),
-    100% 100%,
-    var(--intro-cut-inner) 100%,
-    0 calc(100% - var(--intro-cut-inner))
-  );
-}
-
-/* The one theme where the countdown's fill cannot be borrowed. The panel gets
- * away with a near-black interior in light mode because it opts out of the
- * palette entirely — it re-declares mint locally and sets its type white, on
- * the grounds that it sits on a photograph that does not flip. These boxes do
- * flip: their type is `--hw-mint`, which in light mode is the deep green
- * `#00794c`, and deep green on a half-black plate is about 1.3:1. So light
- * mode keeps the fill these had before — mint at 8% into the panel token,
- * which is the same idea a step up rather than a step down: an interior just
- * off the ground, with the ring still doing the work. */
-html[data-theme='light'] .hw26-head-intro::after,
-html[data-theme='light'] .hw26-cat-intro::after {
-  background: color-mix(in srgb, var(--hw-mint) 8%, var(--hw-steel));
 }
 
 .hw26-head-intro {
@@ -1615,11 +1550,11 @@ html[data-theme='light'] .hw26-cat-intro::after {
    compact cell's 24: this is a wide plate of no great height, which is what
    that number was cut for.
 
-   The intro callouts wear the same corner now, built the same way but split
-   across their own pseudo-elements — a shape they arrived at while they still
-   threw a glow, since a clipped element cannot paint anything outside itself.
-   The glow is gone and the split construction stayed. See the note on
-   `.hw26-head-intro`. */
+   The intro callouts wear the same corner, smaller and on one layer: they
+   have no ring, so there is no inner chamfer to inset. The clip still sits on
+   a pseudo-element rather than on the element itself, which is a shape they
+   arrived at while they still threw a glow, since a clipped element cannot
+   paint anything outside itself. See the note on `.hw26-head-intro`. */
 .hw26-hero-panel {
   --panel-cut: 28px;
   --panel-edge: 1px;
@@ -2096,7 +2031,25 @@ button.hw26-apply {
 }
 
 /* Three up. Steps to two before the name's longest word starts breaking the
-   cell, then to one on a phone. */
+   cell, and stays at two all the way down — a phone gets a pair of cards to a
+   row, not a column of full-width plates. Two is the floor; the grid never
+   collapses to one, so the wall reads as a wall on a phone.
+
+   Two columns cost the cell most of its width, and the figures inside it were
+   all written against a wider one. At 390px the column is 167px and the
+   content box 111px, against a 1.35rem name floor and a fixed 0.82rem
+   caption — so the longest names ran out of the box and the two "build your
+   own" cells, the only ones carrying a caption, overflowed the square by more
+   than its whole content height. Bottom-hung, that overflow left upward: those
+   cells lost their name and their count and opened on a half-sentence.
+
+   All three are answered under 600px, and answered where they live rather
+   than here — the name's floor and the caption's size on their own rules
+   further down, the square's floor on the ratio below it. This rule stays
+   what it says it is: a column count, and two is the floor. What is worth
+   knowing at this end is that the breakpoint those fixes share is 600 and not
+   720, because 600 is where the *content* stops needing them rather than
+   where a device class begins. */
 .hw26-rigs {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -2106,12 +2059,6 @@ button.hw26-apply {
 @media (max-width: 1100px) {
   .hw26-rigs {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-
-@media (max-width: 720px) {
-  .hw26-rigs {
-    grid-template-columns: minmax(0, 1fr);
   }
 }
 
@@ -2746,21 +2693,30 @@ button.hw26-apply {
    width is a third of the sheet and its height was a constant, so the plate
    went from nearly square on a phone to a wide letterbox on a desktop and
    the grid had no proportion of its own. `aspect-ratio` is the same
-   guarantee expressed as a ratio — the height follows the column at every
-   step of 3 → 2 → 1.
+   guarantee expressed as a ratio — the height follows the column at both
+   steps of 3 → 2.
 
-   The floor comes off with it, because an explicit ratio and a `min-height`
-   both want to decide the height and on any column wider than 260px the
-   floor would simply be idle. One figure decides, and it is the ratio.
+   The old floor comes off with it, because a fixed `min-height` and an
+   explicit ratio both want to decide the height and on any column wider than
+   260px the floor would simply be idle. One figure decides, and it is the
+   ratio.
 
-   Nothing has to be made to fit: the tallest content in the set — a
-   three-line name, or a name over a caption — cleared the old 260px box
-   already, and every square is taller than that at every breakpoint. What
-   the height buys is the empty middle, and the middle is the composition:
-   the count pinned in one corner, the name on the opposite edge, and the
-   render between them on the cells that have one. The add-ons have neither
-   a count nor a plate, so their middle is emptier still — a name and a
-   caption hung off the bottom edge of a taller field — but that emptiness
+   `min-height: 0` is how that is enforced. This is a grid item, and a grid
+   item's default minimum is its own content, which would quietly outrank the
+   ratio on any cell whose content is tall. Zeroed, the square is unconditional
+   — which is right down to about 600px and wrong below it, where the column
+   gets small enough that the captioned cells cannot fit their own copy inside
+   a square. The phone block further down puts the content minimum back for
+   exactly that reason, so the square becomes a floor rather than a fixed
+   height. Same shape, one less absolute.
+
+   What the height buys is the empty middle, and the middle is the
+   composition: the count pinned in one corner, the name on the opposite edge,
+   and the render between them on the cells that have one. On a phone that
+   middle is spent rather than held, and on the two captioned cells it is
+   given up altogether — the cell grows instead. The add-ons have neither a
+   count nor a plate, so their middle is emptier still — a name and a caption
+   hung off the bottom edge of a taller field — but that emptiness
    now reads as the same held space the rest of the grid keeps, not as a
    shape the add-ons alone were left out of. */
 .hw26-rigs .hw26-rig--compact {
@@ -2844,9 +2800,24 @@ button.hw26-apply {
 }
 
 /* Sized so the longest word in the list — MANIPULATORS — clears the cell's
-   measure at every step of the grid, three up and two. */
+   measure three up and two up, at every width from 600px out to 1440.
+
+   `overflow-wrap` is the backstop under that, and it is here rather than in
+   the phone block because a name that cannot fit should wrap at any width,
+   not only at the widths somebody remembered to test. The default is
+   `normal`, which refuses to break inside a word and lets it run out of the
+   box instead — and the box is `overflow: hidden`, so the overrun is not
+   even visible as an overrun. It just reads as a name that ends early:
+   MANIPULATORS came out as MANIPULAT with nothing to say it had been cut.
+   `break-word` breaks the word only when it cannot fit on a line of its own,
+   so nothing that already fits is touched — this declaration changes no
+   layout at 600px and up, which is the point of putting it outside the query.
+
+   The phone floor is in the block below, with the rest of the small-cell
+   figures. */
 .hw26-rigs .hw26-rig--compact .hw26-rig-name {
   font-size: clamp(1.35rem, 2.1vw, 2rem);
+  overflow-wrap: break-word;
 }
 
 /* The caption. A clause or two under a name, set at the body face and small —
@@ -2868,6 +2839,130 @@ button.hw26-apply {
   font-size: 0.82rem;
   line-height: 1.5;
   color: var(--hw-bone);
+}
+
+/* The two-column phone, where the cell stops being a small plate and starts
+ * being a very small one. This block is what makes two-up survive 360px, and
+ * it is deliberately the only place those figures are bent.
+ *
+ * 599.98 rather than a round 600 or the file's usual 720. The width is chosen
+ * against the *content*, not against a device: 600px is the first viewport
+ * where every name clears its measure and the captioned cells fit their
+ * square unaided, which this section's own measurements put it at, so it is
+ * the honest place to stop. The fractional edge is so that nothing here can
+ * overlap a `min-width: 600px` rule written later, and so 600 exactly keeps
+ * the desktop figures to the pixel.
+ *
+ * Below it, three things move, and each is the same object one step smaller
+ * rather than a different object:
+ *
+ * 1. The name's floor. The base clamp bottoms out at 1.35rem while the column
+ *    keeps shrinking, so on a phone it was a fixed 21.6px in a 111px measure.
+ *    Here the floor drops to 1.05rem and the vw term is re-cut to 4.2 so the
+ *    two meet: at 599.98 this clamp is still pinned to its 1.35rem ceiling,
+ *    which is exactly what the base rule computes at 600, so the type does not
+ *    step at the breakpoint — it simply stops being held up below it.
+ *
+ *    MANIPULATORS still does not fit on one line at 390, and no floor that
+ *    keeps the name a display cut would fit it: twelve Orbitron 900 caps need
+ *    about 9.2px of advance each to make 111px, which is under 12px of type
+ *    and smaller than the caption under it. So the name wraps there, on the
+ *    `overflow-wrap` above, and the floor's job is only to make the wrap land
+ *    somewhere sensible — 16.8px puts eight characters on a line instead of
+ *    six, which is the difference between MANIPULA/TORS and MANIPU/LATORS.
+ *
+ * 2. The caption. Down a step, because it is the thing that decides how far
+ *    the captioned cells grow, and a caption is the one part of a cell that
+ *    can lose a little size without changing what it is.
+ *
+ * 3. The square's floor stops being a ceiling — see the note on the ratio
+ *    above. */
+@media (max-width: 599.98px) {
+  /* The square stops being a fixed height and becomes a floor. Cells whose
+     content fits are square to the pixel, exactly as before; the two "build
+     your own" entries, the only ones carrying a caption, grow downward instead
+     of overflowing upward out of a box that would not take them.
+
+     The ratio has to come off for that, and it took two dead ends to establish
+     it, both worth recording because both look like the answer:
+
+     - `min-height: auto`, the grid item's own content-based minimum, is
+       defined to apply only while the item's overflow in that axis is
+       `visible`. This cell is `overflow: hidden` and has to be — that is what
+       clips the photo plate to the chamfer — so `auto` resolves to zero and
+       nothing moves.
+     - `min-height: max-content` survives that, but not the ratio: with an
+       `aspect-ratio` in force the intrinsic block size is resolved *from the
+       ratio*, so `max-content` comes back as the square and the minimum is
+       satisfied by the very box it was meant to outgrow.
+
+     So the ratio is cleared and the square is restated as the minimum it now
+     is. The expression is the grid's own arithmetic rather than a guessed
+     figure: two columns and one gap inside the gutters is
+     `(100vw - 2·gutter - gap) / 2`, which is the `50vw - gutter - gap/2`
+     below. The gap is its 1rem floor at every width this block covers, hence
+     the literal 8px for half of it; the gutter is the token, so this tracks
+     it if it is ever re-cut. Measured against the live grid it is exact —
+     152px at 360, 167 at 390, 187 at 430, 267.5 at 599.98.
+
+     The square is still the shape; a row only leaves it when something in it
+     genuinely needs the space. */
+  .hw26-rigs .hw26-rig--compact {
+    aspect-ratio: auto;
+    min-height: calc(50vw - var(--hw-gutter) - 8px);
+  }
+
+  /* Growing the cell hands the count a problem the square was hiding. The copy
+     is bottom-hung and the count is pinned out of flow to the top-left corner,
+     which never met because on a square there was always empty middle between
+     them. On a cell that has grown to fit its copy there is no middle left:
+     the name reaches the top of the plate and sets straight through the
+     numeral — measured at 1,400px² of overlap on both cells before this rule.
+
+     So the corner is reserved rather than the count moved. Moving it back into
+     the flow above the name is the arrangement this section explicitly threw
+     out — see the note on the count, where it "read as the first line of the
+     name rather than as a figure about it" — and it is still the wrong answer.
+     Padding the top by the count's own band leaves it exactly where it is and
+     simply refuses the copy that strip. The band is the count's line box, so
+     it is written as the count's own clamp times its own 0.85 leading rather
+     than as a figure that has to be kept in step by hand; the extra 0.6rem is
+     the gap between the numeral and the first line under it.
+
+     `:has()` and not the bare class, because this costs vertical space and
+     only two cells in the section need it: the ones carrying both a count and
+     a caption, which are the two "build your own" entries and the only cells
+     that grow at all. Every other cell keeps its square and its empty middle.
+
+     The cell's row-mate comes with it. The grid item is the shell, not the
+     card — the shell exists unclipped so the accent bloom can escape the
+     card's `overflow: hidden` — and a grid item stretches to its row by
+     default, so the shell beside a grown cell is already the right height. The
+     card inside it is not: the base rule gives it `width: 100%` and says
+     nothing about height, so it sat at the top of a stretched shell and left
+     the difference as blank page under a short card. One card 234px tall next
+     to one 167px tall reads as a grid that has come apart, which is a worse
+     failure than the tight square it replaced. Filling the shell puts every
+     card in a row back on the same height, and the row is as tall as whatever
+     in it needed the most. */
+  .hw26-rigs .hw26-rig--compact:has(.hw26-rig-no):has(.hw26-rig-note) {
+    padding-top: calc(
+      var(--rig-pad) + 0.85 * clamp(2.5rem, 4.5vw, 4rem) + 0.6rem
+    );
+  }
+
+  .hw26-rigs .hw26-rig-shell > .hw26-rig--compact {
+    height: 100%;
+  }
+
+  .hw26-rigs .hw26-rig--compact .hw26-rig-name {
+    font-size: clamp(1.05rem, 4.2vw, 1.35rem);
+  }
+
+  .hw26-rigs .hw26-rig-note {
+    font-size: 0.75rem;
+    line-height: 1.45;
+  }
 }
 
 /* The placeholders. Muted, not absent: "there is a category here and it is
@@ -2946,10 +3041,13 @@ button.hw26-apply {
 
    Sized against the cell, in `cqw`, which is why the cell is a container. No
    viewport clamp can do this job: the square is 27% of the screen three-up
-   and 87% of it on a phone, so any figure that fills the card at 1440 overruns
-   it at 390 and any figure that fits at 390 is a speck at 1440. As a share of
-   the card's own width the glyph is the same object at every step of the
-   grid. The clamp on the line above is the fallback for a renderer without
+   and 43% of it two-up on a phone, so any figure that fills the card at 1440
+   overruns it at 390 and any figure that fits at 390 is a speck at 1440. This
+   is the one figure in the section that the two-column phone did not break,
+   because it was never a viewport figure: as a share of the card's own width
+   the glyph is the same object at every step of the grid.
+
+   The clamp on the line above is the fallback for a renderer without
    container queries, tuned for the desktop column; where `cqw` resolves it is
    simply overwritten.
 
