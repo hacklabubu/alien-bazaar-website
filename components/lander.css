@@ -4940,10 +4940,13 @@ html[data-theme='light'] .hw26-sponsor-lead:hover {
 }
 
 /* The gap between tiles is the container showing through, so the wide and
-   tablet column counts divide the nine partners exactly. */
+   tablet column counts divide the eight partners exactly. Eight is the
+   currently *visible* count (`VISIBLE_HARDWARE_PARTNERS.length`, not the full
+   array), so hiding, unhiding, adding or removing a partner means revisiting
+   these two counts. */
 .hw26-sponsors-rest {
   display: grid;
-  grid-template-columns: repeat(9, minmax(0, 1fr));
+  grid-template-columns: repeat(8, minmax(0, 1fr));
   gap: 1px;
   background: var(--hw-line);
   border: 1px solid var(--hw-line);
@@ -4951,7 +4954,7 @@ html[data-theme='light'] .hw26-sponsor-lead:hover {
 
 @media (max-width: 1580px) {
   .hw26-sponsors-rest {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 }
 
@@ -4960,7 +4963,13 @@ html[data-theme='light'] .hw26-sponsor-lead:hover {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .hw26-sponsors-rest:not(.hw26-sponsors-rest--solo) > .hw26-sponsor:last-child {
+  /* Two columns leave a leftover track whenever the count is odd, and the
+     `:nth-child(odd)` half of this selector is what keeps that from being a
+     number written down here: the last tile is only widened when it is also
+     the odd one out, so an even count falls through untouched and the rule
+     stays right at eight, nine or whatever comes next. */
+  .hw26-sponsors-rest:not(.hw26-sponsors-rest--solo)
+    > .hw26-sponsor:last-child:nth-child(odd) {
     grid-column: span 2;
   }
 }
@@ -4970,24 +4979,24 @@ html[data-theme='light'] .hw26-sponsor-lead:hover {
 
 /* A row holding one tile. Media partners and Sponsors are a name each so far,
    and both of the obvious things to do with that are wrong: a full-width plate
-   turns a small tile into a lead cell nobody was given, and one tile in a
-   nine-track grid leaves eight lit rectangles beside it.
+   turns a small tile into a lead cell nobody was given, and one tile in an
+   eight-track grid leaves seven lit rectangles beside it.
 
-   So the row is one track wide instead of nine, and the track is exactly the
+   So the row is one track wide instead of eight, and the track is exactly the
    width it would have had in the rows above — the container shrinks, not the
    tile. `100%` is the sheet, `2px` is the container's own two borders and the
-   `8px` is the eight 1px gaps between nine tiles, so the arithmetic is the
+   `7px` is the seven 1px gaps between eight tiles, so the arithmetic is the
    same one the grid does and the tile lands on the column above it. It tracks
-   the wall's count. A solo tile still cut to a ninth of the sheet
+   the wall's count. A solo tile still cut to an eighth of the sheet
    would sit wider than every tile it is meant to line up with. */
 .hw26-sponsors-rest--solo {
   grid-template-columns: minmax(0, 1fr);
-  width: calc((100% - 2px - 8px) / 9 + 2px);
+  width: calc((100% - 2px - 7px) / 8 + 2px);
 }
 
 @media (max-width: 1580px) {
   .hw26-sponsors-rest--solo {
-    width: calc((100% - 2px - 2px) / 3 + 2px);
+    width: calc((100% - 2px - 3px) / 4 + 2px);
   }
 }
 

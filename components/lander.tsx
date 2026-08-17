@@ -662,6 +662,8 @@ type Partner = {
   mark?: string;
   lockup?: string;
   wordmark?: string;
+  /** Still a partner; their agreement just does not let us show the mark yet. */
+  hidden?: boolean;
 };
 
 /**
@@ -848,8 +850,12 @@ const HARDWARE_PARTNERS: Partner[] = [
     mark: "hw26-mark--mchtr",
     lockup: "hw26-sponsor-lockup--mchtr",
     wordmark: "MCHTR",
+    hidden: true,
   },
 ];
+
+/** The subset the wall deals. The full list above stays the record of who is in. */
+const VISIBLE_HARDWARE_PARTNERS = HARDWARE_PARTNERS.filter((p) => !p.hidden);
 
 /**
  * The media partners. Their own heading rather than a sixth hardware tile:
@@ -1998,7 +2004,7 @@ function PartnerTierSubhead({
 /** The complete partner wall, reused by the dedicated Partners page. */
 export function PartnerDirectory() {
   const ecosystem = useShuffled(SMALL_SPONSORS);
-  const hardware = useShuffled(HARDWARE_PARTNERS);
+  const hardware = useShuffled(VISIBLE_HARDWARE_PARTNERS);
 
   return (
     <section className="hw26-section">
@@ -3013,7 +3019,7 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
   // four stay exactly as written. See `useShuffled` for why the order arrives
   // after the first render rather than during it.
   const ecosystem = useShuffled(SMALL_SPONSORS);
-  const hardware = useShuffled(HARDWARE_PARTNERS);
+  const hardware = useShuffled(VISIBLE_HARDWARE_PARTNERS);
 
   return (
     /*
@@ -3689,10 +3695,14 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
               `SponsorTile` above.
 
               Dealt again per visit, and unlike the ecosystem row this one has a
-              layout stake in how. Nine tiles divide cleanly into the wall's
-              nine- and three-column layouts. On phones the final tile closes
-              the one leftover track. Reordering the array instead of using CSS
-              `order` also keeps visual and DOM order aligned.
+              layout stake in how. Eight tiles divide cleanly into the wall's
+              eight- and four-column layouts. On phones the two-column grid
+              takes them in full rows, and the last tile only widens to close a
+              leftover track when the count is odd. Those column counts are cut
+              to `VISIBLE_HARDWARE_PARTNERS.length` rather than the full list,
+              so hiding or unhiding a partner is a CSS change too. Reordering
+              the array instead of using CSS `order` also keeps visual and DOM
+              order aligned.
 
               `key` is the partner name, which is unique here, so React reorders
               the existing DOM nodes rather than tearing them down and building
