@@ -13,6 +13,7 @@ import {
   type ReactNode,
   type RefObject,
   useEffect,
+  useId,
   useLayoutEffect,
   useRef,
   useState,
@@ -1071,50 +1072,84 @@ function useReveal() {
 }
 
 /**
- * The inventory cell's hover, given to readers who have no pointer to hover
- * with.
+ * The inventory's hover, given to readers who have no pointer to hover with.
  *
  * Every cell in the two `.hw26-rigs` grids opens under the pointer — the plate
- * comes up to near full colour, the count goes mint, the outline goes with it.
- * On a phone none of that had ever been on a screen: `:hover` is a state a
- * finger cannot enter, so the entire treatment was desktop-only decoration and
- * the touch reader got the resting plate for the length of the section. This
- * gives them the same thing along the axis they do have — the cell nearest the
- * middle of the screen wears it, and scrolling moves it down the grid.
+ * comes up to near full colour, the count goes mint. On a phone none of that
+ * had ever been on a screen: `:hover` is a state a finger cannot enter, so the
+ * entire treatment was desktop-only decoration and the touch reader got the
+ * resting plate for the length of the section. This gives them the same thing
+ * along the axis they do have — scroll position — and the unit it gives it in
+ * is the titled group.
+ *
+ * The group, and not the cell, and the reason is that the grid is two-up on a
+ * phone now. One cell lighting up worked while a phone showed one column: the
+ * lit cell was the row, the light moved down the page a row at a time, and it
+ * read as a beam passing over the sheet. Beside a second column it stopped
+ * reading as anything — one square of a pair was bright and its neighbour, the
+ * same object at the same height, was not, which looks like a rendering fault
+ * rather than a treatment. Lighting the whole group instead puts the unit back
+ * where the reader's attention actually is: they are looking at Drones, or at
+ * Robot arms, and the section they are in answers them.
+ *
+ * `.hw26-rig-group` is the unit because it is the one the page already has —
+ * an `h3` and the grid under it, the same wrapper in both sections. The
+ * `<section>` around all of this is the wrong box: it is the entire inventory,
+ * so it would be lit from the first cell to the last and a state that is
+ * always on is not a state.
  *
  * `(hover: none)` is the whole gate, and it is deliberately not paired with a
  * width. The question is not how wide the window is, it is whether the reader
  * can produce a hover at all, and the two answers come apart in both
  * directions: a tablet at 1200px cannot hover and would be left with the dead
- * state this exists to fix, while a mouse at 380px can, and would get a second
- * cell lighting up under its own. Asking the browser the actual question gets
- * both right. It is also the same query the stylesheet would use, so there is
- * one definition of "no pointer here" rather than a width in script and a
- * capability in CSS. Nothing else on the page is touched: where a real hover
- * exists this hook never arms, never listens, and never writes a class.
+ * state this exists to fix, while a mouse at 380px can, and would get a whole
+ * group lighting up around its own cell. Asking the browser the actual
+ * question gets both right. It is also the same query the stylesheet would
+ * use, so there is one definition of "no pointer here" rather than a width in
+ * script and a capability in CSS. Nothing else on the page is touched: where a
+ * real hover exists this hook never arms, never listens, and never writes a
+ * class.
  *
- * Which cell is nearest is settled on rects, once per frame, over only the
- * cells that are on screen. The observer is not doing the choosing — it cannot,
- * "closest to the centre" is not a threshold — it is deciding what is worth
- * measuring. That matters mostly for the rest of the page: away from the two
- * grids the intersecting set is empty, so a scroll wakes the frame, finds
- * nothing to measure, clears the class and goes back to sleep without touching
- * layout. Scroll is coalesced onto one `requestAnimationFrame` the way the
- * timeline's pin does it — the handler only ever wakes the loop, and the loop
- * reads the newest position itself, so a phone firing scroll faster than it
- * paints cannot queue up work.
+ * Which group is settled on rects, once per frame, over only the groups that
+ * are on screen. The observer is not doing the choosing — it cannot, "the one
+ * at the middle" is not a threshold — it is deciding what is worth measuring,
+ * and there are about eight boxes to measure rather than twenty-two. That
+ * matters mostly for the rest of the page: away from the two sections the
+ * intersecting set is empty, so a scroll wakes the frame, finds nothing to
+ * measure, clears the class and goes back to sleep without touching layout.
+ * Scroll is coalesced onto one `requestAnimationFrame` the way the timeline's
+ * pin does it — the handler only ever wakes the loop, and the loop reads the
+ * newest position itself, so a phone firing scroll faster than it paints
+ * cannot queue up work.
  *
- * Ties go to DOM order, because `<` keeps the first cell that reached the best
- * distance. Two cells exactly equidistant is a real position on a one-column
- * phone grid — the gap between two squares centred on the fold — and without a
- * rule the class would flip between them on sub-pixel scroll noise.
+ * The measure is the distance from the middle of the screen to the nearest
+ * edge of the group, which is zero whenever the middle is inside it. That is a
+ * change from the cell version, which compared distances between the middle
+ * and each cell's centre, and the change is not cosmetic: a cell is a small
+ * square and its centre is a fair stand-in for where it is, while a group is a
+ * grid several screens tall and its centre can be a long way from any part of
+ * it that is visible. Ported literally, a short group whose centre happened to
+ * be near the fold would take the light off the tall group the reader was
+ * actually inside. Nearest-edge asks the question the centre distance was only
+ * ever approximating — which section is the middle of the screen in — and
+ * answers it exactly.
+ *
+ * Ties go to DOM order, because `<` keeps the first group that reached the
+ * best distance. Groups do not overlap, so the middle is inside at most one of
+ * them and the tie that matters is the other one: the middle landing in the
+ * margin exactly between two groups, where without a rule the class would flip
+ * on sub-pixel scroll noise.
  *
  * The TBA placeholders take part like everything else. They are cells in the
- * same grid with a plate and a hover of their own (a smaller one, deliberately
- * — see `.hw26-rig--tba` in the stylesheet), and skipping them would leave a
- * hole in the middle of the sweep where the light goes out for one square.
- * Their muted figures are in the CSS, so what they do here is exactly what
- * they do under a pointer.
+ * same grid with a plate and a treatment of their own (a smaller one,
+ * deliberately — see `.hw26-rig--tba` in the stylesheet), and skipping them
+ * would leave a hole in the middle of a lit group. Their muted figures are in
+ * the CSS, so what they do here is exactly what they do under a pointer.
+ *
+ * What the class buys is deliberately not everything `:hover` buys. The mint
+ * ring is a pointer's answer and stays one — see the split selectors on
+ * `.hw26-rig` in the stylesheet, and the note there for why a whole group of
+ * green outlines is a different object from one cell under a cursor.
  */
 function useRigFocus(root: RefObject<HTMLDivElement | null>) {
   useEffect(() => {
@@ -1122,43 +1157,64 @@ function useRigFocus(root: RefObject<HTMLDivElement | null>) {
     if (!rootEl) return;
     if (typeof IntersectionObserver === "undefined") return;
 
-    // In DOM order, which is what makes the tie-break below stable. Both grids
-    // — the categories and the add-ons — wear the same cell and behave the
-    // same, so this is one flat list rather than a list per section.
-    const cells = Array.from(
-      rootEl.querySelectorAll<HTMLElement>(".hw26-rig--compact"),
-    );
-    if (!cells.length) return;
+    // In DOM order, which is what makes the tie-break below stable. Both
+    // sections — the categories and the add-ons — wear the same wrapper and
+    // behave the same, so this is one flat list rather than a list per
+    // section. The cells are read once, here, rather than re-queried on every
+    // frame: the class is written to all of them at once and the set never
+    // changes for the life of the effect.
+    const groups = Array.from(
+      rootEl.querySelectorAll<HTMLElement>(".hw26-rig-group"),
+    )
+      .map((box) => ({
+        box,
+        cells: Array.from(
+          box.querySelectorAll<HTMLElement>(".hw26-rig--compact"),
+        ),
+      }))
+      .filter((group) => group.cells.length > 0);
+    if (!groups.length) return;
+
+    type Group = (typeof groups)[number];
 
     const touch = window.matchMedia("(hover: none)");
 
     let frame = 0;
     let armed = false;
-    let lit: HTMLElement | null = null;
+    let lit: Group | null = null;
     const onscreen = new Set<HTMLElement>();
 
-    // One writer for the class, so exactly one cell can carry it and an
-    // unchanged pick does not touch the DOM at all.
-    const light = (next: HTMLElement | null) => {
+    // One writer for the class, so exactly one group can carry it and an
+    // unchanged pick does not touch the DOM at all — which is most frames, now
+    // that the unit is a group: a reader scrolling through Robot arms crosses
+    // four cells without this function writing anything.
+    const light = (next: Group | null) => {
       if (next === lit) return;
-      lit?.classList.remove("hw26-rig--active");
-      next?.classList.add("hw26-rig--active");
+      for (const cell of lit?.cells ?? []) {
+        cell.classList.remove("hw26-rig--active");
+      }
+      for (const cell of next?.cells ?? []) {
+        cell.classList.add("hw26-rig--active");
+      }
       lit = next;
     };
 
     const pick = () => {
       frame = 0;
       const middle = window.innerHeight / 2;
-      let best: HTMLElement | null = null;
+      let best: Group | null = null;
       let bestGap = Number.POSITIVE_INFINITY;
-      for (const cell of cells) {
-        if (!onscreen.has(cell)) continue;
-        const rect = cell.getBoundingClientRect();
-        const gap = Math.abs(rect.top + rect.height / 2 - middle);
-        // Strictly closer, so a tie leaves the earlier cell holding it.
+      for (const group of groups) {
+        if (!onscreen.has(group.box)) continue;
+        const rect = group.box.getBoundingClientRect();
+        // Zero while the middle of the screen is inside the group, and the
+        // distance to the nearer edge once it is outside — see the note above
+        // for why this is not the cell version's centre distance.
+        const gap = Math.max(rect.top - middle, middle - rect.bottom, 0);
+        // Strictly closer, so a tie leaves the earlier group holding it.
         if (gap < bestGap) {
           bestGap = gap;
-          best = cell;
+          best = group;
         }
       }
       light(best);
@@ -1179,16 +1235,16 @@ function useRigFocus(root: RefObject<HTMLDivElement | null>) {
     const arm = () => {
       if (armed) return;
       armed = true;
-      for (const cell of cells) io.observe(cell);
+      for (const group of groups) io.observe(group.box);
       window.addEventListener("scroll", schedule, { passive: true });
       window.addEventListener("resize", schedule);
       schedule();
     };
 
     // Everything the armed state put anywhere comes back off here, the class
-    // included: a cell left lit after the reader has plugged in a mouse or
-    // turned the tablet into a desktop-width window is a cell stuck in a state
-    // nothing can now leave.
+    // included: a group left lit after the reader has plugged in a mouse or
+    // turned the tablet into a desktop-width window is a whole grid stuck in a
+    // state nothing can now leave.
     const disarm = () => {
       if (!armed) return;
       armed = false;
@@ -2123,11 +2179,67 @@ function Faq() {
  * its row lit up 270ms after the pointer reached it. `--reveal-delay` is
  * spent by name, in the two places `.hw26-reveal` spends it, and nothing else
  * on the cell is delayed by where it happens to sit in a row.
+ *
+ * The one piece of state a cell has is the caption's phone form. Below 600px
+ * the cell is about 152px across and the caption is the only thing in it that
+ * cannot be read at that size, so there it stops being copy in the cell and
+ * becomes something the reader asks for: an (i) in the card's top-right
+ * corner, and the sentence in a small plate over the card.
+ *
+ * Both the button and the plate are in the markup at every width and the
+ * stylesheet is what turns them on. That is deliberate and not laziness: the
+ * only way to know the viewport in JS is to measure it in the browser, which
+ * happens after the server has already rendered — so a JS gate either renders
+ * different HTML on the two sides and trips hydration, or renders the desktop
+ * shape first and pops a frame later. A media query has neither problem, and
+ * `display: none` takes the button out of the accessibility tree as well as
+ * out of the layout, so a desktop reader is not offered a control that would
+ * do nothing.
  */
 function RigCell({ item, order }: { item: Rig; order: number }) {
+  const [noteOpen, setNoteOpen] = useState(false);
+  const shell = useRef<HTMLDivElement>(null);
+  const trigger = useRef<HTMLButtonElement>(null);
+  // Stable across server and client, which is the whole reason for `useId`
+  // here: `aria-controls` has to name the plate in the HTML the server sends
+  // as well as in the one React keeps, and any counter of our own would start
+  // over on the client and mismatch.
+  const noteId = useId();
+
+  // Escape and outside-tap, and only while the plate is open — a listener per
+  // cell at all times would be twenty-two of them on the page for a control
+  // that is closed almost always. Focus goes back to the (i) on Escape,
+  // because the element the reader was on is about to leave the document and
+  // focus would otherwise fall to <body>. An outside *pointerdown* rather
+  // than a click: pointerdown lands before the click that follows it, so a
+  // tap on another cell's (i) closes this plate and opens that one in the
+  // same gesture instead of spending the first tap on the dismissal.
+  useEffect(() => {
+    if (!noteOpen) return;
+
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key !== "Escape") return;
+      setNoteOpen(false);
+      requestAnimationFrame(() => trigger.current?.focus());
+    };
+
+    const onPointerDown = (event: PointerEvent) => {
+      if (shell.current?.contains(event.target as Node)) return;
+      setNoteOpen(false);
+    };
+
+    window.addEventListener("keydown", onKeyDown);
+    window.addEventListener("pointerdown", onPointerDown);
+    return () => {
+      window.removeEventListener("keydown", onKeyDown);
+      window.removeEventListener("pointerdown", onPointerDown);
+    };
+  }, [noteOpen]);
+
   return (
     <div
       className={`hw26-rig-shell${item.dropShadow ? " hw26-rig-shell--accent" : ""}`}
+      ref={shell}
     >
       <article
         className={`hw26-rig hw26-rig--compact${item.unannounced ? " hw26-rig--tba" : ""}${item.blurPhoto ? " hw26-rig--blur" : ""}${item.dropShadow ? " hw26-rig--accent" : ""} hw26-reveal`}
@@ -2178,6 +2290,54 @@ function RigCell({ item, order }: { item: Rig; order: number }) {
         />
       ) : null}
 
+      {/* The (i), on the cells that have something to say. Written here, right
+          after the credit mark, because that is where it sits: the stylesheet
+          pins it into the top-right corner on the same inset the mark uses,
+          and drops it below the mark on the two cells that carry one. The
+          markup follows the corner so that the order a screen reader walks
+          the cell in is the order the eye walks it in — count, mark, the
+          control about the mark's corner, then the name.
+
+          It is still the last focusable thing in the card, so the plate's
+          close button, which follows the `</article>`, is one Tab away.
+
+          Drawn here rather than pulled in, because this is the only glyph on
+          the page that is not type and a dependency for one icon is a
+          dependency. `aria-label` names the entry, since twenty-two cells all
+          offering "More information" is twenty-two identical controls in a
+          screen reader's list; `aria-hidden` on the drawing keeps the circle
+          and the stem out of that name. */}
+      {item.note ? (
+        <button
+          aria-controls={noteId}
+          aria-expanded={noteOpen}
+          aria-label={`More about ${item.name}`}
+          className="hw26-rig-info"
+          onClick={() => setNoteOpen((value) => !value)}
+          ref={trigger}
+          type="button"
+        >
+          <svg aria-hidden="true" focusable="false" viewBox="0 0 16 16">
+            <circle
+              cx="8"
+              cy="8"
+              fill="none"
+              r="7.15"
+              stroke="currentColor"
+              strokeWidth="1.4"
+            />
+            <circle cx="8" cy="4.3" fill="currentColor" r="0.95" />
+            <rect
+              fill="currentColor"
+              height="5.5"
+              width="1.8"
+              x="7.1"
+              y="6.4"
+            />
+          </svg>
+        </button>
+      ) : null}
+
       {/* The only status left, and on every cell that carries it the cell is
           a placeholder outright — the line is the whole of its content. It is
           written off `tba` rather than off `unannounced` because the two are
@@ -2192,6 +2352,43 @@ function RigCell({ item, order }: { item: Rig; order: number }) {
 
         {item.note ? <p className="hw26-rig-note">{item.note}</p> : null}
       </article>
+
+      {/* The plate, and a sibling of the card rather than a child of it. The
+          card is `overflow: hidden` and chamfered — that is what clips the
+          photo to the outline — so a plate inside it would lose its own
+          corner to the cut and would silently trim any sentence it could not
+          fit rather than visibly overflowing. The shell is deliberately
+          unclipped (see the note on `.hw26-rig-shell`), so the plate can
+          stand a little proud of the card's top edge on the longest caption
+          instead of losing the end of it.
+
+          Mounted only while open, so the closed state costs the page nothing
+          and `aria-expanded` on the (i) is the only thing that has to be
+          true. Tab order needs no help: the (i) is the last focusable thing
+          inside the card and the X is the next one in the document, so
+          opening the plate puts the close control one Tab away. */}
+      {item.note && noteOpen ? (
+        <div className="hw26-rig-pop" id={noteId}>
+          <p className="hw26-rig-pop-text">{item.note}</p>
+          <button
+            aria-label="Close"
+            className="hw26-rig-pop-x"
+            onClick={() => {
+              setNoteOpen(false);
+              trigger.current?.focus();
+            }}
+            type="button"
+          >
+            <svg aria-hidden="true" focusable="false" viewBox="0 0 12 12">
+              <path
+                d="M2 2 L10 10 M10 2 L2 10"
+                stroke="currentColor"
+                strokeWidth="1.6"
+              />
+            </svg>
+          </button>
+        </div>
+      ) : null}
     </div>
   );
 }
