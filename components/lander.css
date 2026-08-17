@@ -2306,6 +2306,18 @@ button.hw26-apply {
   /* Named because the count is pinned to the panel's top-left corner and has
      to sit on the same inset the copy does — one figure, two rules. */
   --rig-pad: clamp(1.75rem, 3vw, 2.75rem);
+  /* The same inset again, for the two marks that land in the *chamfered*
+     top-right corner — the supplier's lockup and the phone's (i). It is the
+     pad at every width this page is drawn at, so the two names resolve to
+     one number and nothing is being said twice. It is named apart anyway,
+     because this corner is the only place the inset is load-bearing for
+     something other than margin: the cut is a fixed 24px on the inventory
+     cards, so a pad taken far enough in walks both marks into the diagonal —
+     the sum stops clearing the cut at 12px a side. The seam is where that
+     would be held back if the copy's inset is ever cut that far. It is not
+     hypothetical: it is what set the phone figure at 16 rather than at half
+     of 28. See `.hw26-rig-credit` for the arithmetic. */
+  --rig-corner: var(--rig-pad);
   --rig-cut-inner: calc(var(--rig-cut) - 0.585786 * var(--rig-edge));
   --rig-shape-inner: polygon(
     0 0,
@@ -2791,16 +2803,26 @@ button.hw26-apply {
  * and the top-right corner is the cheapest way to say so, because nothing on
  * any cell is up there and the count does not move on this card or any other.
  *
- * The chamfer is the catch, and `--rig-pad` already clears it — the same
- * figure that puts the count in the corner opposite. `--rig-cut` takes a 45°
- * bite out of this corner, so a point is inside the panel when its distance
- * in from the right plus its distance down from the top clears the cut. The
- * mark's own top-right corner sits at exactly `--rig-pad` on both, giving
- * `2 × --rig-pad` against `--rig-cut`: 56px against 34 at the pad's floor and
- * 88 against 34 at its ceiling, so the mark is well inside the diagonal at
- * every width this grid exists at rather than parked against it. Its other
- * three corners are further in still — width and height both carry it away
- * from the cut — so the one corner is the whole of the test.
+ * The chamfer is the catch, and this is the corner where it is paid for.
+ * `--rig-cut` takes a 45° bite out of it, so a point is inside the panel when
+ * its distance in from the right plus its distance down from the top clears
+ * the cut. The mark's own top-right corner sits at exactly `--rig-corner` on
+ * both axes, giving `2 × --rig-corner` against `--rig-cut`: 56px against 34
+ * at the pad's floor and 88 against 34 at its ceiling, so the mark is well
+ * inside the diagonal rather than parked against it. Its other three corners
+ * are further in still — width and height both carry it away from the cut —
+ * so the one corner is the whole of the test.
+ *
+ * `--rig-corner` and not `--rig-pad`, and today those are the same number at
+ * every width by definition — see where it is declared. On a phone the pad
+ * comes in to 16 and carries this mark in with it: 32 against the inventory
+ * cards' 24px cut, which is 5.66px clear of the diagonal measured
+ * perpendicular. That clearance is the figure this corner asks for, and it is
+ * why the phone inset is 16 rather than the flat half of 28 it would
+ * otherwise have been — at 14 the sum is 28 against 24, 2.83px perpendicular,
+ * which is a mark sitting on the cut rather than inside it. The two are still
+ * named apart so that a change to the *copy's* inset cannot quietly walk this
+ * mark into the diagonal.
  *
  * A box rather than a height, which is what lets one rule hold two marks of
  * very different proportions. MAB's lockup is 3:1 and SPRTK's is square, and
@@ -2819,8 +2841,8 @@ button.hw26-apply {
  * because a white lockup has no accent to take. */
 .hw26-rig-credit {
   position: absolute;
-  top: var(--rig-pad);
-  right: var(--rig-pad);
+  top: var(--rig-corner);
+  right: var(--rig-corner);
   width: auto;
   height: auto;
   max-width: clamp(42px, 3.8vw, 54px);
@@ -2870,13 +2892,16 @@ button.hw26-apply {
    plate rather than pushing anything out.
 
    All of that is a 600px-and-up statement. Below it the cell is about 152px
-   across with 28px of pad either side, and 34ch of caption in 96px of measure
-   was six lines of twelve-pixel type on the short caption and nine on the
-   long one — measured at 360px, 104px and 157px of copy in a 152px cell. That
-   is more block than the name it annotates, and it was the only thing in a
-   cell that ever needed more room than the square had. The phone block hides
-   this element outright, and the (i) and the plate below are what stand in
-   for it there. */
+   across, and when this element still set there the card's inset was 28px a
+   side: 34ch of caption in the 96px that left ran to six lines of
+   twelve-pixel type on the short caption and nine on the long one — measured
+   at 360px, 104px and 157px of copy in a 152px cell. That is more block than
+   the name it annotates, and it was the only thing in a cell that ever needed
+   more room than the square had. The phone block hides this element outright,
+   and the (i) and the plate below are what stand in for it there. The inset
+   has since come in to 16px and the measure is 120, which changes none of it —
+   the caption was not a few pixels short of fitting, it was a paragraph in a
+   column. */
 .hw26-rig-note {
   margin: 0.55rem 0 0;
   max-width: 34ch;
@@ -2899,15 +2924,18 @@ button.hw26-apply {
  * stated on the element rather than gated in JS for the reason on `RigCell` —
  * a viewport is only knowable after the server has already rendered.
  *
- * Out of flow, in the top-right corner, on the same `--rig-pad` inset the
- * count and the credit mark already sit on. That inset is the whole of the
- * chamfer clearance and it is not a new figure: `--rig-cut` takes a 45° bite
- * out of this corner, so a point is inside the panel when its distance in
- * from the right plus its distance down from the top clears the cut — see the
- * arithmetic on `.hw26-rig-credit`, which is the same corner and the same
- * test. At `2 × --rig-pad` against a 24px cut that is 56 against 24 at every
- * phone width, so the glyph is well inside the diagonal rather than parked
- * against it.
+ * Out of flow, in the top-right corner, on `--rig-corner` — the same inset
+ * the credit mark uses, because the two share that corner and one of them
+ * sits directly under the other. That inset is the whole of the chamfer
+ * clearance: `--rig-cut` takes a 45° bite out of this corner, so a point is
+ * inside the panel when its distance in from the right plus its distance down
+ * from the top clears the cut — see the arithmetic on `.hw26-rig-credit`,
+ * which is the same corner and the same test. `2 × --rig-corner` is 32
+ * against a 24px cut at every phone width, which is 5.66px clear of the
+ * diagonal measured perpendicular. The card's copy is on `--rig-pad` and on a
+ * phone that is the same 16, so the corner and the copy come in together —
+ * the glyph clears the cut because the pad was cut to a figure this corner
+ * can live with, not because it was held back from the pad.
  *
  * The corner rather than the line above the name, which is where this sat
  * first. Two things were wrong with that. It was inside the copy block, so it
@@ -2924,8 +2952,8 @@ button.hw26-apply {
 .hw26-rig-info {
   display: none;
   position: absolute;
-  top: var(--rig-pad);
-  right: var(--rig-pad);
+  top: var(--rig-corner);
+  right: var(--rig-corner);
   margin: 0;
   padding: 0;
   border: 0;
@@ -2949,12 +2977,12 @@ button.hw26-apply {
    step by hand with `.hw26-rig-credit`; if that clamp is re-cut, this one is
    re-cut with it.
 
-   0.45rem of air under the mark, which measures out at 55.2px from the card's
-   top edge at 360px: the glyph's box is y 55.2–73.6 against the mark's
-   28–42.2, and against the count's x 28–75.2 it shares no column at all
-   (the glyph is x 105.6–124). Nothing in this corner touches anything. */
+   0.45rem of air under the mark, which measures out at 43.2px from the card's
+   top edge at 360px: the glyph's box is y 43.2–61.6 against the mark's
+   16–30.2, and against the count's x 16–63.2 it shares no column at all (the
+   glyph is x 117.6–136). Nothing in this corner touches anything. */
 .hw26-rigs .hw26-rig--compact:has(.hw26-rig-credit) .hw26-rig-info {
-  top: calc(var(--rig-pad) + clamp(20px, 1.9vw, 26px) + 0.45rem);
+  top: calc(var(--rig-corner) + clamp(20px, 1.9vw, 26px) + 0.45rem);
 }
 
 /* `display: block` on the drawing, because an inline SVG sits on a text
@@ -3009,11 +3037,32 @@ button.hw26-apply {
  * control lives there: the top of the cell is its marking corner, the count
  * and the credit are what is up there, and a plate dropped over them covers
  * the card's identity instead of its copy. Full width, because the cell's
- * own width is all the measure available and the plate's smaller pad buys
- * back what the card's 28px inset would have cost: 111.6px of measure at
- * 360px against the card's 96, which is what keeps the longest of the three
- * captions inside the square rather than over it — 143.4px of plate in a
- * 152px cell at the tightest width this page is drawn for.
+ * own width is all the measure available, and its own pad is smaller than the
+ * card's on top of that: 111.6px of measure at 360px inside a 152px cell,
+ * which is what keeps the longest of the three captions inside the square
+ * rather than over it — 143.4px of plate in a 152px cell at the tightest
+ * width this page is drawn for.
+ *
+ * The plate's pad is stated in its own figures rather than in `--rig-pad`,
+ * and the smaller inset on phones is why it stays that way: the two are now
+ * within a few pixels of each other (16 against this rule's ~9), so the plate
+ * no longer buys back much measure the card was spending — but it does not
+ * need to. Its own numbers were set against the sentence it holds, not
+ * against the card, and a plate that tracked the card's inset would be a
+ * plate whose line breaks moved every time the card's frame was re-cut.
+ *
+ * The edge is `--hw-silver`, the page's resting grey for icons and secondary
+ * type, and not mint. Mint is this page's signal — interactive, active,
+ * counted — and an open plate is none of those: it is a sentence that has
+ * been asked for and is now sitting there being read. Outlined in the signal
+ * colour it read as the loudest object on the screen, a green box over a
+ * grey grid, which is more emphasis than one clause of caption is owed. Grey
+ * is the honest weight: enough edge to separate the plate from the card
+ * behind it, no claim on the eye beyond that. The mint identity has not gone
+ * anywhere — it stays on the (i) that opened this, which holds the accent for
+ * as long as the plate is up (see `.hw26-rig-info`) and is the mark that says
+ * which cell the plate belongs to. One accent in the pair, on the control,
+ * which is the thing that is actually interactive.
  *
  * `z-index: 2` against the card's 1 in the same shell — see
  * `.hw26-rig-shell > .hw26-rig`. */
@@ -3027,7 +3076,7 @@ button.hw26-apply {
   gap: 0.45rem;
   align-items: flex-start;
   padding: 0.5rem 0.55rem;
-  border: 1px solid var(--hw-mint);
+  border: 1px solid var(--hw-silver);
   background: var(--hw-steel);
 }
 
@@ -3086,13 +3135,16 @@ button.hw26-apply {
  * edge is so that nothing here can overlap a `min-width: 600px` rule written
  * later, and so 600 exactly keeps the desktop figures to the pixel.
  *
- * Below it, two things move, and both are the same object in a smaller room
+ * Below it, three things move, and each is the same object in a smaller room
  * rather than a different object:
  *
- * 1. The name is sized off its own measure instead of off the viewport — see
+ * 1. The card's inset comes in, which is the figure the other two are
+ *    measured against — see the rule directly below.
+ *
+ * 2. The name is sized off its own measure instead of off the viewport — see
  *    the rule, which carries the arithmetic and the word list.
  *
- * 2. The caption changes form. Inline copy off, (i) and plate on — see the
+ * 3. The caption changes form. Inline copy off, (i) and plate on — see the
  *    two rules for those above, where the reasoning lives.
  *
  * What is *not* here any more is the whole of what used to be: this block
@@ -3107,55 +3159,128 @@ button.hw26-apply {
  * `aspect-ratio: 1 / 1` is now unconditional at every width — the phone grid
  * is clean squares again. */
 @media (max-width: 599.98px) {
+  /* The card's inset, brought in, and it is the one figure in this block that
+     everything else in the cell is measured from: the copy sits on it, the
+     count is pinned to it, the two corner marks are pinned to it through
+     `--rig-corner`, and the name's measure is the card less two of it.
+
+     28px was never a phone figure. The base is `clamp(1.75rem, 3vw, 2.75rem)`
+     and the `3vw` term does not overtake the 1.75rem floor until about 933px,
+     so every phone was getting the floor — a constant 28px inset, chosen
+     against a panel that was a third of a desktop sheet, applied to a card
+     152px square. That is 56 of 152 spent on margin: 37% of the card is the
+     frame around its contents, and the name, the numeral and the plate share
+     what is left. It read as a small card with a large frame rather than as a
+     small card. At 16 it is 32 of 152, 21%, and the frame has stopped being
+     the loudest thing in the square.
+
+     16 and not 14, which is where halving a pinned 28 would have landed, and
+     the top-right corner is what sets the difference. `--rig-cut` bites 24px
+     out of the top-right and the bottom-left, and a point is inside the panel
+     when its distance in from the two edges nearest it sums past the cut —
+     the arithmetic is on `.hw26-rig-credit`, which is that corner and that
+     test. Two of the things wearing this inset live up there, the supplier's
+     mark and the (i). At 28 a side the sum was 56 against 24, 22.6px clear of
+     the diagonal measured perpendicular; at 16 it is 32 against 24, 5.66px,
+     which is air the eye reads as air; at 14 it would be 28 against 24, which
+     is 2.83px — not near the cut but on it. So the corner sets the floor and
+     one figure serves the whole card: `--rig-corner` resolves to `--rig-pad`
+     here as it does everywhere else, and there is no phone exception to keep
+     in step by hand.
+
+     Nothing else in the cell constrains it. The count is in the top-left,
+     which `--rig-cut` does not touch — that corner is square and 16px there
+     is 16px of margin, which is the whole point of the change. The copy is
+     bottom-hung against the bottom-left cut, and it clears on a technicality
+     worth writing down: the name is set in caps at `line-height: 0.9`, so its
+     last line's box is shorter than the type and the ink never reaches the
+     box's bottom-left corner. Measured, the name's ink clears the diagonal at
+     every phone width — see the figures on the (i) rule, which are taken from
+     the same run.
+
+     Flat rather than a ramp, which is what the base clamp already was across
+     this whole range — the floor bound every width under 933px, so this
+     replaces one constant with another and adds no shape the cell did not
+     have. The card's own width is continuous across 600 (267.55px at 599.98,
+     268 at 600), so the inset is the one thing that steps at the breakpoint,
+     from 16px to 28px. That is deliberate and it is the right place for it:
+     600 is already where the cell swaps its entire content model — the
+     caption comes back as inline copy and the (i) goes away — so a cell that
+     gains a paragraph and loosens its margins is one change at one edge, not
+     two unrelated ones. The name's size is what must not step there, and it
+     does not; see the ceiling note on the rule below. */
+  .hw26-rigs .hw26-rig--compact {
+    --rig-pad: 1rem;
+  }
+
   /* The name, sized off the column it has to fit rather than off the
      viewport, because the two are not proportional and the viewport was
      losing.
 
      What was here was `clamp(1.05rem, 4.2vw, 1.35rem)`, a floor and a vw term
-     picked to land somewhere reasonable. At 360px it computed 16.8px into a
-     96px measure, and measuring the actual inventory against that is what
-     killed it: seven of the thirty-three words in these twenty-two names did
-     not fit on a line, and `overflow-wrap` broke every one of them mid-word.
-     Measured in the live face — Orbitron 900, uppercase — as advance per
-     pixel of font-size, with the largest size each word fits 96px at:
-
-       MANIPULATORS  9.284/px  ->  10.34px      UNITREE   5.010  ->  19.16
-       UNDERWATER    8.368     ->  11.47        MAKERA    4.988  ->  19.25
-       MICROSOFT     6.765     ->  14.19        BAMBU     4.256  ->  22.56
-       FORMLABS      6.579     ->  14.59        AGILEX    4.237  ->  22.66
-       HOLOLENS      6.491     ->  14.79        ...
-       PLATFORM      6.469     ->  14.84        A1        1.227  ->  78.24
-       CARVERA       5.880     ->  16.33
-       REALANT       5.633     ->  17.04
+     picked to land somewhere reasonable. At 360px it computed 16.8px into the
+     96px measure a 28px inset then left, and measuring the actual inventory
+     against that is what killed it: seven of the thirty-three words in these
+     twenty-two names did not fit on a line, and `overflow-wrap` broke every
+     one of them mid-word.
 
      So the size is written as the thing it actually has to satisfy: the
      measure, divided by the widest word's advance. The measure is the grid's
-     own arithmetic — two columns and one gap inside the gutters is
-     `50vw - gutter - gap/2` for the cell, less the card's two pads for the
-     copy — and it is spelled with the tokens so it tracks them: 96px at 360,
-     111 at 390, 131 at 430, 212 at 599.98. The gap is at its 1rem floor
-     everywhere this block applies, hence the literal 8px for half of it.
+     own arithmetic — two columns and one gap inside the page's gutters is
+     `50vw - gutter - gap/2` for the cell, less the card's two insets for the
+     copy — and it is spelled with the tokens so it tracks them. The gap is at
+     its 1rem floor everywhere this block applies, hence the literal 8px for
+     half of it; the inset is `--rig-pad`, which this block has already
+     brought in to 16. That resolves to 120px of measure at 360, 135 at 390,
+     155 at 430 and 236 at 599.98.
+
+     Measured in the live face — Orbitron 900, uppercase — as advance per
+     pixel of font-size, with the largest size each word fits the 360px
+     measure of 120 at:
+
+       MANIPULATORS  9.284/px  ->  12.92px      UNITREE   5.010  ->  23.95
+       UNDERWATER    8.368     ->  14.34        MAKERA    4.988  ->  24.06
+       MICROSOFT     6.765     ->  17.74        BAMBU     4.256  ->  28.20
+       FORMLABS      6.579     ->  18.24        AGILEX    4.237  ->  28.32
+       HOLOLENS      6.491     ->  18.49        ...
+       PLATFORM      6.469     ->  18.55        A1        1.227  ->  97.80
+       CARVERA       5.880     ->  20.41
+       REALANT       5.633     ->  21.30
 
      8.37 is UNDERWATER, and UNDERWATER rather than MANIPULATORS is the whole
      of the judgement call here. Dividing by MANIPULATORS' 9.29 would fit
-     every word in the inventory with nothing left over — but it puts the name
-     at 10.34px at 360, under the plate's own body copy, and a card title that
-     is smaller than the sentence about it has stopped being a title. 11.47px
-     is already the floor of what a 900-weight display cap can be asked to do.
-     So twelve characters of MANIPULATORS is the one word that still breaks,
-     it breaks on the `overflow-wrap` above, and it breaks at MANIPULA/TORS
-     rather than at MANIPU/LATORS — the size is not making that word better or
-     worse, only the six words above it.
+     every word in the inventory with nothing left over, and the two smaller
+     frames have brought that within sight — it now costs 12.92px against
+     14.34 rather than 10.34 against 11.47 — but it is still the twelve-letter
+     word setting the size of the other thirty-two, and the shortfall is
+     genuine: MANIPULATORS renders 133.1px wide into 120 at 360, which is 11%
+     over and not a rounding error. So it stays the one word that breaks, it
+     breaks on the `overflow-wrap` above, and it breaks at MANIPULA/TORS
+     rather than at MANIPU/LATORS.
+
+     8.37 and not UNDERWATER's measured 8.3681 for a second reason worth
+     stating, because it looks like sloppy rounding and is the opposite: a
+     divisor equal to the advance would put the word at exactly its measure,
+     and "exactly" in a browser is a coin toss on subpixel rounding. Rounding
+     the divisor *up* makes the type fractionally smaller than the fit
+     demands, so the word clears by 0.023% of the measure at every width the
+     division governs — 0.03px at 360. Small, but signed, and signed is what
+     matters.
 
      The ceiling is untouched at 1.35rem and it is what makes the breakpoint
-     silent: at 599.98 the division yields 25.33px, well over the ceiling, so
+     silent: at 599.98 the division yields 28.2px, well over the ceiling, so
      the clamp reads 21.6px — exactly what the base rule computes at 600. The
-     type does not step at the edge, it simply stops being held up below it.
+     type does not step at the edge, it simply stops being held up below it,
+     and the inset stepping there instead is the subject of the first rule in
+     this block. The ceiling takes over at about 482px, and it is safe from
+     there up: the measure only grows, so the 21.6px name clears UNDERWATER by
+     a widening margin all the way to 600.
 
      The floor is a legibility stop and nothing else. It binds below about
-     355px, where the division has fallen under 11.2px; under that width
-     UNDERWATER goes back to breaking, and that is the right trade rather than
-     shrinking a display cut into a caption to save one word. */
+     307px, where the division has fallen under 11.2px — the smaller inset
+     bought 24px of measure and pushed that crossover down from 355. Under
+     that width UNDERWATER goes back to breaking, and that is the right trade
+     rather than shrinking a display cut into a caption to save one word. */
   .hw26-rigs .hw26-rig--compact .hw26-rig-name {
     font-size: clamp(
       0.7rem,
@@ -5164,18 +5289,34 @@ html[data-theme='light'] .hw26-sponsor--static:hover {
     height: 52px;
   }
 
+  /* The burger's three rails, re-cut for the smaller button. Closed states
+     first, open state last, and that order is load-bearing rather than
+     tidiness — it is the base block's order (see `.hw26-menu-trigger span`
+     near the top of the file) and it has to be repeated wherever these
+     figures are restated.
+
+     `.hw26-menu-trigger span:nth-child(3)` matches an *open* trigger too, and
+     it carries the same specificity as `.hw26-menu-trigger--open
+     span:nth-child(3)` — one class and two simple selectors either way. When
+     the closed rule is written after the open one it therefore wins on source
+     order alone, and the third rail stays at its resting `top` while the
+     first has moved to the middle. The two rails then rotate ±45° about
+     centres 8px apart and the X comes out as a crooked cross rather than as
+     two sticks crossing at a point. Nothing about the transforms is wrong
+     when that happens, which is what makes it hard to see in the rules and
+     obvious on the screen. */
   .hw26-menu-trigger span:nth-child(1) {
     top: 16px;
+  }
+
+  .hw26-menu-trigger span:nth-child(3) {
+    top: 32px;
   }
 
   .hw26-menu-trigger span:nth-child(2),
   .hw26-menu-trigger--open span:nth-child(1),
   .hw26-menu-trigger--open span:nth-child(3) {
     top: 24px;
-  }
-
-  .hw26-menu-trigger span:nth-child(3) {
-    top: 32px;
   }
 
   .hw26-menu-links a {
@@ -5224,18 +5365,23 @@ html[data-theme='light'] .hw26-sponsor--static:hover {
     height: 46px;
   }
 
+  /* Closed states first, open state last, for the reason spelled out in the
+     720px block above: the closed `span:nth-child(3)` rule matches an open
+     trigger at equal specificity, so if it is written after the open rule it
+     wins on source order and the X's two rails pivot about centres 9px apart.
+     Same figures, same trap, same ordering. */
   .hw26-menu-trigger span:nth-child(1) {
     top: 13px;
+  }
+
+  .hw26-menu-trigger span:nth-child(3) {
+    top: 31px;
   }
 
   .hw26-menu-trigger span:nth-child(2),
   .hw26-menu-trigger--open span:nth-child(1),
   .hw26-menu-trigger--open span:nth-child(3) {
     top: 22px;
-  }
-
-  .hw26-menu-trigger span:nth-child(3) {
-    top: 31px;
   }
 }
 
