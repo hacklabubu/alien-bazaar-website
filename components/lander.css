@@ -2389,22 +2389,48 @@ button.hw26-apply {
  * A touch reader never produces `:hover`, so on a phone every rule below this
  * point was dead code and the plate they saw was the resting state and nothing
  * else. `.hw26-rig--active` is that same state reached the other way: the
- * driver in `useRigFocus` hangs it on whichever cell is nearest the middle of
- * the screen as the reader scrolls, so the treatment arrives by travelling
- * past a cell instead of by pointing at one.
+ * driver in `useRigFocus` hangs it on every cell of whichever titled group the
+ * middle of the screen is in, so the treatment arrives by scrolling into a
+ * section instead of by pointing at a card.
  *
- * Written as `:is(:hover, .hw26-rig--active)` on every rule rather than as a
- * second block, because the two states are not similar — they are the same
- * state, and a copy of these figures would be a copy free to drift. `:is()`
- * takes the specificity of its most specific argument, and a class and a
- * pseudo-class weigh the same, so each of these selectors is exactly as
- * specific as the `:hover` it replaces and nothing downstream of it moves.
+ * Written as `:is(:hover, .hw26-rig--active)` on nearly every rule rather than
+ * as a second block, because the two states are mostly not similar — they are
+ * mostly the same state, and a copy of these figures would be a copy free to
+ * drift. `:is()` takes the specificity of its most specific argument, and a
+ * class and a pseudo-class weigh the same, so each of those selectors is
+ * exactly as specific as the `:hover` it replaces and nothing downstream of it
+ * moves.
  *
  * The transitions are the base rules' own, which is the other half of the
- * reason for sharing the selector: the active cell fades up over the same
- * 620ms the pointer buys, so scrolling through the grid reads as passing a
- * light rather than as a class landing on a card. */
-.hw26-rig:is(:hover, .hw26-rig--active) {
+ * reason for sharing the selector: the active cells fade up over the same
+ * 620ms the pointer buys, so scrolling into a section reads as a light coming
+ * on rather than as a class landing on a grid.
+ *
+ * "Nearly", because of the rule directly below, which is the one figure the
+ * two states do not share. */
+
+/* The mint ring, and the only part of the pointer's answer that a scroll does
+ * not get.
+ *
+ * The card's own background *is* its outline — `::before` paints the fill one
+ * `--rig-edge` inside it — so this single declaration is the green edge, and
+ * nothing else on the cell moves with it.
+ *
+ * Split off `:hover` on its own because the two states now differ in how many
+ * cards they touch. Under a pointer this is one card of twenty-two with a
+ * green edge, which is a cursor saying "this one". Driven by scroll it is
+ * every card in a group at once — up to five green rectangles filling the
+ * screen — and at that count the edge stops reading as a highlight and starts
+ * reading as a selection, or as an error state, or as a form with five invalid
+ * fields. It is the one figure in the treatment whose meaning depends on it
+ * being rare.
+ *
+ * Everything else the pointer buys is kept for the scroll state, and it is the
+ * part that survives being multiplied: the plates come up to near full colour
+ * and lose their grey, the counts and the `?` glyphs go mint, the credit marks
+ * come up to full opacity. A lit group is plainly lit. It simply is not
+ * outlined. */
+.hw26-rig:hover {
   background: var(--hw-mint);
 }
 
@@ -2438,8 +2464,13 @@ button.hw26-apply {
 }
 
 /* Preserve the standard interaction: Tbot glows at rest, and its ordinary
-   one-pixel card edge still turns mint on hover or touch-focus. */
-.hw26-rig--accent:is(:hover, .hw26-rig--active) {
+   one-pixel card edge still turns mint under a pointer. `:hover` alone and
+   not the shared `:is()`, because this is the same ring as the rule above and
+   is split for the same reason — it is restated here only because
+   `.hw26-rig--accent` sets a background of its own that would otherwise win.
+   Tbot's resting bloom is unaffected either way: that is a filter on the
+   shell, not a colour on the card. */
+.hw26-rig--accent:hover {
   background: var(--hw-mint);
 }
 
@@ -2703,22 +2734,25 @@ button.hw26-apply {
 
    `min-height: 0` is how that is enforced. This is a grid item, and a grid
    item's default minimum is its own content, which would quietly outrank the
-   ratio on any cell whose content is tall. Zeroed, the square is unconditional
-   — which is right down to about 600px and wrong below it, where the column
-   gets small enough that the captioned cells cannot fit their own copy inside
-   a square. The phone block further down puts the content minimum back for
-   exactly that reason, so the square becomes a floor rather than a fixed
-   height. Same shape, one less absolute.
+   ratio on any cell whose content is tall. Zeroed, the square is
+   unconditional at every width this grid exists at.
+
+   It was not always. The phone block used to trade the ratio for a floor,
+   because below 600px the column is narrow enough that the captioned cells
+   could not fit their own copy inside a square and grew downward instead —
+   and that one exception dragged three more rules behind it to keep the count
+   and the row-mates in order. The caption is behind a tap on a phone now (see
+   `.hw26-rig-info`), nothing in a cell outgrows the square, and the exception
+   and its three dependants are gone with it. One rule, one shape, all widths.
 
    What the height buys is the empty middle, and the middle is the
    composition: the count pinned in one corner, the name on the opposite edge,
    and the render between them on the cells that have one. On a phone that
-   middle is spent rather than held, and on the two captioned cells it is
-   given up altogether — the cell grows instead. The add-ons have neither a
-   count nor a plate, so their middle is emptier still — a name and a caption
-   hung off the bottom edge of a taller field — but that emptiness
-   now reads as the same held space the rest of the grid keeps, not as a
-   shape the add-ons alone were left out of. */
+   middle is spent rather than held. The add-ons have neither a count nor a
+   plate, so their middle is emptier still — a name and a caption hung off the
+   bottom edge of a taller field — but that emptiness now reads as the same
+   held space the rest of the grid keeps, not as a shape the add-ons alone
+   were left out of. */
 .hw26-rigs .hw26-rig--compact {
   min-height: 0;
   aspect-ratio: 1 / 1;
@@ -2813,8 +2847,9 @@ button.hw26-apply {
    so nothing that already fits is touched — this declaration changes no
    layout at 600px and up, which is the point of putting it outside the query.
 
-   The phone floor is in the block below, with the rest of the small-cell
-   figures. */
+   The phone floor is in the block below, and on a phone it is the only figure
+   in a cell that is still bent — the caption changes form there rather than
+   size. */
 .hw26-rigs .hw26-rig--compact .hw26-rig-name {
   font-size: clamp(1.35rem, 2.1vw, 2rem);
   overflow-wrap: break-word;
@@ -2832,7 +2867,16 @@ button.hw26-apply {
    are expected to do with it. Two sentences is the most this shape holds — at
    34ch the third line still lands well above the cell's floor with the name
    over it, and the cell is bottom-hung so the block grows upward into the
-   plate rather than pushing anything out. */
+   plate rather than pushing anything out.
+
+   All of that is a 600px-and-up statement. Below it the cell is about 152px
+   across with 28px of pad either side, and 34ch of caption in 96px of measure
+   was six lines of twelve-pixel type on the short caption and nine on the
+   long one — measured at 360px, 104px and 157px of copy in a 152px cell. That
+   is more block than the name it annotates, and it was the only thing in a
+   cell that ever needed more room than the square had. The phone block hides
+   this element outright, and the (i) and the plate below are what stand in
+   for it there. */
 .hw26-rig-note {
   margin: 0.55rem 0 0;
   max-width: 34ch;
@@ -2841,127 +2885,312 @@ button.hw26-apply {
   color: var(--hw-bone);
 }
 
+/* The caption's phone form, part one: the control.
+ *
+ * The standard info glyph — a lowercase i in a circle — which is the one mark
+ * a reader does not have to be taught. It is drawn in the markup rather than
+ * set in a face because no face here has it and one icon is not a library.
+ *
+ * `display: none` here, and the phone block below is the only thing that ever
+ * turns it on. That single declaration is the whole of the desktop
+ * guarantee: at 600px and up this element is not in the layout, not in the
+ * accessibility tree, and cannot be reached by Tab, so the cell is exactly
+ * the cell that was there before the caption gained a second form. It is
+ * stated on the element rather than gated in JS for the reason on `RigCell` —
+ * a viewport is only knowable after the server has already rendered.
+ *
+ * Out of flow, in the top-right corner, on the same `--rig-pad` inset the
+ * count and the credit mark already sit on. That inset is the whole of the
+ * chamfer clearance and it is not a new figure: `--rig-cut` takes a 45° bite
+ * out of this corner, so a point is inside the panel when its distance in
+ * from the right plus its distance down from the top clears the cut — see the
+ * arithmetic on `.hw26-rig-credit`, which is the same corner and the same
+ * test. At `2 × --rig-pad` against a 24px cut that is 56 against 24 at every
+ * phone width, so the glyph is well inside the diagonal rather than parked
+ * against it.
+ *
+ * The corner rather than the line above the name, which is where this sat
+ * first. Two things were wrong with that. It was inside the copy block, so it
+ * read as a line of the entry — a mark on the name rather than a mark on the
+ * card — and it took a line of the cell's height to say so, on a cell whose
+ * height is the scarcest thing it has. The corner opposite the count is where
+ * this page already puts marks about a card, and out of flow it costs the
+ * copy nothing.
+ *
+ * The button is stripped rather than styled. Everything a UA gives it —
+ * padding, border, the system background and the system face — is a control
+ * from a different page, and what is wanted is a glyph that answers the
+ * pointer, so the only thing left is the colour and the cursor. */
+.hw26-rig-info {
+  display: none;
+  position: absolute;
+  top: var(--rig-pad);
+  right: var(--rig-pad);
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--hw-silver);
+  cursor: pointer;
+  transition: color 400ms var(--hw-ease);
+}
+
+/* The two cells that already have something in that corner. The credit mark
+   is the supplier's, it is pinned to exactly this inset, and the two must not
+   be set on top of each other — so on a credited cell the glyph drops below
+   the mark instead of sharing its corner.
+
+   The band reserved is the mark's own `max-height` clamp restated, not its
+   rendered height, and the difference matters: the two marks are different
+   proportions and land at different heights inside that box — MAB's 3:1
+   lockup comes in at 14.2px, SPRTK's square fills the 20 — so reserving the
+   box is what puts the glyph on one line on both cells rather than at two
+   heights a reader would read as an alignment error. It is a figure kept in
+   step by hand with `.hw26-rig-credit`; if that clamp is re-cut, this one is
+   re-cut with it.
+
+   0.45rem of air under the mark, which measures out at 55.2px from the card's
+   top edge at 360px: the glyph's box is y 55.2–73.6 against the mark's
+   28–42.2, and against the count's x 28–75.2 it shares no column at all
+   (the glyph is x 105.6–124). Nothing in this corner touches anything. */
+.hw26-rigs .hw26-rig--compact:has(.hw26-rig-credit) .hw26-rig-info {
+  top: calc(var(--rig-pad) + clamp(20px, 1.9vw, 26px) + 0.45rem);
+}
+
+/* `display: block` on the drawing, because an inline SVG sits on a text
+   baseline and the descender strip under that baseline would be counted into
+   the button's box — a few pixels of nothing below the circle, which on a
+   control pinned by its top edge pushes the glyph off the inset it was pinned
+   to. Blocked, the button's box is the circle's box: 18.4px square, which is
+   what the corner arithmetic above is measured against. */
+.hw26-rig-info svg {
+  display: block;
+  width: 1.15rem;
+  height: 1.15rem;
+}
+
+/* Mint on the pointer, and mint for as long as the plate is open. The second
+   half is not decoration: the plate is dismissible from anywhere, so the
+   glyph is the only thing that says which cell the plate belongs to. */
+.hw26-rig-info:hover,
+.hw26-rig-info[aria-expanded="true"] {
+  color: var(--hw-mint);
+}
+
+/* The page's focus ring, unchanged — see `.hw26-link`. Offset outward here
+   because the glyph is a hairline circle and a ring drawn inside it would
+   read as a second, thicker circle rather than as focus. */
+.hw26-rig-info:focus-visible {
+  outline: 2px solid var(--hw-mint);
+  outline-offset: 2px;
+}
+
+/* The caption's phone form, part two: the plate.
+ *
+ * A little rectangle with the sentence in it and an X, which is what was
+ * asked for and as far as it should go — the copy is one clause, and a
+ * chamfer, a bloom and a heading on top of one clause is a dialog pretending
+ * to be a card. What makes it belong to the page is the palette and the face
+ * it is already inheriting (the body mono), not an ornament of its own.
+ *
+ * Positioned against the shell rather than the card, which is the one
+ * structural decision here. The card is `overflow: hidden` and clipped to the
+ * chamfer, so a plate inside it would lose a corner to the cut and would trim
+ * anything it could not fit without showing that it had. The shell exists
+ * unclipped already — that is how the accent bloom escapes the card — so the
+ * plate can stand proud of the card's top edge on the longest caption instead
+ * of losing the end of it.
+ *
+ * Hung from the bottom edge and the full width of the cell. Bottom, because
+ * that is the caption's own edge — the copy in this cell is bottom-hung and
+ * the plate is standing in for a paragraph that used to set there, so it
+ * grows upward out of the same edge the sentence grew out of. It is
+ * deliberately not hung under the (i) in the top-right corner now that the
+ * control lives there: the top of the cell is its marking corner, the count
+ * and the credit are what is up there, and a plate dropped over them covers
+ * the card's identity instead of its copy. Full width, because the cell's
+ * own width is all the measure available and the plate's smaller pad buys
+ * back what the card's 28px inset would have cost: 111.6px of measure at
+ * 360px against the card's 96, which is what keeps the longest of the three
+ * captions inside the square rather than over it — 143.4px of plate in a
+ * 152px cell at the tightest width this page is drawn for.
+ *
+ * `z-index: 2` against the card's 1 in the same shell — see
+ * `.hw26-rig-shell > .hw26-rig`. */
+.hw26-rig-pop {
+  display: none;
+  position: absolute;
+  z-index: 2;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  gap: 0.45rem;
+  align-items: flex-start;
+  padding: 0.5rem 0.55rem;
+  border: 1px solid var(--hw-mint);
+  background: var(--hw-steel);
+}
+
+/* The sentence. Takes the row's remaining width so the X keeps its own box at
+   the end of it rather than being wrapped by the copy, and `min-width: 0`
+   because a flex item's default minimum is its content and one long word
+   would otherwise push the X off the plate. */
+.hw26-rig-pop-text {
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+  font-size: 0.7rem;
+  line-height: 1.4;
+  color: var(--hw-bone);
+}
+
+/* The X. Same stripped button as the (i) and the same two states, sat on the
+   first line of the copy — `flex: none` so it keeps its 0.85rem box whatever
+   the sentence does, and the nudge down is the difference between the glyph's
+   box and that first line's 1.4 leading. */
+.hw26-rig-pop-x {
+  flex: none;
+  margin-top: 0.1rem;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--hw-silver);
+  cursor: pointer;
+  transition: color 400ms var(--hw-ease);
+}
+
+.hw26-rig-pop-x svg {
+  display: block;
+  width: 0.85rem;
+  height: 0.85rem;
+}
+
+.hw26-rig-pop-x:hover {
+  color: var(--hw-mint);
+}
+
+.hw26-rig-pop-x:focus-visible {
+  outline: 2px solid var(--hw-mint);
+  outline-offset: 2px;
+}
+
 /* The two-column phone, where the cell stops being a small plate and starts
  * being a very small one. This block is what makes two-up survive 360px, and
  * it is deliberately the only place those figures are bent.
  *
  * 599.98 rather than a round 600 or the file's usual 720. The width is chosen
  * against the *content*, not against a device: 600px is the first viewport
- * where every name clears its measure and the captioned cells fit their
- * square unaided, which this section's own measurements put it at, so it is
- * the honest place to stop. The fractional edge is so that nothing here can
- * overlap a `min-width: 600px` rule written later, and so 600 exactly keeps
- * the desktop figures to the pixel.
+ * where every name clears its measure and a caption is still readable copy
+ * rather than a paragraph in a 96px column, which this section's own
+ * measurements put it at, so it is the honest place to stop. The fractional
+ * edge is so that nothing here can overlap a `min-width: 600px` rule written
+ * later, and so 600 exactly keeps the desktop figures to the pixel.
  *
- * Below it, three things move, and each is the same object one step smaller
+ * Below it, two things move, and both are the same object in a smaller room
  * rather than a different object:
  *
- * 1. The name's floor. The base clamp bottoms out at 1.35rem while the column
- *    keeps shrinking, so on a phone it was a fixed 21.6px in a 111px measure.
- *    Here the floor drops to 1.05rem and the vw term is re-cut to 4.2 so the
- *    two meet: at 599.98 this clamp is still pinned to its 1.35rem ceiling,
- *    which is exactly what the base rule computes at 600, so the type does not
- *    step at the breakpoint — it simply stops being held up below it.
+ * 1. The name is sized off its own measure instead of off the viewport — see
+ *    the rule, which carries the arithmetic and the word list.
  *
- *    MANIPULATORS still does not fit on one line at 390, and no floor that
- *    keeps the name a display cut would fit it: twelve Orbitron 900 caps need
- *    about 9.2px of advance each to make 111px, which is under 12px of type
- *    and smaller than the caption under it. So the name wraps there, on the
- *    `overflow-wrap` above, and the floor's job is only to make the wrap land
- *    somewhere sensible — 16.8px puts eight characters on a line instead of
- *    six, which is the difference between MANIPULA/TORS and MANIPU/LATORS.
+ * 2. The caption changes form. Inline copy off, (i) and plate on — see the
+ *    two rules for those above, where the reasoning lives.
  *
- * 2. The caption. Down a step, because it is the thing that decides how far
- *    the captioned cells grow, and a caption is the one part of a cell that
- *    can lose a little size without changing what it is.
- *
- * 3. The square's floor stops being a ceiling — see the note on the ratio
- *    above. */
+ * What is *not* here any more is the whole of what used to be: this block
+ * carried four rules whose only job was to survive a caption that no longer
+ * sets in the cell — `aspect-ratio: auto` plus a `min-height` restating the
+ * square as a floor, a `padding-top` reserving the count's corner on the
+ * cells that grew into it, `height: 100%` putting a grown cell's row-mate
+ * back on its height, and a smaller caption face. With the caption behind a
+ * tap, nothing in a cell outgrows the square, so nothing grows, so no cell in
+ * a row is taller than another and no name reaches the numeral. Every one of
+ * those rules was load-bearing for a shape that is gone, and the base
+ * `aspect-ratio: 1 / 1` is now unconditional at every width — the phone grid
+ * is clean squares again. */
 @media (max-width: 599.98px) {
-  /* The square stops being a fixed height and becomes a floor. Cells whose
-     content fits are square to the pixel, exactly as before; the two "build
-     your own" entries, the only ones carrying a caption, grow downward instead
-     of overflowing upward out of a box that would not take them.
+  /* The name, sized off the column it has to fit rather than off the
+     viewport, because the two are not proportional and the viewport was
+     losing.
 
-     The ratio has to come off for that, and it took two dead ends to establish
-     it, both worth recording because both look like the answer:
+     What was here was `clamp(1.05rem, 4.2vw, 1.35rem)`, a floor and a vw term
+     picked to land somewhere reasonable. At 360px it computed 16.8px into a
+     96px measure, and measuring the actual inventory against that is what
+     killed it: seven of the thirty-three words in these twenty-two names did
+     not fit on a line, and `overflow-wrap` broke every one of them mid-word.
+     Measured in the live face — Orbitron 900, uppercase — as advance per
+     pixel of font-size, with the largest size each word fits 96px at:
 
-     - `min-height: auto`, the grid item's own content-based minimum, is
-       defined to apply only while the item's overflow in that axis is
-       `visible`. This cell is `overflow: hidden` and has to be — that is what
-       clips the photo plate to the chamfer — so `auto` resolves to zero and
-       nothing moves.
-     - `min-height: max-content` survives that, but not the ratio: with an
-       `aspect-ratio` in force the intrinsic block size is resolved *from the
-       ratio*, so `max-content` comes back as the square and the minimum is
-       satisfied by the very box it was meant to outgrow.
+       MANIPULATORS  9.284/px  ->  10.34px      UNITREE   5.010  ->  19.16
+       UNDERWATER    8.368     ->  11.47        MAKERA    4.988  ->  19.25
+       MICROSOFT     6.765     ->  14.19        BAMBU     4.256  ->  22.56
+       FORMLABS      6.579     ->  14.59        AGILEX    4.237  ->  22.66
+       HOLOLENS      6.491     ->  14.79        ...
+       PLATFORM      6.469     ->  14.84        A1        1.227  ->  78.24
+       CARVERA       5.880     ->  16.33
+       REALANT       5.633     ->  17.04
 
-     So the ratio is cleared and the square is restated as the minimum it now
-     is. The expression is the grid's own arithmetic rather than a guessed
-     figure: two columns and one gap inside the gutters is
-     `(100vw - 2·gutter - gap) / 2`, which is the `50vw - gutter - gap/2`
-     below. The gap is its 1rem floor at every width this block covers, hence
-     the literal 8px for half of it; the gutter is the token, so this tracks
-     it if it is ever re-cut. Measured against the live grid it is exact —
-     152px at 360, 167 at 390, 187 at 430, 267.5 at 599.98.
+     So the size is written as the thing it actually has to satisfy: the
+     measure, divided by the widest word's advance. The measure is the grid's
+     own arithmetic — two columns and one gap inside the gutters is
+     `50vw - gutter - gap/2` for the cell, less the card's two pads for the
+     copy — and it is spelled with the tokens so it tracks them: 96px at 360,
+     111 at 390, 131 at 430, 212 at 599.98. The gap is at its 1rem floor
+     everywhere this block applies, hence the literal 8px for half of it.
 
-     The square is still the shape; a row only leaves it when something in it
-     genuinely needs the space. */
-  .hw26-rigs .hw26-rig--compact {
-    aspect-ratio: auto;
-    min-height: calc(50vw - var(--hw-gutter) - 8px);
-  }
+     8.37 is UNDERWATER, and UNDERWATER rather than MANIPULATORS is the whole
+     of the judgement call here. Dividing by MANIPULATORS' 9.29 would fit
+     every word in the inventory with nothing left over — but it puts the name
+     at 10.34px at 360, under the plate's own body copy, and a card title that
+     is smaller than the sentence about it has stopped being a title. 11.47px
+     is already the floor of what a 900-weight display cap can be asked to do.
+     So twelve characters of MANIPULATORS is the one word that still breaks,
+     it breaks on the `overflow-wrap` above, and it breaks at MANIPULA/TORS
+     rather than at MANIPU/LATORS — the size is not making that word better or
+     worse, only the six words above it.
 
-  /* Growing the cell hands the count a problem the square was hiding. The copy
-     is bottom-hung and the count is pinned out of flow to the top-left corner,
-     which never met because on a square there was always empty middle between
-     them. On a cell that has grown to fit its copy there is no middle left:
-     the name reaches the top of the plate and sets straight through the
-     numeral — measured at 1,400px² of overlap on both cells before this rule.
+     The ceiling is untouched at 1.35rem and it is what makes the breakpoint
+     silent: at 599.98 the division yields 25.33px, well over the ceiling, so
+     the clamp reads 21.6px — exactly what the base rule computes at 600. The
+     type does not step at the edge, it simply stops being held up below it.
 
-     So the corner is reserved rather than the count moved. Moving it back into
-     the flow above the name is the arrangement this section explicitly threw
-     out — see the note on the count, where it "read as the first line of the
-     name rather than as a figure about it" — and it is still the wrong answer.
-     Padding the top by the count's own band leaves it exactly where it is and
-     simply refuses the copy that strip. The band is the count's line box, so
-     it is written as the count's own clamp times its own 0.85 leading rather
-     than as a figure that has to be kept in step by hand; the extra 0.6rem is
-     the gap between the numeral and the first line under it.
-
-     `:has()` and not the bare class, because this costs vertical space and
-     only two cells in the section need it: the ones carrying both a count and
-     a caption, which are the two "build your own" entries and the only cells
-     that grow at all. Every other cell keeps its square and its empty middle.
-
-     The cell's row-mate comes with it. The grid item is the shell, not the
-     card — the shell exists unclipped so the accent bloom can escape the
-     card's `overflow: hidden` — and a grid item stretches to its row by
-     default, so the shell beside a grown cell is already the right height. The
-     card inside it is not: the base rule gives it `width: 100%` and says
-     nothing about height, so it sat at the top of a stretched shell and left
-     the difference as blank page under a short card. One card 234px tall next
-     to one 167px tall reads as a grid that has come apart, which is a worse
-     failure than the tight square it replaced. Filling the shell puts every
-     card in a row back on the same height, and the row is as tall as whatever
-     in it needed the most. */
-  .hw26-rigs .hw26-rig--compact:has(.hw26-rig-no):has(.hw26-rig-note) {
-    padding-top: calc(
-      var(--rig-pad) + 0.85 * clamp(2.5rem, 4.5vw, 4rem) + 0.6rem
+     The floor is a legibility stop and nothing else. It binds below about
+     355px, where the division has fallen under 11.2px; under that width
+     UNDERWATER goes back to breaking, and that is the right trade rather than
+     shrinking a display cut into a caption to save one word. */
+  .hw26-rigs .hw26-rig--compact .hw26-rig-name {
+    font-size: clamp(
+      0.7rem,
+      calc((50vw - var(--hw-gutter) - 8px - 2 * var(--rig-pad)) / 8.37),
+      1.35rem
     );
   }
 
-  .hw26-rigs .hw26-rig-shell > .hw26-rig--compact {
-    height: 100%;
-  }
+  /* The swap. The caption's inline form goes and its tapped form arrives, in
+     three declarations and at this breakpoint only.
 
-  .hw26-rigs .hw26-rig--compact .hw26-rig-name {
-    font-size: clamp(1.05rem, 4.2vw, 1.35rem);
-  }
+     `display: none` on the copy and not `visibility: hidden` or a clip: the
+     sentence is in the plate now, and a reader on a screen reader who met it
+     twice — once in the cell and once in a control they had just opened —
+     would be told the same thing twice by two elements that look unrelated.
+     Gone from the tree entirely is the honest state; the plate is where the
+     text is on a phone.
 
+     `display: block` on the (i) rather than `inline-flex`: the drawing inside
+     it is already `display: block` and there is nothing else in the button,
+     so a flex context would be a formatting context with one child in it. It
+     is only the `display: none` that is being undone here — the corner the
+     glyph is pinned into is stated on the element itself, above, because a
+     control that is never shown at any other width has no second placement
+     for this block to have an opinion about. */
   .hw26-rigs .hw26-rig-note {
-    font-size: 0.75rem;
-    line-height: 1.45;
+    display: none;
+  }
+
+  .hw26-rigs .hw26-rig-info {
+    display: block;
+  }
+
+  .hw26-rigs .hw26-rig-pop {
+    display: flex;
   }
 }
 
@@ -2984,9 +3213,16 @@ button.hw26-apply {
    muting a real number to say "details pending" trades information for mood.
    Nothing on the floor is in that state today — the headsets were, and they
    are two named machines now — but the gate is where the distinction lives
-   and it costs nothing to leave it standing. */
+   and it costs nothing to leave it standing.
+
+   The second selector is `:hover` and not the shared `:is()` because there is
+   no longer a `--active` ring for it to refuse — see the split above, which
+   took the mint edge off the scroll state for every cell in the grid. This
+   restatement now has exactly one job, which is the one it always had on
+   desktop: hold the placeholder at the panel highlight while the announced
+   cell beside it floods mint under the pointer. */
 .hw26-rigs .hw26-rig--tba,
-.hw26-rigs .hw26-rig--tba:is(:hover, .hw26-rig--active) {
+.hw26-rigs .hw26-rig--tba:hover {
   background: var(--hw-steel-hi);
 }
 
