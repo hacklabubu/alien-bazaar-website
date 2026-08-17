@@ -4634,7 +4634,7 @@ html:not(.hw26-cursor-dom) .hw26-faq-trigger {
   margin-bottom: 1px;
 }
 
-/* Ecosystem Partners: five tiles, one row, one size.
+/* Ecosystem Partners: six tiles, one row, one size.
    ................................................................
    This was two rows and two sizes — a two-column lead row for NVIDIA and ESRA
    and a three-column row at half their linear size under it — plus a paragraph
@@ -4643,21 +4643,21 @@ html:not(.hw26-cursor-dom) .hw26-faq-trigger {
    the layout was being engineered back into reading as a single block, which is
    what it should have been. The tier was the page's, not the organizers'.
 
-   Five columns, stated rather than fitted. `auto-fit` on the base rule's 280px
+   Six columns, stated rather than fitted. `auto-fit` on the base rule's 280px
    track would give a different number at different widths and can leave an
    empty track, which on this container is not empty: the gaps are the
    `--hw-line` background
    showing through, so a short row comes out as a lit rectangle the size of a
-   plate. Five children, five tracks, no leftover.
+   plate. Six children, six tracks, no leftover.
 
    The width calc goes with the row it was reconciling. There is nothing above
    these cells to line up with any more. */
 .hw26-sponsors-lead--eco {
-  grid-template-columns: repeat(5, minmax(0, 1fr));
+  grid-template-columns: repeat(6, minmax(0, 1fr));
 }
 
-/* A fifth of the sheet does not take a half-sheet cell's inset with it: at 1440
-   a track here is ~287px, and the lead padding would spend more than half of
+/* A sixth of the sheet does not take a half-sheet cell's inset with it: at 1440
+   a track here is ~239px, and the lead padding would spend more than half of
    that on air and leave the mark nowhere to sit. Inherited from the old small
    tier, where the same sum was run against ~244px. */
 .hw26-sponsors-lead--eco .hw26-sponsor-lead {
@@ -4693,29 +4693,19 @@ html:not(.hw26-cursor-dom) .hw26-faq-trigger {
   width: calc((100% - 3px) / 2 + 2px);
 }
 
-/* Five leaves one track over at both responsive counts, so the last cell closes
-   the short row instead of leaving a lit empty plate. */
+/* Six divides by both responsive counts, so every row fills and there is no
+   short row for a cell to have to stretch across. Five did leave one track over
+   at each step, and the last cell was spanned to close it rather than leave a
+   lit empty plate; the count does that on its own now. */
 @media (max-width: 1100px) {
   .hw26-sponsors-lead--eco {
     grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-
-  .hw26-sponsors-lead--eco > :nth-child(4) {
-    grid-column: span 2;
   }
 }
 
 @media (max-width: 720px) {
   .hw26-sponsors-lead--eco {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .hw26-sponsors-lead--eco > :nth-child(4) {
-    grid-column: auto;
-  }
-
-  .hw26-sponsors-lead--eco > :nth-child(5) {
-    grid-column: span 2;
   }
 
   /* Full width, because the row it is half of is one column here and half of

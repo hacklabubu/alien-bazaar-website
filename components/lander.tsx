@@ -672,10 +672,10 @@ type Partner = {
  * They were a tier once: these two on a plate twice the linear size of the
  * other three, on the argument that five equal cells would be the wall making
  * a claim about rank nobody authorised. Two sizes turned out to be the louder
- * claim — the organizers publish all five under one heading, and the
+ * claim — the organizers publish all six under one heading, and the
  * stylesheet was carrying a paragraph of arithmetic pulling the small row's
  * edges onto the large row's so the two would read as one block anyway. They
- * are one row of five at one size now.
+ * are one row of six at one size now.
  *
  * The array survives the row that mapped over it, because the two are still
  * the two things the row cannot shuffle: `ecosystem` is dealt again every
@@ -692,7 +692,7 @@ type Partner = {
  * sentence saying what it supplies, and it was the only one — which meant the
  * wall stated one partner's contribution and left the other four's to be
  * guessed at, and put a paragraph of body copy in one tile of a row of logos.
- * With it gone the wall makes no claim about who gave what, and all five cells
+ * With it gone the wall makes no claim about who gave what, and all six cells
  * are the same object at the same weight.
  */
 const LEAD_SPONSORS: Partner[] = [
@@ -705,19 +705,18 @@ const LEAD_SPONSORS: Partner[] = [
     mark: "hw26-mark--stacked",
   },
   {
-    name: "ESRA — European Student Robotics Association",
-    src: "/sponsors/esra.png",
-    href: "https://www.studentrobotics.eu/",
-    mark: "hw26-mark--esra",
+    name: "START Warsaw",
+    src: "/sponsors/startwarsaw.svg",
+    href: "https://www.startwarsaw.org/",
   },
 ];
 
 /**
- * The shuffled part of the ecosystem row: three partners behind the two pinned
+ * The shuffled part of the ecosystem row: four partners behind the two pinned
  * names above.
  *
- * Five cells stay equal on desktop; the responsive layouts let the last cell
- * close the one leftover track.
+ * Six cells stay equal on desktop; six divides by the responsive counts too, so
+ * no cell has to stretch to close a short row.
  *
  * Each mark is re-sized rather than scaled: a cell at half the width is not
  * the same cell smaller, and the two plates in particular carry ink across
@@ -743,6 +742,12 @@ const SMALL_SPONSORS: Partner[] = [
     name: "Hackathon Hub",
     src: "/sponsors/hackathonhub.png",
     href: "https://hackathonhub.eu/",
+  },
+  {
+    name: "ESRA — European Student Robotics Association",
+    src: "/sponsors/esra.png",
+    href: "https://www.studentrobotics.eu/",
+    mark: "hw26-mark--esra",
   },
 ];
 
@@ -3648,7 +3653,7 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
 
             <PartnerTierSubhead reveal title="Ecosystem Partners" />
 
-          {/* One row of five, and it used to be two rows of two and three.
+          {/* One row of six, and it used to be two rows of two and three.
               The split was a tier: NVIDIA and ESRA took a plate twice the
               linear size of the partners below, and the stylesheet carried a
               paragraph of arithmetic making the small row's three columns land
@@ -3656,7 +3661,7 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
               anyway. That is the tell. A layout that has to be engineered back
               into looking like one row is one row with a rank drawn through
               it, and the rank was the page's own invention — the organizers
-              publish these partners under one heading. So: one grid, five tiles,
+              publish these partners under one heading. So: one grid, six tiles,
               one size, and the arithmetic goes with the thing it was
               reconciling.
 
@@ -3665,11 +3670,11 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
               optimizer would re-encode it, which their brand terms do not
               allow.
 
-              NVIDIA and ESRA are written out ahead of the map rather than
-              folded into it, which is the whole of how they stay first and
+              NVIDIA and START Warsaw are written out ahead of the map rather
+              than folded into it, which is the whole of how they stay first and
               second: `ecosystem` is `useShuffled`, dealt again every visit, and
               anything inside it is somewhere different on the next load. These
-              two are pinned and the three behind them reorder. Keys are the
+              two are pinned and the four behind them reorder. Keys are the
               partner names, so React moves the existing nodes rather than
               rebuilding them — which matters because the reveal observer has
               already been handed these elements. */}
