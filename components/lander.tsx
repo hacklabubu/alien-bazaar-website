@@ -3287,7 +3287,7 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
             <dl className="hw26-stats">
               <div className="hw26-stat">
                 <dt>Best teams in Europe</dt>
-                <dd>5</dd>
+                <dd>20</dd>
               </div>
               <div className="hw26-stat">
                 <dt>Hardware units</dt>
