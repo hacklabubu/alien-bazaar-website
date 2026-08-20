@@ -1214,6 +1214,32 @@ html:not(.hw26-cursor-dom) .hw26 [role='button'] * {
   }
 }
 
+/* ---- the flicker stops when nobody is looking at it ----
+
+   `hw26-crt-flicker` is `infinite` on both the wordmark and the mark, and
+   `infinite` means exactly that: scroll to the FAQ and the hero is still
+   animating two elements off the top of the screen, forever. It is an opacity
+   animation and therefore composited and cheap per frame, but the frames never
+   stop being asked for — and each one is asked for on top of a five-pass
+   `drop-shadow` chain that has to be held alive to be composited against.
+
+   The observer in `useHeroIdle` puts `hw26-hero--idle` on the hero whenever it
+   leaves the viewport, and it runs on every device unconditionally — watching
+   one element with an IntersectionObserver is close to free, and a script that
+   only sometimes maintains a class is a script whose class you cannot trust.
+
+   This rule is unconditional for the same reason. It was gated to phones for a
+   while, with a note directly under it saying that extending it to desktop
+   "would be both safe and free"; it now is. `animation-play-state: paused`
+   holds the current frame and resumes from it, the element is off screen in
+   every case where the class is set, and the class was already being
+   maintained everywhere. Nothing about the hero in view changes — there is no
+   width at which this fires while the hero can be seen. */
+.hw26-hero--idle .hw26-hero-title,
+.hw26-hero--idle .hw26-hero-tittle {
+  animation-play-state: paused;
+}
+
 /* The alien mark, sitting on the I of ALIEN as its tittle — the dot the
    capital lost. Above the cutout rather than behind it, because it belongs
    to the wordmark rather than to the room; the countdown panel is still in
@@ -1554,7 +1580,16 @@ html:not(.hw26-cursor-dom) .hw26 [role='button'] * {
    have no ring, so there is no inner chamfer to inset. The clip still sits on
    a pseudo-element rather than on the element itself, which is a shape they
    arrived at while they still threw a glow, since a clipped element cannot
-   paint anything outside itself. See the note on `.hw26-head-intro`. */
+   paint anything outside itself. See the note on `.hw26-head-intro`.
+
+   The countdown ticking inside a backdrop-filtered element looks like it ought
+   to be expensive — a text write dirtying a surface that has to be resampled
+   to be redrawn. Splitting the plate so the numerals sat on a layer of their
+   own was tried and measured: under 4x CPU throttling, with that as the single
+   variable, it changed nothing outside the run-to-run spread, and neither did
+   dropping the blur radius. It is not worth a second element. What the clock
+   does cost is paid for in `Countdown` instead, by not running at all when the
+   panel is off screen or the tab is in the background. */
 .hw26-hero-panel {
   --panel-cut: 28px;
   --panel-edge: 1px;
@@ -2768,6 +2803,124 @@ button.hw26-apply {
 .hw26-rigs .hw26-rig--compact {
   min-height: 0;
   aspect-ratio: 1 / 1;
+}
+
+/* The lift — the one part of the pointer's answer that moves the card.
+ *
+ * Everything the hover treatment did until now was light: the panel floods
+ * mint, the plate comes up to colour, the count goes green and the credit
+ * mark comes up to full. All of it happens *inside* the cell's own rectangle,
+ * so on a sheet of twenty-two plates the pointer changed what a cell looked
+ * like without ever picking it up off the page. The page already owns the
+ * gesture that does that and it is the button's: `.hw26-apply` steps 2px
+ * toward the reader and drops an offset shadow into the gap. This is that
+ * sentence said at this object's scale — 3px under a plate four hundred
+ * across, against 2px under a button — which is as far as it can go before a
+ * grid of cards reads as bobbing rather than as one of them being pointed at.
+ *
+ * Written on the shell and not on the card, which is the whole of the
+ * difficulty and is worth stating plainly because the obvious version of this
+ * rule is wrong in a way that leaves no trace.
+ *
+ * A `box-shadow` on the card is cut away: the card is `overflow: hidden` and
+ * `clip-path` chamfered, so the shadow never leaves the silhouette. That much
+ * is the same wall the caption plate hit, and the reason `.hw26-rig-pop` is
+ * built as a sibling of the card rather than a child of it. The tempting
+ * conclusion is that `filter: drop-shadow()` escapes where `box-shadow` does
+ * not, because a filter reads the element's alpha. It does not, and not on
+ * this element: an element's own `filter` is applied *before* its own
+ * `clip-path`, so a drop-shadow written on the card is generated and then
+ * immediately clipped off by the very chamfer it was supposed to follow. It
+ * was measured rather than reasoned about — a 423x20 band of page pixels
+ * directly under the card, sampled at rest and on hover, came back identical
+ * to within 0.02 of a level: mean green 7.44 against 7.42, peak 25 against
+ * 25, zero pixels anywhere in the band greener than their own red. The
+ * shadow was being drawn and thrown away.
+ *
+ * What makes a drop-shadow escape is being on an *ancestor* of the clipped
+ * box, where the clip has already been applied by the time the filter reads
+ * the alpha. `.hw26-rig-shell` is that ancestor and exists for exactly this
+ * — it is deliberately unclipped, and `.hw26-rig-shell--accent` already puts
+ * Tbot's resting bloom there for the same reason, with the note above saying
+ * so. So the lift goes on the shell, keyed off the card's `:hover` through
+ * `:has()`, and the shadow comes out with the cut corners in it instead of
+ * squaring the plate back off.
+ *
+ * The shell carries the `translate` too, rather than only the shadow. The
+ * popup is the shell's child, so a card that rose on its own would leave its
+ * own caption plate behind on the sheet.
+ *
+ * Mint rather than black, because the edge it falls from is mint by the time
+ * it is visible — the hover flood is what draws that outline — so the shadow
+ * reads as the lit edge carrying past the plate rather than as a second,
+ * unrelated effect arriving with it.
+ *
+ * `translate` and not `transform`, even out here where `transform` is free.
+ * The two compose rather than replace, so nothing later that wants the card's
+ * wrapper to hold a transform has to know about this rule, and the property
+ * name says what the declaration does.
+ *
+ * 400ms, which is the card's own fastest hover figure — the count's colour
+ * and the credit's opacity both travel at it — and the right end of its range
+ * for a movement. 620ms is a light coming up; a plate that takes 620ms to
+ * rise is still rising after the pointer has left it.
+ *
+ * The card's `:hover` and never the shared `:is(:hover, .hw26-rig--active)`.
+ * Same split as the mint ring above, for the same reason and with more force
+ * behind it: `--active` is hung on every cell of a group at once by
+ * `useRigFocus`, so on a scroll this would lift five plates off the sheet
+ * together — not a pointer saying "this one" but a section deciding to float.
+ *
+ * And then `@media (hover: hover)` around all of it, which is a guard none of
+ * the colour rules above carry and which this one needs. Excluding `--active`
+ * is not on its own enough to keep a phone out of this: a tap on a touch
+ * device leaves `:hover` stuck on the tapped element until something else is
+ * tapped, which is how the mint flood already reaches a phone at all —
+ * measured under touch emulation, not assumed. That is fine for colour,
+ * because a plate that stays lit after a tap reads as the thing you just
+ * touched. It is not fine for geometry: a 3px displacement with no cursor to
+ * explain it is a card that has come loose from the grid and stays that way,
+ * which is precisely the "plates floating on a phone" outcome the `--active`
+ * split exists to prevent, arriving by the one door that split does not
+ * cover. `hover: hover` is the primary pointer's answer, so a touchscreen
+ * laptop still gets the lift from its trackpad. Inside the guard sits the
+ * transition as well, so on a touch device this whole block is as if it were
+ * not written.
+ *
+ * Scoped through `.hw26-rig--compact` and not bare `.hw26-rig`, so the team
+ * page's faces stay flat. Those are `.hw26-rig--person` inside the same
+ * `.hw26-rigs` grid — the same panel with two things withdrawn, and one of
+ * the two already withdrawn is the mint edge this shadow is cast from. */
+@media (hover: hover) {
+  .hw26-rigs .hw26-rig-shell {
+    transition:
+      translate 400ms var(--hw-ease),
+      filter 400ms var(--hw-ease);
+  }
+
+  .hw26-rigs .hw26-rig-shell:has(> .hw26-rig--compact:hover) {
+    translate: 0 -3px;
+    filter: drop-shadow(
+      0 6px 14px color-mix(in srgb, var(--hw-mint) 30%, transparent)
+    );
+  }
+
+  /* Tbot, whose shell is already spending `filter` on its resting bloom. One
+     property cannot hold two declarations, so the lift's shadow is appended
+     to the bloom rather than written over it — the three figures above are a
+     copy of `.hw26-rig-shell--accent` and have to be kept in step with it by
+     hand. Matching function lists in matching order is also what lets the
+     three-stop rest state interpolate into the four-stop hover state instead
+     of snapping. */
+  .hw26-rigs .hw26-rig-shell--accent:has(> .hw26-rig--compact:hover) {
+    filter:
+      drop-shadow(0 0 7px color-mix(in srgb, var(--hw-mint) 56%, transparent))
+      drop-shadow(0 0 18px color-mix(in srgb, var(--hw-mint) 34%, transparent))
+      drop-shadow(0 0 34px color-mix(in srgb, var(--hw-mint) 18%, transparent))
+      drop-shadow(
+        0 6px 14px color-mix(in srgb, var(--hw-mint) 30%, transparent)
+      );
+  }
 }
 
 /* The count, in the corner. It used to ride directly above the name at the
@@ -5779,17 +5932,25 @@ html[data-theme='light'] .hw26-sponsor--static:hover {
    screen. If a rule in this block reads as a different look rather than a
    cheaper draw of the same one, it is wrong and should be taken out.
 
-   It is one block on purpose, and it is last on purpose. The three costs it
-   pays down — a live backdrop filter, a five-pass filter chain, and an
-   animation that never stops — are separate mechanisms in three different
-   parts of the stylesheet, and collecting them here means the budget can be
-   read, argued with and reverted as a single unit rather than found three
-   times by grep. The existing 900px block above stays what it is: layout that
-   has to change on a narrow screen. This one is spend.
+   It is one block on purpose, and it is last on purpose. The costs it pays
+   down — a live backdrop filter and a five-pass filter chain — are separate
+   mechanisms in different parts of the stylesheet, and collecting them here
+   means the budget can be read, argued with and reverted as a single unit
+   rather than found twice by grep. The existing 900px block above stays what
+   it is: layout that has to change on a narrow screen. This one is spend.
+
+   It used to pay down a third, an animation that never stops. That one turned
+   out not to be a phone concession at all and has left the block; see item 3
+   below.
 
    Gated at 900px because that is the width the rest of the file already uses
    for "not a desktop", and because every device this is aimed at is under it.
-   Desktop is deliberately untouched, byte for byte. */
+   Desktop keeps both effects at full strength, and what it does instead is to
+   stop paying for them when nobody is looking: the flicker pauses off screen
+   (item 3), and the clock stops ticking at a panel that is off screen or in a
+   background tab (see `Countdown`). Neither of those takes anything away from
+   a hero that is actually in front of somebody, which is why neither is gated
+   to a width. */
 @media (max-width: 900px) {
   /* ---- 1. the countdown panel stops frosting the photograph ----
 
@@ -5797,11 +5958,7 @@ html[data-theme='light'] .hw26-sponsor--static:hover {
      compositor: resample everything behind this element's box, blur it, and
      keep the result in step with whatever moves under there. Over a full-bleed
      photograph on a page that scrolls, "whatever moves" is the entire hero, so
-     the blur is recomputed the whole way down. Worse, the countdown inside the
-     panel rewrites itself once a second forever, and each of those writes
-     dirties the panel's region — so even parked at the top of the page with
-     nothing moving, a phone is re-blurring a wide plate on a 1Hz beat for as
-     long as the tab is open.
+     the blur is recomputed the whole way down.
 
      The frost goes and the fill takes over its second job. Blur was never only
      texture here: a 6px blur of a bright photograph is also a *darkening* of
@@ -5889,27 +6046,10 @@ html[data-theme='light'] .hw26-sponsor--static:hover {
 
   /* ---- 3. the flicker stops when nobody is looking at it ----
 
-     `hw26-crt-flicker` is `infinite` on both the wordmark and the mark, and
-     `infinite` means exactly that: scroll to the FAQ and the hero is still
-     animating two elements off the top of the screen, forever. It is an
-     opacity animation and therefore composited and cheap per frame, but the
-     frames never stop being asked for.
-
-     The observer in `useHeroIdle` puts `hw26-hero--idle` on the hero whenever
-     it leaves the viewport, and it runs on every device unconditionally —
-     watching one element with an IntersectionObserver is close to free, and a
-     script that only sometimes maintains a class is a script whose class you
-     cannot trust. What is gated to phones is this rule, the part that actually
-     stops the animation, because mobile-only was the brief.
-
-     Worth saying plainly for whoever reads this next: extending the pause to
-     desktop would be both safe and free. `animation-play-state: paused` holds
-     the current frame and resumes from it, the element is off screen in every
-     case where the class is set, and the class is already being maintained
-     there. It is left mobile-only because that is what was asked for, not
-     because desktop is a case that needs the animation to keep running. */
-  .hw26-hero--idle .hw26-hero-title,
-  .hw26-hero--idle .hw26-hero-tittle {
-    animation-play-state: paused;
-  }
+     Gone from here, and that is the point: the idle pause used to be the third
+     item in this budget and is now unconditional, next to the keyframes it
+     pauses. It was the one rule in this block that was never really a phone
+     concession — it takes nothing away, on any device, because it only ever
+     fires with the hero already off screen. See `.hw26-hero--idle` beside
+     `@keyframes hw26-crt-flicker`. */
 }

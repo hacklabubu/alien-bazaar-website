@@ -17,6 +17,7 @@ import {
   useLayoutEffect,
   useRef,
   useState,
+  useSyncExternalStore,
 } from "react";
 
 import "./lander.css";
@@ -1294,12 +1295,24 @@ function useRigFocus(root: RefObject<HTMLDivElement | null>) {
  * pixels above the viewport. The animation itself is composited and cheap; what
  * is not free is never being allowed to stop.
  *
- * All this does is write one class. The pause lives in the stylesheet as
- * `animation-play-state: paused`, which holds the frame the element is on and
- * carries on from there — so a hero scrolled back to does not restart its
- * flicker from the top of the keyframes, it simply starts moving again. See the
- * phone budget block at the end of lander.css, where that rule is, and why it
- * is gated to phones even though the observer here is not.
+ * The flicker pause lives in the stylesheet as `animation-play-state: paused`,
+ * which holds the frame the element is on and carries on from there — so a hero
+ * scrolled back to does not restart its flicker from the top of the keyframes,
+ * it simply starts moving again. See `.hw26-hero--idle` in lander.css.
+ *
+ * The same fact is published twice, because it has two consumers that cannot
+ * read each other's format. The stylesheet needs a class; the countdown needs a
+ * boolean, so that it can stop reading the clock once a second at a panel
+ * nobody is looking at. Rather than run a second observer for the second
+ * consumer, the hook hands back a subscription: `subscribe` for React to listen
+ * on, `read` for the current value. `useSyncExternalStore` in `Countdown` turns
+ * that pair back into a boolean.
+ *
+ * Deliberately *not* React state on the hero's parent. Lifting it there would
+ * have been fewer lines, but `Lander` renders the entire page, so every
+ * crossing of the hero's edge — twice per scroll of it, in both directions —
+ * would re-render several hundred elements to change one interval. That is a
+ * larger bill than the one this is here to stop paying.
  *
  * It observes unconditionally, on every device, with no media query of its own.
  * Watching a single element with an IntersectionObserver at the default
@@ -1321,18 +1334,41 @@ function useRigFocus(root: RefObject<HTMLDivElement | null>) {
  * `classList` on every entry is a style invalidation the browser has to take
  * seriously whether or not anything actually differs.
  */
-function useHeroIdle(hero: RefObject<HTMLElement | null>) {
+type HeroIdle = {
+  subscribe: (onChange: () => void) => () => void;
+  read: () => boolean;
+};
+
+function useHeroIdle(hero: RefObject<HTMLElement | null>): HeroIdle {
+  // The store, not the hook's return value, is what stays stable across
+  // renders — `useSyncExternalStore` resubscribes whenever `subscribe`
+  // changes identity, so handing it a fresh closure every render would tear
+  // the listener down and build it again on every render of the countdown.
+  const store = useRef<{ idle: boolean; listeners: Set<() => void> }>(null);
+  store.current ??= { idle: false, listeners: new Set() };
+
+  const signal = useRef<HeroIdle>(null);
+  signal.current ??= {
+    subscribe: (onChange) => {
+      const s = store.current;
+      if (!s) return () => {};
+      s.listeners.add(onChange);
+      return () => s.listeners.delete(onChange);
+    },
+    read: () => store.current?.idle ?? false,
+  };
+
   useEffect(() => {
     const el = hero.current;
-    if (!el) return;
+    const s = store.current;
+    if (!el || !s) return;
     if (typeof IntersectionObserver === "undefined") return;
 
-    let idle = false;
-
     const mark = (next: boolean) => {
-      if (next === idle) return;
+      if (next === s.idle) return;
       el.classList.toggle("hw26-hero--idle", next);
-      idle = next;
+      s.idle = next;
+      for (const listener of s.listeners) listener();
     };
 
     const io = new IntersectionObserver((entries) => {
@@ -1342,12 +1378,15 @@ function useHeroIdle(hero: RefObject<HTMLElement | null>) {
     io.observe(el);
 
     // The class goes back off with the observer. A hero left marked idle by a
-    // teardown is a hero whose flicker nothing will ever start again.
+    // teardown is a hero whose flicker nothing will ever start again — and,
+    // now, whose clock nothing will ever restart.
     return () => {
       io.disconnect();
       mark(false);
     };
   }, [hero]);
+
+  return signal.current;
 }
 
 /**
@@ -2259,13 +2298,45 @@ function RigCell({ item, order }: { item: Rig; order: number }) {
       {/* Ground, not a product shot — see the note on RIG_GROUPS. Empty
           `alt` because a render that is 16% of a greyscale backdrop is
           texture rather than something anyone is being shown; the name below
-          it is what identifies the machine. */}
+          it is what identifies the machine.
+
+          Quality 90 rather than the default 75, for the same reason the hero
+          plates carry it and on the same class of picture: these are dark
+          studio renders that fall off to near-black, and 75 bands that
+          falloff visibly. The cells that show it worst are the ones the
+          stylesheet's plate note names as the set's darkest — the TBOT and
+          the wheeled arm — and they are also the two the resting 30% opacity
+          leans hardest on. `next/image` has no responsive-quality knob and
+          the hero's own 90 is likewise unconditional, so this is one figure
+          at every width. 90 is allow-listed in next.config.ts; anything not
+          named there silently falls back to 75.
+
+          `sizes`, and the reason its last clause is not a bare `33vw`.
+
+          The first two clauses are the grid's own column count — one up under
+          720, two up under 1100, three above — so they are right by
+          construction. The third was not: the cell stops growing long before
+          the viewport does. `.hw26-inner` caps the sheet at 1440 and
+          `--hw-gutter` pins at its 4.5rem ceiling, so from about 1565px
+          across the cell holds at a measured 461.33px while `33vw` keeps
+          climbing — 845px at 2560, 1135px at 3440. That is not a sharpness
+          question, it is the browser being told to fetch a candidate two
+          steps up the ladder from the one the box can show: at 2560 DPR1 it
+          was asking for the 1080 derivative of a 459px box.
+
+          `min(33vw, 462px)` is that measurement, rounded up by the two pixels
+          the card's own edge takes off the plate. It cannot under-serve —
+          462 is above the widest the cell is ever laid out at — and it only
+          starts binding around 1400px, where `33vw` has already overtaken the
+          real column. Below that the expression is `33vw` exactly, so the
+          1100-1440 range is untouched. */}
       {item.photo ? (
         <div className="hw26-rig-photo">
           <Image
             alt=""
             fill
-            sizes="(max-width: 720px) 100vw, (max-width: 1100px) 50vw, 33vw"
+            quality={90}
+            sizes="(max-width: 720px) 100vw, (max-width: 1100px) 50vw, min(33vw, 462px)"
             src={item.photo}
           />
         </div>
@@ -2447,15 +2518,63 @@ const pad = (n: number) => String(n).padStart(2, "0");
  *
  * The interval is cleared on unmount, which also covers the theme toggle
  * remounting the tree in development.
+ *
+ * It is also cleared whenever nobody can see the result, which is the more
+ * interesting half. Every tick is a state write, a render, a style recalc and
+ * a repaint of part of the hero — and it was happening at the same rate with
+ * the hero a full screen above the fold or the tab in the background as it was
+ * with somebody looking at it. Two gates close that off, and they close it for
+ * different reasons:
+ *
+ * - `idle` is the hero's own IntersectionObserver, already running for the CRT
+ *   flicker (see `useHeroIdle`). Scrolled past, the panel stops being redrawn.
+ * - `document.hidden` is the tab. An IntersectionObserver knows nothing about
+ *   a backgrounded window — the hero is still "intersecting" a viewport nobody
+ *   is looking at — so the Page Visibility API is the only thing that catches
+ *   this case.
+ *
+ * Nothing is caught up on the way back. The clock is read fresh from
+ * `Date.now()` the moment either gate reopens, so the panel shows the right
+ * figure on the first frame it is visible for rather than the one it was
+ * stopped on, and never counts down through the interval it skipped.
  */
-function Countdown({ target }: { target: Date }) {
+function Countdown({ target, idle }: { target: Date; idle: HeroIdle }) {
   const [now, setNow] = useState<number | null>(null);
+  // `false` on the server and for the hydrating render: the hero cannot have
+  // scrolled anywhere yet, and a mismatch here would be a hydration error over
+  // something that is about to be corrected by the observer anyway.
+  const heroIdle = useSyncExternalStore(idle.subscribe, idle.read, () => false);
 
   useEffect(() => {
+    // Read once on every run of this effect, whichever gate caused it. One
+    // clock read is free; what the gates are for is the other fifty-nine a
+    // minute.
     setNow(Date.now());
-    const id = window.setInterval(() => setNow(Date.now()), 1000);
-    return () => window.clearInterval(id);
-  }, []);
+    if (heroIdle) return;
+
+    let id = 0;
+    const stop = () => {
+      window.clearInterval(id);
+      id = 0;
+    };
+    const start = () => {
+      if (id) return;
+      setNow(Date.now());
+      id = window.setInterval(() => setNow(Date.now()), 1000);
+    };
+
+    const onVisibility = () => {
+      if (document.hidden) stop();
+      else start();
+    };
+
+    onVisibility();
+    document.addEventListener("visibilitychange", onVisibility);
+    return () => {
+      stop();
+      document.removeEventListener("visibilitychange", onVisibility);
+    };
+  }, [heroIdle]);
 
   const parts = now === null ? null : untilParts(target, now);
 
@@ -3013,9 +3132,12 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
 
   // The hero's own ref, held so the flicker can be parked once the header has
   // scrolled off. Its own element rather than the page root, because "is the
-  // hero on screen" is the entire question. See `useHeroIdle`.
+  // hero on screen" is the entire question. The verdict is handed on to the
+  // countdown as well, which stops reading the clock while the panel is off
+  // screen — as a subscription rather than as state, so that crossing the
+  // hero's edge does not re-render this whole page. See `useHeroIdle`.
   const hero = useRef<HTMLElement>(null);
-  useHeroIdle(hero);
+  const heroIdle = useHeroIdle(hero);
 
   // Two of the partner rows are dealt again on every visit, so no name owns the
   // first plate. Only these two: the sponsor row and the media row hold one
@@ -3188,7 +3310,7 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
               disagreed; now that the event is 25–27 September there is one
               source again, and the clock cannot drift from the schedule
               below it. */}
-          <Countdown target={hackathon.startsAt} />
+          <Countdown idle={heroIdle} target={hackathon.startsAt} />
 
           {/* Applications are open, so the control is a link again. Same tab:
               the reader is being handed off to the form, not sent to read
