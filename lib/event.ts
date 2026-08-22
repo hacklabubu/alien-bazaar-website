@@ -24,7 +24,7 @@ export type HardwareEvent = {
 }
 
 export const EVENT: HardwareEvent = {
-  slug: 'alien-bazaar-warsaw-2026',
+  slug: 'ab26',
   title: 'Alien Bazaar — Warsaw 2026',
   summary:
     'Three days of home automation at the Hacker House in Warsaw. Every team books one machine, teams wire their machines into each other, and what gets pitched to investors after 48 work hours is the combined system.',
