@@ -34,9 +34,9 @@ instance with `NEXT_PUBLIC_APPLY_URL`:
 NEXT_PUBLIC_APPLY_URL=http://localhost:3000/hackathons/ab26 pnpm dev
 ```
 
-The override sets the base and `/join` is appended to it, so it reaches every
-join control on the site — the hero, the timeline stop, the closer and the
-menu overlay's "Apply now".
+The override replaces the destination outright, so it reaches every join
+control on the site — the hero, the timeline stop, the closer and the menu
+overlay's "Apply now".
 
 ## How it is put together
 
