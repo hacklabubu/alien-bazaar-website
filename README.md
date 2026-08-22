@@ -7,7 +7,7 @@ Three days of home automation. Every team books one machine, teams wire their
 machines into each other, and what gets pitched to investors after 48 work
 hours is the combined system. Room for 100, teams of up to four. Applications
 are handled on
-[hacklab.so](https://hacklab.so/hackathons/alien-bazaar-warsaw-2026); this repo
+[hacklab.so](https://hacklab.so/hackathons/ab26); this repo
 is only the poster.
 
 The Next.js app is the repository root — there is no wrapper directory.
@@ -31,7 +31,7 @@ there is no database and no API.
 instance with `NEXT_PUBLIC_APPLY_URL`:
 
 ```bash
-NEXT_PUBLIC_APPLY_URL=http://localhost:3000/hackathons/alien-bazaar-warsaw-2026 pnpm dev
+NEXT_PUBLIC_APPLY_URL=http://localhost:3000/hackathons/ab26 pnpm dev
 ```
 
 The override sets the base and `/join` is appended to it, so it reaches every
