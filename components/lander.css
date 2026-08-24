@@ -35,6 +35,7 @@
   /* ---- Signal ---- */
   /* Phosphor Mint. The bright signal — interactive, active, counted. */
   --hw-mint: #82f5c6;
+  --hw-gold: #f0c75e;
   /* Text set on top of a solid mint fill (the apply button). */
   --hw-on-mint: #04120c;
   /* Pine. The deep green, and the page's second signal: it marks the
@@ -95,6 +96,7 @@ html[data-theme='light'] .hw26 {
   --hw-silver: #5d645f;
 
   --hw-mint: #00794c;
+  --hw-gold: #8a5a00;
   --hw-on-mint: #f2fff9;
   /* Light-mode mint is already a deep green, so pine has to drop
      further still to stay the darker of the pair. */
@@ -299,7 +301,44 @@ html:not(.hw26-cursor-dom) .hw26-menu-trigger {
   outline: 0;
 }
 
-.hw26-menu-main .hw26-menu-links a {
+.hw26-menu-link--tba {
+  display: flex;
+  align-items: center;
+  gap: clamp(1rem, 3vw, 3rem);
+  min-height: 72px;
+  padding: clamp(0.55rem, 1.5vh, 1.2rem) 0;
+  border-bottom: 1px solid var(--hw-line-hi);
+  color: color-mix(in srgb, var(--hw-snow) 42%, transparent);
+  font-family: var(--font-orbitron), sans-serif;
+  font-size: clamp(2.1rem, 6.8vw, 6.5rem);
+  font-weight: 900;
+  line-height: 0.95;
+  letter-spacing: -0.04em;
+  text-transform: uppercase;
+  cursor: not-allowed;
+}
+
+.hw26-menu-link--tba > span {
+  min-width: 2.5ch;
+  color: color-mix(in srgb, var(--hw-mint) 52%, transparent);
+  font-family: var(--font-jetbrains-mono), monospace;
+  font-size: clamp(0.65rem, 1vw, 0.85rem);
+  font-weight: 500;
+  letter-spacing: 0.12em;
+}
+
+.hw26-menu-link--tba em {
+  margin-left: auto;
+  padding-right: 0.75rem;
+  color: var(--hw-gold);
+  font-family: var(--font-jetbrains-mono), monospace;
+  font-size: clamp(0.65rem, 1vw, 0.85rem);
+  font-style: normal;
+  letter-spacing: 0.16em;
+}
+
+.hw26-menu-main .hw26-menu-links a,
+.hw26-menu-main .hw26-menu-link--tba {
   flex: none;
   align-items: center;
   justify-content: flex-start;
@@ -500,6 +539,9 @@ html:not(.hw26-cursor-dom) .hw26 [role='button'] * {
     linear-gradient(to right, var(--hw-line) 1px, transparent 1px),
     linear-gradient(to bottom, var(--hw-line) 1px, transparent 1px);
   background-size: 88px 88px;
+  /* Sections own separate grid layers, but their origin stays fixed to the
+     viewport so a square never jumps at a section boundary. */
+  background-attachment: fixed;
   opacity: 0.5;
   -webkit-mask-image: radial-gradient(
     ellipse 100% 70% at 50% 40%,
@@ -764,7 +806,6 @@ html:not(.hw26-cursor-dom) .hw26 [role='button'] * {
   display: flex;
   align-items: baseline;
   gap: 1.25rem;
-  border-top: 1px solid var(--hw-line);
   padding-top: 1rem;
   margin-bottom: clamp(2.5rem, 5vw, 4rem);
 }
@@ -1350,6 +1391,110 @@ html:not(.hw26-cursor-dom) .hw26 [role='button'] * {
       #000 2px 3px
     );
   mask-composite: intersect;
+}
+
+/* The two organizers flank the alien mark. The wrapper uses the title's
+   font-size as its coordinate system, which keeps the lockup registered to
+   the mark even when the cover-fitted artwork is heavily cropped on phones. */
+.hw26-hero-origin {
+  position: absolute;
+  z-index: 3;
+  top: calc(var(--hero-title-top) - 0.206em);
+  left: 50%;
+  translate: -50% -50%;
+  width: 100%;
+  height: 1em;
+  font-size: var(--hero-title-fs);
+  color: rgba(255, 255, 255, 0.72);
+  pointer-events: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.hw26-hero-origin span {
+  position: absolute;
+  top: 50%;
+  translate: 0 -50%;
+  font-family: var(--font-orbitron), sans-serif;
+  font-size: clamp(8px, 0.07em, 12px);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  text-shadow: 0 0 0.8rem rgba(130, 245, 198, 0.24);
+}
+
+.hw26-hero-origin span:first-child {
+  right: calc(50% + clamp(1.55rem, 0.145em, 2.5rem));
+  text-align: right;
+}
+
+.hw26-hero-origin span:last-child {
+  left: calc(50% + clamp(1.55rem, 0.145em, 2.5rem));
+  text-align: left;
+}
+
+/* NVIDIA sits inside the countdown panel as its first centred row. Keeping it
+   outside the art stage makes its contrast independent of the heavily cropped
+   hero composition, especially on portrait phones. Separate
+   crops of the supplied stacked SVG put the official eye and wordmark on one
+   line without duplicating or redrawing the artwork. */
+.hw26-hero-nvidia {
+  position: relative;
+  z-index: 2;
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: clamp(0.45rem, 0.8vw, 0.75rem);
+  margin-bottom: 0;
+  color: #ffffff;
+  text-decoration: none;
+  white-space: nowrap;
+  filter: drop-shadow(0 0 0.55rem rgba(0, 0, 0, 0.75));
+  transition:
+    color 180ms var(--hw-ease),
+    filter 180ms var(--hw-ease);
+}
+
+.hw26-hero-nvidia-label {
+  font-family: var(--font-jetbrains-mono), monospace;
+  font-size: clamp(8px, 0.72vw, 11px);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+}
+
+.hw26-hero-nvidia-brand {
+  display: flex;
+  align-items: center;
+  gap: clamp(0.2rem, 0.3vw, 0.35rem);
+}
+
+.hw26-hero-nvidia-eye,
+.hw26-hero-nvidia-word {
+  display: block;
+  overflow: visible;
+}
+
+.hw26-hero-nvidia-eye {
+  width: clamp(22px, 2vw, 34px);
+  height: auto;
+}
+
+.hw26-hero-nvidia-word {
+  width: clamp(70px, 6vw, 108px);
+  height: auto;
+}
+
+.hw26-hero-nvidia:hover,
+.hw26-hero-nvidia:focus-visible {
+  color: #ffffff;
+  filter:
+    drop-shadow(0 0 0.55rem rgba(0, 0, 0, 0.75))
+    drop-shadow(0 0 0.65rem rgba(118, 185, 0, 0.22));
+  outline: 0;
 }
 
 .hw26-title-word {
@@ -2138,6 +2283,131 @@ button.hw26-apply {
   margin-top: 1.6rem;
 }
 
+/* The document's reference treats the event description as one composition,
+   not as a centred text interlude: copy and figures form the control panel on
+   the left while a single hardware portrait carries the right half. The image
+   already has a black studio ground, and the mask lets that ground dissolve
+   into this section rather than exposing a rectangular photograph. */
+.hw26-about-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.16fr) minmax(340px, 0.84fr);
+  align-items: center;
+  gap: clamp(1.5rem, 3vw, 3.75rem);
+}
+
+.hw26-about-copy {
+  position: relative;
+  z-index: 2;
+  min-width: 0;
+}
+
+.hw26-about-copy .hw26-brief,
+.hw26-about-copy .hw26-facts {
+  max-width: none;
+  margin-inline: 0;
+}
+
+.hw26-about-copy .hw26-brief p {
+  max-width: 58ch;
+  color: color-mix(in srgb, var(--hw-bone) 88%, transparent);
+}
+
+.hw26-about-visual {
+  position: relative;
+  min-width: 0;
+  width: calc(100% + clamp(3rem, 7vw, 7rem));
+  height: clamp(540px, 50vw, 700px);
+  margin-block: clamp(-3.5rem, -2vw, -1.5rem);
+  margin-right: 0;
+  transform: translateX(clamp(-6.25rem, -6.3vw, -2.75rem));
+  isolation: isolate;
+}
+
+.hw26-about-visual::after {
+  content: "";
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  pointer-events: none;
+  filter: blur(40px);
+  background: radial-gradient(
+    color-mix(in srgb, var(--hw-mint) 45%, transparent),
+    transparent 85%
+  );
+}
+
+.hw26-about-visual img {
+  z-index: 0;
+  object-fit: contain;
+  z-index: 2;
+  transform: scaleX(-1);
+  object-position: right center;
+  filter: saturate(0.78) contrast(1.06)
+    drop-shadow(0 0 2.5rem rgba(0, 0, 0, 0.52));
+}
+
+.hw26-about-visual .hw26-label {
+  position: absolute;
+  z-index: 2;
+  right: clamp(0.5rem, 2vw, 1.5rem);
+  bottom: clamp(1.5rem, 4vw, 3.5rem);
+  color: color-mix(in srgb, var(--hw-mint) 68%, transparent);
+}
+
+@media (max-width: 900px) {
+  .hw26-about-layout {
+    grid-template-columns: minmax(0, 1fr);
+    gap: clamp(1.75rem, 6vw, 3rem);
+  }
+
+  .hw26-about-visual {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 3 / 2;
+    margin: -0.5rem 0 -1.5rem;
+    transform: none;
+  }
+
+  .hw26-about-visual img {
+    object-position: center;
+  }
+}
+
+@media (max-width: 560px) {
+  .hw26-about-copy .hw26-brief p {
+    font-size: 0.9rem;
+    line-height: 1.68;
+  }
+
+  .hw26-about-copy .hw26-facts {
+    margin-top: 2rem;
+  }
+
+  .hw26-about-copy .hw26-stat {
+    gap: 0.45rem;
+    padding-inline: 0.35rem;
+  }
+
+  .hw26-about-copy .hw26-stat dt {
+    font-size: 0.61rem;
+  }
+
+  .hw26-about-copy .hw26-stat dd {
+    font-size: clamp(1.8rem, 10vw, 2.45rem);
+  }
+
+  .hw26-about-visual {
+    width: calc(100% + 1rem);
+    margin: -0.5rem -0.5rem -1.75rem;
+  }
+
+  .hw26-about-visual .hw26-label {
+    right: 0;
+    bottom: 1.25rem;
+    font-size: 0.58rem;
+  }
+}
+
 /* The facts under the sentence.
  *
  * Two shapes, because the facts are two kinds. Three of them are counts and
@@ -2318,6 +2588,368 @@ button.hw26-apply {
   pointer-events: none;
   mask-image: linear-gradient(180deg, #000 0%, #000 20%, transparent 90%);
   -webkit-mask-image: linear-gradient(180deg, #000 0%, #000 20%, transparent 90%);
+}
+
+/* -------------------------------------------------------------
+   HOW IT WORKS — a two-pass process drawing. Five gates run across
+   the first row, the return rail brings the sequence back to the
+   left, and four more gates finish the route below. On smaller
+   screens the drawing becomes a simple vertical signal line.
+   ------------------------------------------------------------- */
+
+.hw26-how-section {
+  background:
+    radial-gradient(circle at 50% 38%, rgba(47, 158, 99, 0.07), transparent 42%),
+    var(--hw-void);
+}
+
+.hw26-how-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin: calc(-1 * clamp(1.6rem, 3vw, 2.6rem)) 0 clamp(2.5rem, 5vw, 4.5rem);
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--hw-line);
+  font-family: var(--font-jetbrains-mono), monospace;
+  font-size: clamp(0.62rem, 0.72vw, 0.72rem);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--hw-silver);
+}
+
+.hw26-how-flow {
+  --how-gap: clamp(0.9rem, 1.45vw, 1.5rem);
+  --how-turn: clamp(3.5rem, 5vw, 5rem);
+  --how-turn-half: clamp(1.75rem, 2.5vw, 2.5rem);
+  --how-loop-out: clamp(1.2rem, 2vw, 2rem);
+  --how-card-mid: calc(3.9rem + clamp(3.1rem, 4.25vw, 3.75rem));
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  grid-template-rows: auto var(--how-turn) auto;
+  column-gap: var(--how-gap);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* The middle segment of the return route. The fifth step supplies the right
+   bend, and the sixth supplies the left bend and arrow into its own card. */
+.hw26-how-flow::before {
+  content: "";
+  grid-column: 1 / -1;
+  grid-row: 2;
+  align-self: center;
+  justify-self: center;
+  width: calc(100% + 2 * var(--how-loop-out));
+  height: 0;
+  border-top: 1px solid color-mix(in srgb, var(--hw-mint) 42%, var(--hw-line-hi));
+  opacity: 0.86;
+}
+
+.hw26-how-step {
+  position: relative;
+  min-width: 0;
+}
+
+.hw26-how-step:nth-child(1) { grid-column: 1; grid-row: 1; }
+.hw26-how-step:nth-child(2) { grid-column: 2; grid-row: 1; }
+.hw26-how-step:nth-child(3) { grid-column: 3; grid-row: 1; }
+.hw26-how-step:nth-child(4) { grid-column: 4; grid-row: 1; }
+.hw26-how-step:nth-child(5) { grid-column: 5; grid-row: 1; }
+.hw26-how-step:nth-child(6) { grid-column: 1; grid-row: 3; }
+.hw26-how-step:nth-child(7) { grid-column: 2; grid-row: 3; }
+.hw26-how-step:nth-child(8) { grid-column: 3; grid-row: 3; }
+.hw26-how-step:nth-child(9) { grid-column: 4; grid-row: 3; }
+
+/* Leave the fifth card to the right, then turn down outside the grid. */
+.hw26-how-step:nth-child(5)::after {
+  content: "";
+  position: absolute;
+  z-index: 1;
+  top: var(--how-card-mid);
+  right: calc(-1 * var(--how-loop-out));
+  bottom: calc(-1 * var(--how-turn-half));
+  width: var(--how-loop-out);
+  border-top: 1px solid color-mix(in srgb, var(--hw-mint) 48%, var(--hw-line-hi));
+  border-right: 1px solid color-mix(in srgb, var(--hw-mint) 48%, var(--hw-line-hi));
+  border-radius: 0 18px 0 0;
+  pointer-events: none;
+}
+
+/* Straight arrows are attached to the list item rather than the clipped card,
+   so the card's chamfer cannot crop them out. */
+.hw26-how-step:not(:nth-child(5)):not(:nth-child(9))::after {
+  content: "→";
+  position: absolute;
+  z-index: 3;
+  top: clamp(6.05rem, 8.2vw, 7.15rem);
+  right: calc(-0.5 * var(--how-gap));
+  translate: 50% -50%;
+  font-family: var(--font-jetbrains-mono), monospace;
+  font-size: 1rem;
+  color: var(--hw-mint);
+}
+
+.hw26-how-date {
+  position: relative;
+  z-index: 2;
+  min-height: 3.1rem;
+  margin-bottom: 0.8rem;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+/* Rise from the middle rail at the far left, turn right and enter the sixth
+   card through its side — the same return path drawn in the supplied layout. */
+.hw26-how-return-drop {
+  position: absolute;
+  z-index: 1;
+  top: calc(-1 * var(--how-turn-half));
+  right: 100%;
+  width: var(--how-loop-out);
+  height: calc(var(--how-turn-half) + var(--how-card-mid));
+  border-left: 1px solid color-mix(in srgb, var(--hw-mint) 48%, var(--hw-line-hi));
+  border-bottom: 1px solid color-mix(in srgb, var(--hw-mint) 56%, var(--hw-line-hi));
+  border-radius: 0 0 0 18px;
+  pointer-events: none;
+}
+
+.hw26-how-return-drop::after {
+  content: "";
+  position: absolute;
+  right: -1px;
+  bottom: -4px;
+  width: 7px;
+  height: 7px;
+  border-top: 1px solid var(--hw-mint);
+  border-right: 1px solid var(--hw-mint);
+  rotate: 45deg;
+}
+
+.hw26-how-date strong,
+.hw26-how-date span {
+  display: block;
+  position: relative;
+  z-index: 1;
+  width: fit-content;
+  margin-inline: auto;
+  padding-inline: 0.35rem;
+}
+
+.hw26-how-date strong {
+  font-family: var(--font-jetbrains-mono), monospace;
+  font-size: clamp(1rem, 1.45vw, 1.35rem);
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: 0.04em;
+  color: var(--hw-mint);
+}
+
+.hw26-how-date span {
+  margin-top: 0.35rem;
+  font-size: clamp(0.58rem, 0.7vw, 0.68rem);
+  line-height: 1;
+  letter-spacing: 0.13em;
+  color: var(--hw-silver);
+}
+
+.hw26-how-card {
+  --how-cut: 12px;
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  place-items: center;
+  min-height: clamp(6.2rem, 8.5vw, 7.5rem);
+  padding: 1.35rem 1rem;
+  clip-path: polygon(
+    0 0,
+    calc(100% - var(--how-cut)) 0,
+    100% var(--how-cut),
+    100% 100%,
+    var(--how-cut) 100%,
+    0 calc(100% - var(--how-cut))
+  );
+  background: var(--hw-line-hi);
+  text-align: center;
+}
+
+/* The inset fill leaves the outline visible around both chamfers as well as
+   the four straight sides. A regular border would lose the diagonal edges. */
+.hw26-how-card::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: 1px;
+  clip-path: polygon(
+    0 0,
+    calc(100% - 11px) 0,
+    100% 11px,
+    100% 100%,
+    11px 100%,
+    0 calc(100% - 11px)
+  );
+  background: color-mix(in srgb, var(--hw-steel) 92%, transparent);
+}
+
+.hw26-how-index {
+  position: absolute;
+  top: 0.55rem;
+  left: 0.65rem;
+  font-family: var(--font-jetbrains-mono), monospace;
+  font-size: 0.58rem;
+  line-height: 1;
+  letter-spacing: 0.12em;
+  color: var(--hw-silver);
+  opacity: 0.65;
+}
+
+.hw26-how-card h3 {
+  margin: 0;
+  font-family: var(--font-orbitron), sans-serif;
+  font-size: clamp(0.68rem, 0.92vw, 0.88rem);
+  font-weight: 700;
+  line-height: 1.38;
+  letter-spacing: 0.025em;
+  text-transform: uppercase;
+  color: var(--hw-mint);
+}
+
+.hw26-how-step > p {
+  margin: 1rem auto 0;
+  max-width: 28ch;
+  font-size: clamp(0.68rem, 0.76vw, 0.76rem);
+  line-height: 1.62;
+  text-align: center;
+  color: var(--hw-silver);
+}
+
+@media (max-width: 1100px) and (min-width: 721px) {
+  .hw26-how-flow {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-rows: none;
+    gap: clamp(2.5rem, 5vw, 4rem) clamp(1rem, 2.5vw, 1.75rem);
+  }
+
+  .hw26-how-flow::before {
+    display: none;
+  }
+
+  .hw26-how-return-drop {
+    display: none;
+  }
+
+  .hw26-how-step:nth-child(n) {
+    grid-column: auto;
+    grid-row: auto;
+  }
+
+  .hw26-how-step:not(:nth-child(5)):not(:nth-child(9))::after {
+    display: none;
+  }
+
+  .hw26-how-step:nth-child(5)::after {
+    display: none;
+  }
+}
+
+@media (max-width: 720px) {
+  .hw26-how-meta {
+    align-items: flex-start;
+    margin-top: -1.2rem;
+  }
+
+  .hw26-how-meta > :last-child {
+    max-width: 11ch;
+    text-align: right;
+  }
+
+  .hw26-how-flow {
+    display: block;
+    padding-left: 3.4rem;
+  }
+
+  .hw26-how-flow::before {
+    display: block;
+    position: absolute;
+    top: 1.55rem;
+    bottom: auto;
+    left: 1.05rem;
+    width: 1px;
+    height: calc(100% - 2.55rem);
+    border: 0;
+    border-radius: 0;
+    background: linear-gradient(var(--hw-mint), var(--hw-line-hi) 82%);
+    opacity: 0.78;
+  }
+
+  .hw26-how-step:nth-child(n) {
+    grid-column: auto;
+    grid-row: auto;
+  }
+
+  .hw26-how-step + .hw26-how-step {
+    margin-top: 2.2rem;
+  }
+
+  .hw26-how-step::before {
+    content: "";
+    position: absolute;
+    z-index: 2;
+    top: 1.15rem;
+    left: -2.7rem;
+    width: 0.65rem;
+    height: 0.65rem;
+    border: 1px solid var(--hw-mint);
+    background: var(--hw-void);
+    rotate: 45deg;
+    box-shadow: 0 0 0 4px var(--hw-void);
+  }
+
+  .hw26-how-step:not(:nth-child(5)):not(:nth-child(9))::after {
+    display: none;
+  }
+
+  .hw26-how-step:nth-child(5)::after {
+    display: none;
+  }
+
+  .hw26-how-return-drop {
+    display: none;
+  }
+
+  .hw26-how-date {
+    min-height: 0;
+    margin-bottom: 0.65rem;
+    text-align: left;
+  }
+
+  .hw26-how-date strong,
+  .hw26-how-date span {
+    display: inline;
+    width: auto;
+    margin-inline: 0;
+    padding-inline: 0;
+    background: transparent;
+  }
+
+  .hw26-how-date span {
+    margin: 0 0 0 0.55rem;
+  }
+
+  .hw26-how-card {
+    min-height: 5.8rem;
+    place-items: center start;
+    padding: 1.25rem 1.4rem;
+    text-align: left;
+  }
+
+  .hw26-how-step > p {
+    max-width: none;
+    margin-top: 0.85rem;
+    text-align: left;
+  }
 }
 
 /* The chamfered panel, drawn so the outline follows the chamfer.
@@ -2533,8 +3165,8 @@ button.hw26-apply {
    was cut for stock photographs, where colour was the thing that gave away
    that the plate was a picture of somewhere else; these are studio renders of
    the actual machines, and the little colour they have — the orange
-   manipulator, the FPV drone's red props, the cobot's teal floor — is the
-   machine's own marking rather than a stray cast.
+   manipulator or the cobot's teal floor — is the machine's own marking rather
+   than a stray cast.
 
    The rest state came up, and the gap to hover came down with it. At 16% and
    three quarters grey a render was a dark smear that the pointer then turned
@@ -2547,7 +3179,7 @@ button.hw26-apply {
    The figures are set against the darkest renders in the set, not the
    brightest: the TBOT and the wheeled arm are near-black photographs and are
    what decides whether the rest state reads as present, while the printers
-   and the Formlabs are what decides whether it stays under the type. Both
+   are what decide whether it stays under the type. Both
    hold at these numbers. `contrast` comes down with the grey for the same
    reason — 1.25 was crushing an image that was already being hidden, and at
    30% it was the thing making the darks unreadable. 1.15 is a step over the
@@ -2945,8 +3577,7 @@ button.hw26-apply {
   font-size: clamp(2.5rem, 4.5vw, 4rem);
 }
 
-/* The supplier's mark, on the two cells that have one: the "build your own"
- * slots, whose parts are MAB Robotics' and SPRTK's.
+/* The supplier's mark on hardware cards with partner attribution.
  *
  * Opposite corner to the count, on the count's own inset. The two are
  * different kinds of statement — how many there are, and whose components
@@ -3609,7 +4240,251 @@ button.hw26-apply {
 }
 
 /* -------------------------------------------------------------
-   3B. TIMELINE — one dashed hairline, six ticks on it, the stops
+   3B. PRIZES — three award plates lifted on a responsive podium.
+   ------------------------------------------------------------- */
+
+.hw26-prizes-section {
+  overflow: hidden;
+  background: var(--hw-void);
+}
+
+.hw26-prize-podium {
+  display: grid;
+  grid-template-areas: "second first third";
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  align-items: end;
+  gap: clamp(0.75rem, 1.4vw, 1.25rem);
+  padding-top: clamp(3rem, 7vw, 6rem);
+}
+
+.hw26-prize {
+  --prize-step: clamp(3.5rem, 6vw, 5.25rem);
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.hw26-prize--1 {
+  --prize-step: clamp(6.5rem, 10vw, 9rem);
+  grid-area: first;
+}
+
+.hw26-prize--2 {
+  --prize-step: clamp(4.75rem, 7.5vw, 6.5rem);
+  grid-area: second;
+}
+
+.hw26-prize--3 {
+  grid-area: third;
+}
+
+.hw26-prize-card {
+  --prize-cut: 28px;
+  position: relative;
+  isolation: isolate;
+  min-height: clamp(330px, 34vw, 460px);
+  overflow: hidden;
+  display: flex;
+  align-items: flex-end;
+  padding: clamp(1.35rem, 2.8vw, 2.25rem);
+  background: var(--hw-line);
+  clip-path: polygon(
+    0 0,
+    calc(100% - var(--prize-cut)) 0,
+    100% var(--prize-cut),
+    100% 100%,
+    var(--prize-cut) 100%,
+    0 calc(100% - var(--prize-cut))
+  );
+}
+
+.hw26-prize-card::before {
+  content: "";
+  position: absolute;
+  z-index: -2;
+  inset: 1px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.018), transparent 42%),
+    var(--hw-steel);
+  clip-path: polygon(
+    0 0,
+    calc(100% - 27.4px) 0,
+    100% 27.4px,
+    100% 100%,
+    27.4px 100%,
+    0 calc(100% - 27.4px)
+  );
+}
+
+.hw26-prize--1 .hw26-prize-card {
+  background: color-mix(in srgb, var(--hw-mint) 62%, var(--hw-line));
+  box-shadow: 0 0 2.5rem color-mix(in srgb, var(--hw-mint) 8%, transparent);
+}
+
+.hw26-prize-index {
+  position: absolute;
+  z-index: 2;
+  top: clamp(1.1rem, 2vw, 1.6rem);
+  left: clamp(1.25rem, 2.4vw, 1.9rem);
+  font-family: var(--font-geist-pixel-circle), var(--font-orbitron), sans-serif;
+  font-size: clamp(2.4rem, 4.5vw, 4rem);
+  line-height: 1;
+  color: var(--hw-line-hi);
+}
+
+.hw26-prize-credit {
+  position: absolute;
+  z-index: 3;
+  top: clamp(1.2rem, 2.1vw, 1.7rem);
+  right: clamp(1.35rem, 2.5vw, 2rem);
+  width: auto;
+  height: auto;
+  max-width: clamp(64px, 6.5vw, 92px);
+  max-height: clamp(24px, 2.5vw, 34px);
+  object-fit: contain;
+  opacity: 0.76;
+  filter: grayscale(0.15) brightness(1.06);
+}
+
+.hw26-prize--1 .hw26-prize-index {
+  color: var(--hw-mint);
+}
+
+.hw26-prize-media,
+.hw26-prize-tba {
+  position: absolute;
+  z-index: -1;
+  inset: 1px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* The full-bleed image must stop at the card's inner chamfer. Without this
+     parallel cut its rectangular corners paint over the diagonal border. */
+  clip-path: polygon(
+    0 0,
+    calc(100% - 27.4px) 0,
+    100% 27.4px,
+    100% 100%,
+    27.4px 100%,
+    0 calc(100% - 27.4px)
+  );
+}
+
+.hw26-prize-media::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 46%, var(--hw-steel) 92%);
+}
+
+.hw26-prize-media img {
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  object-fit: cover;
+  opacity: 0.72;
+  filter: saturate(0.55) contrast(1.06);
+}
+
+.hw26-prize--1 .hw26-prize-media img {
+  opacity: 0.84;
+}
+
+.hw26-prize-tba {
+  font-family: var(--font-geist-pixel-circle), var(--font-orbitron), sans-serif;
+  font-size: clamp(12rem, 25vw, 22rem);
+  line-height: 1;
+  color: var(--hw-line-hi);
+  opacity: 0.34;
+}
+
+.hw26-prize-copy {
+  position: relative;
+  z-index: 2;
+}
+
+.hw26-prize-copy h3 {
+  margin: 0.55rem 0 0;
+  max-width: 12ch;
+  font-family: var(--font-orbitron), sans-serif;
+  font-size: clamp(1.65rem, 3vw, 2.8rem);
+  font-weight: 900;
+  line-height: 0.92;
+  text-transform: uppercase;
+  color: var(--hw-snow);
+}
+
+.hw26-prize-copy p {
+  margin: 0.7rem 0 0;
+  max-width: 26ch;
+  font-size: clamp(0.72rem, 1vw, 0.84rem);
+  line-height: 1.45;
+  color: var(--hw-bone);
+}
+
+.hw26-prize-step {
+  position: relative;
+  height: var(--prize-step);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--hw-line);
+  border-top: 0;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.018), transparent 55%),
+    var(--hw-steel);
+}
+
+.hw26-prize-step span {
+  position: relative;
+  z-index: 1;
+  font-family: var(--font-geist-pixel-square), var(--font-orbitron), sans-serif;
+  font-size: clamp(2.5rem, 6vw, 5.25rem);
+  line-height: 1;
+  color: var(--hw-line-hi);
+}
+
+.hw26-prize--1 .hw26-prize-step span {
+  color: var(--hw-mint);
+}
+
+.hw26-prize-step i {
+  position: absolute;
+  inset: 0;
+  opacity: 0.18;
+  background: repeating-linear-gradient(
+    -45deg,
+    transparent 0 14px,
+    var(--hw-line-hi) 14px 15px
+  );
+}
+
+@media (max-width: 760px) {
+  .hw26-prize-podium {
+    grid-template-areas:
+      "first"
+      "second"
+      "third";
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1.25rem;
+    padding-top: 1rem;
+  }
+
+  .hw26-prize,
+  .hw26-prize--1,
+  .hw26-prize--2 {
+    --prize-step: clamp(3.75rem, 17vw, 5rem);
+  }
+
+  .hw26-prize-card {
+    min-height: min(100vw, 390px);
+  }
+
+}
+
+/* -------------------------------------------------------------
+   3C. TIMELINE — one dashed hairline, six ticks on it, the stops
    hung off it and the brackets in a strip alongside.
 
    Numbered 3B rather than 4 because it landed between the floor
@@ -4254,7 +5129,7 @@ button.hw26-apply {
 }
 
 /* -------------------------------------------------------------
-   5. FAQ — one chamfered plate, nine rows, one open at a time.
+   5. FAQ — one chamfered plate, one open row at a time.
 
    The same object the inventory cells are, turned on its side: a
    plate whose own background is the outline, with a fill inset by
@@ -4331,7 +5206,7 @@ button.hw26-apply {
 /* The heading is structure, not scale. Every question is a heading under the
    section title and is marked up as one, but an `h3` at this page's `h3` size
    — 3.75rem of stamped Square — is the group titles above the inventory grid,
-   and nine of those would be nine more sections. So the level is stated in
+   and a full list of those would become more sections. So the level is stated in
    the markup and the size is taken off it entirely; what the reader sees is a
    row in a list. */
 .hw26-faq-heading {
@@ -4376,7 +5251,7 @@ html:not(.hw26-cursor-dom) .hw26-faq-trigger {
 /* The row's fill, and the reason the hover ring is drawn the way it is.
  *
  * It used to be `box-shadow: inset 0 0 0 1px mint` — one declaration, and
- * wrong on two rows out of nine. An inset shadow is drawn on the four edges
+ * wrong on the first and last rows. An inset shadow is drawn on the four edges
  * of the border box; the plate's `clip-path` then takes a diagonal off the
  * first row's top-right corner and the last row's bottom-left, and a rule
  * with no geometry along that diagonal has nothing to paint there. The ring
@@ -4393,7 +5268,7 @@ html:not(.hw26-cursor-dom) .hw26-faq-trigger {
  *
  * Per row rather than on the plate's own frame — `:has()` recolouring the
  * whole outline when any row is hovered was the cheaper fix and says the
- * wrong thing: nine rows share that frame, and lighting all of it up to
+ * wrong thing: every row shares that frame, and lighting all of it up to
  * point at one of them is a highlight that does not identify anything.
  *
  * At rest both layers are transparent and the row is the plate's steel, so
@@ -4478,10 +5353,35 @@ html:not(.hw26-cursor-dom) .hw26-faq-trigger {
   background: var(--hw-steel-hi);
 }
 
+/* The single must-bring item is the FAQ's safety callout. Gold is reserved
+   for this practical warning and traces the same inset chamfer as the plate,
+   so the clipped corner keeps a real edge instead of a rectangular overlay. */
+.hw26-faq-row--featured .hw26-faq-trigger {
+  background: var(--hw-gold);
+}
+
+.hw26-faq-row--featured .hw26-faq-trigger::before {
+  background: var(--hw-steel);
+}
+
+.hw26-faq-row--featured.hw26-faq-row--open .hw26-faq-trigger::before,
+.hw26-faq-row--featured .hw26-faq-trigger:is(:hover, :focus-visible)::before {
+  background: var(--hw-steel-hi);
+}
+
+.hw26-faq-row--featured .hw26-faq-q {
+  color: var(--hw-gold);
+}
+
+.hw26-faq-row--featured .hw26-faq-sign::before,
+.hw26-faq-row--featured .hw26-faq-sign::after {
+  background: var(--hw-gold);
+}
+
 /* Body face, one step up from body size and a weight over it. The questions
    are sentences with punctuation in them, so this is the one place on the
    page where a heading is not set in a display cut and not uppercased —
-   nine tracked-out capital sentences would be the section shouting its own
+   tracked-out capital sentences would be the section shouting its own
    FAQ at the reader. `min-width: 0` lets the text wrap instead of forcing the
    flex row wider than the plate. */
 .hw26-faq-q {
@@ -4538,6 +5438,22 @@ html:not(.hw26-cursor-dom) .hw26-faq-trigger {
 .hw26-faq-row--open .hw26-faq-sign::before,
 .hw26-faq-row--open .hw26-faq-sign::after {
   background: var(--hw-mint);
+}
+
+.hw26-faq-row--featured .hw26-faq-trigger:is(:hover, :focus-visible) {
+  background: var(--hw-gold);
+  outline-color: var(--hw-gold);
+}
+
+.hw26-faq-row--featured
+  .hw26-faq-trigger:is(:hover, :focus-visible)
+  .hw26-faq-sign::before,
+.hw26-faq-row--featured
+  .hw26-faq-trigger:is(:hover, :focus-visible)
+  .hw26-faq-sign::after,
+.hw26-faq-row--featured.hw26-faq-row--open .hw26-faq-sign::before,
+.hw26-faq-row--featured.hw26-faq-row--open .hw26-faq-sign::after {
+  background: var(--hw-gold);
 }
 
 /* The open/close itself.
@@ -4787,7 +5703,7 @@ html:not(.hw26-cursor-dom) .hw26-faq-trigger {
   margin-bottom: 1px;
 }
 
-/* Ecosystem Partners: six tiles, one row, one size.
+/* Ecosystem Partners: seven tiles, one row, one size.
    ................................................................
    This was two rows and two sizes — a two-column lead row for NVIDIA and ESRA
    and a three-column row at half their linear size under it — plus a paragraph
@@ -4801,16 +5717,16 @@ html:not(.hw26-cursor-dom) .hw26-faq-trigger {
    empty track, which on this container is not empty: the gaps are the
    `--hw-line` background
    showing through, so a short row comes out as a lit rectangle the size of a
-   plate. Six children, six tracks, no leftover.
+   plate. Seven children, seven tracks, no leftover.
 
    The width calc goes with the row it was reconciling. There is nothing above
    these cells to line up with any more. */
 .hw26-sponsors-lead--eco {
-  grid-template-columns: repeat(6, minmax(0, 1fr));
+  grid-template-columns: repeat(8, minmax(0, 1fr));
 }
 
-/* A sixth of the sheet does not take a half-sheet cell's inset with it: at 1440
-   a track here is ~239px, and the lead padding would spend more than half of
+/* A seventh of the sheet does not take a half-sheet cell's inset with it: at 1440
+   a track here is ~205px, and the lead padding would spend more than half of
    that on air and leave the mark nowhere to sit. Inherited from the old small
    tier, where the same sum was run against ~244px. */
 .hw26-sponsors-lead--eco .hw26-sponsor-lead {
@@ -4846,13 +5762,30 @@ html:not(.hw26-cursor-dom) .hw26-faq-trigger {
   width: calc((100% - 3px) / 2 + 2px);
 }
 
-/* Six divides by both responsive counts, so every row fills and there is no
-   short row for a cell to have to stretch across. Five did leave one track over
-   at each step, and the last cell was spanned to close it rather than leave a
-   lit empty plate; the count does that on its own now. */
+.hw26-sponsors-lead--two {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+/* Prize partners form one continuous three-cell row, matching the Ecosystem
+   tier's single-wall treatment instead of breaking after the second tile. */
+.hw26-sponsors-lead--prize {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.hw26-sponsors-lead--prize .hw26-sponsor-lead {
+  padding: clamp(1.75rem, 3vw, 2.75rem);
+}
+
+.hw26-sponsors-lead--prize img {
+  max-width: 100%;
+  object-fit: contain;
+}
+
+/* Seven stays in one row on desktop. At narrower steps it becomes four and
+   then two tracks, with the phone's final tile closing the leftover slot. */
 @media (max-width: 1100px) {
   .hw26-sponsors-lead--eco {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 }
 
@@ -4861,6 +5794,17 @@ html:not(.hw26-cursor-dom) .hw26-faq-trigger {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
+  .hw26-sponsors-lead--eco > :last-child {
+    grid-column: span 2;
+  }
+
+  .hw26-sponsors-lead--prize {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .hw26-sponsors-lead--prize > :last-child {
+    grid-column: span 2;
+  }
   /* Full width, because the row it is half of is one column here and half of
      one column is not a slot — the row *is* the sheet, so a shrunk container
      would only read as a tile that came up short. */
@@ -4964,6 +5908,26 @@ html:not(.hw26-cursor-dom) .hw26-faq-trigger {
     color-mix(in srgb, var(--hw-mint) 40%, transparent);
 }
 
+/* A small set of strategic partners is called out in warm signal ink. The
+   treatment stays inside the tile so neighbouring grid cells cannot cover it. */
+.hw26-sponsor-lead.hw26-partner-highlight,
+.hw26-sponsor.hw26-partner-highlight {
+  background: color-mix(in srgb, var(--hw-gold) 7%, var(--hw-steel));
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, var(--hw-gold) 72%, transparent),
+    inset 0 0 2.5rem color-mix(in srgb, var(--hw-gold) 8%, transparent);
+}
+
+.hw26-sponsor-lead.hw26-partner-highlight:hover,
+.hw26-sponsor-lead.hw26-partner-highlight:focus-visible,
+.hw26-sponsor.hw26-partner-highlight:hover,
+.hw26-sponsor.hw26-partner-highlight:focus-visible {
+  background: color-mix(in srgb, var(--hw-gold) 11%, var(--hw-steel-hi));
+  box-shadow:
+    inset 0 0 0 1px var(--hw-gold),
+    inset 0 0 3rem color-mix(in srgb, var(--hw-gold) 12%, transparent);
+}
+
 /* Inset rather than offset: these cells are separated by a 1px gap showing
    the container through, so an outline drawn outside the border box would sit
    under the neighbouring tile. Keyboard focus lands on the whole tile, which
@@ -5028,6 +5992,10 @@ html[data-theme='light'] .hw26-sponsor-lead:hover {
   height: clamp(30px, 2.4vw, 34px);
 }
 
+.hw26-sponsor-lead img.hw26-mark--aitinkerers {
+  height: clamp(26px, 2.2vw, 34px);
+}
+
 /* The sponsor tier, in a lead cell since it was promoted out of the small
    tiles. Re-decided rather than scaled, and decided against ESRA above rather
    than against the figure this mark carried at 244px: a solid elephant beside a
@@ -5053,6 +6021,19 @@ html[data-theme='light'] .hw26-sponsor-lead:hover {
   height: clamp(28px, 3vw, 38px);
   max-width: 100%;
   object-fit: contain;
+}
+
+.hw26-sponsor-lead img.hw26-mark--tnkr {
+  height: clamp(30px, 3.2vw, 42px);
+  max-width: 100%;
+  object-fit: contain;
+}
+
+.hw26-sponsor-lead img.hw26-mark--m5stack {
+  height: clamp(26px, 2.8vw, 36px);
+  max-width: 100%;
+  object-fit: contain;
+  filter: brightness(0) invert(1);
 }
 
 /* The one mark on this wall that is a plate: cropped to the lockup on its own
@@ -5089,7 +6070,7 @@ html[data-theme='light'] .hw26-sponsor-lead:hover {
    these two counts. */
 .hw26-sponsors-rest {
   display: grid;
-  grid-template-columns: repeat(8, minmax(0, 1fr));
+  grid-template-columns: repeat(9, minmax(0, 1fr));
   gap: 1px;
   background: var(--hw-line);
   border: 1px solid var(--hw-line);
@@ -5242,34 +6223,6 @@ html[data-theme='light'] .hw26-sponsor--static:hover {
   height: clamp(52px, 5vw, 68px);
 }
 
-/* The tallest figure on the wall, and the only one whose height is set by
-   something other than how large the mark reads.
-
-   It is a portrait file at 328×477 with two things in it: the crest, which is
-   a square red plate filling the top two thirds, and the university's name
-   set in two lines of white across the bottom third. Sized like its
-   neighbours — by the mark — it would sit near BMF's 68 and the crest would
-   be right, but a line of that type is a eighth of the file's height, which
-   at 68px is eight pixels of two-line copy and nothing anyone can read. So
-   this one is sized by its smallest part instead: at 74px the name lands
-   around ten pixels a line, which is where the wall's own 10px labels sit and
-   is the floor for type that is meant to be read rather than recognised.
-
-   That makes it a tenth taller than BMF, which is the right result for the
-   wrong-looking reason. BMF is a solid mark through its whole box; two thirds
-   of this one is crest and the rest is thin white type on nothing, so the ink
-   it actually puts on the plate is a 50px square — under BMF's 68 and above
-   GHOST's 44, which is where a small saturated plate belongs among white line
-   art. Taller on the page, quieter in the row.
-
-   The floor is 64, and it is high for the same reason MAB's and BMF's are:
-   the narrow layouts are where a tile is widest, so there is nothing to save
-   space for, and the type is the first thing to go if this drops with the
-   viewport. */
-.hw26-sponsor img.hw26-mark--pwr {
-  height: clamp(64px, 5.4vw, 74px);
-}
-
 /* The lockup: an icon with the name set live under it, for the tiles whose
    supplied file is a symbol and nothing else. GHOST was the first — their
    official icon is a square plate with no name in it — and the figures below
@@ -5339,6 +6292,63 @@ html[data-theme='light'] .hw26-sponsor--static:hover {
   --hw26-lockup-track: 0.2372em;
 }
 
+.hw26-sponsor-lockup--machinekind {
+  --hw26-lockup-icon: clamp(50px, 4.2vw, 60px);
+  --hw26-lockup-track: 0.08em;
+  width: clamp(88px, 7.4vw, 104px);
+}
+
+.hw26-sponsor img.hw26-mark--machinekind {
+  width: var(--hw26-lockup-icon);
+  height: auto;
+}
+
+.hw26-sponsor img.hw26-mark--tnkr {
+  height: clamp(30px, 3.2vw, 42px);
+}
+
+.hw26-sponsor-lockup--machinekind .hw26-sponsor-wordmark {
+  font-size: clamp(8px, 0.7vw, 10px);
+}
+
+/* Partner credits stay as clean marks over the hardware photography. */
+.hw26-rig-credit[src="/sponsors/tnkr.svg"] {
+  max-width: clamp(58px, 5vw, 72px);
+  max-height: clamp(22px, 2vw, 28px);
+  opacity: 0.88;
+  object-fit: contain;
+}
+
+.hw26-rig-credit:is(
+    [src="/sponsors/epikor.svg"],
+    [src="/sponsors/skymav.png"],
+    [src="/sponsors/machinekind.webp"]
+  ) {
+  max-width: clamp(54px, 5vw, 72px);
+  max-height: clamp(22px, 2vw, 30px);
+  opacity: 0.9;
+  object-fit: contain;
+}
+
+.hw26-rig-credit[src="/sponsors/ghost-icon.png"] {
+  max-width: clamp(30px, 3vw, 42px);
+  max-height: clamp(30px, 3vw, 42px);
+  opacity: 0.42;
+  filter: saturate(0.38) brightness(0.64);
+}
+
+.hw26-rig:is(:hover, .hw26-rig--active)
+  .hw26-rig-credit[src="/sponsors/ghost-icon.png"] {
+  opacity: 0.58;
+}
+
+.hw26-rig-credit[src="/sponsors/mab.png"] {
+  max-width: clamp(58px, 5.4vw, 78px);
+  max-height: clamp(22px, 2vw, 28px);
+  opacity: 0.72;
+  object-fit: contain;
+}
+
 /* Poppins Light, uppercase, tracked out until the word measures the icon
    above it — that is how GHOST set it themselves, and it is the only thing
    that makes an icon and a word read as one object rather than two things
@@ -5397,17 +6407,6 @@ html[data-theme='light'] .hw26-sponsor--static:hover {
   height: clamp(40px, 3.2vw, 46px);
 }
 
-/* A wordmark and nothing else, at 5.3:1 in the face the supplied art was set
-   in. No symbol means no vertical mass to carry the mark, so all of its height
-   is cap height and it grows across the tile faster than anything else on the
-   small tiles. Held well under the row's base for that reason, which is the
-   opposite of what a monogram in this slot would need.
-
-   This replaced the one typographic fallback the wall had. */
-.hw26-sponsor img.hw26-mark--w01tek {
-  height: clamp(17px, 1.8vw, 23px);
-}
-
 /* Wide, and a plate rather than a cut-out: white type on the channel's own
    orange, so the whole rectangle is ink. Sized under the row's base for the
    same reason EuroTech is above, and framed for the same reason it is not —
@@ -5430,7 +6429,8 @@ html[data-theme='light'] .hw26-sponsor--static:hover {
     grid-template-columns: minmax(0, 1fr);
   }
 
-  .hw26-menu-main .hw26-menu-links a {
+  .hw26-menu-main .hw26-menu-links a,
+  .hw26-menu-main .hw26-menu-link--tba {
     min-height: 72px;
   }
 }
@@ -5471,7 +6471,8 @@ html[data-theme='light'] .hw26-sponsor--static:hover {
     top: 24px;
   }
 
-  .hw26-menu-links a {
+  .hw26-menu-links a,
+  .hw26-menu-link--tba {
     gap: 0.85rem;
     font-size: clamp(1.75rem, 9.4vw, 3rem);
   }
@@ -5500,7 +6501,8 @@ html[data-theme='light'] .hw26-sponsor--static:hover {
     gap: 0.4rem;
   }
 
-  .hw26-menu-main .hw26-menu-links a {
+  .hw26-menu-main .hw26-menu-links a,
+  .hw26-menu-main .hw26-menu-link--tba {
     min-height: 46px;
     padding-block: 0;
     font-size: clamp(1.8rem, 8vh, 3.25rem);
@@ -5825,6 +6827,47 @@ html[data-theme='light'] .hw26-sponsor--static:hover {
 
 .hw26-support-link:hover,
 .hw26-support-link:focus-visible {
+  color: var(--hw-mint);
+  outline: 0;
+}
+
+.hw26-social-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  color: var(--hw-bone);
+  font-size: clamp(0.64rem, 0.9vw, 0.78rem);
+  letter-spacing: 0.05em;
+  text-decoration: none;
+  transition: color 180ms var(--hw-ease);
+}
+
+.hw26-social-link svg {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.6;
+}
+
+.hw26-social-link .hw26-social-dot {
+  fill: currentColor;
+  stroke: none;
+}
+
+.hw26-social-link span {
+  color: var(--hw-mint);
+  font-family: var(--font-orbitron), sans-serif;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.hw26-social-link:hover,
+.hw26-social-link:focus-visible {
   color: var(--hw-mint);
   outline: 0;
 }
