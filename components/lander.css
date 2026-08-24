@@ -5794,10 +5794,6 @@ html:not(.hw26-cursor-dom) .hw26-faq-trigger {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .hw26-sponsors-lead--eco > :last-child {
-    grid-column: span 2;
-  }
-
   .hw26-sponsors-lead--prize {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
