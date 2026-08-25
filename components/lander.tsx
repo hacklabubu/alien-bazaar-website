@@ -282,6 +282,17 @@ const RIG_GROUPS: { label: string; items: Rig[] }[] = [
   {
     label: "Robot arms",
     items: [
+      // First in the group: Universal Robots is the main hardware partner,
+      // and their machine leads the arms.
+      {
+        name: "Cobot UR5 e-Series",
+        units: "3x",
+        photo: "/hardware/cobot-ur5e.webp",
+        credit: {
+          src: "/sponsors/universal-robots.svg",
+          label: "In partnership with Universal Robots",
+        },
+      },
       {
         name: "A1XY",
         units: "2x",
@@ -869,6 +880,24 @@ const TITLE_BLOCK = [
  * else, and the whole tile is the link.
  */
 const HARDWARE_PARTNERS: Partner[] = [
+  {
+    // The main hardware partner, and always the first tile: the wall renders
+    // the highlighted partners ahead of the shuffled rest in array order, so
+    // first in this array is first on the wall on every visit.
+    //
+    // Their mobile header mark, in their own blue — the one full-colour cut
+    // on this wall, kept because the colour is the identity here. The file is
+    // the symbol alone with no name in it, so the name is set live beneath it
+    // — the treatment GHOST established and Machinekind's long-word variant
+    // of it.
+    name: "Universal Robots",
+    src: "/sponsors/universal-robots.svg",
+    href: "https://www.universal-robots.com/",
+    mark: "hw26-mark--ur",
+    lockup: "hw26-sponsor-lockup--ur",
+    wordmark: "UNIVERSAL ROBOTS",
+    highlight: true,
+  },
   {
     name: "Lute",
     src: "/sponsors/lute.svg",

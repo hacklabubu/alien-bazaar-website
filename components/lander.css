@@ -6356,6 +6356,30 @@ html[data-theme='light'] .hw26-sponsor--static:hover {
   height: clamp(30px, 3.2vw, 42px);
 }
 
+/* Universal Robots: a square symbol-only file, so it takes the lockup
+   construction — icon over the name set live. The word is two words and
+   sixteen characters against Machinekind's eleven, so it borrows that
+   lockup's fixed tracking rather than GHOST's measured match (a track that
+   set "UNIVERSAL ROBOTS" to a 48px icon's width would crush it), and the
+   lockup box is widened past the icon so the word has its measure. The mark
+   itself is the wall's one full-colour cut — the partner's own blue, kept —
+   and it is a filled swirl rather than line art, so the icon sits between
+   GHOST's 44 and MCHTR's 56. */
+.hw26-sponsor-lockup--ur {
+  --hw26-lockup-icon: clamp(44px, 3.7vw, 52px);
+  --hw26-lockup-track: 0.08em;
+  width: clamp(112px, 9.4vw, 130px);
+}
+
+.hw26-sponsor img.hw26-mark--ur {
+  width: var(--hw26-lockup-icon);
+  height: auto;
+}
+
+.hw26-sponsor-lockup--ur .hw26-sponsor-wordmark {
+  font-size: clamp(7px, 0.62vw, 9px);
+}
+
 .hw26-sponsor-lockup--machinekind .hw26-sponsor-wordmark {
   font-size: clamp(8px, 0.7vw, 10px);
 }
@@ -6389,6 +6413,19 @@ html[data-theme='light'] .hw26-sponsor--static:hover {
 .hw26-rig:is(:hover, .hw26-rig--active)
   .hw26-rig-credit[src="/sponsors/ghost-icon.png"] {
   opacity: 0.58;
+}
+
+/* Universal Robots' mark is square, so it takes GHOST's box rather than the
+   wide marks' — but none of GHOST's dimming: that filter exists because a
+   red plate at full saturation shouts over a photograph, and this mark's
+   muted blue sits quietly over the cell's near-black plate. The colour is
+   kept deliberately — they are the main hardware partner, and the blue is
+   the credit. */
+.hw26-rig-credit[src="/sponsors/universal-robots.svg"] {
+  max-width: clamp(30px, 3vw, 42px);
+  max-height: clamp(30px, 3vw, 42px);
+  opacity: 0.9;
+  object-fit: contain;
 }
 
 .hw26-rig-credit[src="/sponsors/mab.png"] {
