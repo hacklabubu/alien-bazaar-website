@@ -556,129 +556,75 @@ const PRIZES = [
   },
 ] as const;
 
-const HOW_IT_WORKS = [
-  {
-    date: "01",
-    month: "September",
-    title: "Announcement",
-    text: "Announcement of all hardware, components and bonuses.",
-  },
-  {
-    date: "01-15",
-    month: "September",
-    title: "Create or join a team",
-    text: "Form a team of 3-5 people. Choose hardware and add your own if needed.",
-  },
-  {
-    date: "01-15",
-    month: "September",
-    title: "Develop your idea",
-    text: "Discuss with other teams, come up with solutions and refine your idea. When you're 100% sure, apply via the button in the Teams section.",
-  },
-  {
-    date: "15",
-    month: "September",
-    title: "Application deadline",
-    text: "Submit your team to participate.",
-  },
-  {
-    date: "15-18",
-    month: "September",
-    title: "20 teams selected",
-    text: "Our jury will choose the best teams in each hardware category based on initiative, communication and collaboration with other teams, idea creativity and prior experience.",
-  },
-  {
-    date: "18",
-    month: "September",
-    title: "3D printing opens",
-    text: "Teams can send us what they want printed, and we'll prepare it by the start of the hackathon.",
-  },
-  {
-    date: "18-25",
-    month: "September",
-    title: "Mentoring & community",
-    text: "Get guided by your mentor. Talk to other teams and organizers. If you're in Build Your Own category, mentors will help you design.",
-  },
-  {
-    date: "25",
-    month: "September",
-    title: "Hackathon begins",
-    text: "Build, innovate and push your ideas to the limit. Mentors and organizers are here to support you.",
-  },
-  {
-    date: "27",
-    month: "September",
-    title: "Present to the jury",
-    text: "Present your ideas to the judges, after which they will choose the top 3 teams based on creativity, amount of effort, collaboration with other teams and how well they achieved their goal.",
-  },
-] as const;
-
 /**
- * The timeline: six stops, from today to the pitch.
+ * How it works, on the timeline: nine stops, from the announcement to the
+ * pitch, drawn on the pinned horizontal line (`useTimelinePin`).
  *
- * The shape of the run in one line. A reader who has just seen what they can
- * book wants to know when they have to have booked it by, and gets that here
- * without reading a table.
+ * The stops are the "How it works" steps — each one keeps its title and its
+ * sentence — and the line is the schedule they sit on. A step that covers a
+ * stretch rather than a moment writes the stretch on its date ("1–15 SEP"),
+ * because the stretch is the fact; the labels still all read the same way.
  *
- * It used to stop at the doors opening, which was the wrong end to stop at: a
- * line that runs out the moment the event starts answers "when do I have to be
- * ready" and leaves "and then what" to the reader. The last stop is what the
- * three days are for — the submission and the pitch — and putting it on the
- * line makes the whole run one shape with a beginning and an end rather than a
- * countdown that stops at the beginning.
- *
- * Every stop is now a date. There used to be an undated one — "TBA, secret
- * event" — sitting between the two registration dates, on the argument that
- * an unannounced beat belongs inside the stretch the reader is being asked to
- * act in rather than ahead of it. It is gone, and what it took with it is the
- * one thing on the line that was not a commitment: a stop that names neither
- * a date nor a thing is a gap in a sequence whose whole content is the order
- * and the intervals. Stops that all say when are a schedule; a schedule plus a
- * question mark is a schedule with a rumour in it.
- *
- * Its decrypt effect went with it. `SecretLine` and `.hw26-tl-secret` were
- * built for that one line and had no second caller, and `useScramble` — the
- * one thing the live page still imported out of the switched-off intro — has
- * no caller here at all now.
- *
- * Every date is written the same way, and "25 SEP" is the last one to come
- * into line: it was "25.09." while it was the one stop the hero clock pointed
- * at, which made it look like a figure quoted from somewhere else. The ticker
- * still writes the full dotted range because that is the event's dates as a
- * fact; on the line, a stop is a label and the labels match.
- *
- * `live` is the mint flag, and three stops carry it. NOW, because it is the
- * one thing on the line you can act on this second. Then the two hard edges of
- * the event itself: the 25th, which is the moment the hero clock is counting
- * to, and the 27th, which is the hour the work has to be finished and shown.
- * The hero counts to the first of those and not the second, so "what the clock
- * points at" is not the rule and never quite was — the rule is that the accent
- * goes on what a reader has to do something about. Three of these six are
- * dates you have to be somewhere or have something ready by; the other three
- * are dates when something happens to you, and they are silver.
+ * `live` is the mint flag, and it goes on what a reader has to do something
+ * about: the 25th, when they have to be at the doors, and the 27th, when the
+ * work has to be finished and shown. The dates where something happens *to*
+ * them are silver. `cta` marks the one step whose action has a destination —
+ * putting a team together happens on the platform, so that stop carries the
+ * link.
  */
 const TIMELINE: {
   when: string;
+  title: string;
   what: string;
   live?: boolean;
   cta?: boolean;
 }[] = [
   {
-    when: "NOW",
-    what: "Join the platform, meet builders, and start putting a team together.",
-    live: true,
+    when: "1 SEP",
+    title: "Announcement",
+    what: "Announcement of all hardware, components and bonuses.",
+  },
+  {
+    when: "1–15 SEP",
+    title: "Create or join a team",
+    what: "Form a team of 3-5 people. Choose hardware and add your own if needed.",
     cta: true,
   },
   {
-    when: "1 SEP",
-    what: "Registration opens, and the full hardware list is published — subcategories, dimensions, documentation.",
+    when: "1–15 SEP",
+    title: "Develop your idea",
+    what: "Discuss with other teams, come up with solutions and refine your idea. When you're 100% sure, apply via the button in the Teams section.",
   },
-  { when: "15 SEP", what: "Team creation and applications deadline" },
-  { when: "18 SEP", what: "We announce selected teams" },
-  { when: "25 SEP", what: "The hackathon begins", live: true },
+  {
+    when: "15 SEP",
+    title: "Application deadline",
+    what: "Submit your team to participate.",
+  },
+  {
+    when: "15–18 SEP",
+    title: "20 teams selected",
+    what: "Our jury will choose the best teams in each hardware category based on initiative, communication and collaboration with other teams, idea creativity and prior experience.",
+  },
+  {
+    when: "18 SEP",
+    title: "3D printing opens",
+    what: "Teams can send us what they want printed, and we'll prepare it by the start of the hackathon.",
+  },
+  {
+    when: "18–25 SEP",
+    title: "Mentoring & community",
+    what: "Get guided by your mentor. Talk to other teams and organizers. If you're in Build Your Own category, mentors will help you design.",
+  },
+  {
+    when: "25 SEP",
+    title: "Hackathon begins",
+    what: "Build, innovate and push your ideas to the limit. Mentors and organizers are here to support you.",
+    live: true,
+  },
   {
     when: "27 SEP",
-    what: "Submission deadline and pitch day in front of investors",
+    title: "Present to the jury",
+    what: "Present your ideas to the judges, after which they will choose the top 3 teams based on creativity, amount of effort, collaboration with other teams and how well they achieved their goal.",
     live: true,
   },
 ];
@@ -694,16 +640,14 @@ const TIMELINE: {
  * subgrids of one grid, so a bracket is placed by naming the rows it spans
  * and lands on its ticks whatever height the stops come out at. Nothing is
  * measured, in script or in CSS, and adding a stop moves the brackets by
- * changing these two numbers and nothing else — as does taking one out, which
- * is what happened when the undated stop went and is why the first three read
- * 1–3, 3–4 and 4–5 rather than 1–4, 4–5 and 5–6. The stretches they name did
- * not change; the stops under them are one position earlier.
+ * changing these two numbers and nothing else — which is what happened when
+ * the line took on the nine "How it works" steps.
  *
  * `from` is the stop the stretch starts at and `to` is the stop it ends at,
- * both inclusive of the tick: the first bracket runs from today to the
- * booking deadline, the second covers selection, the third is the print queue
- * between the announcement and the doors, and the fourth is the hackathon
- * itself, from the doors to the pitch.
+ * both inclusive of the tick: the first bracket runs from the announcement to
+ * the application deadline, the second covers selection, the third is the
+ * print queue and mentoring between the team announcement and the doors, and
+ * the fourth is the hackathon itself, from the doors to the pitch.
  *
  * That fourth one is new and it overturns an argument this comment used to
  * make. The reasoning was that a bracket names a wait — what a reader is
@@ -718,14 +662,14 @@ const TIMELINE: {
  * stops, and the strip now runs the whole length of the line.
  */
 const TIMELINE_SPANS = [
-  { from: 1, to: 3, label: "Chat, create teams, book hardware" },
-  { from: 3, to: 4, label: "Selection process" },
+  { from: 1, to: 4, label: "Chat, create teams, book hardware" },
+  { from: 4, to: 6, label: "Selection process" },
   {
-    from: 4,
-    to: 5,
+    from: 6,
+    to: 8,
     label: "Send files. We print them + unlock hardware simulations.",
   },
-  { from: 5, to: 6, label: "Build, build, build" },
+  { from: 8, to: 9, label: "Build, build, build" },
 ];
 
 /**
@@ -1116,7 +1060,6 @@ const FAQ: { q: string; a: ReactNode; featured?: boolean }[] = [
   {
     q: "What should I bring to the hackathon?",
     a: "A laptop.",
-    featured: true,
   },
   {
     q: "When will the hardware, prizes and agenda be announced?",
@@ -1128,11 +1071,11 @@ const FAQ: { q: string; a: ReactNode; featured?: boolean }[] = [
   },
   {
     q: "Can I bring my own hardware?",
-    a: "Yes. You can bring your own electronics, robot, tools and anything else you need. Mention it during team registration using the ‘I want to bring my own hardware’ option. Bringing your own equipment does not prevent you from reserving hardware from us.",
+    a: 'Yes. You can bring your own electronics, robot, tools and anything else you need. Mention it during team registration using the "I want to bring my own hardware" option. Bringing your own equipment does not prevent you from reserving hardware from us.',
   },
   {
     q: "How do Build Your Own categories work?",
-    a: "We provide a bill of materials and a mentor. After the selected teams are announced on September 18, you will have one week to design the hardware and send us the model so we can print everything before the hackathon. Your mentor will guide the design process and work alongside you.",
+    a: "We provide a list of materials and a mentor. After the selected teams are announced on September 18, you will have one week to design the hardware and send us the model so we can print everything before the hackathon. Your mentor will guide the design process and work alongside you.",
   },
   {
     q: "What is the role of mentors during the hackathon?",
@@ -1148,7 +1091,7 @@ const FAQ: { q: string; a: ReactNode; featured?: boolean }[] = [
   },
   {
     q: "Can I book more than one hardware unit?",
-    a: "You can only book one main hardware unit: a robot arm, drone, underwater drone, robodog, humanoid or VR headset. At the event you will be able to unlock extras such as cables, Raspberry Pis, camera modules and more.",
+    a: "You can only book one main hardware unit: a drone, robot arm, underwater drone, robodog, quadruped robot, humanoid or headset. At the event you will be able to unlock extras such as cables, Raspberry Pis, camera modules and more.",
   },
   {
     q: "Can I sleep at the hackathon?",
@@ -1160,11 +1103,11 @@ const FAQ: { q: string; a: ReactNode; featured?: boolean }[] = [
   },
   {
     q: "Will there be free Wi-Fi?",
-    a: "Yes, there is free 1 Gbps Wi-Fi for all participants. Do not expect the highest speeds when 100 people start downloading Docker images!",
+    a: "Yes, there is free unlimited high-speed Wi-Fi for all participants.",
   },
   {
     q: "Can I take my final project home?",
-    a: "Unfortunately, no. The organizers are not rich enough to give robots away yet xD.",
+    a: "No. Everything created during the hackathon stays here.",
   },
   {
     q: "I have another question. How can I contact you?",
@@ -3358,6 +3301,10 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
   const hero = useRef<HTMLElement>(null);
   const heroIdle = useHeroIdle(hero);
 
+  // The pinned horizontal line the "How it works" section is drawn on. See
+  // useTimelinePin for the driver, and for the three cases that decline it.
+  const timeline = useTimelinePin();
+
   // The regular partners are dealt again on every visit. Gold partners keep
   // the first plates in their tier, so the visual hierarchy is also the DOM
   // order. See `useShuffled` for why the shuffled order arrives before paint.
@@ -3648,6 +3595,51 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
                     <dd>3</dd>
                   </div>
                 </dl>
+
+                <span className="hw26-label hw26-spec-eyebrow">The setup</span>
+
+                <dl className="hw26-spec">
+                  <div className="hw26-spec-row">
+                    <dt>Venue</dt>
+                    <dd>Hacker Bloc — Kosiarzy 21B, Warsaw</dd>
+                  </div>
+                  <div className="hw26-spec-row">
+                    <dt>Time</dt>
+                    <dd>25.09.–27.09.2026.</dd>
+                  </div>
+                  {/* The two names as two links, because they are two houses
+                      and a single link round "Epikor and Hacklab" would be one
+                      door onto either. The addresses come off `ORGANIZERS`
+                      rather than being typed again: the tiles at the foot of
+                      the page are the same two links, and two copies of a URL
+                      is one of them going stale unnoticed. */}
+                  <div className="hw26-spec-row">
+                    <dt>Organized by</dt>
+                    <dd>
+                      <a
+                        className="hw26-spec-link"
+                        href={ORGANIZERS[0].href}
+                        rel="noopener noreferrer"
+                        target="_blank"
+                      >
+                        Epikor
+                      </a>{" "}
+                      and{" "}
+                      <a
+                        className="hw26-spec-link"
+                        href={ORGANIZERS[1].href}
+                        rel="noopener noreferrer"
+                        target="_blank"
+                      >
+                        Hacklab
+                      </a>
+                    </dd>
+                  </div>
+                  <div className="hw26-spec-row">
+                    <dt>Theme</dt>
+                    <dd>Home automation</dd>
+                  </div>
+                </dl>
               </div>
             </div>
 
@@ -3667,46 +3659,113 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
       </section>
 
       {/* ---------------- HOW IT WORKS ---------------- */}
-      <section className="hw26-section hw26-how-section" id="how-it-works">
-        <div aria-hidden="true" className="hw26-grid" />
-        <div className="hw26-inner">
-          <div className="hw26-head hw26-reveal">
-            <h2>How it works</h2>
-          </div>
+      {/* The nine steps, on the pinned timeline: the frame sticks and the
+          page's vertical scroll is spent travelling the line sideways — see
+          useTimelinePin for the driver and the three cases that decline it.
+          The section keeps the "How it works" content; the line under it is
+          the schedule that content was always describing. */}
+      <section
+        className="hw26-section hw26-tl-section hw26-how-section"
+        id="how-it-works"
+        ref={timeline.section}
+      >
+        {/* The frame that sticks. It is an ordinary block until the driver in
+            useTimelinePin decides otherwise, which is why a phone, a reader
+            under reduced motion and a page with no script all get the plain
+            section and none of the machinery. */}
+        <div className="hw26-tl-pin">
+          <div className="hw26-inner">
+            <div className="hw26-head hw26-reveal">
+              <h2>How it works</h2>
+            </div>
 
-          <div className="hw26-how-meta hw26-reveal">
-            <span className="hw26-label hw26-label--mint">
-              Application flow
-            </span>
-            <span aria-hidden="true">01-27 SEP /// 2026</span>
-          </div>
+            <div className="hw26-how-meta hw26-reveal">
+              <span className="hw26-label hw26-label--mint">
+                Application flow
+              </span>
+              <span aria-hidden="true">01-27 SEP /// 2026</span>
+            </div>
 
-          <ol className="hw26-how-flow">
-            {HOW_IT_WORKS.map((step, index) => (
-              <li
-                className="hw26-how-step hw26-reveal"
-                key={`${step.date}-${step.title}`}
+            {/* The scrollport, and the reason the fallbacks are honest: the
+                track is wider than this box above the breakpoint, and when the
+                pin is not running this is what the reader can push to reach the
+                far end. It sits inside `.hw26-inner` so the line and the
+                heading above it start on the same column at every width. */}
+            <div className="hw26-tl-port" ref={timeline.port}>
+              {/* One grid, two subgrids: the bracket strip and the stops share
+                  a track, which is the whole reason a bracket can be placed by
+                  naming the stops it spans instead of by measuring anything —
+                  and the reason the same markup draws the line down the page on
+                  a phone and across it on a desktop.
+
+                  `--tl-stops` is the stop count, handed to the stylesheet so
+                  the parent grid and TIMELINE cannot disagree about how many
+                  tracks there are. */}
+              <div
+                className="hw26-tl-track"
+                ref={timeline.track}
+                style={{ "--tl-stops": TIMELINE.length } as CSSProperties}
               >
-                {index === 5 ? (
-                  <span aria-hidden="true" className="hw26-how-return-drop" />
-                ) : null}
-
-                <div className="hw26-how-date">
-                  <strong>{step.date}</strong>
-                  <span>{step.month}</span>
+                {/* The brackets. `aria-hidden` because each label is an
+                    annotation on a shape — read out of the line it brackets it
+                    is a fragment, and the stops themselves already carry the
+                    whole sequence in order. */}
+                <div aria-hidden="true" className="hw26-tl-braces">
+                  {TIMELINE_SPANS.map((span) => (
+                    <div
+                      className="hw26-tl-brace"
+                      key={span.label}
+                      style={
+                        {
+                          "--tl-span-from": span.from,
+                          "--tl-span-to": span.to,
+                        } as CSSProperties
+                      }
+                    >
+                      <span className="hw26-label hw26-tl-brace-label">
+                        {span.label}
+                      </span>
+                    </div>
+                  ))}
                 </div>
 
-                <div className="hw26-how-card">
-                  <span aria-hidden="true" className="hw26-how-index">
-                    {String(index + 1).padStart(2, "0")}
-                  </span>
-                  <h3>{step.title}</h3>
-                </div>
-
-                <p>{step.text}</p>
-              </li>
-            ))}
-          </ol>
+                {/* An ordered list, because that is what this is: nine things
+                    in an order that matters, and the order is the content. */}
+                <ol className="hw26-tl-items">
+                  {TIMELINE.map((stop, i) => (
+                    <li
+                      className={`hw26-tl-item${stop.live ? " hw26-tl-item--live" : ""}`}
+                      key={stop.when + stop.title}
+                    >
+                      {/* The ordinal, spelled out because the list is not
+                          numbered on screen. Hidden from the tree because the
+                          `ol` already announces the position, so the glyph
+                          would be said twice. */}
+                      <span
+                        aria-hidden="true"
+                        className="hw26-label hw26-tl-step"
+                      >
+                        {String(i + 1).padStart(2, "0")}
+                      </span>
+                      <span className="hw26-tl-when">{stop.when}</span>
+                      <div className="hw26-tl-body">
+                        <h3 className="hw26-tl-title">{stop.title}</h3>
+                        <p className="hw26-tl-what">{stop.what}</p>
+                        {/* Same destination as the hero, reached from the
+                            stop that names it. Keeps `.hw26-tl-cta` on top of
+                            the shared chrome for the note-width sizing. */}
+                        {stop.cta ? (
+                          <a className="hw26-apply hw26-tl-cta" href={JOIN_URL}>
+                            Join the chat
+                          </a>
+                        ) : null}
+                      </div>
+                    </li>
+                  ))}
+                </ol>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 

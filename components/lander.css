@@ -1397,6 +1397,15 @@ html:not(.hw26-cursor-dom) .hw26 [role='button'] * {
    font-size as its coordinate system, which keeps the lockup registered to
    the mark even when the cover-fitted artwork is heavily cropped on phones. */
 .hw26-hero-origin {
+  /* Both names hang off the mark's own edges, not off the middle of the
+     screen. The mark is 0.38em tall at a 274/379 aspect, so its half-width is
+     0.1373em of the title size, and it is centred `--hero-tittle-dx` right of
+     the line's centre — the same figures `.hw26-hero-tittle` is placed by.
+     The inset below is that half-width plus one fixed gap, so EPIKOR's right
+     edge and HACKLAB's left edge sit the same distance off the mark at every
+     width, instead of drifting with the clamp they used to be pinned by. */
+  --hero-origin-inset: calc(var(--hero-title-fs) * 0.1373 + 0.75rem);
+
   position: absolute;
   z-index: 3;
   top: calc(var(--hero-title-top) - 0.206em);
@@ -1426,12 +1435,16 @@ html:not(.hw26-cursor-dom) .hw26 [role='button'] * {
 }
 
 .hw26-hero-origin span:first-child {
-  right: calc(50% + clamp(1.55rem, 0.145em, 2.5rem));
+  right: calc(
+    50% - var(--hero-title-fs) * 0.014 + var(--hero-origin-inset)
+  );
   text-align: right;
 }
 
 .hw26-hero-origin span:last-child {
-  left: calc(50% + clamp(1.55rem, 0.145em, 2.5rem));
+  left: calc(
+    50% + var(--hero-title-fs) * 0.014 + var(--hero-origin-inset)
+  );
   text-align: left;
 }
 
@@ -2337,9 +2350,8 @@ button.hw26-apply {
 }
 
 .hw26-about-visual img {
-  z-index: 0;
-  object-fit: contain;
   z-index: 2;
+  object-fit: contain;
   transform: scaleX(-1);
   object-position: right center;
   filter: saturate(0.78) contrast(1.06)
@@ -2405,6 +2417,42 @@ button.hw26-apply {
     right: 0;
     bottom: 1.25rem;
     font-size: 0.58rem;
+  }
+}
+
+/* The stacked layout, re-composed. Below the two-column breakpoint the title
+   and the sentence centre — the title as centred text, the paragraph as a
+   left-aligned block whose own measure is centred — and the portrait stops
+   being a block in the flow and becomes the section's ground: absolutely
+   positioned across the whole section (the negative insets buy back the
+   section's padding), at half opacity, behind the copy. Desktop is untouched;
+   this block comes after every other about rule so it wins the stacked
+   widths on source order. */
+@media (max-width: 900px) {
+  .hw26-about-copy .hw26-head h2 {
+    text-align: center;
+  }
+
+  .hw26-about-copy .hw26-brief p {
+    margin-inline: auto;
+  }
+
+  .hw26-about-visual {
+    position: absolute;
+    inset: calc(-1 * var(--hw-section-pad)) calc(-1 * var(--hw-gutter));
+    z-index: 0;
+    width: auto;
+    height: auto;
+    aspect-ratio: auto;
+    margin: 0;
+    transform: none;
+    opacity: 0.5;
+    pointer-events: none;
+  }
+
+  .hw26-about-visual img {
+    object-fit: cover;
+    object-position: center;
   }
 }
 
@@ -4259,6 +4307,11 @@ button.hw26-apply {
 
 .hw26-prize {
   --prize-step: clamp(3.5rem, 6vw, 5.25rem);
+  /* One chamfer figure for the whole plate: the card's two cut corners and
+     the step's top-left cut below it are the same 28px, which is what makes
+     the step read as part of the same drawing. Defined here so both boxes
+     inherit one value instead of each naming its own. */
+  --prize-cut: 28px;
   min-width: 0;
   display: flex;
   flex-direction: column;
@@ -4279,7 +4332,6 @@ button.hw26-apply {
 }
 
 .hw26-prize-card {
-  --prize-cut: 28px;
   position: relative;
   isolation: isolate;
   min-height: clamp(330px, 34vw, 460px);
@@ -4422,6 +4474,14 @@ button.hw26-apply {
   color: var(--hw-bone);
 }
 
+/* The step carries the card's chamfer in its top-left corner, at the same
+   `--prize-cut` the card's corners are cut at. A real border cannot follow the
+   diagonal — clipping a bordered box cuts the border off at the notch — so the
+   step is built the way the card is: its own background is the outline colour,
+   clipped to the cut polygon, and the fill is an inset pseudo-element clipped
+   to the parallel cut. The inset leaves the top edge open, which is what
+   `border-top: 0` was doing before: the step joins the card above it without a
+   seam. */
 .hw26-prize-step {
   position: relative;
   height: var(--prize-step);
@@ -4429,11 +4489,24 @@ button.hw26-apply {
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 1px solid var(--hw-line);
-  border-top: 0;
+  background: var(--hw-line);
+  clip-path: polygon(
+    var(--prize-cut) 0,
+    100% 0,
+    100% 100%,
+    0 100%,
+    0 var(--prize-cut)
+  );
+}
+
+.hw26-prize-step::before {
+  content: "";
+  position: absolute;
+  inset: 0 1px 1px;
   background:
     linear-gradient(135deg, rgba(255, 255, 255, 0.018), transparent 55%),
     var(--hw-steel);
+  clip-path: polygon(27.4px 0, 100% 0, 100% 100%, 0 100%, 0 27.4px);
 }
 
 .hw26-prize-step span {
@@ -4898,6 +4971,22 @@ button.hw26-apply {
 
 .hw26-tl-body {
   align-self: start;
+}
+
+/* The step's name, above its sentence — the "How it works" half of a stop.
+   Orbitron and uppercase because it is a heading, but strictly smaller than
+   the date over it: the date is the figure the line exists to plot and the
+   title is what happens at it. Live stops take the accent on the date, not
+   here, so a lit stop stays one mint figure rather than a mint block. */
+.hw26-tl-title {
+  margin: 0 0 0.5rem;
+  font-family: var(--font-orbitron), sans-serif;
+  font-size: clamp(0.78rem, 1vw, 0.92rem);
+  font-weight: 700;
+  line-height: 1.35;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--hw-snow);
 }
 
 /* The measure is set here rather than on the wrapper so `ch` is measured in
