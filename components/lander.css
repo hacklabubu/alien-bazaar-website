@@ -2356,6 +2356,13 @@ button.hw26-apply {
   object-position: right center;
   filter: saturate(0.78) contrast(1.06)
     drop-shadow(0 0 2.5rem rgba(0, 0, 0, 0.52));
+  /* A 1rem fade-in on the image's visual-left edge: fully transparent on the
+     edge itself, opaque one rem in. The gradient is written `to left` because
+     the element is mirrored by the transform above — a mask is painted in the
+     element's own space and flipped with it, so the edge that shows on the
+     page's left is the element's right. */
+  -webkit-mask-image: linear-gradient(to left, transparent 0, #000 1rem);
+  mask-image: linear-gradient(to left, transparent 0, #000 1rem);
 }
 
 .hw26-about-visual .hw26-label {
@@ -2425,7 +2432,8 @@ button.hw26-apply {
    left-aligned block whose own measure is centred — and the portrait stops
    being a block in the flow and becomes the section's ground: absolutely
    positioned across the whole section (the negative insets buy back the
-   section's padding), at half opacity, behind the copy. Desktop is untouched;
+   section's padding), at a fifth of full opacity, behind the copy. Desktop is
+   untouched;
    this block comes after every other about rule so it wins the stacked
    widths on source order. */
 @media (max-width: 900px) {
@@ -2446,13 +2454,22 @@ button.hw26-apply {
     aspect-ratio: auto;
     margin: 0;
     transform: none;
-    opacity: 0.5;
     pointer-events: none;
   }
 
+  /* The wash lives on the img, not on the wrapper: the wrapper is a
+     `.hw26-reveal`, and the reveal's shown-state `opacity: 1` outranks any
+     figure written on the same element. The img carries no reveal class, so
+     the fifth-opacity ground survives the reveal firing. */
   .hw26-about-visual img {
     object-fit: cover;
     object-position: center;
+    opacity: 0.2;
+    /* The desktop edge fade comes off: as a full-bleed ground the image's
+       edges are the section's own, and the fifth-opacity wash is the whole
+       of the treatment. */
+    -webkit-mask-image: none;
+    mask-image: none;
   }
 }
 
@@ -6161,6 +6178,14 @@ html[data-theme='light'] .hw26-sponsor-lead:hover {
   border: 1px solid var(--hw-line);
 }
 
+/* The Ecosystem row, on the same small tile: eight visible partners (the
+   three pinned leads plus the five dealt ones), so eight tracks where the
+   hardware wall's nine are. The narrower breakpoints below apply to both —
+   four then two columns divide eight exactly. */
+.hw26-sponsors-rest--eco {
+  grid-template-columns: repeat(8, minmax(0, 1fr));
+}
+
 @media (max-width: 1580px) {
   .hw26-sponsors-rest {
     grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -6287,6 +6312,14 @@ html[data-theme='light'] .hw26-sponsor--static:hover {
   width: auto;
   max-width: 100%;
   object-fit: contain;
+}
+
+/* NVIDIA's stacked lockup, now in the small tile with the rest of the
+   Ecosystem row. Same argument as the lead cell's rule above: two rows of
+   lockup spend half their height on each, so it needs roughly 1.5x the
+   horizontal marks' figure to sit at the same optical size beside them. */
+.hw26-sponsor img.hw26-mark--stacked {
+  height: clamp(48px, 4.6vw, 62px);
 }
 
 /* Lute's supplied lockup is wide and airy, so the base wordmark height makes

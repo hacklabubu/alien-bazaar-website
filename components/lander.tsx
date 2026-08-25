@@ -557,27 +557,27 @@ const PRIZES = [
 ] as const;
 
 /**
- * How it works, on the timeline: nine stops, from the announcement to the
+ * How it works, on the timeline: eight stops, from the announcement to the
  * pitch, drawn on the pinned horizontal line (`useTimelinePin`).
  *
  * The stops are the "How it works" steps — each one keeps its title and its
  * sentence — and the line is the schedule they sit on. A step that covers a
  * stretch rather than a moment writes the stretch on its date ("1–15 SEP"),
  * because the stretch is the fact; the labels still all read the same way.
+ * The registration fortnight is one stop, not two: forming the team and
+ * developing the idea share the same dates, and two stops with one date read
+ * as the line stuttering.
  *
  * `live` is the mint flag, and it goes on what a reader has to do something
  * about: the 25th, when they have to be at the doors, and the 27th, when the
  * work has to be finished and shown. The dates where something happens *to*
- * them are silver. `cta` marks the one step whose action has a destination —
- * putting a team together happens on the platform, so that stop carries the
- * link.
+ * them are silver.
  */
 const TIMELINE: {
   when: string;
   title: string;
   what: string;
   live?: boolean;
-  cta?: boolean;
 }[] = [
   {
     when: "1 SEP",
@@ -586,14 +586,8 @@ const TIMELINE: {
   },
   {
     when: "1–15 SEP",
-    title: "Create or join a team",
-    what: "Form a team of 3-5 people. Choose hardware and add your own if needed.",
-    cta: true,
-  },
-  {
-    when: "1–15 SEP",
-    title: "Develop your idea",
-    what: "Discuss with other teams, come up with solutions and refine your idea. When you're 100% sure, apply via the button in the Teams section.",
+    title: "Create your team, develop your idea",
+    what: "Form a team of 3-5 people. Choose hardware and add your own if needed. Discuss with other teams, come up with solutions and refine your idea. When you're 100% sure, apply via the button in the Teams section.",
   },
   {
     when: "15 SEP",
@@ -662,14 +656,14 @@ const TIMELINE: {
  * stops, and the strip now runs the whole length of the line.
  */
 const TIMELINE_SPANS = [
-  { from: 1, to: 4, label: "Chat, create teams, book hardware" },
-  { from: 4, to: 6, label: "Selection process" },
+  { from: 1, to: 3, label: "Chat, create teams, book hardware" },
+  { from: 3, to: 5, label: "Selection process" },
   {
-    from: 6,
-    to: 8,
+    from: 5,
+    to: 7,
     label: "Send files. We print them + unlock hardware simulations.",
   },
-  { from: 8, to: 9, label: "Build, build, build" },
+  { from: 7, to: 8, label: "Build, build, build" },
 ];
 
 /**
@@ -984,6 +978,8 @@ const MEDIA_PARTNERS: Partner[] = [
   },
 ];
 
+/** In display order — the row renders this array as written: TNKR, M5Stack,
+ * ChronoTap. */
 const PRIZE_PARTNERS: Partner[] = [
   {
     name: "TNKR",
@@ -993,16 +989,16 @@ const PRIZE_PARTNERS: Partner[] = [
     highlight: true,
   },
   {
-    name: "ChronoTap",
-    src: "/sponsors/chronotap.png",
-    href: "https://chronotap.co",
-    mark: "hw26-mark--chronotap",
-  },
-  {
     name: "M5Stack",
     src: "/sponsors/m5stack.svg",
     href: "https://m5stack.com/",
     mark: "hw26-mark--m5stack",
+  },
+  {
+    name: "ChronoTap",
+    src: "/sponsors/chronotap.png",
+    href: "https://chronotap.co",
+    mark: "hw26-mark--chronotap",
   },
 ];
 
@@ -2217,12 +2213,10 @@ export function PartnerDirectory() {
           <PartnerSubhead action="partner" title="Partners" />
 
           <PartnerTierSubhead title="Ecosystem Partners" />
-          <div className="hw26-sponsors-lead hw26-sponsors-lead--eco">
-            {[LEAD_SPONSORS[0], LEAD_SPONSORS[1], LEAD_SPONSORS[2], ...ecosystem].map(
-              (partner) => (
-                <LeadPartnerTile key={partner.name} partner={partner} />
-              ),
-            )}
+          <div className="hw26-sponsors-rest hw26-sponsors-rest--eco">
+            {[...LEAD_SPONSORS, ...ecosystem].map((partner) => (
+              <SponsorTile key={partner.name} partner={partner} />
+            ))}
           </div>
 
           <PartnerTierSubhead title="Hardware Partners" />
@@ -3729,7 +3723,7 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
                   ))}
                 </div>
 
-                {/* An ordered list, because that is what this is: nine things
+                {/* An ordered list, because that is what this is: the steps
                     in an order that matters, and the order is the content. */}
                 <ol className="hw26-tl-items">
                   {TIMELINE.map((stop, i) => (
@@ -3751,14 +3745,6 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
                       <div className="hw26-tl-body">
                         <h3 className="hw26-tl-title">{stop.title}</h3>
                         <p className="hw26-tl-what">{stop.what}</p>
-                        {/* Same destination as the hero, reached from the
-                            stop that names it. Keeps `.hw26-tl-cta` on top of
-                            the shared chrome for the note-width sizing. */}
-                        {stop.cta ? (
-                          <a className="hw26-apply hw26-tl-cta" href={JOIN_URL}>
-                            Join the chat
-                          </a>
-                        ) : null}
                       </div>
                     </li>
                   ))}
@@ -4001,43 +3987,25 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
 
             <PartnerTierSubhead reveal title="Ecosystem Partners" />
 
-            {/* One row of seven, and it used to be two rows of two and three.
-              The split was a tier: NVIDIA and ESRA took a plate twice the
-              linear size of the partners below, and the stylesheet carried a
-              paragraph of arithmetic making the small row's three columns land
-              exactly on the large row's two so the two rows read as one block
-              anyway. That is the tell. A layout that has to be engineered back
-              into looking like one row is one row with a rank drawn through
-              it, and the rank was the page's own invention — the organizers
-              publish these partners under one heading. So: one grid, seven tiles,
-              one size, and the arithmetic goes with the thing it was
-              reconciling.
+            {/* The same small tile the Hardware Partners wall uses — one grid,
+              eight tiles, one size — so the two tiers under "Partners" read
+              as one wall rather than as a rank the page invented. The tile
+              itself is `SponsorTile`, marks served as-authored: running a
+              partner's logo through the image optimizer would re-encode it,
+              which their brand terms do not allow.
 
-              Same tile-as-link treatment as the organizers below. Marks are
-              served as-authored — running a partner's logo through the image
-              optimizer would re-encode it, which their brand terms do not
-              allow.
-
-              NVIDIA and START Warsaw are written out ahead of the map rather
-              than folded into it, which is the whole of how they stay first and
-              second: `ecosystem` is `useShuffled`, dealt again every visit, and
-              anything inside it is somewhere different on the next load. These
-              two are pinned and the five behind them reorder. Keys are the
-              partner names, so React moves the existing nodes rather than
-              rebuilding them — which matters because the reveal observer has
-              already been handed these elements. */}
-            <div className="hw26-sponsors-lead hw26-sponsors-lead--eco hw26-reveal">
-              {[LEAD_SPONSORS[0], LEAD_SPONSORS[1], LEAD_SPONSORS[2], ...ecosystem].map((s) => (
-                <a
-                  aria-label={s.name}
-                  className={`hw26-sponsor-lead${s.highlight ? " hw26-partner-highlight" : ""}`}
-                  href={s.href}
-                  key={s.name}
-                  rel="noopener noreferrer"
-                  target="_blank"
-                >
-                  <img alt={s.name} className={s.mark} src={s.src} />
-                </a>
+              NVIDIA, Google Developer Groups and START Warsaw are written out
+              ahead of the map rather than folded into it, which is the whole
+              of how they stay first, second and third: `ecosystem` is
+              `useShuffled`, dealt again every visit, and anything inside it is
+              somewhere different on the next load. Those three are pinned and
+              the five behind them reorder. Keys are the partner names, so
+              React moves the existing nodes rather than rebuilding them —
+              which matters because the reveal observer has already been handed
+              these elements. */}
+            <div className="hw26-sponsors-rest hw26-sponsors-rest--eco hw26-reveal">
+              {[...LEAD_SPONSORS, ...ecosystem].map((s) => (
+                <SponsorTile key={s.name} partner={s} />
               ))}
             </div>
 
