@@ -3258,18 +3258,27 @@ button.hw26-apply {
   filter: grayscale(0.35) contrast(1.05);
   transition:
     opacity 620ms var(--hw-ease),
-    filter 620ms var(--hw-ease),
-    transform 900ms var(--hw-ease);
+    filter 620ms var(--hw-ease);
 }
 
 /* Focused, the render is simply the file: full opacity, no filter, nothing
    between the reader and the picture. The rest state above is the whole of
    the "held back" treatment — what the pointer (or the scroll light-up) buys
    is the original image, not a brighter copy of the treated one. Only the
-   zoom remains, because it is motion rather than grading. */
+   zoom remains, because it is motion rather than grading.
+
+   The zoom is on the `img`, not on this wrapper. The wrapper is the frame:
+   it is inset by the card's edge width and carries the inner chamfer clip,
+   so scaling *it* scales the clip too and the grown photo paints over the
+   card's own one-pixel outline — the border vanished exactly when focus
+   made the picture bright enough to show it. Scaled inside the wrapper, the
+   picture presses against a frame that never moves. */
 .hw26-rig:is(:hover, .hw26-rig--active) .hw26-rig-photo {
   opacity: 1;
   filter: none;
+}
+
+.hw26-rig:is(:hover, .hw26-rig--active) .hw26-rig-photo img {
   transform: scale(1.05);
 }
 
@@ -3318,6 +3327,13 @@ button.hw26-apply {
 
 .hw26-rig--blur .hw26-rig-photo img {
   transform: scale(1.14);
+}
+
+/* Focused, the shared img zoom would *shrink* this one — its picture already
+   sits at 1.14 to push the blur's soft border outside the clip — so the
+   oversize and the zoom compose: 1.14 × 1.05. */
+.hw26-rig--blur:is(:hover, .hw26-rig--active) .hw26-rig-photo img {
+  transform: scale(1.197);
 }
 
 /* -------------------------------------------------------------
@@ -3376,6 +3392,9 @@ button.hw26-apply {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  /* The zoom's own clock — the wrapper stopped carrying a transform when the
+     zoom moved onto the picture; see the focused rule above. */
+  transition: transform 900ms var(--hw-ease);
 }
 
 /* Circle — the unit count is a counter, so it gets the dot-matrix cut.
@@ -7146,14 +7165,24 @@ html[data-theme='light'] .hw26-sponsor--static:hover {
      original, ungraded file, exactly as it does under a pointer — the
      filter's trip to `none` simply snaps, off the transition list, which is
      one re-raster per group crossing instead of thirty-seven per second. The
-     zoom is the one piece that goes entirely, because there is no cheap way
-     to rescale a clipped image. */
+     zoom is the one piece that goes entirely — it lives on the `img` now,
+     and both it and its transition are switched off here; the blurred plate
+     keeps its standing 1.14 oversize, which is its resting value and so
+     costs nothing. */
   .hw26-rig-photo {
     transition: opacity 620ms var(--hw-ease);
   }
 
-  .hw26-rig:is(:hover, .hw26-rig--active) .hw26-rig-photo {
+  .hw26-rig-photo img {
+    transition: none;
+  }
+
+  .hw26-rig:is(:hover, .hw26-rig--active) .hw26-rig-photo img {
     transform: none;
+  }
+
+  .hw26-rig--blur:is(:hover, .hw26-rig--active) .hw26-rig-photo img {
+    transform: scale(1.14);
   }
 
   /* ---- 6. Tbot's bloom comes down to one pass ----
