@@ -501,21 +501,15 @@ const ADDON_GROUPS: { label: string; intro?: string; items: Rig[] }[] = [
     ],
   },
   {
-    label: "Extra components",
-    intro:
-      "During the hackathon, you will be able to unlock and pick up additional hardware. More information is coming soon.",
-    items: [
-      {
-        name: "TBA",
-        photo: "/hardware/components.jpeg",
-        blurPhoto: true,
-        note: "Use them to extend your hardware",
-      },
-    ],
-  },
-  {
+    // One group where there were two. "Extra components" and "Extra hardware"
+    // were saying halves of the same offer — things you unlock during the
+    // event to extend your main unit — and the intro below says the whole of
+    // it once. The rover leads because it is the announced half; the TBA card
+    // follows as the part that is not, and it no longer carries a caption:
+    // the group intro now says what the card's note used to.
     label: "Extra hardware",
-    intro: "You can choose this hardware as an add-on to the main unit",
+    intro:
+      "During the hackathon, you can unlock and pick up additional hardware. You can use it to extend your main hardware unit.",
     items: [
       {
         name: "Leo Rover",
@@ -524,6 +518,11 @@ const ADDON_GROUPS: { label: string; intro?: string; items: Rig[] }[] = [
           src: "/sponsors/fictionlab.svg",
           label: "In partnership with Fictionlab",
         },
+      },
+      {
+        name: "TBA",
+        photo: "/hardware/components.jpeg",
+        blurPhoto: true,
       },
     ],
   },
@@ -2455,10 +2454,12 @@ function RigCell({ item, order }: { item: Rig; order: number }) {
 
           `sizes`, and the reason its last clause is not a bare `33vw`.
 
-          The first two clauses are the grid's own column count — one up under
-          720, two up under 1100, three above — so they are right by
-          construction. The third was not: the cell stops growing long before
-          the viewport does. `.hw26-inner` caps the sheet at 1440 and
+          The first clause is the grid's own column count — two up to 1100,
+          three above — so it is right by construction; there is no one-up
+          width, so a `100vw` clause would be asking a phone to decode every
+          plate at twice the pixels its half-width cell can show, times
+          twenty-two cells. The last clause needed measuring: the cell stops
+          growing long before the viewport does. `.hw26-inner` caps the sheet at 1440 and
           `--hw-gutter` pins at its 4.5rem ceiling, so from about 1565px
           across the cell holds at a measured 461.33px while `33vw` keeps
           climbing — 845px at 2560, 1135px at 3440. That is not a sharpness
@@ -2478,7 +2479,7 @@ function RigCell({ item, order }: { item: Rig; order: number }) {
               alt=""
               fill
               quality={90}
-              sizes="(max-width: 720px) 100vw, (max-width: 1100px) 50vw, min(33vw, 462px)"
+              sizes="(max-width: 1100px) 50vw, min(33vw, 462px)"
               src={item.photo}
             />
           </div>
