@@ -223,12 +223,9 @@ type Rig = {
    */
   blurPhoto?: boolean;
   /**
-   * The partner whose parts a cell is built out of, as a mark and the sentence
-   * that mark stands for. The two "Build your own" slots set it and nothing
-   * else does, which is the rule rather than the coincidence: a cell that
-   * names a machine is showing you a machine, and a cell that asks a team to
-   * build one has to say what they are building it out of. Arms come from MAB
-   * Robotics, drones from SPRTK.
+   * Optional partner attribution for hardware supplied or developed with a
+   * partner. It is used both by the "Build your own" cards and by TNKR-backed
+   * machines such as Tri-Arm and Vladimer.
    *
    * A field and not a flag, so the second one cost a file and a line of copy
    * and no new mechanism.
@@ -247,16 +244,29 @@ const RIG_GROUPS: { label: string; items: Rig[] }[] = [
     items: [
       {
         name: "Tbot",
-        units: "2x",
+        units: "1x",
         photo: "/hardware/tbot.jpg",
         dropShadow: true,
+        credit: {
+          src: "/sponsors/epikor.svg",
+          label: "Developed by Epikor",
+        },
       },
-      { name: "FPV", units: "1x", photo: "/hardware/drone-fpv.png" },
+      {
+        name: "TBA",
+        units: "?",
+        tba: true,
+        unannounced: true,
+        credit: {
+          src: "/sponsors/skymav.png",
+          label: "In partnership with SkyMav",
+        },
+      },
       {
         name: "Build your own",
         units: "1x",
-        note: "We provide components and tools, you design and assemble it",
-        photo: "/hardware/drone-byo.png",
+        note: "Coaxial tricopter. We provide components and tools, you design and assemble it.",
+        photo: "/hardware/drone-build-your-own-studio.webp",
         // The white cut of SPRTK's mark rather than the green one the wall
         // carries. On the wall the mark is a tile and its own colour is part
         // of what identifies it; here it is a credit in the corner of a panel
@@ -273,31 +283,54 @@ const RIG_GROUPS: { label: string; items: Rig[] }[] = [
     label: "Robot arms",
     items: [
       {
-        name: "AgileX Piper",
+        name: "A1XY",
         units: "2x",
-        photo: "/hardware/robo-arm-new.png",
+        photo: "/hardware/a1xy-studio.webp",
+      },
+      {
+        name: "Tri-Arm",
+        units: "2x",
+        photo: "/hardware/tri-arm-studio.webp",
+        credit: {
+          src: "/sponsors/tnkr.svg",
+          label: "In partnership with TNKR",
+        },
+      },
+      {
+        name: "XLeRobot",
+        units: "1x",
+        photo: "/hardware/xlerobot-studio.png",
+        credit: {
+          src: "/sponsors/tnkr.svg",
+          label: "In partnership with TNKR",
+        },
       },
       {
         name: "Robot arms on platform",
         units: "2x",
         photo: "/hardware/robo-arm-big.png",
+        credit: {
+          src: "/sponsors/ghost-icon.png",
+          label: "In partnership with GHOST",
+        },
       },
       {
         name: "Manipulators",
         units: "2x",
         photo: "/hardware/robo-arm.png",
+        credit: {
+          src: "/sponsors/ghost-icon.png",
+          label: "In partnership with GHOST",
+        },
       },
       {
         name: "Build your own",
         units: "2x",
         note: "Robo arms on a wheeled platform. We provide components and tools, you design and assemble it.",
         photo: "/hardware/robo-arm-byo.png",
-        // The one credited cell on the floor. The parts a team builds this
-        // arm out of are MAB Robotics', so their mark is on it — the same
-        // lockup the partner wall carries, at a fraction of the height.
         credit: {
           src: "/sponsors/mab.png",
-          label: "Parts supplied by MAB Robotics",
+          label: "In partnership with MAB Robotics",
         },
       },
       {
@@ -330,6 +363,10 @@ const RIG_GROUPS: { label: string; items: Rig[] }[] = [
         name: "W01‑TEK",
         units: "1x",
         photo: "/hardware/robodog-w01-tek.jpeg",
+        credit: {
+          src: "/sponsors/machinekind.webp",
+          label: "In partnership with Machinekind",
+        },
       },
       {
         name: "Unitree Go2",
@@ -345,6 +382,16 @@ const RIG_GROUPS: { label: string; items: Rig[] }[] = [
         name: "RealAnt",
         units: "1x",
         photo: "/hardware/realant.png",
+      },
+      {
+        name: "Build your own",
+        units: "1x",
+        note: "Vladimer. We provide components and tools, you design and assemble it.",
+        photo: "/hardware/vladimer-studio.webp",
+        credit: {
+          src: "/sponsors/tnkr.svg",
+          label: "In partnership with TNKR",
+        },
       },
     ],
   },
@@ -392,18 +439,13 @@ const RIG_GROUPS: { label: string; items: Rig[] }[] = [
  * for its contents while its contents were three invented labels — "FDM
  * printers", "Resin printer", "Large format" were the same made-up shelf
  * problem `Components` is described as having below, and the farm was the only
- * true thing in the group. With five real machines under the heading the farm
- * *is* the five of them, and a further cell naming the collection they are the
+ * true thing in the group. With three real machines under the heading the farm
+ * *is* the three of them, and a further cell naming the collection they are the
  * collection of reads as the heading said twice. What it was carrying that is
  * not in a machine's name — the print deadline — was already off it and up in
  * `intro` before this, which is why nothing had to be moved to drop it.
  *
- * The Carvera is a CNC and not a printer, and it is under this heading anyway
- * because that is where the organizers put it. "3D Printers" is the name of a
- * room here rather than a taxonomy, and a reader looking for the machine that
- * cuts will find it filed with the machines that make.
- *
- * None of the five takes a `units`. A count here would be answering a question
+ * None of the three takes a `units`. A count here would be answering a question
  * nobody is asking: these are not machines a team books one of, they are the
  * farm's beds, and "1x" beside a printer would invite exactly the booking the
  * section says is not on offer.
@@ -428,11 +470,8 @@ const RIG_GROUPS: { label: string; items: Rig[] }[] = [
  * `intro` is the other half of that promotion, and it is a *group* field
  * rather than a card one because of what the sentence it holds is doing. The
  * print deadline is not a fact about any one printer — it is the standing
- * instruction for the whole subsection, true of the Formlabs and the H2D
- * alike, and hung off the first card it read as a caption on that one card.
- * (The Carvera is the one machine in the group nobody sends a file to for
- * printing, and the sentence still belongs to the group: it is addressed to
- * the reader about the room, not to a bed about its queue.)
+ * instruction for the whole subsection, true of the A1 and the H2D alike,
+ * and hung off the first card it read as a caption on that one card.
  * Under the heading it is what it is: how you use this group. It is also the
  * only place that sentence now lives, which is the load-bearing part: the
  * cell it used to sit on is gone. Components keeps both halves and keeps them
@@ -459,91 +498,126 @@ const ADDON_GROUPS: { label: string; intro?: string; items: Rig[] }[] = [
       { name: "Bambu Lab A1", photo: "/hardware/bambulab-a1.jpeg" },
       { name: "Bambu Lab P1S", photo: "/hardware/bambulab-p1s.jpeg" },
       { name: "Bambu Lab H2D", photo: "/hardware/bambulab-h2d.jpeg" },
-      { name: "Formlabs", photo: "/hardware/formlabs.jpeg" },
-      { name: "Makera Carvera", photo: "/hardware/makera-carvera.jpeg" },
     ],
   },
   {
-    label: "Extra components",
+    // One group where there were two. "Extra components" and "Extra hardware"
+    // were saying halves of the same offer — things you unlock during the
+    // event to extend your main unit — and the intro below says the whole of
+    // it once. The rover leads because it is the announced half; the TBA card
+    // follows as the part that is not, and it no longer carries a caption:
+    // the group intro now says what the card's note used to.
+    label: "Extra hardware",
     intro:
-      "During the hackathon, you will be able to unlock and pick up additional hardware. More information is coming soon.",
+      "During the hackathon, you can unlock and pick up additional hardware. You can use it to extend your main hardware unit.",
     items: [
+      {
+        name: "Leo Rover",
+        photo: "/hardware/leo-rover.png",
+        credit: {
+          src: "/sponsors/fictionlab.svg",
+          label: "In partnership with Fictionlab",
+        },
+      },
       {
         name: "TBA",
         photo: "/hardware/components.jpeg",
         blurPhoto: true,
-        note: "Use them to extend your hardware",
       },
     ],
   },
 ];
 
+const PRIZES = [
+  {
+    rank: 1,
+    place: "First place",
+    name: "Open Duck Mini",
+    image: "/prizes/open-duck-mini-studio.webp",
+    note: "For the winning team",
+    partner: { name: "TNKR", src: "/sponsors/tnkr.svg" },
+  },
+  {
+    rank: 2,
+    place: "Second place",
+    name: "StackChan",
+    image: "/prizes/stackchan-studio.webp",
+    note: "One for every team member",
+    partner: { name: "M5Stack", src: "/sponsors/m5stack.svg" },
+  },
+  {
+    rank: 3,
+    place: "Third place",
+    name: "TBA",
+    image: null,
+    note: "To be announced",
+    partner: null,
+  },
+] as const;
+
 /**
- * The timeline: six stops, from today to the pitch.
+ * How it works, on the timeline: eight stops, from the announcement to the
+ * pitch, drawn on the pinned horizontal line (`useTimelinePin`).
  *
- * The shape of the run in one line. A reader who has just seen what they can
- * book wants to know when they have to have booked it by, and gets that here
- * without reading a table.
+ * The stops are the "How it works" steps — each one keeps its title and its
+ * sentence — and the line is the schedule they sit on. A step that covers a
+ * stretch rather than a moment writes the stretch on its date ("1–15 SEP"),
+ * because the stretch is the fact; the labels still all read the same way.
+ * The registration fortnight is one stop, not two: forming the team and
+ * developing the idea share the same dates, and two stops with one date read
+ * as the line stuttering.
  *
- * It used to stop at the doors opening, which was the wrong end to stop at: a
- * line that runs out the moment the event starts answers "when do I have to be
- * ready" and leaves "and then what" to the reader. The last stop is what the
- * three days are for — the submission and the pitch — and putting it on the
- * line makes the whole run one shape with a beginning and an end rather than a
- * countdown that stops at the beginning.
- *
- * Every stop is now a date. There used to be an undated one — "TBA, secret
- * event" — sitting between the two registration dates, on the argument that
- * an unannounced beat belongs inside the stretch the reader is being asked to
- * act in rather than ahead of it. It is gone, and what it took with it is the
- * one thing on the line that was not a commitment: a stop that names neither
- * a date nor a thing is a gap in a sequence whose whole content is the order
- * and the intervals. Stops that all say when are a schedule; a schedule plus a
- * question mark is a schedule with a rumour in it.
- *
- * Its decrypt effect went with it. `SecretLine` and `.hw26-tl-secret` were
- * built for that one line and had no second caller, and `useScramble` — the
- * one thing the live page still imported out of the switched-off intro — has
- * no caller here at all now.
- *
- * Every date is written the same way, and "25 SEP" is the last one to come
- * into line: it was "25.09." while it was the one stop the hero clock pointed
- * at, which made it look like a figure quoted from somewhere else. The ticker
- * still writes the full dotted range because that is the event's dates as a
- * fact; on the line, a stop is a label and the labels match.
- *
- * `live` is the mint flag, and three stops carry it. NOW, because it is the
- * one thing on the line you can act on this second. Then the two hard edges of
- * the event itself: the 25th, which is the moment the hero clock is counting
- * to, and the 27th, which is the hour the work has to be finished and shown.
- * The hero counts to the first of those and not the second, so "what the clock
- * points at" is not the rule and never quite was — the rule is that the accent
- * goes on what a reader has to do something about. Three of these six are
- * dates you have to be somewhere or have something ready by; the other three
- * are dates when something happens to you, and they are silver.
+ * `live` is the mint flag, and it goes on what a reader has to do something
+ * about: the 25th, when they have to be at the doors, and the 27th, when the
+ * work has to be finished and shown. The dates where something happens *to*
+ * them are silver.
  */
 const TIMELINE: {
   when: string;
+  title: string;
   what: string;
   live?: boolean;
-  cta?: boolean;
 }[] = [
   {
-    when: "NOW",
-    what: "Join the platform, meet builders, and start putting a team together.",
-    live: true,
-    cta: true,
+    when: "1 SEP",
+    title: "Announcement",
+    what: "Announcement of all hardware, components and bonuses.",
   },
   {
-    when: "1 SEP",
-    what: "Registration opens, and the full hardware list is published — subcategories, dimensions, documentation.",
+    when: "1–15 SEP",
+    title: "Create your team, develop your idea",
+    what: "Form a team of 3-5 people. Choose hardware and add your own if needed. Discuss with other teams, come up with solutions and refine your idea. When you're 100% sure, apply via the button in the Teams section.",
   },
-  { when: "15 SEP", what: "Team creation and applications deadline" },
-  { when: "18 SEP", what: "We announce selected teams" },
-  { when: "25 SEP", what: "The hackathon begins", live: true },
+  {
+    when: "15 SEP",
+    title: "Application deadline",
+    what: "Submit your team to participate.",
+  },
+  {
+    when: "15–18 SEP",
+    title: "20 teams selected",
+    what: "Our jury will choose the best teams in each hardware category based on initiative, communication and collaboration with other teams, idea creativity and prior experience.",
+  },
+  {
+    when: "18 SEP",
+    title: "3D printing opens",
+    what: "Teams can send us what they want printed, and we'll prepare it by the start of the hackathon.",
+  },
+  {
+    when: "18–25 SEP",
+    title: "Mentoring & community",
+    what: "Get guided by your mentor. Talk to other teams and organizers. If you're in Build Your Own category, mentors will help you design.",
+  },
+  {
+    when: "25 SEP",
+    title: "Hackathon begins",
+    what: "Build, innovate and push your ideas to the limit. Mentors and organizers are here to support you.",
+    live: true,
+  },
   {
     when: "27 SEP",
-    what: "Submission deadline and pitch day in front of investors",
+    title: "Present to the jury",
+    what: "Present your ideas to the judges, after which they will choose the top 3 teams based on creativity, amount of effort, collaboration with other teams and how well they achieved their goal.",
     live: true,
   },
 ];
@@ -559,16 +633,14 @@ const TIMELINE: {
  * subgrids of one grid, so a bracket is placed by naming the rows it spans
  * and lands on its ticks whatever height the stops come out at. Nothing is
  * measured, in script or in CSS, and adding a stop moves the brackets by
- * changing these two numbers and nothing else — as does taking one out, which
- * is what happened when the undated stop went and is why the first three read
- * 1–3, 3–4 and 4–5 rather than 1–4, 4–5 and 5–6. The stretches they name did
- * not change; the stops under them are one position earlier.
+ * changing these two numbers and nothing else — which is what happened when
+ * the line took on the nine "How it works" steps.
  *
  * `from` is the stop the stretch starts at and `to` is the stop it ends at,
- * both inclusive of the tick: the first bracket runs from today to the
- * booking deadline, the second covers selection, the third is the print queue
- * between the announcement and the doors, and the fourth is the hackathon
- * itself, from the doors to the pitch.
+ * both inclusive of the tick: the first bracket runs from the announcement to
+ * the application deadline, the second covers selection, the third is the
+ * print queue and mentoring between the team announcement and the doors, and
+ * the fourth is the hackathon itself, from the doors to the pitch.
  *
  * That fourth one is new and it overturns an argument this comment used to
  * make. The reasoning was that a bracket names a wait — what a reader is
@@ -584,9 +656,13 @@ const TIMELINE: {
  */
 const TIMELINE_SPANS = [
   { from: 1, to: 3, label: "Chat, create teams, book hardware" },
-  { from: 3, to: 4, label: "Selection process" },
-  { from: 4, to: 5, label: "We print your requested objects" },
-  { from: 5, to: 6, label: "Build, build, build" },
+  { from: 3, to: 5, label: "Selection process" },
+  {
+    from: 5,
+    to: 7,
+    label: "Send files. We print them + unlock hardware simulations.",
+  },
+  { from: 7, to: 8, label: "Build, build, build" },
 ];
 
 /**
@@ -631,9 +707,8 @@ const ORGANIZERS: {
  *
  * `src` is required, and that is deliberate rather than incidental. There was a
  * typographic fallback here for a partner that published no artwork of any
- * kind; it has been removed once before, restored when W01-TEK needed it, and
- * removed again now that W01-TEK has a real file. Every name on this wall has
- * one. Making the field required is what stops the branch coming back on a
+ * kind. Every name on this wall now has one. Making the field required is what
+ * stops that fallback coming back on a
  * hunch: a partner with no mark will not typecheck, which is the moment to
  * decide what to do about it rather than silently printing their name in
  * Orbitron.
@@ -663,6 +738,7 @@ type Partner = {
   mark?: string;
   lockup?: string;
   wordmark?: string;
+  highlight?: boolean;
   /** Still a partner; their agreement just does not let us show the mark yet. */
   hidden?: boolean;
 };
@@ -673,10 +749,10 @@ type Partner = {
  * They were a tier once: these two on a plate twice the linear size of the
  * other three, on the argument that five equal cells would be the wall making
  * a claim about rank nobody authorised. Two sizes turned out to be the louder
- * claim — the organizers publish all six under one heading, and the
+ * claim — the organizers publish all seven under one heading, and the
  * stylesheet was carrying a paragraph of arithmetic pulling the small row's
  * edges onto the large row's so the two would read as one block anyway. They
- * are one row of six at one size now.
+ * are one row of seven at one size now.
  *
  * The array survives the row that mapped over it, because the two are still
  * the two things the row cannot shuffle: `ecosystem` is dealt again every
@@ -693,7 +769,7 @@ type Partner = {
  * sentence saying what it supplies, and it was the only one — which meant the
  * wall stated one partner's contribution and left the other four's to be
  * guessed at, and put a paragraph of body copy in one tile of a row of logos.
- * With it gone the wall makes no claim about who gave what, and all six cells
+ * With it gone the wall makes no claim about who gave what, and all seven cells
  * are the same object at the same weight.
  */
 const LEAD_SPONSORS: Partner[] = [
@@ -704,6 +780,12 @@ const LEAD_SPONSORS: Partner[] = [
     // Their two-colour mark is the stacked lockup, so matching a horizontal
     // wordmark's height would leave it reading half the size.
     mark: "hw26-mark--stacked",
+    highlight: true,
+  },
+    {
+    name: "Google Developer Groups",
+    src: "/sponsors/GDG.png",
+    href: "https://gdg.community.dev/",
   },
   {
     name: "START Warsaw",
@@ -713,17 +795,23 @@ const LEAD_SPONSORS: Partner[] = [
 ];
 
 /**
- * The shuffled part of the ecosystem row: four partners behind the two pinned
+ * The shuffled part of the ecosystem row: five partners behind the two pinned
  * names above.
  *
- * Six cells stay equal on desktop; six divides by the responsive counts too, so
- * no cell has to stretch to close a short row.
+ * Seven cells stay equal on desktop. Narrow layouts step down to four and two
+ * tracks, with the final phone tile spanning the leftover slot.
  *
  * Each mark is re-sized rather than scaled: a cell at half the width is not
  * the same cell smaller, and the two plates in particular carry ink across
  * their whole box.
  */
 const SMALL_SPONSORS: Partner[] = [
+  {
+    name: "AI Tinkerers Poland",
+    src: "/sponsors/ai-tinkerers-poland.png",
+    href: "https://poland.aitinkerers.org/",
+    mark: "hw26-mark--aitinkerers",
+  },
   {
     name: "Eurotech Federation",
     src: "/sponsors/eurotech.png",
@@ -785,6 +873,12 @@ const HARDWARE_PARTNERS: Partner[] = [
     href: "https://sprtk.com/",
     mark: "hw26-mark--sprtk",
   },
+    {
+    name: "Fictionlab",
+    src: "/sponsors/fictionlab.svg",
+    href: "https://fictionlab.pl/",
+    mark: "hw26-mark--fictionlab",
+  },
   {
     name: "BMF — Brave Mind Fighters",
     src: "/sponsors/bmf.png",
@@ -794,18 +888,18 @@ const HARDWARE_PARTNERS: Partner[] = [
     mark: "hw26-mark--bmf",
   },
   {
-    name: "W01-TEK",
-    src: "/sponsors/w01tek.png",
+    name: "Machinekind",
+    src: "/sponsors/machinekind.webp",
     href: "https://machinekind.ai/",
-    // A bare wordmark at 5.3:1 in its own face — no symbol beside it, so all
-    // of its height is cap height and it grows fast per pixel. The widest
-    // thing in this row, and held down accordingly.
-    mark: "hw26-mark--w01tek",
+    mark: "hw26-mark--machinekind",
+    lockup: "hw26-sponsor-lockup--machinekind",
+    wordmark: "MACHINEKIND",
   },
   {
     name: "SkyMav",
     src: "/sponsors/skymav.png",
     href: "https://skymav.pl/",
+    highlight: true,
   },
   {
     name: "GHOST",
@@ -817,6 +911,7 @@ const HARDWARE_PARTNERS: Partner[] = [
     // second bitmap, which is what `wordmark` below is for.
     mark: "hw26-mark--ghost",
     wordmark: "GHOST",
+    highlight: true,
   },
   {
     name: "MAB Robotics",
@@ -829,17 +924,11 @@ const HARDWARE_PARTNERS: Partner[] = [
     mark: "hw26-mark--mab",
   },
   {
-    name: "Politechnika Wrocławska",
-    // The one mark on this wall that arrives finished: the university's crest
-    // over its own name, both baked into a single portrait file — so unlike
-    // GHOST and MCHTR below it needs no live wordmark under it, and unlike
-    // them it is not square. Two thirds of its height is crest and the last
-    // third is two lines of small type, which is what the sizing note in the
-    // stylesheet is about: at the row's base height that type would be
-    // illegible, so this runs taller than anything else here.
-    src: "/sponsors/pwr.png",
-    href: "https://pwr.edu.pl/",
-    mark: "hw26-mark--pwr",
+    name: "TNKR",
+    src: "/sponsors/tnkr.svg",
+    href: "https://tnkr.ai/",
+    mark: "hw26-mark--tnkr",
+    highlight: true,
   },
   {
     // The faculty's full name is the accessible name and the tooltip; the
@@ -862,6 +951,12 @@ const HARDWARE_PARTNERS: Partner[] = [
 
 /** The subset the wall deals. The full list above stays the record of who is in. */
 const VISIBLE_HARDWARE_PARTNERS = HARDWARE_PARTNERS.filter((p) => !p.hidden);
+const GOLD_HARDWARE_PARTNERS = VISIBLE_HARDWARE_PARTNERS.filter(
+  (partner) => partner.highlight,
+);
+const STANDARD_HARDWARE_PARTNERS = VISIBLE_HARDWARE_PARTNERS.filter(
+  (partner) => !partner.highlight,
+);
 
 /**
  * The media partners. Their own heading rather than a sixth hardware tile:
@@ -882,7 +977,22 @@ const MEDIA_PARTNERS: Partner[] = [
   },
 ];
 
+/** In display order — the row renders this array as written: TNKR, M5Stack,
+ * ChronoTap. */
 const PRIZE_PARTNERS: Partner[] = [
+  {
+    name: "TNKR",
+    src: "/sponsors/tnkr.svg",
+    href: "https://tnkr.ai/",
+    mark: "hw26-mark--tnkr",
+    highlight: true,
+  },
+  {
+    name: "M5Stack",
+    src: "/sponsors/m5stack.svg",
+    href: "https://m5stack.com/",
+    mark: "hw26-mark--m5stack",
+  },
   {
     name: "ChronoTap",
     src: "/sponsors/chronotap.png",
@@ -907,6 +1017,12 @@ const SPONSORS: Partner[] = [
     src: "/sponsors/prelint.svg",
     href: "https://prelint.com/",
     mark: "hw26-mark--prelint",
+  },
+  {
+    name: "Credo Ventures",
+    src: "/sponsors/credo-ventures.svg",
+    href: "https://www.credoventures.com/",
+    mark: "hw26-mark--credoventures",
   },
 ];
 
@@ -935,47 +1051,77 @@ const SPONSORS: Partner[] = [
  * than the alternatives — a second optional field for the link, or a parser
  * over the copy — and it keeps the answers readable as answers.
  */
-const FAQ: { q: string; a: ReactNode }[] = [
+const FAQ: { q: string; a: ReactNode; featured?: boolean }[] = [
+  {
+    q: "What should I bring to the hackathon?",
+    a: "A laptop.",
+  },
+  {
+    q: "When will the hardware, prizes and agenda be announced?",
+    a: "September 1.",
+  },
+  {
+    q: "Can I apply if I am the only person on my team?",
+    a: "No. A team must have at least 3 people.",
+  },
+  {
+    q: "Can I bring my own hardware?",
+    a: 'Yes. You can bring your own electronics, robot, tools and anything else you need. Mention it during team registration using the "I want to bring my own hardware" option. Bringing your own equipment does not prevent you from reserving hardware from us.',
+  },
+  {
+    q: "How do Build Your Own categories work?",
+    a: "We provide a list of materials and a mentor. After the selected teams are announced on September 18, you will have one week to design the hardware and send us the model so we can print everything before the hackathon. Your mentor will guide the design process and work alongside you.",
+  },
+  {
+    q: "What is the role of mentors during the hackathon?",
+    a: "Each hardware category has a mentor. Before the event, you can contact them through our platform with technical hardware questions. During the hackathon, they will help you bring your idea to life.",
+  },
+  {
+    q: "How will the hackathon winners be judged?",
+    a: "We use three criteria: creativity of the idea, proactive collaboration with others, and the effort invested during the hackathon. Judging happens at the end of the event, so the final presentation also matters.",
+  },
   {
     q: "Is participation in the hackathon free?",
     a: "Yes.",
   },
   {
-    q: "What time is it starting?",
-    a: "25.09.2026. at 08:00.",
-  },
-  {
     q: "Can I book more than one hardware unit?",
-    a: "You can only book one main hardware unit (robot arm, drone, underwater drone, robodog, humanoid or VR headset). At the event you will be able to unlock extras: cables, Raspberry PIs, camera modules and more.",
+    a: "You can only book one main hardware unit: a drone, robot arm, underwater drone, robodog, quadruped robot, humanoid or headset. At the event you will be able to unlock extras such as cables, Raspberry Pis, camera modules and more.",
   },
   {
     q: "Can I sleep at the hackathon?",
-    a: "Yes, but we won't provide beds or sleeping rooms. You can bring your own sleeping bag or sleeping pad.",
-  },
-  {
-    q: "Can I bring my own hardware, tools, laptops?",
-    a: "Yes, bring the equipment you need. You can bring your laptop, mouse, screen, hardware and tools. Just be reasonable: it has to fit on your spot on your desk and it shouldn't bother others.",
+    a: "Yes, but we will not provide beds or sleeping rooms. You can bring your own sleeping bag or sleeping pad.",
   },
   {
     q: "Will you pay for my trip?",
-    a: "We will not reimburse travel costs nor accommodation.",
+    a: "We will not reimburse travel or accommodation costs.",
   },
   {
     q: "Will there be free Wi-Fi?",
-    a: "Yes, there is free 1Gbps Wi-Fi for all participants. Don't expect the highest speeds when 100 people start downloading Docker images!",
+    a: "Yes, there is free unlimited high-speed Wi-Fi for all participants.",
   },
   {
     q: "Can I take my final project home?",
     a: "No. Everything created during the hackathon stays here.",
   },
   {
-    q: "I have a different question, how can I contact you?",
+    q: "I have another question. How can I contact you?",
     a: (
       <>
-        Contact us at{" "}
+        Email{" "}
         <a className="hw26-link" href="mailto:sos@hacklab.so">
           sos@hacklab.so
+        </a>{" "}
+        or message us on{" "}
+        <a
+          className="hw26-link"
+          href="https://wa.me/48793646367"
+          rel="noopener noreferrer"
+          target="_blank"
+        >
+          WhatsApp: +48 793 646 367
         </a>
+        .
       </>
     ),
   },
@@ -1962,7 +2108,10 @@ function SponsorTile({ partner }: { partner: Partner }) {
 
   if (!partner.href) {
     return (
-      <div className="hw26-sponsor hw26-sponsor--static" title={partner.name}>
+      <div
+        className={`hw26-sponsor hw26-sponsor--static${partner.highlight ? " hw26-partner-highlight" : ""}`}
+        title={partner.name}
+      >
         {inside}
       </div>
     );
@@ -1971,7 +2120,7 @@ function SponsorTile({ partner }: { partner: Partner }) {
   return (
     <a
       aria-label={partner.name}
-      className="hw26-sponsor"
+      className={`hw26-sponsor${partner.highlight ? " hw26-partner-highlight" : ""}`}
       href={partner.href}
       rel="noopener noreferrer"
       target="_blank"
@@ -1985,7 +2134,7 @@ function LeadPartnerTile({ partner }: { partner: Partner }) {
   return (
     <a
       aria-label={partner.name}
-      className="hw26-sponsor-lead"
+      className={`hw26-sponsor-lead${partner.highlight ? " hw26-partner-highlight" : ""}`}
       href={partner.href}
       rel="noopener noreferrer"
       target="_blank"
@@ -2005,9 +2154,7 @@ function PartnerSubhead({
   title: string;
 }) {
   return (
-    <div
-      className={`hw26-partner-subhead${reveal ? " hw26-reveal" : ""}`}
-    >
+    <div className={`hw26-partner-subhead${reveal ? " hw26-reveal" : ""}`}>
       <h3 className="hw26-cat hw26-partner-cat">
         <span aria-hidden="true" className="hw26-cat-mark">
           ///
@@ -2017,11 +2164,7 @@ function PartnerSubhead({
       {action ? (
         <a
           className="hw26-sponsor-cta"
-          href={
-            action === "sponsor"
-              ? "/sponsor"
-              : "/partner"
-          }
+          href={action === "sponsor" ? "/sponsor" : "/partner"}
         >
           Become a {action} →
         </a>
@@ -2048,7 +2191,7 @@ function PartnerTierSubhead({
 /** The complete partner wall, reused by the dedicated Partners page. */
 export function PartnerDirectory() {
   const ecosystem = useShuffled(SMALL_SPONSORS);
-  const hardware = useShuffled(VISIBLE_HARDWARE_PARTNERS);
+  const hardware = useShuffled(STANDARD_HARDWARE_PARTNERS);
 
   return (
     <section className="hw26-section">
@@ -2059,7 +2202,7 @@ export function PartnerDirectory() {
         </div>
 
         <PartnerSubhead action="sponsor" title="Sponsors" />
-        <div className="hw26-sponsors-lead hw26-sponsors-lead--one">
+        <div className="hw26-sponsors-lead hw26-sponsors-lead--two">
           {SPONSORS.map((partner) => (
             <LeadPartnerTile key={partner.name} partner={partner} />
           ))}
@@ -2069,17 +2212,15 @@ export function PartnerDirectory() {
           <PartnerSubhead action="partner" title="Partners" />
 
           <PartnerTierSubhead title="Ecosystem Partners" />
-          <div className="hw26-sponsors-lead hw26-sponsors-lead--eco">
-            {[LEAD_SPONSORS[0], LEAD_SPONSORS[1], ...ecosystem].map(
-              (partner) => (
-                <LeadPartnerTile key={partner.name} partner={partner} />
-              ),
-            )}
+          <div className="hw26-sponsors-rest hw26-sponsors-rest--eco">
+            {[...LEAD_SPONSORS, ...ecosystem].map((partner) => (
+              <SponsorTile key={partner.name} partner={partner} />
+            ))}
           </div>
 
           <PartnerTierSubhead title="Hardware Partners" />
           <div className="hw26-sponsors-rest">
-            {hardware.map((partner) => (
+            {[...GOLD_HARDWARE_PARTNERS, ...hardware].map((partner) => (
               <SponsorTile key={partner.name} partner={partner} />
             ))}
           </div>
@@ -2092,7 +2233,7 @@ export function PartnerDirectory() {
           </div>
 
           <PartnerTierSubhead title="Prize Partners" />
-          <div className="hw26-sponsors-lead hw26-sponsors-lead--one">
+          <div className="hw26-sponsors-lead hw26-sponsors-lead--prize">
             {PRIZE_PARTNERS.map((partner) => (
               <LeadPartnerTile key={partner.name} partner={partner} />
             ))}
@@ -2124,11 +2265,11 @@ export function PartnerDirectory() {
 }
 
 /**
- * The FAQ, as one plate with nine rows in it.
+ * The FAQ, as one plate with all questions in priority order.
  *
  * One open at a time. A multi-open accordion is the right call when the panels
  * are things a reader compares against each other — two specs side by side —
- * and these are not: they are nine unrelated answers, and a reader who has
+ * and these are not: they are unrelated answers, and a reader who has
  * opened four of them has a page that scrolls like an article and no longer
  * shows the list of questions the section exists to present. Single-open keeps
  * the whole list on screen at every step, which is the thing an FAQ is for,
@@ -2171,7 +2312,7 @@ function Faq() {
 
           return (
             <div
-              className={`hw26-faq-row${isOpen ? " hw26-faq-row--open" : ""}`}
+              className={`hw26-faq-row${item.featured ? " hw26-faq-row--featured" : ""}${isOpen ? " hw26-faq-row--open" : ""}`}
               key={item.q}
             >
               <h3 className="hw26-faq-heading">
@@ -2295,7 +2436,7 @@ function RigCell({ item, order }: { item: Rig; order: number }) {
         className={`hw26-rig hw26-rig--compact${item.unannounced ? " hw26-rig--tba" : ""}${item.blurPhoto ? " hw26-rig--blur" : ""}${item.dropShadow ? " hw26-rig--accent" : ""} hw26-reveal`}
         style={{ "--reveal-delay": `${order * 90}ms` } as CSSProperties}
       >
-      {/* Ground, not a product shot — see the note on RIG_GROUPS. Empty
+        {/* Ground, not a product shot — see the note on RIG_GROUPS. Empty
           `alt` because a render that is 16% of a greyscale backdrop is
           texture rather than something anyone is being shown; the name below
           it is what identifies the machine.
@@ -2313,10 +2454,12 @@ function RigCell({ item, order }: { item: Rig; order: number }) {
 
           `sizes`, and the reason its last clause is not a bare `33vw`.
 
-          The first two clauses are the grid's own column count — one up under
-          720, two up under 1100, three above — so they are right by
-          construction. The third was not: the cell stops growing long before
-          the viewport does. `.hw26-inner` caps the sheet at 1440 and
+          The first clause is the grid's own column count — two up to 1100,
+          three above — so it is right by construction; there is no one-up
+          width, so a `100vw` clause would be asking a phone to decode every
+          plate at twice the pixels its half-width cell can show, times
+          twenty-two cells. The last clause needed measuring: the cell stops
+          growing long before the viewport does. `.hw26-inner` caps the sheet at 1440 and
           `--hw-gutter` pins at its 4.5rem ceiling, so from about 1565px
           across the cell holds at a measured 461.33px while `33vw` keeps
           climbing — 845px at 2560, 1135px at 3440. That is not a sharpness
@@ -2330,19 +2473,19 @@ function RigCell({ item, order }: { item: Rig; order: number }) {
           starts binding around 1400px, where `33vw` has already overtaken the
           real column. Below that the expression is `33vw` exactly, so the
           1100-1440 range is untouched. */}
-      {item.photo ? (
-        <div className="hw26-rig-photo">
-          <Image
-            alt=""
-            fill
-            quality={90}
-            sizes="(max-width: 720px) 100vw, (max-width: 1100px) 50vw, min(33vw, 462px)"
-            src={item.photo}
-          />
-        </div>
-      ) : null}
+        {item.photo ? (
+          <div className="hw26-rig-photo">
+            <Image
+              alt=""
+              fill
+              quality={90}
+              sizes="(max-width: 1100px) 50vw, min(33vw, 462px)"
+              src={item.photo}
+            />
+          </div>
+        ) : null}
 
-      {/* The display figure is what there is: six manipulators, three robo
+        {/* The display figure is what there is: six manipulators, three robo
           fish, two of the big arms.
 
           On a placeholder the same element holds a "?" instead, in the same
@@ -2352,27 +2495,27 @@ function RigCell({ item, order }: { item: Rig; order: number }) {
           Either way it is a shape standing in for a number rather than a
           number, so `unannounced` takes it out of the accessibility tree and
           the marker below carries the meaning instead. */}
-      {item.units ? (
-        <div aria-hidden={item.unannounced} className="hw26-rig-no">
-          {item.units}
-        </div>
-      ) : null}
+        {item.units ? (
+          <div aria-hidden={item.unannounced} className="hw26-rig-no">
+            {item.units}
+          </div>
+        ) : null}
 
-      {/* The supplier's mark, in the corner opposite the count — see the
+        {/* The supplier's mark, in the corner opposite the count — see the
           placement note on `.hw26-rig-credit`. A real `alt` rather than an
           empty one: unlike the plate behind the copy, this is not texture,
           it is the only place on the page that says where these parts come
           from, and a reader who cannot see the lockup would otherwise get a
           cell that is silently missing a fact the sighted one has. */}
-      {item.credit ? (
-        <img
-          alt={item.credit.label}
-          className="hw26-rig-credit"
-          src={item.credit.src}
-        />
-      ) : null}
+        {item.credit ? (
+          <img
+            alt={item.credit.label}
+            className="hw26-rig-credit"
+            src={item.credit.src}
+          />
+        ) : null}
 
-      {/* The (i), on the cells that have something to say. Written here, right
+        {/* The (i), on the cells that have something to say. Written here, right
           after the credit mark, because that is where it sits: the stylesheet
           pins it into the top-right corner on the same inset the mark uses,
           and drops it below the mark on the two cells that carry one. The
@@ -2389,48 +2532,48 @@ function RigCell({ item, order }: { item: Rig; order: number }) {
           offering "More information" is twenty-two identical controls in a
           screen reader's list; `aria-hidden` on the drawing keeps the circle
           and the stem out of that name. */}
-      {item.note ? (
-        <button
-          aria-controls={noteId}
-          aria-expanded={noteOpen}
-          aria-label={`More about ${item.name}`}
-          className="hw26-rig-info"
-          onClick={() => setNoteOpen((value) => !value)}
-          ref={trigger}
-          type="button"
-        >
-          <svg aria-hidden="true" focusable="false" viewBox="0 0 16 16">
-            <circle
-              cx="8"
-              cy="8"
-              fill="none"
-              r="7.15"
-              stroke="currentColor"
-              strokeWidth="1.4"
-            />
-            <circle cx="8" cy="4.3" fill="currentColor" r="0.95" />
-            <rect
-              fill="currentColor"
-              height="5.5"
-              width="1.8"
-              x="7.1"
-              y="6.4"
-            />
-          </svg>
-        </button>
-      ) : null}
+        {item.note ? (
+          <button
+            aria-controls={noteId}
+            aria-expanded={noteOpen}
+            aria-label={`More about ${item.name}`}
+            className="hw26-rig-info"
+            onClick={() => setNoteOpen((value) => !value)}
+            ref={trigger}
+            type="button"
+          >
+            <svg aria-hidden="true" focusable="false" viewBox="0 0 16 16">
+              <circle
+                cx="8"
+                cy="8"
+                fill="none"
+                r="7.15"
+                stroke="currentColor"
+                strokeWidth="1.4"
+              />
+              <circle cx="8" cy="4.3" fill="currentColor" r="0.95" />
+              <rect
+                fill="currentColor"
+                height="5.5"
+                width="1.8"
+                x="7.1"
+                y="6.4"
+              />
+            </svg>
+          </button>
+        ) : null}
 
-      {/* The only status left, and on every cell that carries it the cell is
+        {/* The only status left, and on every cell that carries it the cell is
           a placeholder outright — the line is the whole of its content. It is
           written off `tba` rather than off `unannounced` because the two are
           not the same claim: this one says nothing here is settled yet, and
           it would still be the right line on a named machine whose model is
           open. See the note on RIG_GROUPS. */}
-      {item.tba ? (
-        <span className="hw26-label hw26-rig-units">To be announced</span>
-      ) : null}
+        {item.tba ? (
+          <span className="hw26-label hw26-rig-units">To be announced</span>
+        ) : null}
 
-      <h4 className="hw26-rig-name">{item.name}</h4>
+        <h4 className="hw26-rig-name">{item.name}</h4>
 
         {item.note ? <p className="hw26-rig-note">{item.note}</p> : null}
       </article>
@@ -2688,6 +2831,21 @@ export function Endplate({ hackathon }: { hackathon: HardwareEvent }) {
         >
           <span>Support</span> {SUPPORT_EMAIL}
         </a>
+        <a
+          aria-label="Alien Bazaar on Instagram"
+          className="hw26-social-link"
+          href="https://www.instagram.com/alienbazaar_"
+          rel="noopener noreferrer"
+          target="_blank"
+        >
+          <svg aria-hidden="true" viewBox="0 0 24 24">
+            <rect height="18" rx="5" width="18" x="3" y="3" />
+            <circle cx="12" cy="12" r="4" />
+            <circle className="hw26-social-dot" cx="17.4" cy="6.6" r="1" />
+          </svg>
+          <span>Instagram</span>
+          @alienbazaar_
+        </a>
         <div aria-hidden="true" className="hw26-ticks">
           {Array.from({ length: 24 }, (_, i) => (
             <i key={`tick-${i}`} />
@@ -2781,18 +2939,24 @@ function SiteMenu() {
                 <Link href="/#hardware" onClick={close}>
                   <span>02</span> Hardware
                 </Link>
-                <Link href="/#timeline" onClick={close}>
-                  <span>03</span> Timeline
+                <Link href="/#prizes" onClick={close}>
+                  <span>03</span> Prizes
+                </Link>
+                <Link href="/#how-it-works" onClick={close}>
+                  <span>04</span> How
                 </Link>
                 <Link href="/#faq" onClick={close}>
-                  <span>04</span> FAQ
+                  <span>05</span> FAQ
                 </Link>
                 <Link href="/partners" onClick={close}>
-                  <span>05</span> Partners
+                  <span>06</span> Partners
                 </Link>
                 <Link href="/team" onClick={close}>
-                  <span>06</span> Team
+                  <span>07</span> Team
                 </Link>
+                <span aria-disabled="true" className="hw26-menu-link--tba">
+                  <span>08</span> Agenda <em>TBA</em>
+                </span>
               </nav>
             </div>
 
@@ -2803,16 +2967,10 @@ function SiteMenu() {
               >
                 Apply now <span aria-hidden="true">→</span>
               </a>
-              <a
-                className="hw26-menu-action"
-                href="/sponsor"
-              >
+              <a className="hw26-menu-action" href="/sponsor">
                 Become a sponsor <span aria-hidden="true">→</span>
               </a>
-              <a
-                className="hw26-menu-action"
-                href="/partner"
-              >
+              <a className="hw26-menu-action" href="/partner">
                 Become a partner <span aria-hidden="true">→</span>
               </a>
             </div>
@@ -3124,7 +3282,6 @@ function BriefRain() {
 
 export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
   const root = useReveal();
-  const timeline = useTimelinePin();
   // Hung off the page root the reveal observer already holds, rather than a
   // ref of its own on the same element — the cells are two sections apart and
   // the only thing this needs is a node that contains both.
@@ -3139,14 +3296,15 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
   const hero = useRef<HTMLElement>(null);
   const heroIdle = useHeroIdle(hero);
 
-  // Two of the partner rows are dealt again on every visit, so no name owns the
-  // first plate. Only these two: the sponsor row and the media row hold one
-  // name each, the organizers are a fixed pair of hosts, and the two lead
-  // Ecosystem cells are a tier of their own where position is the tier — those
-  // four stay exactly as written. See `useShuffled` for why the order arrives
-  // after the first render rather than during it.
+  // The pinned horizontal line the "How it works" section is drawn on. See
+  // useTimelinePin for the driver, and for the three cases that decline it.
+  const timeline = useTimelinePin();
+
+  // The regular partners are dealt again on every visit. Gold partners keep
+  // the first plates in their tier, so the visual hierarchy is also the DOM
+  // order. See `useShuffled` for why the shuffled order arrives before paint.
   const ecosystem = useShuffled(SMALL_SPONSORS);
-  const hardware = useShuffled(VISIBLE_HARDWARE_PARTNERS);
+  const hardware = useShuffled(STANDARD_HARDWARE_PARTNERS);
 
   return (
     /*
@@ -3292,9 +3450,36 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
               width={274}
             />
           </span>
+
+          <div
+            aria-label="Epikor and HackLab"
+            className="hw26-hero-origin"
+            role="img"
+          >
+            <span>Epikor</span>
+            <span>HackLab</span>
+          </div>
         </div>
 
         <div className="hw26-hero-panel">
+          <a
+            aria-label="Powered by NVIDIA"
+            className="hw26-hero-nvidia"
+            href="https://www.nvidia.com"
+            rel="noreferrer"
+            target="_blank"
+          >
+            <span className="hw26-hero-nvidia-label">Powered by</span>
+            <span aria-hidden="true" className="hw26-hero-nvidia-brand">
+              <svg className="hw26-hero-nvidia-eye" viewBox="1070 110 350 240">
+                <use href="/sponsors/nvidia.svg#g" />
+              </svg>
+              <svg className="hw26-hero-nvidia-word" viewBox="1040 375 460 100">
+                <use href="/sponsors/nvidia.svg#f" />
+              </svg>
+            </span>
+          </a>
+
           {/* The line above the clock says what is being counted towards.
               The when and the where moved to the ribbon directly below the
               fold, which left this line free to make the claim instead —
@@ -3315,8 +3500,8 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
           {/* Applications are open, so the control is a link again. Same tab:
               the reader is being handed off to the form, not sent to read
               something on the side. */}
-          <a className='hw26-apply' href={JOIN_URL}>
-            Join
+          <a className="hw26-apply" href={JOIN_URL}>
+            Register now
           </a>
         </div>
       </header>
@@ -3365,133 +3550,208 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
       </div>
 
       {/* ---------------- THE BRIEF ---------------- */}
-      <section className="hw26-section hw26-section--rain hw26-section--centred">
+      <section
+        className="hw26-section hw26-section--rain hw26-about"
+        id="about"
+      >
         <BriefRain />
         <div className="hw26-inner">
-          <div className="hw26-head hw26-reveal">
-            <h2>What is Alien Bazaar?</h2>
+          <div className="hw26-about-layout">
+            <div className="hw26-about-copy">
+              <div className="hw26-head hw26-reveal">
+                <h2>What is Alien Bazaar?</h2>
+              </div>
+
+              <div className="hw26-brief hw26-reveal">
+                <p>
+                  Alien Bazaar is a hardware hackathon at Hacker Block, a
+                  3-story hacker house in Warsaw. The idea is simple: unite
+                  robots into one ecosystem and automate the house. We gather
+                  the 20 best teams from across Europe and hand each one a
+                  different piece of hardware spanning 6 robotics categories. We
+                  don&apos;t limit you with tasks — we provide all the
+                  components, tools and space, so you can come up with your own
+                  idea and bring it to life.
+                </p>
+              </div>
+
+              <div className="hw26-facts hw26-reveal">
+                <dl className="hw26-stats">
+                  <div className="hw26-stat">
+                    <dt>Best teams in Europe</dt>
+                    <dd>20</dd>
+                  </div>
+                  <div className="hw26-stat">
+                    <dt>Robotics categories</dt>
+                    <dd>6</dd>
+                  </div>
+                  <div className="hw26-stat">
+                    <dt>Days of hacking</dt>
+                    <dd>3</dd>
+                  </div>
+                </dl>
+
+                <span className="hw26-label hw26-spec-eyebrow">The setup</span>
+
+                <dl className="hw26-spec">
+                  <div className="hw26-spec-row">
+                    <dt>Venue</dt>
+                    <dd>Hacker Bloc — Kosiarzy 21B, Warsaw</dd>
+                  </div>
+                  <div className="hw26-spec-row">
+                    <dt>Time</dt>
+                    <dd>25.09.–27.09.2026.</dd>
+                  </div>
+                  {/* The two names as two links, because they are two houses
+                      and a single link round "Epikor and Hacklab" would be one
+                      door onto either. The addresses come off `ORGANIZERS`
+                      rather than being typed again: the tiles at the foot of
+                      the page are the same two links, and two copies of a URL
+                      is one of them going stale unnoticed. */}
+                  <div className="hw26-spec-row">
+                    <dt>Organized by</dt>
+                    <dd>
+                      <a
+                        className="hw26-spec-link"
+                        href={ORGANIZERS[0].href}
+                        rel="noopener noreferrer"
+                        target="_blank"
+                      >
+                        Epikor
+                      </a>{" "}
+                      and{" "}
+                      <a
+                        className="hw26-spec-link"
+                        href={ORGANIZERS[1].href}
+                        rel="noopener noreferrer"
+                        target="_blank"
+                      >
+                        Hacklab
+                      </a>
+                    </dd>
+                  </div>
+                  <div className="hw26-spec-row">
+                    <dt>Theme</dt>
+                    <dd>Home automation</dd>
+                  </div>
+                </dl>
+              </div>
+            </div>
+
+            <div aria-hidden="true" className="hw26-about-visual hw26-reveal">
+              <Image
+                alt=""
+                fill
+                quality={90}
+                sizes="(max-width: 900px) 100vw, 52vw"
+                src="/hardware/xle.png"
+                className="hw-about-img"
+              />
+              {/* <span className="hw26-label">AUTOMATION UNIT /// 06</span> */}
+            </div>
           </div>
+        </div>
+      </section>
 
-          {/* Two lines and a sheet, which is a split by *kind* rather than by
-              length. The paragraph before this one carried the whole event —
-              venue, team count, hardware, duration, theme — inside one run of
-              prose, and every fact in it was a fact a reader was scanning for
-              rather than reading: they arrived here to find out how many
-              teams and how many days, and had to parse a sentence to get a
-              number out of it. Prose is the wrong container for a figure.
+      {/* ---------------- HOW IT WORKS ---------------- */}
+      {/* The nine steps, on the pinned timeline: the frame sticks and the
+          page's vertical scroll is spent travelling the line sideways — see
+          useTimelinePin for the driver and the three cases that decline it.
+          The section keeps the "How it works" content; the line under it is
+          the schedule that content was always describing. */}
+      <section
+        className="hw26-section hw26-tl-section hw26-how-section"
+        id="how-it-works"
+        ref={timeline.section}
+      >
+        {/* The frame that sticks. It is an ordinary block until the driver in
+            useTimelinePin decides otherwise, which is why a phone, a reader
+            under reduced motion and a page with no script all get the plain
+            section and none of the machinery. */}
+        <div className="hw26-tl-pin">
+          <div className="hw26-inner">
+            <div className="hw26-head hw26-reveal">
+              <h2>How it works</h2>
+            </div>
 
-              So the sentence keeps only what a sentence is better at — what
-              this is, where it happens, and what it is about, which is the
-              one thing here nobody can look up in a column — and everything
-              countable or namable goes into the block under it, where a
-              figure is a figure and a reader takes it at a glance.
+            <div className="hw26-how-meta hw26-reveal">
+              <span className="hw26-label hw26-label--mint">
+                Application flow
+              </span>
+              <span aria-hidden="true">01-27 SEP /// 2026</span>
+            </div>
 
-              Nothing was dropped in the move. Twenty teams, twenty units,
-              three days, the house, the tools and the theme are all still
-              stated; the venue and the components and the team count are
-              still named here as well as in the sections that go into them,
-              because this is the one place a reader should not have to
-              assemble the event out of four other sections.
+            {/* The scrollport, and the reason the fallbacks are honest: the
+                track is wider than this box above the breakpoint, and when the
+                pin is not running this is what the reader can push to reach the
+                far end. It sits inside `.hw26-inner` so the line and the
+                heading above it start on the same column at every width. */}
+            <div className="hw26-tl-port" ref={timeline.port}>
+              {/* One grid, two subgrids: the bracket strip and the stops share
+                  a track, which is the whole reason a bracket can be placed by
+                  naming the stops it spans instead of by measuring anything —
+                  and the reason the same markup draws the line down the page on
+                  a phone and across it on a desktop.
 
-              The measure is finally doing the job it was set for. 64ch was
-              chosen for the one passage on the page that is genuinely read
-              rather than scanned, and for a while it was holding four lines;
-              two is what that measure is actually for. */}
-          <div className="hw26-brief hw26-reveal">
-            {/* Two lines at this measure, which is 108 characters and not
-                128: `64ch` is resolved against `.hw26-brief`'s own inherited
-                16px and the sentence is set at 17.28, so the column holds
-                about 59 of the characters it is actually setting. It opens
-                without naming the event because the head above it just asked
-                the question. */}
-            <p>
-              A hardware hackathon at the Hacker Bloc, a 3-storey hacker house
-              in Warsaw. 20 teams, one machine each, locked in for three days.
-              The theme is home automation: lighting, cleaning, security, a
-              robot that brings beer or any interesting problem you find. Show
-              us your most creative solution.
-            </p>
-          </div>
+                  `--tl-stops` is the stop count, handed to the stylesheet so
+                  the parent grid and TIMELINE cannot disagree about how many
+                  tracks there are. */}
+              <div
+                className="hw26-tl-track"
+                ref={timeline.track}
+                style={{ "--tl-stops": TIMELINE.length } as CSSProperties}
+              >
+                {/* The brackets. `aria-hidden` because each label is an
+                    annotation on a shape — read out of the line it brackets it
+                    is a fragment, and the stops themselves already carry the
+                    whole sequence in order. */}
+                <div aria-hidden="true" className="hw26-tl-braces">
+                  {TIMELINE_SPANS.map((span) => (
+                    <div
+                      className="hw26-tl-brace"
+                      key={span.label}
+                      style={
+                        {
+                          "--tl-span-from": span.from,
+                          "--tl-span-to": span.to,
+                        } as CSSProperties
+                      }
+                    >
+                      <span className="hw26-label hw26-tl-brace-label">
+                        {span.label}
+                      </span>
+                    </div>
+                  ))}
+                </div>
 
-          {/* The facts, as a sheet rather than a sentence — see the note
-              above, and `.hw26-facts` in the stylesheet for why the band and
-              the list are two different shapes rather than one. */}
-          <div className="hw26-facts hw26-reveal">
-            <dl className="hw26-stats">
-              <div className="hw26-stat">
-                <dt>Best teams in Europe</dt>
-                <dd>20</dd>
+                {/* An ordered list, because that is what this is: the steps
+                    in an order that matters, and the order is the content. */}
+                <ol className="hw26-tl-items">
+                  {TIMELINE.map((stop, i) => (
+                    <li
+                      className={`hw26-tl-item${stop.live ? " hw26-tl-item--live" : ""}`}
+                      key={stop.when + stop.title}
+                    >
+                      {/* The ordinal, spelled out because the list is not
+                          numbered on screen. Hidden from the tree because the
+                          `ol` already announces the position, so the glyph
+                          would be said twice. */}
+                      <span
+                        aria-hidden="true"
+                        className="hw26-label hw26-tl-step"
+                      >
+                        {String(i + 1).padStart(2, "0")}
+                      </span>
+                      <span className="hw26-tl-when">{stop.when}</span>
+                      <div className="hw26-tl-body">
+                        <h3 className="hw26-tl-title">{stop.title}</h3>
+                        <p className="hw26-tl-what">{stop.what}</p>
+                      </div>
+                    </li>
+                  ))}
+                </ol>
               </div>
-              <div className="hw26-stat">
-                <dt>Hardware units</dt>
-                <dd>20+</dd>
-              </div>
-              <div className="hw26-stat">
-                <dt>Days</dt>
-                <dd>3</dd>
-              </div>
-            </dl>
-
-            <span className="hw26-label hw26-spec-eyebrow">The setup</span>
-
-            <dl className="hw26-spec">
-              <div className="hw26-spec-row">
-                <dt>Venue</dt>
-                <dd>Hacker Bloc — Kosiarzy 21B, Warsaw</dd>
-              </div>
-              <div className="hw26-spec-row">
-                <dt>Time</dt>
-                <dd>25.09.–27.09.2026.</dd>
-              </div>
-              {/* The two names as two links, because they are two houses and a
-                  single link round "Epikor and Hacklab" would be one door onto
-                  either. Underlined and left the silver the rest of the value
-                  is set in — see `.hw26-spec-link`, and the note there on why
-                  the page's mint inline link is the wrong object for a
-                  two-word value in a list of one-line facts.
-
-                  The addresses come off `ORGANIZERS` rather than being typed
-                  again: the tiles at the foot of the page are the same two
-                  links, and two copies of a URL is one of them going stale
-                  unnoticed.
-
-                  New tab, matching the partner wall. The wall's argument holds
-                  here more strongly if anything: this is a line inside a list
-                  of facts about the event, and a reader checking who is behind
-                  it is not leaving. The FAQ's `.hw26-link` stays in place
-                  because it is a `mailto:` and opens a mail client, not a
-                  page. */}
-              <div className="hw26-spec-row">
-                <dt>Organized by</dt>
-                <dd>
-                  <a
-                    className="hw26-spec-link"
-                    href={ORGANIZERS[0].href}
-                    rel="noopener noreferrer"
-                    target="_blank"
-                  >
-                    Epikor
-                  </a>{" "}
-                  and{" "}
-                  <a
-                    className="hw26-spec-link"
-                    href={ORGANIZERS[1].href}
-                    rel="noopener noreferrer"
-                    target="_blank"
-                  >
-                    Hacklab
-                  </a>
-                </dd>
-              </div>
-              {/* The last row is centred rather than split, which is the one
-                  break in the pattern and is doing a job: the theme is not a
-                  spec of the event, it is what the event is for, and a
-                  left/right row would file it beside the printers. */}
-              <div className="hw26-spec-row">
-                <dt>Theme</dt>
-                <dd>Home automation</dd>
-              </div>
-            </dl>
+            </div>
           </div>
         </div>
       </section>
@@ -3619,105 +3879,58 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
         </div>
       </section>
 
-      {/* ---------------- TIMELINE ---------------- */}
-      {/* Sits directly under the inventory because that is what raises the
-          question it answers: you have just been told there is one machine
-          per team and a finite sheet, and the next thing worth knowing is by
-          when. */}
-      <section
-        className="hw26-section hw26-tl-section"
-        id="timeline"
-        ref={timeline.section}
-      >
-        {/* The frame that sticks. It is an ordinary block until the driver in
-            useTimelinePin decides otherwise, which is why a phone, a reader
-            under reduced motion and a page with no script all get the plain
-            section and none of the machinery. */}
-        <div className="hw26-tl-pin">
-          <div className="hw26-inner">
-            <div className="hw26-head hw26-reveal">
-              <h2>Timeline</h2>
-            </div>
+      {/* ---------------- PRIZES ---------------- */}
+      <section className="hw26-section hw26-prizes-section" id="prizes">
+        <div aria-hidden="true" className="hw26-grid" />
+        <div className="hw26-inner">
+          <div className="hw26-head hw26-reveal">
+            <h2>Prizes</h2>
+          </div>
 
-            {/* The scrollport, and the reason the fallbacks are honest: the
-                track is wider than this box above the breakpoint, and when the
-                pin is not running this is what the reader can push to reach the
-                far end. It sits inside `.hw26-inner` so the line and the
-                heading above it start on the same column at every width. */}
-            <div className="hw26-tl-port" ref={timeline.port}>
-              {/* One grid, two subgrids: the bracket strip and the stops share
-                  a track, which is the whole reason a bracket can be placed by
-                  naming the stops it spans instead of by measuring anything —
-                  and the reason the same markup draws the line down the page on
-                  a phone and across it on a desktop. The subgrid is taken on
-                  rows in one and on columns in the other; nothing here changes.
-
-                  `--tl-stops` is the stop count, handed to the stylesheet so
-                  the parent grid and TIMELINE cannot disagree about how many
-                  tracks there are. */}
-              <div
-                className="hw26-tl-track"
-                ref={timeline.track}
-                style={{ "--tl-stops": TIMELINE.length } as CSSProperties}
+          <div className="hw26-prize-podium">
+            {PRIZES.map((prize) => (
+              <article
+                className={`hw26-prize hw26-prize--${prize.rank} hw26-reveal`}
+                key={prize.rank}
               >
-                {/* The brackets. `aria-hidden` because each label is an
-                    annotation on a shape — read out of the line it brackets it
-                    is a fragment, and the stops themselves already carry the
-                    whole sequence in order. */}
-                <div aria-hidden="true" className="hw26-tl-braces">
-                  {TIMELINE_SPANS.map((span) => (
-                    <div
-                      className="hw26-tl-brace"
-                      key={span.label}
-                      style={
-                        {
-                          "--tl-span-from": span.from,
-                          "--tl-span-to": span.to,
-                        } as CSSProperties
-                      }
-                    >
-                      <span className="hw26-label hw26-tl-brace-label">
-                        {span.label}
-                      </span>
+                <div className="hw26-prize-card">
+                  <span className="hw26-prize-index">
+                    {String(prize.rank).padStart(2, "0")}
+                  </span>
+
+                  {prize.partner ? (
+                    <img
+                      alt={`${prize.partner.name} prize partner`}
+                      className="hw26-prize-credit"
+                      src={prize.partner.src}
+                    />
+                  ) : null}
+
+                  {prize.image ? (
+                    <div className="hw26-prize-media">
+                      <img alt={prize.name} src={prize.image} />
                     </div>
-                  ))}
+                  ) : (
+                    <div aria-hidden="true" className="hw26-prize-tba">
+                      ?
+                    </div>
+                  )}
+
+                  <div className="hw26-prize-copy">
+                    <span className="hw26-label hw26-label--mint">
+                      {prize.place}
+                    </span>
+                    <h3>{prize.name}</h3>
+                    <p>{prize.note}</p>
+                  </div>
                 </div>
 
-                {/* An ordered list, because that is what this is: five things in
-                    an order that matters, and the order is the content. */}
-                <ol className="hw26-tl-items">
-                  {TIMELINE.map((stop, i) => (
-                    <li
-                      className={`hw26-tl-item${stop.live ? " hw26-tl-item--live" : ""}`}
-                      key={stop.when + stop.what}
-                    >
-                      {/* The ordinal, spelled out because the list is not
-                          numbered on screen. Hidden from the tree because the
-                          `ol` already announces the position, so the glyph
-                          would be said twice. */}
-                      <span
-                        aria-hidden="true"
-                        className="hw26-label hw26-tl-step"
-                      >
-                        {String(i + 1).padStart(2, "0")}
-                      </span>
-                      <span className='hw26-tl-when'>{stop.when}</span>
-                      <div className='hw26-tl-body'>
-                        <p className='hw26-tl-what'>{stop.what}</p>
-                        {/* Same destination as the hero, reached from the
-                            stop that names it. Keeps `.hw26-tl-cta` on top of
-                            the shared chrome for the note-width sizing. */}
-                        {stop.cta ? (
-                          <a className='hw26-apply hw26-tl-cta' href={JOIN_URL}>
-                            Join the chat
-                          </a>
-                        ) : null}
-                      </div>
-                    </li>
-                  ))}
-                </ol>
-              </div>
-            </div>
+                <div aria-hidden="true" className="hw26-prize-step">
+                  <span>{prize.rank}</span>
+                  <i />
+                </div>
+              </article>
+            ))}
           </div>
         </div>
       </section>
@@ -3727,7 +3940,7 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
           and it sits here for that reason: everything above is the offer —
           the machines, the add-ons, the dates — and everything below is the
           people behind it and the way in. The leftovers a reader is still
-          holding after the timeline are exactly what this list is. */}
+          holding after the process are exactly what this list is. */}
       <section className="hw26-section" id="faq">
         <div className="hw26-inner">
           <div className="hw26-head hw26-reveal">
@@ -3755,11 +3968,11 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
               a banner rather than as the first name under a heading that will
               take more. The container shrinks; see `--one` in the
               stylesheet. */}
-          <div className="hw26-sponsors-lead hw26-sponsors-lead--one hw26-reveal">
+          <div className="hw26-sponsors-lead hw26-sponsors-lead--two hw26-reveal">
             {SPONSORS.map((s) => (
               <a
                 aria-label={s.name}
-                className="hw26-sponsor-lead"
+                className={`hw26-sponsor-lead${s.highlight ? " hw26-partner-highlight" : ""}`}
                 href={s.href}
                 key={s.name}
                 rel="noopener noreferrer"
@@ -3775,54 +3988,37 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
 
             <PartnerTierSubhead reveal title="Ecosystem Partners" />
 
-          {/* One row of six, and it used to be two rows of two and three.
-              The split was a tier: NVIDIA and ESRA took a plate twice the
-              linear size of the partners below, and the stylesheet carried a
-              paragraph of arithmetic making the small row's three columns land
-              exactly on the large row's two so the two rows read as one block
-              anyway. That is the tell. A layout that has to be engineered back
-              into looking like one row is one row with a rank drawn through
-              it, and the rank was the page's own invention — the organizers
-              publish these partners under one heading. So: one grid, six tiles,
-              one size, and the arithmetic goes with the thing it was
-              reconciling.
+            {/* The same small tile the Hardware Partners wall uses — one grid,
+              eight tiles, one size — so the two tiers under "Partners" read
+              as one wall rather than as a rank the page invented. The tile
+              itself is `SponsorTile`, marks served as-authored: running a
+              partner's logo through the image optimizer would re-encode it,
+              which their brand terms do not allow.
 
-              Same tile-as-link treatment as the organizers below. Marks are
-              served as-authored — running a partner's logo through the image
-              optimizer would re-encode it, which their brand terms do not
-              allow.
-
-              NVIDIA and START Warsaw are written out ahead of the map rather
-              than folded into it, which is the whole of how they stay first and
-              second: `ecosystem` is `useShuffled`, dealt again every visit, and
-              anything inside it is somewhere different on the next load. These
-              two are pinned and the four behind them reorder. Keys are the
-              partner names, so React moves the existing nodes rather than
-              rebuilding them — which matters because the reveal observer has
-              already been handed these elements. */}
-          <div className="hw26-sponsors-lead hw26-sponsors-lead--eco hw26-reveal">
-            {[LEAD_SPONSORS[0], LEAD_SPONSORS[1], ...ecosystem].map((s) => (
-              <a
-                aria-label={s.name}
-                className="hw26-sponsor-lead"
-                href={s.href}
-                key={s.name}
-                rel="noopener noreferrer"
-                target="_blank"
-              >
-                <img alt={s.name} className={s.mark} src={s.src} />
-              </a>
-            ))}
-          </div>
+              NVIDIA, Google Developer Groups and START Warsaw are written out
+              ahead of the map rather than folded into it, which is the whole
+              of how they stay first, second and third: `ecosystem` is
+              `useShuffled`, dealt again every visit, and anything inside it is
+              somewhere different on the next load. Those three are pinned and
+              the five behind them reorder. Keys are the partner names, so
+              React moves the existing nodes rather than rebuilding them —
+              which matters because the reveal observer has already been handed
+              these elements. */}
+            <div className="hw26-sponsors-rest hw26-sponsors-rest--eco hw26-reveal">
+              {[...LEAD_SPONSORS, ...ecosystem].map((s) => (
+                <SponsorTile key={s.name} partner={s} />
+              ))}
+            </div>
 
             <PartnerTierSubhead reveal title="Hardware Partners" />
 
-          {/* The wall's smaller tile, and the three rows that use it are the
+            {/* The wall's smaller tile, and the three rows that use it are the
               same grid with a different count in it. The tile itself is
               `SponsorTile` above.
 
-              Dealt again per visit, and unlike the ecosystem row this one has a
-              layout stake in how. Eight tiles divide cleanly into the wall's
+              Regular partners are dealt again per visit after the gold tiles,
+              and unlike the ecosystem row this one has a layout stake in how.
+              Eight tiles divide cleanly into the wall's
               eight- and four-column layouts. On phones the two-column grid
               takes them in full rows, and the last tile only widens to close a
               leftover track when the count is odd. Those column counts are cut
@@ -3835,45 +4031,45 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
               the existing DOM nodes rather than tearing them down and building
               new ones — and the reveal observer in `useReveal` is already
               holding these exact elements. */}
-          <div className="hw26-sponsors-rest hw26-reveal">
-            {hardware.map((p) => (
-              <SponsorTile key={p.name} partner={p} />
-            ))}
-          </div>
+            <div className="hw26-sponsors-rest hw26-reveal">
+              {[...GOLD_HARDWARE_PARTNERS, ...hardware].map((p) => (
+                <SponsorTile key={p.name} partner={p} />
+              ))}
+            </div>
 
             <PartnerTierSubhead reveal title="Media Partners" />
 
-          <div className="hw26-sponsors-lead hw26-sponsors-lead--one hw26-reveal">
-            {MEDIA_PARTNERS.map((p) => (
-              <a
-                aria-label={p.name}
-                className="hw26-sponsor-lead"
-                href={p.href}
-                key={p.name}
-                rel="noopener noreferrer"
-                target="_blank"
-              >
-                <img alt={p.name} className={p.mark} src={p.src} />
-              </a>
-            ))}
-          </div>
+            <div className="hw26-sponsors-lead hw26-sponsors-lead--one hw26-reveal">
+              {MEDIA_PARTNERS.map((p) => (
+                <a
+                  aria-label={p.name}
+                  className={`hw26-sponsor-lead${p.highlight ? " hw26-partner-highlight" : ""}`}
+                  href={p.href}
+                  key={p.name}
+                  rel="noopener noreferrer"
+                  target="_blank"
+                >
+                  <img alt={p.name} className={p.mark} src={p.src} />
+                </a>
+              ))}
+            </div>
 
             <PartnerTierSubhead reveal title="Prize Partners" />
 
-          <div className="hw26-sponsors-lead hw26-sponsors-lead--one hw26-reveal">
-            {PRIZE_PARTNERS.map((p) => (
-              <a
-                aria-label={p.name}
-                className="hw26-sponsor-lead"
-                href={p.href}
-                key={p.name}
-                rel="noopener noreferrer"
-                target="_blank"
-              >
-                <img alt={p.name} className={p.mark} src={p.src} />
-              </a>
-            ))}
-          </div>
+            <div className="hw26-sponsors-lead hw26-sponsors-lead--prize hw26-reveal">
+              {PRIZE_PARTNERS.map((p) => (
+                <a
+                  aria-label={p.name}
+                  className={`hw26-sponsor-lead${p.highlight ? " hw26-partner-highlight" : ""}`}
+                  href={p.href}
+                  key={p.name}
+                  rel="noopener noreferrer"
+                  target="_blank"
+                >
+                  <img alt={p.name} className={p.mark} src={p.src} />
+                </a>
+              ))}
+            </div>
           </div>
 
           <PartnerSubhead reveal title="Organizers" />
@@ -3920,14 +4116,14 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
       </section>
 
       {/* ---------------- CLOSER ---------------- */}
-      <section className='hw26-section hw26-closer'>
-        <div className='hw26-inner'>
-          <h2 className='hw26-reveal'>Join Alien Bazaar</h2>
-          <div className='hw26-reveal'>
+      <section className="hw26-section hw26-closer">
+        <div className="hw26-inner">
+          <h2 className="hw26-reveal">Join Alien Bazaar</h2>
+          <div className="hw26-reveal">
             {/* The last thing on the page, so it gets the large cut of the
                 same link the hero opens with. */}
-            <a className='hw26-apply hw26-apply--lg' href={JOIN_URL}>
-              Join now
+            <a className="hw26-apply hw26-apply--lg" href={JOIN_URL}>
+              Register now
             </a>
           </div>
         </div>
