@@ -3240,27 +3240,22 @@ button.hw26-apply {
    manipulator or the cobot's teal floor — is the machine's own marking rather
    than a stray cast.
 
-   The rest state came up. At 16% and three quarters grey a render was a dark
-   smear that the pointer then turned into a photograph — two states rather
-   than one object under two lights, and the resting one was the state the
-   cell is in almost all of the time. 30% and 40% grey is a picture that is
-   plainly there and plainly held back; what the pointer buys is the original
-   file, ungraded — see the focused rule below.
-
-   The figures are set against the darkest renders in the set, not the
-   brightest: the TBOT and the wheeled arm are near-black photographs and are
-   what decides whether the rest state reads as present, while the printers
-   are what decide whether it stays under the type. Both
-   hold at these numbers. `contrast` comes down with the grey for the same
-   reason — 1.25 was crushing an image that was already being hidden, and at
-   30% it was the thing making the darks unreadable. */
+   The rest state tracks the focused one at a fixed distance rather than
+   holding absolute figures of its own. When focus meant 36% opacity and a
+   trace of grade, rest sat at 30% and 40% grey — five sixths of the focused
+   opacity, 0.35 more greyscale, 0.05 more contrast. Focus now shows the
+   original file (opacity 1, no filter), and the rest state keeps that same
+   relative step down from it: 83% opacity, greyscale 0.35, contrast 1.05.
+   The picture is plainly there and plainly held back, and what the pointer —
+   or the scroll light-up — buys is the ungraded original; see the focused
+   rule below. */
 .hw26-rig-photo {
   position: absolute;
   inset: var(--rig-edge);
   clip-path: var(--rig-shape-inner);
   z-index: -1;
-  opacity: 0.3;
-  filter: grayscale(0.4) contrast(1.15);
+  opacity: 0.83;
+  filter: grayscale(0.35) contrast(1.05);
   transition:
     opacity 620ms var(--hw-ease),
     filter 620ms var(--hw-ease),
