@@ -903,15 +903,15 @@ const HARDWARE_PARTNERS: Partner[] = [
     // cut, and the colour is the identity here. The wordmark and tagline are
     // cut to white for the dark plate, like every other mark on this wall.
     //
-    // And the plate is theirs too: that diamond red is the identity, so the
-    // tile carries it in the wall's ember ink instead of borrowing the shared
-    // gold every other highlighted partner wears.
+    // The plate is the tier's, not theirs: Elmark are the partner at Diamond,
+    // the rank above the gold every other highlighted partner wears, so the
+    // tile takes the diamond ink. Whoever holds that tier wears this plate.
     name: "Elmark Automatyka",
     src: "/sponsors/elmark.svg",
     href: "https://www.elmark.com.pl",
     mark: "hw26-mark--elmark",
     highlight: true,
-    tile: "hw26-sponsor--elmark",
+    tile: "hw26-sponsor--diamond",
   },
   {
     name: "Lute",
