@@ -36,6 +36,17 @@
   /* Phosphor Mint. The bright signal — interactive, active, counted. */
   --hw-mint: #82f5c6;
   --hw-gold: #f0c75e;
+  /* Diamond. The ink of the top sponsorship tier — a step above the gold that
+     marks the strategic partners, so it belongs beside gold in this block
+     rather than under any one partner's name. The colour is a diamond's: an
+     icy blue, held at the lightness mint and gold already sit at so the three
+     read as one family of signals rather than as three unrelated accents.
+     Not further toward cyan — by h190 it drifts teal and reads as a washed-out
+     cousin of --hw-mint — and not further toward indigo, where it goes slate
+     and stops reading as a gem at all. Deliberately absent from the
+     light-theme block below: the sponsor tiles hold a dark plate in both
+     themes, so this ink is the same value in both. */
+  --hw-diamond: #79c4f2;
   /* Text set on top of a solid mint fill (the apply button). */
   --hw-on-mint: #04120c;
   /* Pine. The deep green, and the page's second signal: it marks the
@@ -5961,6 +5972,33 @@ html:not(.hw26-cursor-dom) .hw26-faq-trigger {
     inset 0 0 3rem color-mix(in srgb, var(--hw-gold) 12%, transparent);
 }
 
+/* The Diamond tier's plate. It is the wall's top billing, above the gold the
+   strategic partners wear, so the tile takes the diamond ink instead of the
+   shared gold. The tile keeps `hw26-partner-highlight` — that class is also
+   what puts it first on the wall — so this is an override of the gold
+   treatment, not a replacement for it. Hence three classes: the selector has
+   to outrank both `.hw26-sponsor.hw26-partner-highlight` above and
+   `.hw26-sponsor:focus-visible` below, each of which sets a background of its
+   own.
+
+   The percentages are the gold construction at the strength the tier asks for.
+   A plate ranked above gold cannot read quieter than a gold tile, and 24% is
+   where this blue matches a gold tile's presence on the near-black plate. */
+.hw26-sponsor.hw26-partner-highlight.hw26-sponsor--diamond {
+  background: color-mix(in srgb, var(--hw-diamond) 24%, var(--hw-steel));
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, var(--hw-diamond) 72%, transparent),
+    inset 0 0 2.5rem color-mix(in srgb, var(--hw-diamond) 10%, transparent);
+}
+
+.hw26-sponsor.hw26-partner-highlight.hw26-sponsor--diamond:hover,
+.hw26-sponsor.hw26-partner-highlight.hw26-sponsor--diamond:focus-visible {
+  background: color-mix(in srgb, var(--hw-diamond) 30%, var(--hw-steel-hi));
+  box-shadow:
+    inset 0 0 0 1px var(--hw-diamond),
+    inset 0 0 3rem color-mix(in srgb, var(--hw-diamond) 14%, transparent);
+}
+
 /* Inset rather than offset: these cells are separated by a 1px gap showing
    the container through, so an outline drawn outside the border box would sit
    under the neighbouring tile. Keyboard focus lands on the whole tile, which
@@ -6223,6 +6261,18 @@ html[data-theme='light'] .hw26-sponsor:hover {
   background: #171a18;
 }
 
+/* The wall keeps its dark plate in the light theme, so the Diamond tier's tile
+   keeps its ink there too — the two-class rule above would otherwise flatten it
+   back to plain black. The literal hexes are the ones the light-theme wall
+   already uses, mixed with the same diamond ink at the same strengths. */
+html[data-theme='light'] .hw26-sponsor.hw26-sponsor--diamond {
+  background: color-mix(in srgb, var(--hw-diamond) 24%, #0f1110);
+}
+
+html[data-theme='light'] .hw26-sponsor.hw26-sponsor--diamond:hover {
+  background: color-mix(in srgb, var(--hw-diamond) 30%, #171a18);
+}
+
 /* The tile for a partner who gave no address. It is a div, so it never takes
    focus and there is nothing to press — but the hover state is written on the
    class both wear, and a plate that lights up under the pointer and then does
@@ -6258,6 +6308,18 @@ html[data-theme='light'] .hw26-sponsor--static:hover {
    preserving the artwork's aspect ratio. */
 .hw26-sponsor img.hw26-mark--lute {
   height: clamp(46px, 4vw, 56px);
+}
+
+/* Elmark's supplied lockup is the widest mark on the wall at roughly 3.5:1,
+   which is the one shape the base `height` handle gets wrong: clamped to
+   40px it asks for about 138px of width, and `max-width: 100%` then cuts it
+   back silently at the wide breakpoint, so the mark ends up smaller than the
+   rule says. Drive it by width instead and let the height follow. The
+   112–130px box is the one the old lockup in this slot already proved fits
+   the nine-track wall. */
+.hw26-sponsor img.hw26-mark--elmark {
+  width: clamp(112px, 9.4vw, 130px);
+  height: auto;
 }
 
 /* SPRTK is a portrait monogram rather than a horizontal wordmark. It needs
@@ -6356,30 +6418,6 @@ html[data-theme='light'] .hw26-sponsor--static:hover {
   height: clamp(30px, 3.2vw, 42px);
 }
 
-/* Universal Robots: a square symbol-only file, so it takes the lockup
-   construction — icon over the name set live. The word is two words and
-   sixteen characters against Machinekind's eleven, so it borrows that
-   lockup's fixed tracking rather than GHOST's measured match (a track that
-   set "UNIVERSAL ROBOTS" to a 48px icon's width would crush it), and the
-   lockup box is widened past the icon so the word has its measure. The mark
-   itself is the wall's one full-colour cut — the partner's own blue, kept —
-   and it is a filled swirl rather than line art, so the icon sits between
-   GHOST's 44 and MCHTR's 56. */
-.hw26-sponsor-lockup--ur {
-  --hw26-lockup-icon: clamp(44px, 3.7vw, 52px);
-  --hw26-lockup-track: 0.08em;
-  width: clamp(112px, 9.4vw, 130px);
-}
-
-.hw26-sponsor img.hw26-mark--ur {
-  width: var(--hw26-lockup-icon);
-  height: auto;
-}
-
-.hw26-sponsor-lockup--ur .hw26-sponsor-wordmark {
-  font-size: clamp(7px, 0.62vw, 9px);
-}
-
 .hw26-sponsor-lockup--machinekind .hw26-sponsor-wordmark {
   font-size: clamp(8px, 0.7vw, 10px);
 }
@@ -6415,15 +6453,16 @@ html[data-theme='light'] .hw26-sponsor--static:hover {
   opacity: 0.58;
 }
 
-/* Universal Robots' mark is square, so it takes GHOST's box rather than the
-   wide marks' — but none of GHOST's dimming: that filter exists because a
-   red plate at full saturation shouts over a photograph, and this mark's
-   muted blue sits quietly over the cell's near-black plate. The colour is
-   kept deliberately — they are the main hardware partner, and the blue is
-   the credit. */
-.hw26-rig-credit[src="/sponsors/universal-robots.svg"] {
-  max-width: clamp(30px, 3vw, 42px);
-  max-height: clamp(30px, 3vw, 42px);
+/* Elmark's mark is a wide three-part lockup rather than a square, so it takes
+   the wide marks' box rather than GHOST's — a touch more width than epikor,
+   skymav and machinekind get, because this one carries a tagline on a second
+   line and needs the extra measure to keep "Automatyka" legible. It is the
+   white cut, so the corner keeps the cell's two inks and needs none of
+   GHOST's dimming: that filter exists because a saturated plate shouts over a
+   photograph, and there is no saturation left in this one to shout with. */
+.hw26-rig-credit[src="/sponsors/elmark-white.svg"] {
+  max-width: clamp(62px, 5.4vw, 78px);
+  max-height: clamp(24px, 2.2vw, 30px);
   opacity: 0.9;
   object-fit: contain;
 }

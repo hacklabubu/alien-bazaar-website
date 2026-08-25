@@ -282,15 +282,24 @@ const RIG_GROUPS: { label: string; items: Rig[] }[] = [
   {
     label: "Robot arms",
     items: [
-      // First in the group: Universal Robots is the main hardware partner,
-      // and their machine leads the arms.
+      // First in the group: Elmark Automatyka is the main hardware partner,
+      // and the arm they supply leads the group. The machine is Universal
+      // Robots' — Elmark distribute it and are the ones putting it on the
+      // floor, so the cell names the manufacturer and the credit names the
+      // partner.
       {
-        name: "Cobot UR5 e-Series",
+        name: "Universal Robots UR5e",
         units: "3x",
         photo: "/hardware/cobot-ur5e.webp",
+        // The white cut of Elmark's lockup rather than the red-and-white one
+        // the wall carries, on the argument the "Build your own" drone cell
+        // makes two groups above and the GHOST credit makes in the CSS: a
+        // saturated red mark shouts over a photograph. On the wall the colour
+        // is part of the identity; in the corner of a photographed cell it is
+        // one ink too many.
         credit: {
-          src: "/sponsors/universal-robots.svg",
-          label: "In partnership with Universal Robots",
+          src: "/sponsors/elmark-white.svg",
+          label: "In partnership with Elmark Automatyka",
         },
       },
       {
@@ -758,6 +767,8 @@ type Partner = {
   lockup?: string;
   wordmark?: string;
   highlight?: boolean;
+  /** An extra class on the tile itself, for a partner whose plate is not the wall's default. */
+  tile?: string;
   /** Still a partner; their agreement just does not let us show the mark yet. */
   hidden?: boolean;
 };
@@ -885,18 +896,22 @@ const HARDWARE_PARTNERS: Partner[] = [
     // the highlighted partners ahead of the shuffled rest in array order, so
     // first in this array is first on the wall on every visit.
     //
-    // Their mobile header mark, in their own blue — the one full-colour cut
-    // on this wall, kept because the colour is the identity here. The file is
-    // the symbol alone with no name in it, so the name is set live beneath it
-    // — the treatment GHOST established and Machinekind's long-word variant
-    // of it.
-    name: "Universal Robots",
-    src: "/sponsors/universal-robots.svg",
-    href: "https://www.universal-robots.com/",
-    mark: "hw26-mark--ur",
-    lockup: "hw26-sponsor-lockup--ur",
-    wordmark: "UNIVERSAL ROBOTS",
+    // Their supplied file is a complete horizontal lockup — the red diamond
+    // symbol, "ELMARK" and "Automatyka" all in the artwork — so this is an
+    // ordinary wide mark like Lute's, not a lockup construction with the name
+    // set live. The symbol keeps its red: it is the wall's one full-colour
+    // cut, and the colour is the identity here. The wordmark and tagline are
+    // cut to white for the dark plate, like every other mark on this wall.
+    //
+    // The plate is the tier's, not theirs: Elmark are the partner at Diamond,
+    // the rank above the gold every other highlighted partner wears, so the
+    // tile takes the diamond ink. Whoever holds that tier wears this plate.
+    name: "Elmark Automatyka",
+    src: "/sponsors/elmark.svg",
+    href: "https://www.elmark.com.pl",
+    mark: "hw26-mark--elmark",
     highlight: true,
+    tile: "hw26-sponsor--diamond",
   },
   {
     name: "Lute",
@@ -2146,7 +2161,7 @@ function SponsorTile({ partner }: { partner: Partner }) {
   if (!partner.href) {
     return (
       <div
-        className={`hw26-sponsor hw26-sponsor--static${partner.highlight ? " hw26-partner-highlight" : ""}`}
+        className={`hw26-sponsor hw26-sponsor--static${partner.highlight ? " hw26-partner-highlight" : ""}${partner.tile ? ` ${partner.tile}` : ""}`}
         title={partner.name}
       >
         {inside}
@@ -2157,7 +2172,7 @@ function SponsorTile({ partner }: { partner: Partner }) {
   return (
     <a
       aria-label={partner.name}
-      className={`hw26-sponsor${partner.highlight ? " hw26-partner-highlight" : ""}`}
+      className={`hw26-sponsor${partner.highlight ? " hw26-partner-highlight" : ""}${partner.tile ? ` ${partner.tile}` : ""}`}
       href={partner.href}
       rel="noopener noreferrer"
       target="_blank"
