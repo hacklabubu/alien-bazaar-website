@@ -3240,13 +3240,12 @@ button.hw26-apply {
    manipulator or the cobot's teal floor — is the machine's own marking rather
    than a stray cast.
 
-   The rest state came up, and the gap to hover came down with it. At 16% and
-   three quarters grey a render was a dark smear that the pointer then turned
-   into a photograph — two states rather than one object under two lights, and
-   the resting one was the state the cell is in almost all of the time. 30%
-   and 40% grey is a picture that is plainly there and plainly held back;
-   hover is unchanged at 36% and effectively full colour, so what the pointer
-   buys now is the last step rather than the whole distance.
+   The rest state came up. At 16% and three quarters grey a render was a dark
+   smear that the pointer then turned into a photograph — two states rather
+   than one object under two lights, and the resting one was the state the
+   cell is in almost all of the time. 30% and 40% grey is a picture that is
+   plainly there and plainly held back; what the pointer buys is the original
+   file, ungraded — see the focused rule below.
 
    The figures are set against the darkest renders in the set, not the
    brightest: the TBOT and the wheeled arm are near-black photographs and are
@@ -3254,8 +3253,7 @@ button.hw26-apply {
    are what decide whether it stays under the type. Both
    hold at these numbers. `contrast` comes down with the grey for the same
    reason — 1.25 was crushing an image that was already being hidden, and at
-   30% it was the thing making the darks unreadable. 1.15 is a step over the
-   hover's 1.1 rather than a different treatment. */
+   30% it was the thing making the darks unreadable. */
 .hw26-rig-photo {
   position: absolute;
   inset: var(--rig-edge);
@@ -3269,9 +3267,14 @@ button.hw26-apply {
     transform 900ms var(--hw-ease);
 }
 
+/* Focused, the render is simply the file: full opacity, no filter, nothing
+   between the reader and the picture. The rest state above is the whole of
+   the "held back" treatment — what the pointer (or the scroll light-up) buys
+   is the original image, not a brighter copy of the treated one. Only the
+   zoom remains, because it is motion rather than grading. */
 .hw26-rig:is(:hover, .hw26-rig--active) .hw26-rig-photo {
-  opacity: 0.36;
-  filter: grayscale(0.05) contrast(1.1);
+  opacity: 1;
+  filter: none;
   transform: scale(1.05);
 }
 
@@ -3307,8 +3310,15 @@ button.hw26-apply {
   filter: grayscale(0.75) contrast(1.25) blur(9px);
 }
 
+/* The one card the focused-equals-original rule must not reach: this plate is
+   deliberately not a picture of anything, and at full opacity the bright
+   blurred shelf floods the panel white and takes the TBA label with it. Focus
+   brings its colour back and nothing else — the blur holds, and the opacity
+   stays at the subdued figure the focused state had before the originals came
+   up. */
 .hw26-rig--blur:is(:hover, .hw26-rig--active) .hw26-rig-photo {
-  filter: grayscale(0.05) contrast(1.1) blur(9px);
+  opacity: 0.36;
+  filter: blur(9px);
 }
 
 .hw26-rig--blur .hw26-rig-photo img {
@@ -7244,34 +7254,23 @@ html[data-theme='light'] .hw26-sponsor--static:hover {
      the middle of the screen is in, which on a phone means every few hundred
      pixels of scroll starts a 620ms transition on up to seven cells at once.
      On a desktop that transition moves three properties; two of them are the
-     wrong ones here. A `filter` change (the grey lifting) re-rasters the
+     wrong ones here. A `filter` change (the grade lifting) re-rasters the
      whole image every frame of the fade, and the `scale(1.05)` re-rasters a
      filtered, clipped image at a new size — per cell, per frame, for most of
-     a second, while the page is also scrolling. Only `opacity` composites for
-     free, so on a phone opacity is what the light-up keeps: the plates still
-     come up, the counts still go mint (a color transition on text costs
-     nothing), and nothing re-rasters. The filter and transform are pinned to
-     their resting figures rather than dropped, so the plates keep the exact
-     resting treatment they have everywhere else. */
+     a second, while the page is also scrolling. Only `opacity` composites
+     for free, so opacity is the only property the phone *animates*. The
+     focused state itself is not taken away: a lit plate still shows the
+     original, ungraded file, exactly as it does under a pointer — the
+     filter's trip to `none` simply snaps, off the transition list, which is
+     one re-raster per group crossing instead of thirty-seven per second. The
+     zoom is the one piece that goes entirely, because there is no cheap way
+     to rescale a clipped image. */
   .hw26-rig-photo {
     transition: opacity 620ms var(--hw-ease);
   }
 
   .hw26-rig:is(:hover, .hw26-rig--active) .hw26-rig-photo {
-    filter: grayscale(0.4) contrast(1.15);
     transform: none;
-  }
-
-  /* The two variants whose resting filter is not the shared one, restated so
-     the pin above does not overwrite them: the blurred Components plate must
-     keep its blur (a lifted blur is the legible shelf the cell exists not to
-     show), and a person tile carries no filter at all. */
-  .hw26-rig--blur:is(:hover, .hw26-rig--active) .hw26-rig-photo {
-    filter: grayscale(0.75) contrast(1.25) blur(9px);
-  }
-
-  .hw26-rig--person:is(:hover, .hw26-rig--active) .hw26-rig-photo {
-    filter: none;
   }
 
   /* ---- 6. Tbot's bloom comes down to one pass ----
