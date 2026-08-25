@@ -282,15 +282,24 @@ const RIG_GROUPS: { label: string; items: Rig[] }[] = [
   {
     label: "Robot arms",
     items: [
-      // First in the group: Universal Robots is the main hardware partner,
-      // and their machine leads the arms.
+      // First in the group: Elmark Automatyka is the main hardware partner,
+      // and the arm they supply leads the group. The machine is Universal
+      // Robots' — Elmark distribute it and are the ones putting it on the
+      // floor, so the cell names the manufacturer and the credit names the
+      // partner.
       {
-        name: "Cobot UR5 e-Series",
+        name: "Universal Robots UR5e",
         units: "3x",
         photo: "/hardware/cobot-ur5e.webp",
+        // The white cut of Elmark's lockup rather than the red-and-white one
+        // the wall carries, on the argument the "Build your own" drone cell
+        // makes two groups above and the GHOST credit makes in the CSS: a
+        // saturated red mark shouts over a photograph. On the wall the colour
+        // is part of the identity; in the corner of a photographed cell it is
+        // one ink too many.
         credit: {
-          src: "/sponsors/universal-robots.svg",
-          label: "In partnership with Universal Robots",
+          src: "/sponsors/elmark-white.svg",
+          label: "In partnership with Elmark Automatyka",
         },
       },
       {
@@ -885,17 +894,16 @@ const HARDWARE_PARTNERS: Partner[] = [
     // the highlighted partners ahead of the shuffled rest in array order, so
     // first in this array is first on the wall on every visit.
     //
-    // Their mobile header mark, in their own blue — the one full-colour cut
-    // on this wall, kept because the colour is the identity here. The file is
-    // the symbol alone with no name in it, so the name is set live beneath it
-    // — the treatment GHOST established and Machinekind's long-word variant
-    // of it.
-    name: "Universal Robots",
-    src: "/sponsors/universal-robots.svg",
-    href: "https://www.universal-robots.com/",
-    mark: "hw26-mark--ur",
-    lockup: "hw26-sponsor-lockup--ur",
-    wordmark: "UNIVERSAL ROBOTS",
+    // Their supplied file is a complete horizontal lockup — the red diamond
+    // symbol, "ELMARK" and "Automatyka" all in the artwork — so this is an
+    // ordinary wide mark like Lute's, not a lockup construction with the name
+    // set live. The symbol keeps its red: it is the wall's one full-colour
+    // cut, and the colour is the identity here. The wordmark and tagline are
+    // cut to white for the dark plate, like every other mark on this wall.
+    name: "Elmark Automatyka",
+    src: "/sponsors/elmark.svg",
+    href: "https://www.elmark.com.pl",
+    mark: "hw26-mark--elmark",
     highlight: true,
   },
   {
