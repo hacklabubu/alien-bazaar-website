@@ -7220,4 +7220,71 @@ html[data-theme='light'] .hw26-sponsor--static:hover {
      concession — it takes nothing away, on any device, because it only ever
      fires with the hero already off screen. See `.hw26-hero--idle` beside
      `@keyframes hw26-crt-flicker`. */
+
+  /* ---- 4. the graph paper stops being repainted every scroll frame ----
+
+     `background-attachment: fixed` pins the grid's origin to the viewport
+     while the mask that fades it stays pinned to the element — so the two
+     move against each other on every scrolled pixel, and the browser's only
+     correct answer is to repaint the masked double gradient across the whole
+     visible band every frame. On the inventory that band is the full width of
+     a section thousands of pixels tall, and on a phone GPU it is most of the
+     frame budget gone before a single cell is drawn. `scroll` paints the
+     layer once and lets the compositor move it. What `fixed` bought — grid
+     squares that stay in register across section boundaries — is a
+     desktop-scale nicety no reader can check on a screen this small, with the
+     sections a full viewport of padding apart. */
+  .hw26-grid {
+    background-attachment: scroll;
+  }
+
+  /* ---- 5. the inventory's light-up stops re-rastering its plates ----
+
+     `useRigFocus` hangs `.hw26-rig--active` on every cell of whichever group
+     the middle of the screen is in, which on a phone means every few hundred
+     pixels of scroll starts a 620ms transition on up to seven cells at once.
+     On a desktop that transition moves three properties; two of them are the
+     wrong ones here. A `filter` change (the grey lifting) re-rasters the
+     whole image every frame of the fade, and the `scale(1.05)` re-rasters a
+     filtered, clipped image at a new size — per cell, per frame, for most of
+     a second, while the page is also scrolling. Only `opacity` composites for
+     free, so on a phone opacity is what the light-up keeps: the plates still
+     come up, the counts still go mint (a color transition on text costs
+     nothing), and nothing re-rasters. The filter and transform are pinned to
+     their resting figures rather than dropped, so the plates keep the exact
+     resting treatment they have everywhere else. */
+  .hw26-rig-photo {
+    transition: opacity 620ms var(--hw-ease);
+  }
+
+  .hw26-rig:is(:hover, .hw26-rig--active) .hw26-rig-photo {
+    filter: grayscale(0.4) contrast(1.15);
+    transform: none;
+  }
+
+  /* The two variants whose resting filter is not the shared one, restated so
+     the pin above does not overwrite them: the blurred Components plate must
+     keep its blur (a lifted blur is the legible shelf the cell exists not to
+     show), and a person tile carries no filter at all. */
+  .hw26-rig--blur:is(:hover, .hw26-rig--active) .hw26-rig-photo {
+    filter: grayscale(0.75) contrast(1.25) blur(9px);
+  }
+
+  .hw26-rig--person:is(:hover, .hw26-rig--active) .hw26-rig-photo {
+    filter: none;
+  }
+
+  /* ---- 6. Tbot's bloom comes down to one pass ----
+
+     Same surgery as the hero's filter chain in item 2, same reason: each
+     `drop-shadow()` is a full offscreen pass over the element, and this shell
+     runs three of them — over a cell whose photo now fades when its group
+     lights, which re-runs the chain per frame of that fade. One mid-radius
+     pass keeps the mint halo; the tight core and the wide room-glow it
+     bracketed are the two ends a phone screen cannot tell apart. */
+  .hw26-rig-shell--accent {
+    filter: drop-shadow(
+      0 0 14px color-mix(in srgb, var(--hw-mint) 48%, transparent)
+    );
+  }
 }
