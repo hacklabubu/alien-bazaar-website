@@ -2432,7 +2432,7 @@ button.hw26-apply {
    left-aligned block whose own measure is centred — and the portrait stops
    being a block in the flow and becomes the section's ground: absolutely
    positioned across the whole section (the negative insets buy back the
-   section's padding), at a fifth of full opacity, behind the copy. Desktop is
+   section's padding), at a tenth of full opacity, behind the copy. Desktop is
    untouched;
    this block comes after every other about rule so it wins the stacked
    widths on source order. */
@@ -2460,16 +2460,23 @@ button.hw26-apply {
   /* The wash lives on the img, not on the wrapper: the wrapper is a
      `.hw26-reveal`, and the reveal's shown-state `opacity: 1` outranks any
      figure written on the same element. The img carries no reveal class, so
-     the fifth-opacity ground survives the reveal firing. */
+     the tenth-opacity ground survives the reveal firing. */
   .hw26-about-visual img {
     object-fit: cover;
     object-position: center;
-    opacity: 0.2;
+    opacity: 0.1;
     /* The desktop edge fade comes off: as a full-bleed ground the image's
-       edges are the section's own, and the fifth-opacity wash is the whole
+       edges are the section's own, and the tenth-opacity wash is the whole
        of the treatment. */
     -webkit-mask-image: none;
     mask-image: none;
+  }
+
+  /* The mint glow behind the portrait, dimmed to the same tenth: at the
+     desktop figure it is the brightest thing on a ground whose image has
+     just been washed out, and reads as a stain rather than a backlight. */
+  .hw26-about-visual::after {
+    opacity: 0.1;
   }
 }
 
