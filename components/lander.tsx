@@ -767,6 +767,8 @@ type Partner = {
   lockup?: string;
   wordmark?: string;
   highlight?: boolean;
+  /** An extra class on the tile itself, for a partner whose plate is not the wall's default. */
+  tile?: string;
   /** Still a partner; their agreement just does not let us show the mark yet. */
   hidden?: boolean;
 };
@@ -900,11 +902,16 @@ const HARDWARE_PARTNERS: Partner[] = [
     // set live. The symbol keeps its red: it is the wall's one full-colour
     // cut, and the colour is the identity here. The wordmark and tagline are
     // cut to white for the dark plate, like every other mark on this wall.
+    //
+    // And the plate is theirs too: that diamond red is the identity, so the
+    // tile carries it in the wall's ember ink instead of borrowing the shared
+    // gold every other highlighted partner wears.
     name: "Elmark Automatyka",
     src: "/sponsors/elmark.svg",
     href: "https://www.elmark.com.pl",
     mark: "hw26-mark--elmark",
     highlight: true,
+    tile: "hw26-sponsor--elmark",
   },
   {
     name: "Lute",
@@ -2154,7 +2161,7 @@ function SponsorTile({ partner }: { partner: Partner }) {
   if (!partner.href) {
     return (
       <div
-        className={`hw26-sponsor hw26-sponsor--static${partner.highlight ? " hw26-partner-highlight" : ""}`}
+        className={`hw26-sponsor hw26-sponsor--static${partner.highlight ? " hw26-partner-highlight" : ""}${partner.tile ? ` ${partner.tile}` : ""}`}
         title={partner.name}
       >
         {inside}
@@ -2165,7 +2172,7 @@ function SponsorTile({ partner }: { partner: Partner }) {
   return (
     <a
       aria-label={partner.name}
-      className={`hw26-sponsor${partner.highlight ? " hw26-partner-highlight" : ""}`}
+      className={`hw26-sponsor${partner.highlight ? " hw26-partner-highlight" : ""}${partner.tile ? ` ${partner.tile}` : ""}`}
       href={partner.href}
       rel="noopener noreferrer"
       target="_blank"

@@ -36,6 +36,14 @@
   /* Phosphor Mint. The bright signal — interactive, active, counted. */
   --hw-mint: #82f5c6;
   --hw-gold: #f0c75e;
+  /* Ember. The wall's one red, taken from the Elmark diamond and lifted out
+     of the raw #ea1d28 — at full strength that red goes maroon on the plate
+     and takes the mark down with it. Same hue, lightness raised to where mint
+     and gold already sit, which is what lets it read as a third signal rather
+     than a stain. Deliberately absent from the light-theme block below: the
+     sponsor tiles hold a dark plate in both themes, so this ink is the same
+     value in both. */
+  --hw-ember: #f2554a;
   /* Text set on top of a solid mint fill (the apply button). */
   --hw-on-mint: #04120c;
   /* Pine. The deep green, and the page's second signal: it marks the
@@ -5961,6 +5969,32 @@ html:not(.hw26-cursor-dom) .hw26-faq-trigger {
     inset 0 0 3rem color-mix(in srgb, var(--hw-gold) 12%, transparent);
 }
 
+/* Elmark wears its own ink rather than the wall's shared gold: the red diamond
+   is the identity, and the plate under it now says so. The tile keeps
+   `hw26-partner-highlight` — that class is also what puts it first on the wall
+   — so this is an override of the gold treatment, not a replacement for it.
+   Hence three classes: the selector has to outrank both
+   `.hw26-sponsor.hw26-partner-highlight` above and `.hw26-sponsor:focus-visible`
+   below, each of which sets a background of its own.
+
+   The percentages are the gold construction at the strength this ink needs.
+   Gold on near-black reads loud at 7%; this red needs about two and a half
+   times that before the tile looks coloured at all. */
+.hw26-sponsor.hw26-partner-highlight.hw26-sponsor--elmark {
+  background: color-mix(in srgb, var(--hw-ember) 18%, var(--hw-steel));
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, var(--hw-ember) 72%, transparent),
+    inset 0 0 2.5rem color-mix(in srgb, var(--hw-ember) 10%, transparent);
+}
+
+.hw26-sponsor.hw26-partner-highlight.hw26-sponsor--elmark:hover,
+.hw26-sponsor.hw26-partner-highlight.hw26-sponsor--elmark:focus-visible {
+  background: color-mix(in srgb, var(--hw-ember) 24%, var(--hw-steel-hi));
+  box-shadow:
+    inset 0 0 0 1px var(--hw-ember),
+    inset 0 0 3rem color-mix(in srgb, var(--hw-ember) 14%, transparent);
+}
+
 /* Inset rather than offset: these cells are separated by a 1px gap showing
    the container through, so an outline drawn outside the border box would sit
    under the neighbouring tile. Keyboard focus lands on the whole tile, which
@@ -6221,6 +6255,18 @@ html[data-theme='light'] .hw26-sponsor {
 
 html[data-theme='light'] .hw26-sponsor:hover {
   background: #171a18;
+}
+
+/* The wall keeps its dark plate in the light theme, so the Elmark tile keeps
+   its ink there too — the two-class rule above would otherwise flatten it back
+   to plain black. The literal hexes are the ones the light-theme wall already
+   uses, mixed with the same ember at the same strengths. */
+html[data-theme='light'] .hw26-sponsor.hw26-sponsor--elmark {
+  background: color-mix(in srgb, var(--hw-ember) 18%, #0f1110);
+}
+
+html[data-theme='light'] .hw26-sponsor.hw26-sponsor--elmark:hover {
+  background: color-mix(in srgb, var(--hw-ember) 24%, #171a18);
 }
 
 /* The tile for a partner who gave no address. It is a div, so it never takes
