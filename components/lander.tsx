@@ -245,7 +245,7 @@ const RIG_GROUPS: { label: string; items: Rig[] }[] = [
       {
         name: "Tbot",
         units: "1x",
-        photo: "/hardware/tbot.jpg",
+        photo: "/hardware/tbot.webp",
         dropShadow: true,
         credit: {
           src: "/sponsors/epikor.svg",
