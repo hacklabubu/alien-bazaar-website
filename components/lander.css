@@ -4334,6 +4334,18 @@ button.hw26-apply {
   filter: grayscale(0.15) brightness(1.06);
 }
 
+/* The M5Stack file is authored in its on-light colours — a charcoal wordmark
+   beside the blue icon — so on the near-black prize card it all but vanishes.
+   Knocking it out to flat white is the same move the sponsor wall already makes
+   with the same file, for the same reason. Scoped to this one mark because the
+   TNKR file is white to begin with and inverting it would turn it black. The
+   0.76 above still stands: recessed to the corner is the point, and at that
+   opacity the knocked-out mark carries exactly the weight of the TNKR credit on
+   the card beside it. */
+.hw26-prize-credit.hw26-mark--m5stack {
+  filter: brightness(0) invert(1);
+}
+
 .hw26-prize--1 .hw26-prize-index {
   color: var(--hw-mint);
 }

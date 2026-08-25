@@ -535,7 +535,11 @@ const PRIZES = [
     name: "Open Duck Mini",
     image: "/prizes/open-duck-mini-studio.webp",
     note: "For the winning team",
-    partner: { name: "TNKR", src: "/sponsors/tnkr.svg" },
+    partner: {
+      name: "TNKR",
+      src: "/sponsors/tnkr.svg",
+      mark: "hw26-mark--tnkr",
+    },
   },
   {
     rank: 2,
@@ -543,7 +547,11 @@ const PRIZES = [
     name: "StackChan",
     image: "/prizes/stackchan-studio.webp",
     note: "One for every team member",
-    partner: { name: "M5Stack", src: "/sponsors/m5stack.svg" },
+    partner: {
+      name: "M5Stack",
+      src: "/sponsors/m5stack.svg",
+      mark: "hw26-mark--m5stack",
+    },
   },
   {
     rank: 3,
@@ -3901,7 +3909,7 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
                   {prize.partner ? (
                     <img
                       alt={`${prize.partner.name} prize partner`}
-                      className="hw26-prize-credit"
+                      className={`hw26-prize-credit ${prize.partner.mark}`}
                       src={prize.partner.src}
                     />
                   ) : null}
