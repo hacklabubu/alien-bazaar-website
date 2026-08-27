@@ -55,3 +55,16 @@ const APPLY_BASE =
   `https://hacklab.so/hackathons/${EVENT.slug}`
 
 export const JOIN_URL = APPLY_BASE
+
+/**
+ * Where this site actually lives — the origin every canonical URL, the OG
+ * image URL, and the sitemap are resolved against.
+ *
+ * The apex 308s to `www`, so `www` is the canonical host and the one written
+ * here: pointing canonicals at a redirecting origin makes every page claim a
+ * URL that is not the one being served. A preview deployment overrides it
+ * through NEXT_PUBLIC_SITE_URL so its canonicals point at itself rather than
+ * at production.
+ */
+export const SITE_URL =
+  process.env.NEXT_PUBLIC_SITE_URL ?? 'https://www.alienbazaar.com'

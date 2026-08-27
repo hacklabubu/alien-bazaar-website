@@ -7,5 +7,6 @@ next-env.d.ts
 !.env.example
 .DS_Store
 .vercel
+.gstack/
 # pnpm is this project's package manager — pnpm-lock.yaml is the only lockfile.
 package-lock.json

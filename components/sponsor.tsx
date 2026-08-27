@@ -4,7 +4,7 @@ import {
   GeistPixelCircle,
   GeistPixelGrid,
   GeistPixelSquare,
-} from 'geist/font/pixel'
+} from '../app/fonts/pixel'
 import Link from 'next/link'
 import { useEffect, useRef, useState } from 'react'
 

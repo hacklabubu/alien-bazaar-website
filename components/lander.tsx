@@ -5,7 +5,7 @@ import {
   GeistPixelGrid,
   GeistPixelLine,
   GeistPixelSquare,
-} from "geist/font/pixel";
+} from '../app/fonts/pixel';
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -2137,10 +2137,19 @@ function useTimelinePin() {
 function SponsorTile({ partner }: { partner: Partner }) {
   const named = Boolean(partner.href) && Boolean(partner.wordmark);
 
+  /* `loading="lazy"` on every mark on this page, and it is not only about
+     deferring the fetch. React emits a `<link rel="preload" as="image">` for
+     each `<img>` it renders on the server unless the tag says it is lazy, so
+     without this the document head arrived carrying preloads for all thirty-
+     odd sponsor logos — every one of them below the fold, and every one
+     competing with the hero plates for the connection while the LCP was still
+     outstanding. The hero itself is `next/image` with `priority`, so it keeps
+     its preload and now has the pipe to itself. */
   const logo = (
     <img
       alt={named ? "" : partner.name}
       className={`hw26-sponsor-logo${partner.mark ? ` ${partner.mark}` : ""}`}
+      loading="lazy"
       src={partner.src}
     />
   );
@@ -2191,7 +2200,12 @@ function LeadPartnerTile({ partner }: { partner: Partner }) {
       rel="noopener noreferrer"
       target="_blank"
     >
-      <img alt={partner.name} className={partner.mark} src={partner.src} />
+      <img
+        alt={partner.name}
+        className={partner.mark}
+        loading="lazy"
+        src={partner.src}
+      />
     </a>
   );
 }
@@ -2306,6 +2320,7 @@ export function PartnerDirectory() {
               <img
                 alt={organizer.name}
                 className={`hw26-org-logo${organizer.mark ? ` ${organizer.mark}` : ""}`}
+                loading="lazy"
                 src={organizer.src}
               />
             </a>
@@ -2563,6 +2578,7 @@ function RigCell({ item, order }: { item: Rig; order: number }) {
           <img
             alt={item.credit.label}
             className="hw26-rig-credit"
+            loading="lazy"
             src={item.credit.src}
           />
         ) : null}
@@ -2883,8 +2899,13 @@ export function Endplate({ hackathon }: { hackathon: HardwareEvent }) {
         >
           <span>Support</span> {SUPPORT_EMAIL}
         </a>
+        {/* No `aria-label`: the visible content — "Instagram @alienbazaar_" —
+            already names the link, and the label that used to be here read
+            "Alien Bazaar on Instagram", which does not contain the handle a
+            speech-input user would actually say. Naming it by its own visible
+            text is WCAG 2.5.3, and it is what the support link beside it
+            already does. */}
         <a
-          aria-label="Alien Bazaar on Instagram"
           className="hw26-social-link"
           href="https://www.instagram.com/alienbazaar_"
           rel="noopener noreferrer"
@@ -3377,7 +3398,17 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
 
           <HardwareIntro /> */}
 
-      {/* ---------------- HERO ---------------- */}
+      {/* Everything from the hero to the closer is the page's content, and it
+          says so: a `main` landmark is how a screen reader skips the menu and
+          how an agent reading the served HTML tells the poster apart from its
+          chrome. It wraps the hero rather than starting after it, because the
+          hero holds the h1 — the document's one heading — and a `main` that
+          does not contain the page's title is describing a different page.
+          The endplate stays outside it, as `contentinfo`. Nothing in the
+          stylesheet selects a direct child of `.hw26`, so the extra element
+          changes no rule. */}
+      <main>
+        {/* ---------------- HERO ---------------- */}
       <header className="hw26-hero" id="home" ref={hero}>
         {/* The page's only navigation, in the corner of the art rather than
             in a bar above it: this is a two-page site and a chrome bar for
@@ -3414,7 +3445,18 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
             every visit, and the composite is wrong rather than merely
             unfinished if the cutout arrives late. Quality 90 rather than the
             default 75 because the room falls off to black and 75 bands that
-            gradient visibly. They stay PNG at source — the cutout needs its
+            gradient visibly.
+
+            `fetchPriority="high"` is on top of `priority`, because the two
+            are not the same promise: `priority` preloads the plate, and the
+            hint is what tells the browser to spend the connection on it
+            first. Lighthouse reads the LCP request as un-hinted without it.
+            It goes on both plates and not just the background — the
+            background is the measured LCP element, but hinting it alone
+            would order the pair and pull the two halves of one picture
+            apart, which is the thing the paragraph above is guarding against.
+            The mark below keeps plain `priority`: it is 274px wide and does
+            not need to win a race. They stay PNG at source — the cutout needs its
             alpha, and `next/image` serves AVIF and WebP derivatives anyway,
             so the lossless source costs the visitor nothing.
 
@@ -3444,6 +3486,7 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
           <Image
             alt=""
             className="hw26-hero-layer hw26-hero-layer--bg"
+            fetchPriority="high"
             fill
             priority
             quality={90}
@@ -3472,7 +3515,7 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
             alt=""
             className="hw26-hero-layer hw26-hero-layer--fg"
             fill
-            priority
+            loading="eager"
             quality={90}
             sizes="(max-width: 700px) 650px, 100vw"
             src="/hero/ab-hero-fg.png"
@@ -3954,13 +3997,14 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
                     <img
                       alt={`${prize.partner.name} prize partner`}
                       className={`hw26-prize-credit ${prize.partner.mark}`}
+                      loading="lazy"
                       src={prize.partner.src}
                     />
                   ) : null}
 
                   {prize.image ? (
                     <div className="hw26-prize-media">
-                      <img alt={prize.name} src={prize.image} />
+                      <img alt={prize.name} loading="lazy" src={prize.image} />
                     </div>
                   ) : (
                     <div aria-hidden="true" className="hw26-prize-tba">
@@ -4030,7 +4074,7 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
                 rel="noopener noreferrer"
                 target="_blank"
               >
-                <img alt={s.name} className={s.mark} src={s.src} />
+                <img alt={s.name} className={s.mark} loading="lazy" src={s.src} />
               </a>
             ))}
           </div>
@@ -4101,7 +4145,7 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
                   rel="noopener noreferrer"
                   target="_blank"
                 >
-                  <img alt={p.name} className={p.mark} src={p.src} />
+                  <img alt={p.name} className={p.mark} loading="lazy" src={p.src} />
                 </a>
               ))}
             </div>
@@ -4118,7 +4162,7 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
                   rel="noopener noreferrer"
                   target="_blank"
                 >
-                  <img alt={p.name} className={p.mark} src={p.src} />
+                  <img alt={p.name} className={p.mark} loading="lazy" src={p.src} />
                 </a>
               ))}
             </div>
@@ -4159,6 +4203,7 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
                 <img
                   alt={org.name}
                   className={`hw26-org-logo${org.mark ? ` ${org.mark}` : ""}`}
+                  loading="lazy"
                   src={org.src}
                 />
               </a>
@@ -4180,6 +4225,8 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
           </div>
         </div>
       </section>
+
+      </main>
 
       {/* ---------------- END PLATE ---------------- */}
       <Endplate hackathon={hackathon} />

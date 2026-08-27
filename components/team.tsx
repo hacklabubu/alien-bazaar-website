@@ -3,7 +3,7 @@ import {
   GeistPixelGrid,
   GeistPixelLine,
   GeistPixelSquare,
-} from 'geist/font/pixel'
+} from '../app/fonts/pixel'
 import Image from 'next/image'
 import Link from 'next/link'
 

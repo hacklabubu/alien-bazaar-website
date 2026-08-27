@@ -83,8 +83,9 @@
    is not decoration: a browser that will not load the SVG falls through to
    it, and the alternative is no cursor at all.
 
-   Split out of the block above and gated: see the Cursors section below. */
-html:not(.hw26-cursor-dom) .hw26 {
+   Split out of the block above to sit with the rest of the cursor rules —
+   see the Cursors section below. */
+.hw26 {
   cursor: url('/cursors/crosshair.svg') 16 16, auto;
 }
 
@@ -137,9 +138,9 @@ html[data-theme='light'] .hw26 {
     transform 220ms var(--hw-ease);
 }
 
-/* Split out of the block above so it can be gated with the rest of the
-   native cursor rules — see the Cursors section below. */
-html:not(.hw26-cursor-dom) .hw26-menu-trigger {
+/* Split out of the block above to sit with the rest of the cursor rules —
+   see the Cursors section below. */
+.hw26-menu-trigger {
   cursor: pointer;
 }
 
@@ -456,39 +457,30 @@ html:not(.hw26-cursor-dom) .hw26-menu-trigger {
 }
 
 /* -------------------------------------------------------------
-   Cursors — the fallback path
+   Cursors
 
-   These are no longer what the page normally shows. components/
-   cursor.tsx draws the same three marks as two stacked fixed
-   elements that threshold their own backdrop, so the crosshair
-   comes out mint over the dark field and black over the mint
-   apply button instead of disappearing into it. Everything here
-   is what is left when that cannot run.
+   Three marks, one hotspot, drawn by the compositor from
+   `cursor: url()`. There was briefly a DOM cursor here instead —
+   two stacked fixed elements that thresholded their own backdrop
+   so the crosshair could independently invert against whatever it
+   crossed — and it was removed: `backdrop-filter` re-samples the
+   backdrop on every pointermove, which costs a repaint per frame
+   on the one element that must never lag, and a cursor drawn in
+   the DOM trails the real pointer no matter how tight the handler
+   is. The compositor's own cursor cannot lag.
 
-   The switch is `hw26-cursor-dom`, stamped on <html> by cursor.tsx
-   and only when its capability gate passes — a real pointing
-   device, and backdrop-filter support. Every `cursor` declaration
-   on this page is therefore scoped `html:not(.hw26-cursor-dom)`
-   and simply stops matching once the DOM cursor takes over, which
-   is why cursor.css can say `cursor: none` with no `!important`
-   and no specificity climb: with these gated off it only has to
-   beat the UA stylesheet. Touch devices, and any browser without
-   backdrop-filter, never get the class and land here instead.
-
-   Three marks, one hotspot. The idle crosshair is set on `.hw26`
-   above and inherits everywhere; the two rules below are the
-   exceptions — copy you would select, and things you can press.
+   The idle crosshair is set on `.hw26` above and inherits
+   everywhere; the two rules below are the exceptions — copy you
+   would select, and things you can press.
 
    Order matters and is the whole mechanism. `.hw26 dd` and
    `.hw26 a` carry the same specificity, so the link inside the
    "Organized by" value is decided by which rule comes last: the
    clickable block is written second, deliberately. The only other
    declarations that touch `cursor` are two single-line rules
-   lifted out of their own blocks so they could be gated the same
-   way — `.hw26-menu-trigger` above, `.hw26-faq-trigger` below —
-   and neither competes with these. cursor.tsx reproduces the
-   precedence explicitly, by testing the pressable selector before
-   the prose one.
+   lifted out of their own blocks to sit with these —
+   `.hw26-menu-trigger` above, `.hw26-faq-trigger` below — and
+   neither competes with them.
    ------------------------------------------------------------- */
 
 /* Body copy. Block-level prose tags only — headings, paragraphs, list
@@ -499,20 +491,20 @@ html:not(.hw26-cursor-dom) .hw26-menu-trigger {
    nobody wants. The decorative prose that does exist — the endplate's
    giant outlined plate number — is `pointer-events: none`, so it never
    sees a cursor either way. */
-html:not(.hw26-cursor-dom) .hw26 p,
-html:not(.hw26-cursor-dom) .hw26 h1,
-html:not(.hw26-cursor-dom) .hw26 h2,
-html:not(.hw26-cursor-dom) .hw26 h3,
-html:not(.hw26-cursor-dom) .hw26 h4,
-html:not(.hw26-cursor-dom) .hw26 h5,
-html:not(.hw26-cursor-dom) .hw26 h6,
-html:not(.hw26-cursor-dom) .hw26 dt,
-html:not(.hw26-cursor-dom) .hw26 dd,
-html:not(.hw26-cursor-dom) .hw26 li,
-html:not(.hw26-cursor-dom) .hw26 th,
-html:not(.hw26-cursor-dom) .hw26 td,
-html:not(.hw26-cursor-dom) .hw26 blockquote,
-html:not(.hw26-cursor-dom) .hw26 figcaption {
+.hw26 p,
+.hw26 h1,
+.hw26 h2,
+.hw26 h3,
+.hw26 h4,
+.hw26 h5,
+.hw26 h6,
+.hw26 dt,
+.hw26 dd,
+.hw26 li,
+.hw26 th,
+.hw26 td,
+.hw26 blockquote,
+.hw26 figcaption {
   cursor: url('/cursors/text-beam.svg') 16 16, text;
 }
 
@@ -527,12 +519,12 @@ html:not(.hw26-cursor-dom) .hw26 figcaption {
    `:not(:disabled)` is the honest part. Nothing on the page is closed at
    the moment, but a switched-off control must not borrow a mark that says
    "press me", so the guard stays for whenever one comes back. */
-html:not(.hw26-cursor-dom) .hw26 a,
-html:not(.hw26-cursor-dom) .hw26 a *,
-html:not(.hw26-cursor-dom) .hw26 button:not(:disabled),
-html:not(.hw26-cursor-dom) .hw26 button:not(:disabled) *,
-html:not(.hw26-cursor-dom) .hw26 [role='button'],
-html:not(.hw26-cursor-dom) .hw26 [role='button'] * {
+.hw26 a,
+.hw26 a *,
+.hw26 button:not(:disabled),
+.hw26 button:not(:disabled) *,
+.hw26 [role='button'],
+.hw26 [role='button'] * {
   cursor: url('/cursors/crosshair-active.svg') 16 16, pointer;
 }
 
@@ -5290,9 +5282,9 @@ button.hw26-apply {
   transition: background 300ms var(--hw-ease);
 }
 
-/* Split out of the block above so it can be gated with the rest of the
-   native cursor rules — see the Cursors section. */
-html:not(.hw26-cursor-dom) .hw26-faq-trigger {
+/* Split out of the block above to sit with the rest of the cursor rules —
+   see the Cursors section. */
+.hw26-faq-trigger {
   cursor: pointer;
 }
 
@@ -6858,13 +6850,19 @@ html[data-theme='light'] .hw26-sponsor--static:hover {
     inset;
 }
 
+/* The registration window under the stamp's own label. It used to carry
+   `opacity: 0.75` to sit quieter than the line above it, which took pine down
+   to an effective #24774b on the endplate's near-black — 3.74:1, under AA's
+   4.5 for text this small. The quieting is done by the type instead: 9px
+   JetBrains Mono at 500 against Orbitron 800 at ~0.9rem is already two steps
+   down, and pine at full strength clears AA with margin (6.1:1). No opacity
+   here also means no constant sitting one nudge away from failing again. */
 .hw26-stamp span {
   display: block;
   font-family: var(--font-jetbrains-mono), monospace;
   font-weight: 500;
   font-size: 9px;
   letter-spacing: 0.22em;
-  opacity: 0.75;
   margin-top: 0.2rem;
 }
 
@@ -7286,4 +7284,158 @@ html[data-theme='light'] .hw26-sponsor--static:hover {
       0 0 14px color-mix(in srgb, var(--hw-mint) 48%, transparent)
     );
   }
+}
+
+/* -------------------------------------------------------------
+   Prose pages — about, contact, privacy, and the 404
+
+   The only pages on this site made of sentences. Everything else
+   is a poster, so the rules above have no paragraph at reading
+   length: `p` there is a caption, a spec value or a two-line lede,
+   and none of those needed a measure.
+
+   These live here rather than in a prose.css of their own, and the
+   reason is the 404. `app/not-found.tsx` is part of every route's
+   bundle, so a stylesheet it imports is pulled onto every page —
+   including the landing page, where it arrived as a third
+   render-blocking request for about a kilobyte of rules that page
+   never uses. Folded in here it costs the same kilobyte on a file
+   already being fetched, and no extra round trip in front of the
+   hero.
+   ------------------------------------------------------------- */
+
+/* Consecutive headed sections would otherwise each pay the full
+   section pad top and bottom, which on a page of eight short
+   sections is most of the scroll. The first one keeps its opening
+   pad; the rest close the gap to something a reading eye tracks. */
+.hw26-prose-section {
+  --hw-section-pad: clamp(2.25rem, 5vh, 3.5rem);
+}
+
+/* 68 characters. Long enough that the paragraphs above do not
+   fragment, short enough that the eye finds the next line without
+   hunting — the usual answer, and this page has no reason to be
+   unusual. */
+.hw26-prose-p,
+.hw26-prose-list,
+.hw26-prose-lede {
+  max-width: 68ch;
+  color: var(--hw-bone);
+  font-size: clamp(0.95rem, 1.35vw, 1.05rem);
+  line-height: 1.7;
+}
+
+.hw26-prose-p + .hw26-prose-p,
+.hw26-prose-p + .hw26-prose-list,
+.hw26-prose-list + .hw26-prose-p {
+  margin-top: 1.1em;
+}
+
+/* The lede carries the page on its own above the first heading, so
+   it is set a step up and in the brighter ink. */
+.hw26-prose-lede {
+  margin-top: 1.4rem;
+  color: var(--hw-snow);
+  font-size: clamp(1.05rem, 1.8vw, 1.3rem);
+  line-height: 1.55;
+}
+
+/* Markers are the mint dash the rest of the page uses for a list,
+   drawn rather than `list-style` so its colour and its distance
+   from the text are both settable. */
+.hw26-prose-list {
+  list-style: none;
+  padding: 0;
+  margin: 1.1em 0 0;
+}
+
+.hw26-prose-list li {
+  position: relative;
+  padding-left: 1.6em;
+}
+
+.hw26-prose-list li + li {
+  margin-top: 0.55em;
+}
+
+.hw26-prose-list li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.72em;
+  width: 0.8em;
+  height: 2px;
+  background: var(--hw-mint);
+}
+
+/* Two levels of heading on one page, which no other page here has:
+   everywhere else `.hw26-head` holds a single h2 and gets to be as
+   large as it likes. Given a second level under it, that size —
+   `clamp(2.5rem, 7vw, 6rem)` — is wrong for both. Unchanged, the
+   section h2s came out larger than the page's own h1, which is the
+   hierarchy upside down.
+
+   So the page title takes the display size the other pages give
+   their one heading, and the section headings drop well below it.
+   The h1 keeps Orbitron and the uppercase from the shared rule; the
+   only thing being restated is scale. */
+.hw26-head h1 {
+  font-family: var(--font-orbitron), sans-serif;
+  font-weight: 800;
+  text-transform: uppercase;
+  font-size: clamp(2.5rem, 7vw, 6rem);
+  line-height: 0.9;
+  letter-spacing: 0.01em;
+  color: var(--hw-snow);
+  margin: 0;
+  overflow-wrap: break-word;
+  min-width: 0;
+}
+
+.hw26-prose-section .hw26-head h2 {
+  font-size: clamp(1.35rem, 2.6vw, 1.9rem);
+  line-height: 1.15;
+  letter-spacing: 0.04em;
+}
+
+/* -------------------------------------------------------------
+   Off-screen sections
+
+   This page is one document twenty-three viewports tall: the
+   catalogue, the timeline, the prizes, the sponsor wall and the FAQ
+   all exist in the DOM from the first byte. That is the right call
+   for a poster — it is one scroll, and every section is reachable
+   without a fetch — but it means the browser was doing style,
+   layout and paint for sixteen thousand pixels of page in order to
+   show the seven hundred at the top. Measured on a throttled
+   phone, that was 1.7s of main-thread work, over a third of it
+   style and layout, and it landed in front of the hero: the
+   largest paint could not happen until the work for everything
+   under it had been done.
+
+   `content-visibility: auto` is the browser's own answer. A
+   section that is off-screen is skipped — not unloaded, not
+   removed from the DOM, just not styled or laid out until it is
+   near the viewport, at which point it is rendered normally. Text
+   in a skipped section is still found by find-in-page, still
+   reachable by an anchor link, and still seen by the reveal
+   observer as it approaches.
+
+   `contain-intrinsic-size` is the part that must not be skipped.
+   Without a size to stand in with, a skipped section measures zero
+   and the scrollbar lurches as sections render. The `auto` keyword
+   makes the browser remember each section's real height once it
+   has been rendered once; the length after it is the first guess,
+   and 1200px is a deliberate under-estimate of the ~2400px median
+   here — guessing low grows the page as you scroll, which the
+   scroll anchoring absorbs, where guessing high shrinks it, which
+   it cannot.
+
+   The hero is deliberately not in this rule. It is the one section
+   that is on screen at load, so skipping it would be work saved on
+   the only thing that needs doing.
+   ------------------------------------------------------------- */
+.hw26 main > section.hw26-section {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 1200px;
 }

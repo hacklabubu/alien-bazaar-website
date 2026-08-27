@@ -2,8 +2,8 @@ import type { Metadata, Viewport } from 'next'
 import { JetBrains_Mono, Orbitron, Poppins } from 'next/font/google'
 
 import './globals.css'
-import { Cursor } from '../components/cursor'
-import { EVENT } from '../lib/event'
+import { EVENT, SITE_URL } from '../lib/event'
+import { buildStructuredData } from '../lib/structured-data'
 
 /**
  * Orbitron for display, JetBrains Mono for everything else — the two-font
@@ -31,21 +31,47 @@ const jetbrainsMono = JetBrains_Mono({
  * the tile that carries their icon sets the word beside it in the same thing.
  * One weight, one tile; anything more and it would be a fourth face on a page
  * built on two.
+ *
+ * `preload: false` for that same reason. One tile, deep in the sponsor wall,
+ * is not worth a `<link rel="preload">` racing the hero for the connection —
+ * it loads when the wall is on its way into view, and swaps.
  */
 const poppins = Poppins({
   subsets: ['latin'],
   variable: '--font-poppins',
   weight: ['300'],
   display: 'swap',
+  preload: false,
 })
 
+/**
+ * `metadataBase` is the one that has to be set: without it Next emits the OG
+ * image and every canonical as a relative path, and the crawlers that matter
+ * — and the agents that read this page — resolve those against nothing. With
+ * it, `alternates.canonical: '/'` and the `opengraph-image.jpg` file
+ * convention both come out absolute.
+ *
+ * The card itself is app/opengraph-image.jpg, picked up by file convention;
+ * its dimensions and type are emitted from the file, so there is no image
+ * entry to write here and none to keep in sync.
+ */
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
   title: { absolute: EVENT.title },
   description: EVENT.summary,
+  alternates: { canonical: '/' },
   openGraph: {
     title: EVENT.title,
     description: EVENT.summary,
     type: 'website',
+    url: '/',
+    siteName: EVENT.title,
+    locale: 'en_US',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: EVENT.title,
+    description: EVENT.summary,
   },
 }
 
@@ -93,15 +119,21 @@ export default function RootLayout({
     >
       <body>
         <script dangerouslySetInnerHTML={{ __html: SCROLL_RESET_SCRIPT }} />
+        {/* The event and its organizer, in JSON-LD. In the layout rather than
+            on the homepage because every route here is a face of the one
+            event, and a crawler that lands on /sponsor should get the same
+            answer about what this is as one that lands on /.
+
+            One script tag per document — see lib/structured-data.ts for why
+            they are two documents rather than one graph. */}
+        {buildStructuredData().map((doc) => (
+          <script
+            dangerouslySetInnerHTML={{ __html: JSON.stringify(doc) }}
+            key={doc['@id']}
+            type='application/ld+json'
+          />
+        ))}
         {children}
-        {/* The page's pointer, drawn in the DOM. Mounted from the layout so
-            every route gets it, and it brings cursor.css with it — lander.css
-            is imported per page, so the cursor's own rules cannot ride along
-            with it. A client component inside a server layout is fine; this
-            one renders nothing at all until its capability gate passes, and
-            when it does not, lander.css's native `cursor: url()` marks stay
-            in force. */}
-        <Cursor />
       </body>
     </html>
   )

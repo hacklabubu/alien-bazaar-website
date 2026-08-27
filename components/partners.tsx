@@ -3,7 +3,7 @@ import {
   GeistPixelGrid,
   GeistPixelLine,
   GeistPixelSquare,
-} from 'geist/font/pixel'
+} from '../app/fonts/pixel'
 import Link from 'next/link'
 
 import { type HardwareEvent } from '../lib/event'
