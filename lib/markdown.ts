@@ -86,16 +86,20 @@ ${FOOTER}`
 
 const SPONSOR = `# Sponsorship — ${EVENT.title}
 
-Three partnership tiers put a brand, a product and a team inside the event
+Four partnership tiers put a brand, a product and a team inside the event
 rather than on a banner beside it.
 
 ${FACTS}
 
 ## Tiers
 
-- **Gold** — presence across the event and access to the final day.
-- **Diamond** — the above, plus deeper integration across the three days.
-- **Uranium** — full event and product integration, the largest of the three.
+- **Silver** — presence across the event and access to the final day.
+- **Gold** — the above, plus deeper integration across the three days.
+- **Platinum** — full event and product integration, plus post-event
+  intelligence and a seat on the judging panel.
+- **Uranium** — the main titular sponsor: everything in Platinum, plus title
+  billing on the event itself, category exclusivity, the opening keynote and a
+  named prize track. One partner per edition.
 
 The tiers differ in how far a sponsor's hardware and people are woven into
 what the teams actually build, not only in logo placement. For the current

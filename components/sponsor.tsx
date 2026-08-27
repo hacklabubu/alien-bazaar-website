@@ -19,14 +19,15 @@ import {
 } from '../lib/packages'
 import { EVENT } from '../lib/event'
 
-const TIERS: TierId[] = ['gold', 'diamond', 'uranium']
+const TIERS: TierId[] = ['silver', 'gold', 'platinum', 'uranium']
 
 const TIER_META: Record<
   TierId,
   { emoji: string; short: string; label: string }
 > = {
+  silver: { emoji: 'Ag', short: 'SLV', label: 'Silver' },
   gold: { emoji: 'Au', short: 'GLD', label: 'Gold' },
-  diamond: { emoji: '◇', short: 'DIA', label: 'Diamond' },
+  platinum: { emoji: 'Pt', short: 'PLT', label: 'Platinum' },
   uranium: { emoji: 'U', short: 'URN', label: 'Uranium' },
 }
 
@@ -135,8 +136,9 @@ function PackageCard({
  *
  * Same neoindustrial shell as the lander — phosphor mint, Orbitron display,
  * JetBrains Mono body, chamfered plates — applied to a commercial page
- * rather than an event brochure. The three packages are the product; the
- * matrix is the proof; the deep-dives are the pitch.
+ * rather than an event brochure. The four packages are the product; the
+ * matrix is the proof; the deep-dives are the pitch. Uranium sits at the top
+ * as the single titular seat, which is why it is the featured plate.
  */
 export function SponsorPage() {
   const root = useReveal()
@@ -184,9 +186,10 @@ export function SponsorPage() {
           </h1>
           <p className='ab-sp-hero-lead hw26-reveal'>
             Put your brand inside Europe&apos;s sharpest hardware hackathon —
-            20 teams, 20 machines, three days at Hacker Bloc in Warsaw. Three
+            20 teams, 20 machines, three days at Hacker Bloc in Warsaw. Four
             packages. From final-day visibility to full product integration,
-            event intelligence and an official seat on the judging panel.
+            an official seat on the judging panel, and the titular seat that
+            puts your name on the event itself.
           </p>
 
           <div className='ab-sp-hero-stats hw26-reveal'>
@@ -217,12 +220,14 @@ export function SponsorPage() {
         <div aria-hidden className='hw26-grid' />
         <div className='hw26-inner'>
           <div className='hw26-head hw26-reveal'>
-            <h2>The three tiers</h2>
+            <h2>The four tiers</h2>
           </div>
           <p className='ab-sp-section-lead hw26-reveal'>
-            Pick the level of integration. Gold joins the final day. Diamond
-            works alongside the teams. Uranium becomes part of the event
-            infrastructure and the intelligence produced around it.
+            Pick the level of integration. Silver joins the final day. Gold
+            works alongside the teams. Platinum becomes part of the event
+            infrastructure and the intelligence produced around it. Uranium is
+            the main titular sponsor — one partner, whose name the event
+            carries.
           </p>
 
           <div className='ab-sp-cards'>
@@ -365,10 +370,11 @@ export function SponsorPage() {
           </h2>
           <p className='hw26-reveal'>
             Alien Bazaar is twenty teams, twenty machines, and three days of
-            building home automation under one roof in Warsaw. Gold brings you
-            to the final pitches. Diamond puts you beside the teams for all
-            three days. Uranium integrates your product, gives you the data and
-            puts you on the judging panel.
+            building home automation under one roof in Warsaw. Silver brings
+            you to the final pitches. Gold puts you beside the teams for all
+            three days. Platinum integrates your product, gives you the data
+            and puts you on the judging panel. Uranium puts your name on the
+            event.
           </p>
           <div className='ab-sp-closer-actions hw26-reveal'>
             <button
@@ -401,7 +407,7 @@ export function SponsorPage() {
             </p>
             <div className='hw26-stamp'>
               Open for partners
-              <span>3 PARTNERSHIP TIERS</span>
+              <span>4 PARTNERSHIP TIERS</span>
             </div>
           </div>
 
@@ -431,16 +437,20 @@ export function SponsorPage() {
               <dd>Warsaw</dd>
             </div>
             <div className='hw26-tb'>
-              <dt>Gold</dt>
+              <dt>Silver</dt>
               <dd>$5K</dd>
             </div>
             <div className='hw26-tb'>
-              <dt>Diamond</dt>
+              <dt>Gold</dt>
               <dd>$10K</dd>
+            </div>
+            <div className='hw26-tb'>
+              <dt>Platinum</dt>
+              <dd>$20K</dd>
             </div>
             <div className='hw26-tb hw26-tb--mint'>
               <dt>Uranium</dt>
-              <dd>$20K</dd>
+              <dd>$60K</dd>
             </div>
           </dl>
         </div>

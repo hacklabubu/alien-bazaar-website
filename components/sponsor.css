@@ -146,10 +146,10 @@
   color: var(--hw-bone);
 }
 
-/* Three quick price chips under the lead. */
+/* Four quick price chips under the lead. */
 .ab-sp-hero-stats {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 1px;
   background: var(--hw-line);
   border: 1px solid var(--hw-line);
@@ -195,7 +195,13 @@
   gap: 0.85rem 1rem;
 }
 
-@media (max-width: 720px) {
+@media (max-width: 900px) {
+  .ab-sp-hero-stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 560px) {
   .ab-sp-hero-stats {
     grid-template-columns: minmax(0, 1fr);
   }
@@ -219,12 +225,12 @@
 
 .ab-sp-cards {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: clamp(0.85rem, 1.5vw, 1.25rem);
   align-items: stretch;
 }
 
-@media (max-width: 1100px) {
+@media (max-width: 1250px) {
   .ab-sp-cards {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -325,8 +331,7 @@
   color: var(--hw-snow);
 }
 
-.ab-sp-card--uranium .ab-sp-card-price,
-.ab-sp-card--gold .ab-sp-card-price {
+.ab-sp-card--uranium .ab-sp-card-price {
   color: var(--hw-mint);
 }
 

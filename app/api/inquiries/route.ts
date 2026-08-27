@@ -45,7 +45,12 @@ const CATEGORIES = {
     "Media partner",
     "Prize partner",
   ]),
-  sponsor: new Set(["Gold — $5,000", "Diamond — $10,000", "Uranium — $20,000"]),
+  sponsor: new Set([
+    "Silver — $5,000",
+    "Gold — $10,000",
+    "Platinum — $20,000",
+    "Uranium — $60,000",
+  ]),
 } as const;
 
 function field(value: unknown) {

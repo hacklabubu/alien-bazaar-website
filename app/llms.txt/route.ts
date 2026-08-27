@@ -48,7 +48,8 @@ export function GET() {
 ## Pages
 
 - [Home](${SITE_URL}/): the event, the hardware catalogue, the schedule and the FAQ.
-- [Sponsorship](${SITE_URL}/sponsor): the Gold, Diamond and Uranium tiers and what each includes.
+- [Sponsorship](${SITE_URL}/sponsor): the Silver, Gold, Platinum and titular
+  Uranium tiers and what each includes.
 - [Become a partner](${SITE_URL}/partner): how organizations partner with the event.
 - [Partners](${SITE_URL}/partners): the current partner network.
 - [Team](${SITE_URL}/team): the people running it.

@@ -35,7 +35,7 @@ export const metadata: Metadata = {
 const DESTINATIONS: { href: string; label: string; note: string }[] = [
   { href: '/', label: 'Home', note: 'The event, the hardware and the FAQ' },
   { href: '/about', label: 'About', note: 'What it is and how the three days work' },
-  { href: '/sponsor', label: 'Sponsorship', note: 'The three tiers' },
+  { href: '/sponsor', label: 'Sponsorship', note: 'The four tiers' },
   { href: '/partner', label: 'Become a partner', note: 'Supplying hardware or prizes' },
   { href: '/partners', label: 'Partners', note: 'Who is already involved' },
   { href: '/team', label: 'Team', note: 'The people running it' },
