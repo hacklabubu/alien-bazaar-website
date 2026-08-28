@@ -774,6 +774,30 @@ type Partner = {
 };
 
 /**
+ * A cell the wall is holding open.
+ *
+ * Deliberately not a `Partner` with the fields left blank. `src` is required
+ * above for a reason that only works while it holds for everyone, and the way
+ * to keep it holding is not to make it optional for all fourteen names so one
+ * cell can skip it. This is the other thing said outright: there is no partner
+ * in this slot yet, so there is no mark to show and no address to point at,
+ * and the tile prints the word instead of a logo. Two shapes rather than one
+ * loose shape also means the compiler still refuses a real partner with no
+ * artwork — which is the whole of what the required field was buying.
+ *
+ * `tba` is the marker the rig cells already use for this (see `Rig`): the
+ * thing exists, it is just not announced. The literal `true` is what lets a
+ * tile tell the two shapes apart at the point of rendering.
+ *
+ * Only the lead row takes one, and `LeadPartnerTile` draws it as a div rather
+ * than an anchor — nothing to press, nothing in the tab order.
+ */
+type TbaCell = {
+  name: string;
+  tba: true;
+};
+
+/**
  * The two Ecosystem Partners that are not dealt.
  *
  * They were a tier once: these two on a plate twice the linear size of the
@@ -1063,7 +1087,7 @@ const PRIZE_PARTNERS: Partner[] = [
  * hardware wall and drawn at three times its tile, the distinction survives
  * someone reading the page rather than its subheads.
  */
-const SPONSORS: Partner[] = [
+const SPONSORS: (Partner | TbaCell)[] = [
   {
     name: "prelint",
     src: "/sponsors/prelint.svg",
@@ -1071,10 +1095,21 @@ const SPONSORS: Partner[] = [
     mark: "hw26-mark--prelint",
   },
   {
-    name: "Credo Ventures",
-    src: "/sponsors/credo-ventures.svg",
-    href: "https://www.credoventures.com/",
-    mark: "hw26-mark--credoventures",
+    name: "Echo Systems",
+    src: "/sponsors/echo-systems.svg",
+    href: "https://echo-systems.eu/",
+    mark: "hw26-mark--echosystems",
+  },
+  /* The third cell is spoken for and the name is not ours to print yet. The
+     row no longer needs it for its shape — prelint and Echo Systems are two
+     real names and would sit as a pair without help — so what is left is the
+     only argument that was ever any good: dropping the cell would have the
+     page state that this tier closed at two. It has not, and that is a claim
+     the wall would have to un-make in a fortnight. A held cell says the true
+     thing instead, in the one place a reader is already counting sponsors. */
+  {
+    name: "TBA",
+    tba: true,
   },
 ];
 
@@ -2182,7 +2217,25 @@ function SponsorTile({ partner }: { partner: Partner }) {
   );
 }
 
-function LeadPartnerTile({ partner }: { partner: Partner }) {
+function LeadPartnerTile({ partner }: { partner: Partner | TbaCell }) {
+  /* A div, and not an anchor with the href left off. There is no address
+     behind this cell, and a control that answers nothing is worse than no
+     control: a keyboard reaching it would stop on a tile that cannot be
+     opened. Out of the tab order, the row runs from the sponsor beside it
+     straight on down the wall.
+
+     The word is live text rather than a drawn mark, which is the one place
+     this tile is allowed to differ from its neighbours — it is read out, it
+     answers to the reader's type size, and it is not a file somebody has to
+     remember to delete on the day the name arrives. */
+  if ("tba" in partner) {
+    return (
+      <div className="hw26-sponsor-lead hw26-sponsor-lead--tba">
+        {partner.name}
+      </div>
+    );
+  }
+
   return (
     <a
       aria-label={partner.name}
@@ -2254,7 +2307,7 @@ export function PartnerDirectory() {
         </div>
 
         <PartnerSubhead action="sponsor" title="Sponsors" />
-        <div className="hw26-sponsors-lead hw26-sponsors-lead--two">
+        <div className="hw26-sponsors-lead hw26-sponsors-lead--three">
           {SPONSORS.map((partner) => (
             <LeadPartnerTile key={partner.name} partner={partner} />
           ))}
@@ -4015,23 +4068,21 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
 
           {/* The lead cell, not the wall's small tile: the tier is money, and
               the page says so in the size of the plate rather than in the
-              heading alone. One entry still takes one lead slot — half the
-              container — because a tile drawn across the whole sheet reads as
-              a banner rather than as the first name under a heading that will
-              take more. The container shrinks; see `--one` in the
-              stylesheet. */}
-          <div className="hw26-sponsors-lead hw26-sponsors-lead--two hw26-reveal">
+              heading alone. Three cells across the sheet now, which is the
+              arrangement the Prize row already uses and the same one for the
+              same reason: see `--three` in the stylesheet, where the count is
+              stated rather than fitted and the inset comes down to suit a
+              third of a sheet instead of a half.
+
+              The tile is `LeadPartnerTile`, the same component the partners
+              page maps this array through. It used to be an anchor written out
+              here that emitted exactly what that component emits, which was
+              harmless while every sponsor was a link and stopped being so the
+              moment one of them was a held cell: two copies of the markup are
+              two places to remember the branch. */}
+          <div className="hw26-sponsors-lead hw26-sponsors-lead--three hw26-reveal">
             {SPONSORS.map((s) => (
-              <a
-                aria-label={s.name}
-                className={`hw26-sponsor-lead${s.highlight ? " hw26-partner-highlight" : ""}`}
-                href={s.href}
-                key={s.name}
-                rel="noopener noreferrer"
-                target="_blank"
-              >
-                <img alt={s.name} className={s.mark} src={s.src} />
-              </a>
+              <LeadPartnerTile key={s.name} partner={s} />
             ))}
           </div>
 

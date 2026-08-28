@@ -5810,8 +5810,39 @@ html:not(.hw26-cursor-dom) .hw26-faq-trigger {
   width: calc((100% - 3px) / 2 + 2px);
 }
 
-.hw26-sponsors-lead--two {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+/* The Sponsors row: prelint, Echo Systems and the cell held for the third
+   name. This was `--two` while the row was one sponsor and one held cell, and
+   the count is stated here rather than left to the base rule's `auto-fit` for
+   the reason every count on this wall is stated — the gaps are the container's
+   `--hw-line` showing through, so a track the row does not fill is not empty
+   space but a lit plate the size of a tile. */
+.hw26-sponsors-lead--three {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+/* A third of the sheet is not a half of it made smaller. At 1440 the sheet is
+   1325px once the gutter is off it, so a track here is 440px and the
+   half-sheet inset would spend 128px of that on air — 29% of the track against
+   the 19% it costs in the cell that figure was chosen for. The stronger reason
+   is a page away: Prize Partners is the other three-across lead row on this
+   sheet, it takes this inset, and two rows of the same plate at two different
+   insets read as two different plates. */
+.hw26-sponsors-lead--three .hw26-sponsor-lead {
+  padding: clamp(1.75rem, 3vw, 2.75rem);
+}
+
+/* The lead-cell image rule fixes a height and lets the width fall where it
+   may, which the rows above note is only safe in a half-sheet cell. prelint is
+   what makes it unsafe here: it bottoms out at 34px and 167px wide, and a
+   track's clear space is down to 176px by 760 and through 167px just before
+   the fold to two — so the mark arrives at the wall and keeps going. It is
+   also what happens on the phone, where the fold has landed and the two
+   half-sheet tiles leave 118px. `contain` and not a bare `max-width`, because
+   capping the width of a fixed-height element squashes the mark rather than
+   fitting it. */
+.hw26-sponsors-lead--three img {
+  max-width: 100%;
+  object-fit: contain;
 }
 
 /* Prize partners form one continuous three-cell row, matching the Ecosystem
@@ -5847,6 +5878,26 @@ html:not(.hw26-cursor-dom) .hw26-faq-trigger {
   }
 
   .hw26-sponsors-lead--prize > :last-child {
+    grid-column: span 2;
+  }
+
+  .hw26-sponsors-lead--three {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  /* Same span as the Prize row, and it was worth arguing about here because
+     the odd child out is the held cell — so this hands TBA the widest plate on
+     the phone. The alternative is worse in both directions. Left in a half
+     track it leaves the other half of that row bare, and bare on this
+     container is the lit `--hw-line` plate the counts above exist to avoid;
+     dropped to one column so the arithmetic goes away, every tile becomes a
+     full-bleed banner with a mark floating in the middle of it, which is the
+     failure the ecosystem row's floor is written against.
+
+     And the plate is not the claim. A wide plate under a wordmark says that
+     sponsor is bigger; under the word TBA it says there is more room, which is
+     the one thing about that cell that is true. */
+  .hw26-sponsors-lead--three > :last-child {
     grid-column: span 2;
   }
   /* Full width, because the row it is half of is one column here and half of
@@ -5945,8 +5996,14 @@ html:not(.hw26-cursor-dom) .hw26-faq-trigger {
 /* The lift the cell already had, plus a mint hairline inset into it. The
    background step on its own is what an inert panel does on hover; the
    hairline is the page's accent for what you can act on, and it is what makes
-   the difference between a plate that reacts and one you can click. */
-.hw26-sponsor-lead:hover {
+   the difference between a plate that reacts and one you can click.
+
+   Which is exactly why the held cell is excluded rather than given an
+   override further down. This rule is the definition of "you can click this",
+   and a tile that clicks nowhere should never have matched it — cancelling
+   the bloom afterwards would leave the wall saying the thing and then taking
+   it back. Same `:not()` on the light theme's copy of this rule. */
+.hw26-sponsor-lead:not(.hw26-sponsor-lead--tba):hover {
   background: var(--hw-steel-hi);
   box-shadow: inset 0 0 0 1px
     color-mix(in srgb, var(--hw-mint) 40%, transparent);
@@ -6016,8 +6073,55 @@ html[data-theme='light'] .hw26-sponsor-lead {
   background: #0f1110;
 }
 
-html[data-theme='light'] .hw26-sponsor-lead:hover {
+html[data-theme='light'] .hw26-sponsor-lead:not(.hw26-sponsor-lead--tba):hover {
   background: #171a18;
+}
+
+/* The third lead cell, held open until there is a name for it.
+
+   It keeps the neighbouring tile's plate and its padding, because the row's
+   rhythm is not the part that is unsettled: trim the padding to fit a shorter
+   piece of content and the whole row changes height around a cell that is
+   only waiting. Nothing is added either — no dashed edge, no dimmed plate. A
+   cell that looks broken and a cell that is being kept read the same from
+   across the page, and only one of those is true here.
+
+   No focus rule to cancel: the tile is a div, so `:focus-visible` cannot
+   match it. `cursor: default` is the one thing the pointer would otherwise
+   get wrong, since the plate is the same one that is a link one cell over.
+
+   The word is set as the wall's display face at about a mark's mass rather
+   than at a caption's — prelint two cells over stands 50px, and Orbitron's
+   caps at 2.5rem land near that once the tracking has spread them across the
+   same sort of width. prelint and not Echo Systems, which is the taller of the
+   two at 76px: that figure buys back a stacked lockup's wasted height and a
+   word set on one line has none to buy back, so matching it would put TBA a
+   third larger than either name the row is actually printing. Silver, which is
+   the wall's ink for a thing stated rather than a thing offered; bone or snow
+   would put it at a signed sponsor's weight. */
+.hw26-sponsor-lead--tba {
+  font-family: var(--font-orbitron), sans-serif;
+  font-size: clamp(1.5rem, 3.2vw, 2.5rem);
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: 0.18em;
+  /* Tracking is added after the last letter as well as between them, so a
+     centred word sits half a letter-space left of centre. Indenting the line
+     by the full figure gives back exactly half of it under `text-align:
+     center`, which is the correction. */
+  text-indent: 0.18em;
+  color: var(--hw-silver);
+  cursor: default;
+}
+
+/* The plate under this cell does not follow the theme — see the rule above,
+   the lead cells stay dark so the on-dark marks are never recoloured — but
+   `--hw-silver` does, and in the light theme it resolves to a grey picked for
+   paper. On a near-black plate that grey is the wall's muted ink read at half
+   the contrast it was chosen at. The dark theme's figure is pinned here for
+   the same reason the background is. */
+html[data-theme='light'] .hw26-sponsor-lead--tba {
+  color: #8b928d;
 }
 
 .hw26-sponsor-lead img {
@@ -6077,6 +6181,37 @@ html[data-theme='light'] .hw26-sponsor-lead:hover {
    horizontal mark this wide does not have. */
 .hw26-sponsor-lead img.hw26-mark--prelint {
   height: clamp(34px, 4.2vw, 50px);
+}
+
+/* The stacked-lockup case again, one cell over from prelint, and re-decided
+   against that neighbour rather than borrowed from the ecosystem row's figure:
+   three arcs over a wordmark at 2.17:1, against prelint's 4.9:1, so at a shared
+   height it would draw a third of prelint's footprint and read as the junior
+   name in a tier where the two are equals.
+
+   Footprint is the test, the way it is for the stacked mark above. prelint at
+   its 50px fills a 246x50 box, and matching that 12,300px² lands this one at
+   75px — 165px across, against the ~350px a track leaves at 1440. So prelint
+   stays the widest object in the row, which is right for the sponsor whose
+   name the row actually prints, and neither of them is out-shouting the other.
+   76px is the round figure, and it happens to be where the 1.5x rule of thumb
+   for a stacked lockup points from prelint's 50 on its own.
+
+   The arcs are drawn well inside their own box — the ink stops 24 units short
+   of the top and 21 short of the bottom of a 240-unit viewBox — so 76px of
+   element is 62px of visible mark, which is what actually sits beside
+   prelint's 44px of visible wordmark. Sizing to the element and forgetting the
+   inset is how this one would have come out looking small.
+
+   The floor holds the same 1.5x against prelint's 34px, which is what keeps
+   the pair in step through the two-across steps. Below that prelint stops
+   obeying its own floor and is `contain`ed to the track instead, so on a phone
+   this mark comes out the heavier of the two. That is the width guard's doing
+   rather than this figure's, and the alternative — pulling the floor down to
+   whatever prelint has been squeezed to — would give away the match at every
+   width above the phone to fix it at one. */
+.hw26-sponsor-lead img.hw26-mark--echosystems {
+  height: clamp(52px, 6.3vw, 76px);
 }
 
 /* Media and prize partners use the same half-sheet lead plate as Sponsors.
