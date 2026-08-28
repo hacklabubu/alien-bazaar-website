@@ -1094,19 +1094,30 @@ const SPONSORS: (Partner | TbaCell)[] = [
     href: "https://prelint.com/",
     mark: "hw26-mark--prelint",
   },
+  /* Two cells behind prelint are spoken for and neither name is ours to print
+     yet, and both of the arguments for drawing them are live.
+
+     The honest one: dropping them would have the page state that this tier
+     closed at one, which is a claim the wall would have to un-make inside a
+     fortnight. A held cell says the true thing instead, in the one place a
+     reader is already counting sponsors.
+
+     The shape one, which was moot while there were two real names and is not
+     any more: one sponsor cannot hold this row. Cut the pair and leave the
+     count at three and the two spare tracks are not empty space but lit
+     `--hw-line` the size of tiles, which is the failure every stated count in
+     the stylesheet is written against. Take the row down to `--one` instead
+     and the tier is a half-sheet slot — the shape for a tier that has its one
+     name and is finished, which is the thing that is not true here.
+
+     The two are identical on purpose. Ordering held cells, or numbering them,
+     would print a fact the page does not have; the word is the whole of what
+     each one says. That is why the render sites key on position and not on
+     the name — see the map in the lander. */
   {
-    name: "Echo Systems",
-    src: "/sponsors/echo-systems.svg",
-    href: "https://echo-systems.eu/",
-    mark: "hw26-mark--echosystems",
+    name: "TBA",
+    tba: true,
   },
-  /* The third cell is spoken for and the name is not ours to print yet. The
-     row no longer needs it for its shape — prelint and Echo Systems are two
-     real names and would sit as a pair without help — so what is left is the
-     only argument that was ever any good: dropping the cell would have the
-     page state that this tier closed at two. It has not, and that is a claim
-     the wall would have to un-make in a fortnight. A held cell says the true
-     thing instead, in the one place a reader is already counting sponsors. */
   {
     name: "TBA",
     tba: true,
@@ -2308,8 +2319,8 @@ export function PartnerDirectory() {
 
         <PartnerSubhead action="sponsor" title="Sponsors" />
         <div className="hw26-sponsors-lead hw26-sponsors-lead--three">
-          {SPONSORS.map((partner) => (
-            <LeadPartnerTile key={partner.name} partner={partner} />
+          {SPONSORS.map((partner, index) => (
+            <LeadPartnerTile key={index} partner={partner} />
           ))}
         </div>
 
@@ -4078,11 +4089,21 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
               page maps this array through. It used to be an anchor written out
               here that emitted exactly what that component emits, which was
               harmless while every sponsor was a link and stopped being so the
-              moment one of them was a held cell: two copies of the markup are
-              two places to remember the branch. */}
+              moment the row carried a cell that is not one: two copies of the
+              markup are two places to remember the branch.
+
+              Keyed by position, which is the one case where that is the right
+              key rather than the lazy one. Two of the three cells are held and
+              are meant to be indistinguishable — same word, nothing to tell
+              them apart — so the printed name cannot serve as identity, and
+              inventing an id on the held cell would be a field that exists
+              only to satisfy the map. `SPONSORS` is a module-level literal
+              that is never filtered, sorted or dealt: it is the neighbouring
+              Ecosystem row that shuffles, not this one. Nothing here moves, so
+              the index is the identity. */}
           <div className="hw26-sponsors-lead hw26-sponsors-lead--three hw26-reveal">
-            {SPONSORS.map((s) => (
-              <LeadPartnerTile key={s.name} partner={s} />
+            {SPONSORS.map((s, index) => (
+              <LeadPartnerTile key={index} partner={s} />
             ))}
           </div>
 

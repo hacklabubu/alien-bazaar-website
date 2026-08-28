@@ -5810,12 +5810,14 @@ html:not(.hw26-cursor-dom) .hw26-faq-trigger {
   width: calc((100% - 3px) / 2 + 2px);
 }
 
-/* The Sponsors row: prelint, Echo Systems and the cell held for the third
-   name. This was `--two` while the row was one sponsor and one held cell, and
-   the count is stated here rather than left to the base rule's `auto-fit` for
-   the reason every count on this wall is stated — the gaps are the container's
-   `--hw-line` showing through, so a track the row does not fill is not empty
-   space but a lit plate the size of a tile. */
+/* The Sponsors row: prelint and the two cells held for the names that are not
+   ours to print yet. This was `--two` while the row was one sponsor and one
+   held cell, and that line read correctly at the time — the count follows the
+   cells, not the number of signatures. The count is stated here rather than
+   left to the base rule's `auto-fit` for the reason every count on this wall
+   is stated: the gaps are the container's `--hw-line` showing through, so a
+   track the row does not fill is not empty space but a lit plate the size of a
+   tile. */
 .hw26-sponsors-lead--three {
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
@@ -6077,9 +6079,10 @@ html[data-theme='light'] .hw26-sponsor-lead:not(.hw26-sponsor-lead--tba):hover {
   background: #171a18;
 }
 
-/* The third lead cell, held open until there is a name for it.
+/* A lead cell held open until there is a name for it — two of the three in
+   the Sponsors row are one of these.
 
-   It keeps the neighbouring tile's plate and its padding, because the row's
+   It keeps the sponsor tile's plate and its padding, because the row's
    rhythm is not the part that is unsettled: trim the padding to fit a shorter
    piece of content and the whole row changes height around a cell that is
    only waiting. Nothing is added either — no dashed edge, no dimmed plate. A
@@ -6088,16 +6091,20 @@ html[data-theme='light'] .hw26-sponsor-lead:not(.hw26-sponsor-lead--tba):hover {
 
    No focus rule to cancel: the tile is a div, so `:focus-visible` cannot
    match it. `cursor: default` is the one thing the pointer would otherwise
-   get wrong, since the plate is the same one that is a link one cell over.
+   get wrong, since the plate is the same one that is a link elsewhere in the
+   row.
 
    The word is set as the wall's display face at about a mark's mass rather
-   than at a caption's — prelint two cells over stands 50px, and Orbitron's
-   caps at 2.5rem land near that once the tracking has spread them across the
-   same sort of width. prelint and not Echo Systems, which is the taller of the
-   two at 76px: that figure buys back a stacked lockup's wasted height and a
-   word set on one line has none to buy back, so matching it would put TBA a
-   third larger than either name the row is actually printing. Silver, which is
-   the wall's ink for a thing stated rather than a thing offered; bone or snow
+   than at a caption's, and prelint is what it is set against — the one mark
+   the row prints, and so the only thing in it that fixes what a cell here
+   weighs. That mark stands 50px, and Orbitron's caps at 2.5rem land near it
+   once the tracking has spread them across the same sort of width. The figure
+   was chosen while a stacked lockup stood between them and it survives that
+   neighbour leaving, because the neighbour was never what it was measured
+   from: a mark that carries its height in two rows buys some of it back, and a
+   word set on one line has none to buy back, so the taller of two marks was
+   the wrong yardstick then and is not in the row now. Silver, which is the
+   wall's ink for a thing stated rather than a thing offered; bone or snow
    would put it at a signed sponsor's weight. */
 .hw26-sponsor-lead--tba {
   font-family: var(--font-orbitron), sans-serif;
@@ -6181,37 +6188,6 @@ html[data-theme='light'] .hw26-sponsor-lead--tba {
    horizontal mark this wide does not have. */
 .hw26-sponsor-lead img.hw26-mark--prelint {
   height: clamp(34px, 4.2vw, 50px);
-}
-
-/* The stacked-lockup case again, one cell over from prelint, and re-decided
-   against that neighbour rather than borrowed from the ecosystem row's figure:
-   three arcs over a wordmark at 2.17:1, against prelint's 4.9:1, so at a shared
-   height it would draw a third of prelint's footprint and read as the junior
-   name in a tier where the two are equals.
-
-   Footprint is the test, the way it is for the stacked mark above. prelint at
-   its 50px fills a 246x50 box, and matching that 12,300px² lands this one at
-   75px — 165px across, against the ~350px a track leaves at 1440. So prelint
-   stays the widest object in the row, which is right for the sponsor whose
-   name the row actually prints, and neither of them is out-shouting the other.
-   76px is the round figure, and it happens to be where the 1.5x rule of thumb
-   for a stacked lockup points from prelint's 50 on its own.
-
-   The arcs are drawn well inside their own box — the ink stops 24 units short
-   of the top and 21 short of the bottom of a 240-unit viewBox — so 76px of
-   element is 62px of visible mark, which is what actually sits beside
-   prelint's 44px of visible wordmark. Sizing to the element and forgetting the
-   inset is how this one would have come out looking small.
-
-   The floor holds the same 1.5x against prelint's 34px, which is what keeps
-   the pair in step through the two-across steps. Below that prelint stops
-   obeying its own floor and is `contain`ed to the track instead, so on a phone
-   this mark comes out the heavier of the two. That is the width guard's doing
-   rather than this figure's, and the alternative — pulling the floor down to
-   whatever prelint has been squeezed to — would give away the match at every
-   width above the phone to fix it at one. */
-.hw26-sponsor-lead img.hw26-mark--echosystems {
-  height: clamp(52px, 6.3vw, 76px);
 }
 
 /* Media and prize partners use the same half-sheet lead plate as Sponsors.
