@@ -1,20 +1,20 @@
 import type { Metadata, Viewport } from 'next'
-import { JetBrains_Mono, Orbitron, Poppins } from 'next/font/google'
+import { Chakra_Petch, JetBrains_Mono, Poppins } from 'next/font/google'
 
 import './globals.css'
 import { Cursor } from '../components/cursor'
 import { EVENT } from '../lib/event'
 
 /**
- * Orbitron for display, JetBrains Mono for everything else — the two-font
+ * Chakra Petch for display, JetBrains Mono for everything else — the two-font
  * contrast the hacklab system is built on. The four Geist Pixel cuts are
  * attached by the lander itself, not globally, so they stay scoped to the
  * elements that earn them.
  */
-const orbitron = Orbitron({
+const chakraPetch = Chakra_Petch({
   subsets: ['latin'],
-  variable: '--font-orbitron',
-  weight: ['500', '700', '800', '900'],
+  variable: '--font-chakra-petch',
+  weight: ['500', '600', '700'],
   display: 'swap',
 })
 
@@ -86,7 +86,7 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html
-      className={`${orbitron.variable} ${jetbrainsMono.variable} ${poppins.variable}`}
+      className={`${chakraPetch.variable} ${jetbrainsMono.variable} ${poppins.variable}`}
       data-theme='dark'
       lang='en'
       suppressHydrationWarning

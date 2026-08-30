@@ -42,7 +42,7 @@ overlay's "Apply now".
 
 ```
 ├── app/
-│   ├── layout.tsx      Orbitron + JetBrains Mono + Poppins
+│   ├── layout.tsx      Chakra Petch + JetBrains Mono + Poppins
 │   ├── page.tsx        renders the lander
 │   ├── globals.css     reset only — the page owns its own palette
 │   ├── team/           the team page
@@ -91,7 +91,7 @@ Colour is used as signal, not decoration:
 | **Matrix Green** `#00FF41` | one place only: the UFO's beam |
 | **Burn Red** `#FC3500` | only the three hard gates — teams lock, tracks lock, submissions due. If it is red, a clock is running out. |
 
-Type is Orbitron for display and JetBrains Mono for everything else, plus four
+Type is Chakra Petch for display and JetBrains Mono for everything else, plus four
 [Geist Pixel](https://vercel.com/font) cuts with one job each: Circle for
 numerals that count, Grid for title-block cells, Square for the stamped plate
 number, Line for the intro's readout.

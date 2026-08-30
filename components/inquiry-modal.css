@@ -70,7 +70,7 @@
   max-width: 13ch;
   margin: 0.55rem 0 0.75rem;
   color: var(--hw-snow);
-  font-family: var(--font-orbitron), sans-serif;
+  font-family: var(--font-chakra-petch), sans-serif;
   font-size: clamp(1.85rem, 5vw, 3.1rem);
   line-height: 0.92;
   text-transform: uppercase;

@@ -40,7 +40,7 @@
 }
 
 .ab-sp-nav-name {
-  font-family: var(--font-orbitron), sans-serif;
+  font-family: var(--font-chakra-petch), sans-serif;
   font-weight: 800;
   font-size: 0.78rem;
   letter-spacing: 0.12em;
@@ -122,7 +122,7 @@
 }
 
 .ab-sp-hero-title {
-  font-family: var(--font-orbitron), sans-serif;
+  font-family: var(--font-chakra-petch), sans-serif;
   font-weight: 900;
   text-transform: uppercase;
   font-size: clamp(2.75rem, 9vw, 6.5rem);
@@ -177,7 +177,7 @@
 }
 
 .ab-sp-stat-price {
-  font-family: var(--font-geist-pixel-circle), var(--font-orbitron), sans-serif;
+  font-family: var(--font-geist-pixel-circle), var(--font-chakra-petch), sans-serif;
   font-weight: 500;
   font-size: clamp(1.15rem, 2.2vw, 1.65rem);
   letter-spacing: 0.04em;
@@ -317,7 +317,7 @@
 
 .ab-sp-card-price {
   margin: 0.25rem 0 0;
-  font-family: var(--font-geist-pixel-circle), var(--font-orbitron), sans-serif;
+  font-family: var(--font-geist-pixel-circle), var(--font-chakra-petch), sans-serif;
   font-weight: 500;
   font-size: clamp(1.85rem, 3.2vw, 2.4rem);
   line-height: 0.95;
@@ -332,7 +332,7 @@
 
 .ab-sp-card-tag {
   margin: 0;
-  font-family: var(--font-orbitron), sans-serif;
+  font-family: var(--font-chakra-petch), sans-serif;
   font-weight: 800;
   text-transform: uppercase;
   font-size: clamp(0.95rem, 1.4vw, 1.15rem);
@@ -459,7 +459,7 @@ tbody .ab-sp-matrix-cat {
 
 .ab-sp-matrix-tier-name {
   display: block;
-  font-family: var(--font-orbitron), sans-serif;
+  font-family: var(--font-chakra-petch), sans-serif;
   font-weight: 800;
   font-size: 0.72rem;
   letter-spacing: 0.12em;
@@ -511,7 +511,7 @@ tbody .ab-sp-matrix-cat {
 /* First two rows (Price, Spots) get heavier type. */
 .ab-sp-matrix tbody tr:nth-child(1) .ab-sp-cell-text,
 .ab-sp-matrix tbody tr:nth-child(2) .ab-sp-cell-text {
-  font-family: var(--font-geist-pixel-circle), var(--font-orbitron), sans-serif;
+  font-family: var(--font-geist-pixel-circle), var(--font-chakra-petch), sans-serif;
   font-size: 0.95rem;
   color: var(--hw-mint);
   letter-spacing: 0.04em;
@@ -585,7 +585,7 @@ tbody .ab-sp-matrix-cat {
 }
 
 .ab-sp-dive-title {
-  font-family: var(--font-orbitron), sans-serif;
+  font-family: var(--font-chakra-petch), sans-serif;
   font-weight: 900;
   text-transform: uppercase;
   font-size: clamp(1.5rem, 3.5vw, 2.6rem);
@@ -673,7 +673,7 @@ tbody .ab-sp-matrix-cat {
 }
 
 .ab-sp-dive-titles-list li {
-  font-family: var(--font-orbitron), sans-serif;
+  font-family: var(--font-chakra-petch), sans-serif;
   font-weight: 700;
   font-size: 0.78rem;
   letter-spacing: 0.06em;
@@ -694,7 +694,7 @@ tbody .ab-sp-matrix-cat {
 .ab-sp-dive-closer {
   margin: 0 0 1.5rem;
   max-width: 48ch;
-  font-family: var(--font-orbitron), sans-serif;
+  font-family: var(--font-chakra-petch), sans-serif;
   font-weight: 700;
   font-size: clamp(1rem, 1.6vw, 1.25rem);
   line-height: 1.35;

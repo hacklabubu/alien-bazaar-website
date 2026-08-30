@@ -797,7 +797,7 @@ const ORGANIZERS: {
  * stops that fallback coming back on a
  * hunch: a partner with no mark will not typecheck, which is the moment to
  * decide what to do about it rather than silently printing their name in
- * Orbitron.
+ * Chakra Petch.
  *
  * `href` *is* optional, and for the opposite reason to `src`. A partner with no
  * mark is a hole in the wall; a partner with no site is an ordinary fact about

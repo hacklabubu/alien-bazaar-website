@@ -280,7 +280,7 @@ html:not(.hw26-cursor-dom) .hw26-menu-trigger {
   padding: clamp(0.55rem, 1.5vh, 1.2rem) 0;
   border-bottom: 1px solid var(--hw-line-hi);
   color: var(--hw-snow);
-  font-family: var(--font-orbitron), sans-serif;
+  font-family: var(--font-chakra-petch), sans-serif;
   font-size: clamp(2.1rem, 6.8vw, 6.5rem);
   font-weight: 900;
   line-height: 0.95;
@@ -320,7 +320,7 @@ html:not(.hw26-cursor-dom) .hw26-menu-trigger {
   padding: clamp(0.55rem, 1.5vh, 1.2rem) 0;
   border-bottom: 1px solid var(--hw-line-hi);
   color: color-mix(in srgb, var(--hw-snow) 42%, transparent);
-  font-family: var(--font-orbitron), sans-serif;
+  font-family: var(--font-chakra-petch), sans-serif;
   font-size: clamp(2.1rem, 6.8vw, 6.5rem);
   font-weight: 900;
   line-height: 0.95;
@@ -420,7 +420,7 @@ html:not(.hw26-cursor-dom) .hw26-menu-trigger {
   padding: 1.2rem 1.5rem;
   background: #0f1110;
   color: var(--hw-snow);
-  font-family: var(--font-orbitron), sans-serif;
+  font-family: var(--font-chakra-petch), sans-serif;
   font-size: clamp(0.75rem, 1.2vw, 0.95rem);
   font-weight: 800;
   letter-spacing: 0.12em;
@@ -631,7 +631,7 @@ html:not(.hw26-cursor-dom) .hw26 [role='button'] * {
    breaks the moment it is five — a 10px mint eyebrow cannot hold a group of
    panels apart, and a second `h2`-scale title would read as a second section.
 
-   So: Orbitron, the display face, at roughly 60% of the section title. The
+   So: Chakra Petch, the display face, at roughly 60% of the section title. The
    size is set against the panel names below it rather than in the abstract:
    those land at 2rem, and a group title that measures the same is outweighed
    by them however much air it is given — the stamped face wins at equal size
@@ -669,7 +669,7 @@ html:not(.hw26-cursor-dom) .hw26 [role='button'] * {
    — but the section must never be what gives the page a horizontal
    scrollbar. */
 .hw26-cat {
-  font-family: var(--font-orbitron), sans-serif;
+  font-family: var(--font-chakra-petch), sans-serif;
   font-weight: 500;
   font-size: clamp(2rem, 4.5vw, 3.75rem);
   line-height: 1.05;
@@ -886,8 +886,8 @@ html:not(.hw26-cursor-dom) .hw26 [role='button'] * {
    only the shelf they sit on. On the names it cost a weight: the
    face is one cut per shape, so a stamped name could only be set
    at 500, and a panel name that has to outrank the title over it
-   would rather have Orbitron's 900 than the texture. Both levels
-   are Orbitron now, separated by weight and size and each stepped
+   would rather have the display face's heaviest cut than the texture. Both
+   levels are Chakra Petch now, separated by weight and size and each stepped
    down out of white into bone. What is left to Square is the one
    thing on the sheet that is genuinely stamped rather than set.
 
@@ -956,7 +956,7 @@ html:not(.hw26-cursor-dom) .hw26 [role='button'] * {
    cannot fit, and the section must never be the thing that gives the page a
    horizontal scrollbar. */
 .hw26-head h2 {
-  font-family: var(--font-orbitron), sans-serif;
+  font-family: var(--font-chakra-petch), sans-serif;
   font-weight: 800;
   text-transform: uppercase;
   font-size: clamp(2.5rem, 7vw, 6rem);
@@ -1222,11 +1222,13 @@ html:not(.hw26-cursor-dom) .hw26 [role='button'] * {
      than the viewport it is cropped into, so an art-relative size that is
      correct against the picture runs straight off both edges of the phone.
 
-     Measured, not guessed — 'BAZAAR' is 4.986em in Orbitron and the
+     Measured, not guessed — but measured against Orbitron, the display face
+     this figure was set for: 'BAZAAR' was 4.986em there, and the
      letter-spacing takes 0.01em back off each of its six characters, giving
-     4.926em. Orbitron's advances do not move across its weight axis, so the
-     figure holds at 900 as well as at 400, and kerning can only make the
-     line shorter than this. Re-measure if the words ever change. */
+     4.926em. Orbitron's advances did not move across its weight axis, so the
+     figure held at every cut, and kerning can only make the line shorter
+     than this. The display face is Chakra Petch now, so this wants
+     re-measuring — as it does if the words ever change. */
   --hero-title-em: 4.93;
 
   /* The resolved size, named once because two children need it to agree:
@@ -1420,7 +1422,9 @@ html:not(.hw26-cursor-dom) .hw26 [role='button'] * {
    front of both, since it sits outside the stage entirely.
 
    Positioned from the type's own metrics rather than by eye, so it stays on
-   the stem at every size. Orbitron sets its caps at 0.72em on a 1.011/0.243
+   the stem at every size. The figures below were measured against Orbitron,
+   the display face they were set for, and want re-measuring now that the
+   face is Chakra Petch. Orbitron set its caps at 0.72em on a 1.011/0.243
    ascent/descent, so with `line-height: 0.84` the half-leading is negative
    and the cap top lands 0.084em below the top of the line box — which is
    what `--hero-title-top` positions. The horizontal figure is the same
@@ -1557,7 +1561,7 @@ html:not(.hw26-cursor-dom) .hw26 [role='button'] * {
   position: absolute;
   top: 50%;
   translate: 0 -50%;
-  font-family: var(--font-orbitron), sans-serif;
+  font-family: var(--font-chakra-petch), sans-serif;
   font-size: clamp(8px, 0.07em, 12px);
   font-weight: 700;
   line-height: 1;
@@ -1644,7 +1648,7 @@ html:not(.hw26-cursor-dom) .hw26 [role='button'] * {
 }
 
 .hw26-title-word {
-  font-family: var(--font-orbitron), sans-serif;
+  font-family: var(--font-chakra-petch), sans-serif;
   font-weight: 900;
   text-transform: uppercase;
   /* Fixed white, not `--hw-snow`. Same reasoning as the panel below: this
@@ -2028,7 +2032,7 @@ html:not(.hw26-cursor-dom) .hw26 [role='button'] * {
    would overhang its box into the surrounding gap rather than widen the
    panel, which is the failure mode worth having. */
 .hw26-count-n {
-  font-family: var(--font-geist-pixel-circle), var(--font-orbitron), sans-serif;
+  font-family: var(--font-geist-pixel-circle), var(--font-chakra-petch), sans-serif;
   font-weight: 500;
   font-size: clamp(2.85rem, 9vw, 5.25rem);
   line-height: 0.9;
@@ -2056,7 +2060,7 @@ html:not(.hw26-cursor-dom) .hw26 [role='button'] * {
   padding: 1.15rem 2.5rem;
   background: var(--hw-mint);
   color: var(--hw-on-mint);
-  font-family: var(--font-orbitron), sans-serif;
+  font-family: var(--font-chakra-petch), sans-serif;
   font-weight: 800;
   font-size: clamp(0.8rem, 1.1vw, 0.95rem);
   letter-spacing: 0.14em;
@@ -2330,7 +2334,7 @@ button.hw26-apply {
    Six groups is what forced the middle heading level. Two mint
    eyebrows could divide a sheet in half; six of them read as
    captions floating over an undifferentiated grid. The group
-   title is `.hw26-cat` — Orbitron in bone, some three fifths
+   title is `.hw26-cat` — Chakra Petch in bone, some three fifths
    of the section head — and it does the dividing on its own, so the hairline
    rule that came with the eyebrow is gone. The add-ons below take
    the same title now, so what is described here is both sections.
@@ -2671,7 +2675,7 @@ button.hw26-apply {
    in it. */
 .hw26-stat dd {
   margin: 0;
-  font-family: var(--font-orbitron), sans-serif;
+  font-family: var(--font-chakra-petch), sans-serif;
   font-weight: 800;
   font-size: clamp(2.25rem, 4.2vw, 3.25rem);
   line-height: 0.9;
@@ -3012,7 +3016,7 @@ button.hw26-apply {
 
 .hw26-how-card h3 {
   margin: 0;
-  font-family: var(--font-orbitron), sans-serif;
+  font-family: var(--font-chakra-petch), sans-serif;
   font-size: clamp(0.68rem, 0.92vw, 0.88rem);
   font-weight: 700;
   line-height: 1.38;
@@ -3534,7 +3538,7 @@ button.hw26-apply {
    Filled rather than outlined here: the face is already open enough that a
    stroke-only treatment reads as noise at this size. */
 .hw26-rig-no {
-  font-family: var(--font-geist-pixel-circle), var(--font-orbitron), sans-serif;
+  font-family: var(--font-geist-pixel-circle), var(--font-chakra-petch), sans-serif;
   font-weight: 500;
   font-size: clamp(3rem, 7.5vw, 5.75rem);
   line-height: 0.85;
@@ -3558,20 +3562,23 @@ button.hw26-apply {
   display: block;
 }
 
-/* Orbitron at 900, back off the stamped face. Geist Pixel ships one weight
-   per shape, so the stamp could only ever be set at 500 and the name had to
-   hold its own against the group title above it on size and face alone; on
-   Orbitron the 900 is a real file again, and weight goes back to doing the
-   work face was standing in for.
+/* The display face at its heaviest, back off the stamped face. Geist Pixel
+   ships one weight per shape, so the stamp could only ever be set at 500 and
+   the name had to hold its own against the group title above it on size and
+   face alone; on a real text face there are several cuts to choose from —
+   Chakra Petch tops out at 700 rather than Orbitron's 900, so the declared
+   900 here resolves to that file — and weight goes back to doing the work
+   face was standing in for.
 
    Bone, not snow. The title above it is bone too — see `.hw26-cat` — and the
-   two do not need different greys to stay apart: this one is larger and four
-   weights heavier, and a name that is 900 against a 500 is already the louder
-   of the pair without also being a lighter colour. Silver was the alternative
+   two do not need different greys to stay apart: this one is larger and
+   several weights heavier, and a name at the top of the axis against a 500 is
+   already the louder of the pair without also being a lighter colour. Silver
+   was the alternative
    and it is spoken for: it is what the TBA cells drop to, and a name that
    started there would leave the placeholders nowhere to go. */
 .hw26-rig-name {
-  font-family: var(--font-orbitron), sans-serif;
+  font-family: var(--font-chakra-petch), sans-serif;
   font-weight: 900;
   text-transform: uppercase;
   font-size: clamp(2rem, 5.5vw, 4rem);
@@ -4176,7 +4183,8 @@ button.hw26-apply {
      brought in to 16. That resolves to 120px of measure at 360, 135 at 390,
      155 at 430 and 236 at 599.98.
 
-     Measured in the live face — Orbitron 900, uppercase — as advance per
+     Measured in what was then the live face — Orbitron 900, uppercase; the
+     display face is Chakra Petch now, so these want re-measuring — as advance per
      pixel of font-size, with the largest size each word fits the 360px
      measure of 120 at:
 
@@ -4488,7 +4496,7 @@ button.hw26-apply {
   z-index: 2;
   top: clamp(1.1rem, 2vw, 1.6rem);
   left: clamp(1.25rem, 2.4vw, 1.9rem);
-  font-family: var(--font-geist-pixel-circle), var(--font-orbitron), sans-serif;
+  font-family: var(--font-geist-pixel-circle), var(--font-chakra-petch), sans-serif;
   font-size: clamp(2.4rem, 4.5vw, 4rem);
   line-height: 1;
   color: var(--hw-line-hi);
@@ -4565,7 +4573,7 @@ button.hw26-apply {
 }
 
 .hw26-prize-tba {
-  font-family: var(--font-geist-pixel-circle), var(--font-orbitron), sans-serif;
+  font-family: var(--font-geist-pixel-circle), var(--font-chakra-petch), sans-serif;
   font-size: clamp(12rem, 25vw, 22rem);
   line-height: 1;
   color: var(--hw-line-hi);
@@ -4580,7 +4588,7 @@ button.hw26-apply {
 .hw26-prize-copy h3 {
   margin: 0.55rem 0 0;
   max-width: 12ch;
-  font-family: var(--font-orbitron), sans-serif;
+  font-family: var(--font-chakra-petch), sans-serif;
   font-size: clamp(1.65rem, 3vw, 2.8rem);
   font-weight: 900;
   line-height: 0.92;
@@ -4634,7 +4642,7 @@ button.hw26-apply {
 .hw26-prize-step span {
   position: relative;
   z-index: 1;
-  font-family: var(--font-geist-pixel-square), var(--font-orbitron), sans-serif;
+  font-family: var(--font-geist-pixel-square), var(--font-chakra-petch), sans-serif;
   font-size: clamp(2.5rem, 6vw, 5.25rem);
   line-height: 1;
   color: var(--hw-line-hi);
@@ -5079,7 +5087,7 @@ button.hw26-apply {
    dates the hero clock is counting towards, so they are the same kind of
    figure as the readout up there and get the same face. */
 .hw26-tl-when {
-  font-family: var(--font-geist-pixel-circle), var(--font-orbitron), sans-serif;
+  font-family: var(--font-geist-pixel-circle), var(--font-chakra-petch), sans-serif;
   font-weight: 500;
   font-size: var(--tl-date);
   line-height: 1;
@@ -5096,13 +5104,13 @@ button.hw26-apply {
 }
 
 /* The step's name, above its sentence — the "How it works" half of a stop.
-   Orbitron and uppercase because it is a heading, but strictly smaller than
+   Chakra Petch and uppercase because it is a heading, but strictly smaller than
    the date over it: the date is the figure the line exists to plot and the
    title is what happens at it. Live stops take the accent on the date, not
    here, so a lit stop stays one mint figure rather than a mint block. */
 .hw26-tl-title {
   margin: 0 0 0.5rem;
-  font-family: var(--font-orbitron), sans-serif;
+  font-family: var(--font-chakra-petch), sans-serif;
   font-size: clamp(0.78rem, 1vw, 0.92rem);
   font-weight: 700;
   line-height: 1.35;
@@ -5827,7 +5835,7 @@ html:not(.hw26-cursor-dom) .hw26-faq-trigger {
   padding: 0.7rem 1rem;
   background: var(--hw-mint);
   color: var(--hw-on-mint);
-  font-family: var(--font-orbitron), sans-serif;
+  font-family: var(--font-chakra-petch), sans-serif;
   font-size: clamp(0.62rem, 0.8vw, 0.72rem);
   font-weight: 800;
   letter-spacing: 0.1em;
@@ -6229,8 +6237,8 @@ html[data-theme='light'] .hw26-sponsor-lead:not(.hw26-sponsor-lead--tba):hover {
    get wrong, since the plate is the same one that is a link one cell over.
 
    The word is set as the wall's display face at about a mark's mass rather
-   than at a caption's — prelint two cells over stands 50px, and Orbitron's
-   caps at 2.5rem land near that once the tracking has spread them across the
+   than at a caption's — prelint two cells over stands 50px, and the display
+   face's caps at 2.5rem land near that once the tracking has spread them across the
    same sort of width. prelint and not Echo Systems, which is the taller of the
    two at 76px: that figure buys back a stacked lockup's wasted height and a
    word set on one line has none to buy back, so matching it would put TBA a
@@ -6238,7 +6246,7 @@ html[data-theme='light'] .hw26-sponsor-lead:not(.hw26-sponsor-lead--tba):hover {
    the wall's ink for a thing stated rather than a thing offered; bone or snow
    would put it at a signed sponsor's weight. */
 .hw26-sponsor-lead--tba {
-  font-family: var(--font-orbitron), sans-serif;
+  font-family: var(--font-chakra-petch), sans-serif;
   font-size: clamp(1.5rem, 3.2vw, 2.5rem);
   font-weight: 600;
   line-height: 1;
@@ -6980,7 +6988,7 @@ html[data-theme='light'] .hw26-sponsor--static:hover {
 }
 
 .hw26-closer h2 {
-  font-family: var(--font-orbitron), sans-serif;
+  font-family: var(--font-chakra-petch), sans-serif;
   font-weight: 900;
   text-transform: uppercase;
   font-size: clamp(2.2rem, 8vw, 6.5rem);
@@ -7085,7 +7093,7 @@ html[data-theme='light'] .hw26-sponsor--static:hover {
   margin: 0;
   /* Square — the plate number stamped huge. The solid cut is the only one
      that holds its shape when the glyphs are this big and outlined. */
-  font-family: var(--font-geist-pixel-square), var(--font-orbitron), sans-serif;
+  font-family: var(--font-geist-pixel-square), var(--font-chakra-petch), sans-serif;
   font-weight: 500;
   font-size: clamp(8rem, 26vw, 22rem);
   line-height: 0.78;
@@ -7120,7 +7128,7 @@ html[data-theme='light'] .hw26-sponsor--static:hover {
 }
 
 .hw26-endplate-mark {
-  font-family: var(--font-orbitron), sans-serif;
+  font-family: var(--font-chakra-petch), sans-serif;
   font-weight: 900;
   text-transform: uppercase;
   font-size: clamp(1.6rem, 4.5vw, 3.25rem);
@@ -7143,7 +7151,7 @@ html[data-theme='light'] .hw26-sponsor--static:hover {
   padding: 0.7rem 1.1rem;
   border: 2px solid var(--hw-pine);
   color: var(--hw-pine);
-  font-family: var(--font-orbitron), sans-serif;
+  font-family: var(--font-chakra-petch), sans-serif;
   font-weight: 800;
   font-size: clamp(0.7rem, 1.1vw, 0.9rem);
   letter-spacing: 0.18em;
@@ -7200,7 +7208,7 @@ html[data-theme='light'] .hw26-sponsor--static:hover {
    context this cut was drawn for. */
 .hw26-tb dd {
   margin: 0;
-  font-family: var(--font-geist-pixel-grid), var(--font-orbitron), sans-serif;
+  font-family: var(--font-geist-pixel-grid), var(--font-chakra-petch), sans-serif;
   font-weight: 500;
   font-size: 0.88rem;
   letter-spacing: 0.04em;
@@ -7240,7 +7248,7 @@ html[data-theme='light'] .hw26-sponsor--static:hover {
 .hw26-support-link span {
   margin-right: 0.45rem;
   color: var(--hw-mint);
-  font-family: var(--font-orbitron), sans-serif;
+  font-family: var(--font-chakra-petch), sans-serif;
   font-size: 0.68rem;
   font-weight: 800;
   letter-spacing: 0.12em;
@@ -7281,7 +7289,7 @@ html[data-theme='light'] .hw26-sponsor--static:hover {
 
 .hw26-social-link span {
   color: var(--hw-mint);
-  font-family: var(--font-orbitron), sans-serif;
+  font-family: var(--font-chakra-petch), sans-serif;
   font-size: 0.68rem;
   font-weight: 800;
   letter-spacing: 0.12em;

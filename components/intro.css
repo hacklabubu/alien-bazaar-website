@@ -147,7 +147,7 @@
 .hw26-i-mark {
   position: relative;
   display: block;
-  font-family: var(--font-orbitron), sans-serif;
+  font-family: var(--font-chakra-petch), sans-serif;
   font-weight: 900;
   text-transform: uppercase;
   font-size: clamp(1.6rem, 8vw, 6rem);
@@ -335,7 +335,7 @@
 
 /* Line — the readout cut, same as the shiplog hero. */
 .hw26-i-keyline b {
-  font-family: var(--font-geist-pixel-line), var(--font-orbitron), sans-serif;
+  font-family: var(--font-geist-pixel-line), var(--font-chakra-petch), sans-serif;
   font-weight: 500;
   font-size: clamp(0.6rem, 1.3vw, 0.88rem);
   letter-spacing: 0.08em;

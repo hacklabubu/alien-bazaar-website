@@ -133,7 +133,7 @@ function PackageCard({
 /**
  * Sponsorship packages for Alien Bazaar.
  *
- * Same neoindustrial shell as the lander — phosphor mint, Orbitron display,
+ * Same neoindustrial shell as the lander — phosphor mint, Chakra Petch display,
  * JetBrains Mono body, chamfered plates — applied to a commercial page
  * rather than an event brochure. The three packages are the product; the
  * matrix is the proof; the deep-dives are the pitch.
