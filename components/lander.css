@@ -694,12 +694,105 @@ html:not(.hw26-cursor-dom) .hw26 [role='button'] * {
   opacity: 0.4;
 }
 
+/* The title minus its mark: the label and, when a group has one, the partner's
+   logo, held in one box so that the pair can wrap as a pair. The mark is
+   deliberately left outside it. A logo that runs out of room on a phone has to
+   go to a second line, and where that line starts is the whole point of this
+   box: it starts where the box does, which is after the `/// ` and its space —
+   under the first letter of the white label, not under the slashes. The
+   slashes open the title once; a logo sitting beneath them reads as a second
+   thing they are announcing.
+
+   Which is why the heading itself becomes a flex row of exactly two items,
+   mark and body, on the groups that have a body at all. Left inline, the body
+   is one atomic word as far as line-breaking is concerned: the moment it does
+   not fit after the `/// ` the whole box — label, logo and all — drops to the
+   next line and abandons the slashes on a line of their own, which is the one
+   arrangement this box exists to prevent. As a flex item it is a box with a
+   width instead, free to shrink and to do its wrapping inside itself, between
+   the label's own words and before the logo, while the mark stays put on line
+   one. `min-width: 0` is what lets that box shrink past its longest word — but
+   it only gets the box that far. The label inside it is a flex item too, an
+   anonymous one wrapped around a bare text node, and its own automatic minimum
+   floors at the width of its longest word. The `overflow-wrap: break-word` the
+   heading carries never lowers that floor: `break-word` breaks a word that has
+   been given a line and still does not fit, and leaves min-content measuring
+   the whole word, so the minimum the anonymous item reports is unmoved and
+   "COMPONENTS" simply pokes out of the heading — two pixels at 390px, fifty at
+   340px. `overflow-wrap: anywhere` is the same last-resort break with the
+   measurement fixed: soft break opportunities count toward min-content, the
+   anonymous item can be squeezed to a single letter, and the word still only
+   breaks when a line of its own is too narrow to hold it. Which is why the
+   body carries it here rather than relying on what it inherits, and why the
+   section still never gives the page a horizontal scrollbar at 390px.
+
+   Flex eats the `{" "}` between the two spans — whitespace-only children are
+   not flex items — so the mark grows the space back as its own `::after`. Same
+   glyph, same element, so it takes the inherited `word-spacing` and the mark's
+   letter-spacing exactly as the text node did and the mark-to-label distance
+   on a wide screen is unchanged to the pixel. It also means the body item
+   starts after that space, and every line the body wraps onto starts there
+   too: continuation words and logo alike land under the label's first letter,
+   which is the promise the box was making all along.
+
+   The row gap is borrowed, not chosen: 0.6rem is the figure the title already
+   keeps between itself and the lit box beneath it when a group opens with an
+   intro line (see `.hw26-cat:has(+ .hw26-cat-intro)` below). The distance
+   between the two halves of a wrapped heading and the distance from that
+   heading to what it introduces are the same kind of distance, and the page
+   should only have one answer for it. The column gap is the margin the logo
+   used to carry itself, moved onto the container that now owns the spacing on
+   both axes.
+
+   Baseline-wise this changes nothing: an inline-flex box hands its parent the
+   baseline of its first line, which is the label's, so `align-items: baseline`
+   on the row sits the mark and the label on the one line of type they always
+   did. */
+.hw26-cat:has(.hw26-cat-body) {
+  display: flex;
+  align-items: baseline;
+}
+
+.hw26-cat:has(.hw26-cat-body) .hw26-cat-mark::after {
+  content: " ";
+  white-space: pre;
+}
+
+/* Below about 711px the title has already hit the 2rem floor of its clamp and
+   stops shrinking, while the sheet around it keeps narrowing — so the narrower
+   the phone the less room the indented wrap line has, and at 390px it misses
+   holding "COMPONENTS" by two pixels and the `anywhere` backstop above splits
+   off a lone "S". The two pixels are found inside the mark's own space rather
+   than anywhere else on the line: that one glyph carries the inherited
+   `word-spacing` and the mark's `letter-spacing` — about five pixels together
+   at 2rem — and handing them back under 420px closes the gap between the
+   slashes and the label by an amount no eye reads as a change. Alignment is
+   untouched by construction: the label's start on line one and the indent every
+   wrapped line lands on are the same edge of the same mark box, so narrowing
+   that box moves both together. Under roughly 385px the word cannot physically
+   sit beside the indent at the 2rem floor no matter what the spacing is, and
+   the `anywhere` backstop is there to catch it. */
+@media (max-width: 420px) {
+  .hw26-cat:has(.hw26-cat-body) .hw26-cat-mark::after {
+    word-spacing: 0;
+    letter-spacing: 0;
+  }
+}
+
+.hw26-cat-body {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  column-gap: clamp(0.85rem, 2vw, 1.75rem);
+  row-gap: 0.6rem;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
 .hw26-cat-partner {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  margin-left: clamp(0.85rem, 2vw, 1.75rem);
-  vertical-align: middle;
   transform: translateY(-0.08em);
   line-height: 1;
 }

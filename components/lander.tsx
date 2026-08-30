@@ -4054,18 +4054,20 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
                 <span aria-hidden="true" className="hw26-cat-mark">
                   ///
                 </span>{" "}
-                {group.label}
-                {group.partner ? (
-                  <a
-                    aria-label={`${group.partner.name} website`}
-                    className="hw26-cat-partner"
-                    href={group.partner.href}
-                    rel="noreferrer"
-                    target="_blank"
-                  >
-                    <img alt={group.partner.name} src={group.partner.src} />
-                  </a>
-                ) : null}
+                <span className="hw26-cat-body">
+                  {group.label}
+                  {group.partner ? (
+                    <a
+                      aria-label={`${group.partner.name} website`}
+                      className="hw26-cat-partner"
+                      href={group.partner.href}
+                      rel="noreferrer"
+                      target="_blank"
+                    >
+                      <img alt={group.partner.name} src={group.partner.src} />
+                    </a>
+                  ) : null}
+                </span>
               </h3>
 
               {/* The group's own line, under its title and above its cells —
