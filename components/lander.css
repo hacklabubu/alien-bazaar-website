@@ -694,6 +694,128 @@ html:not(.hw26-cursor-dom) .hw26 [role='button'] * {
   opacity: 0.4;
 }
 
+/* The title minus its mark: the label and, when a group has one, the partner's
+   logo, held in one box so that the pair can wrap as a pair. The mark is
+   deliberately left outside it. A logo that runs out of room on a phone has to
+   go to a second line, and where that line starts is the whole point of this
+   box: it starts where the box does, which is after the `/// ` and its space —
+   under the first letter of the white label, not under the slashes. The
+   slashes open the title once; a logo sitting beneath them reads as a second
+   thing they are announcing.
+
+   Which is why the heading itself becomes a flex row of exactly two items,
+   mark and body, on the groups that have a body at all. Left inline, the body
+   is one atomic word as far as line-breaking is concerned: the moment it does
+   not fit after the `/// ` the whole box — label, logo and all — drops to the
+   next line and abandons the slashes on a line of their own, which is the one
+   arrangement this box exists to prevent. As a flex item it is a box with a
+   width instead, free to shrink and to do its wrapping inside itself, between
+   the label's own words and before the logo, while the mark stays put on line
+   one. `min-width: 0` is what lets that box shrink past its longest word — but
+   it only gets the box that far. The label inside it is a flex item too, an
+   anonymous one wrapped around a bare text node, and its own automatic minimum
+   floors at the width of its longest word. The `overflow-wrap: break-word` the
+   heading carries never lowers that floor: `break-word` breaks a word that has
+   been given a line and still does not fit, and leaves min-content measuring
+   the whole word, so the minimum the anonymous item reports is unmoved and
+   "COMPONENTS" simply pokes out of the heading — two pixels at 390px, fifty at
+   340px. `overflow-wrap: anywhere` is the same last-resort break with the
+   measurement fixed: soft break opportunities count toward min-content, the
+   anonymous item can be squeezed to a single letter, and the word still only
+   breaks when a line of its own is too narrow to hold it. Which is why the
+   body carries it here rather than relying on what it inherits, and why the
+   section still never gives the page a horizontal scrollbar at 390px.
+
+   Flex eats the `{" "}` between the two spans — whitespace-only children are
+   not flex items — so the mark grows the space back as its own `::after`. Same
+   glyph, same element, so it takes the inherited `word-spacing` and the mark's
+   letter-spacing exactly as the text node did and the mark-to-label distance
+   on a wide screen is unchanged to the pixel. It also means the body item
+   starts after that space, and every line the body wraps onto starts there
+   too: continuation words and logo alike land under the label's first letter,
+   which is the promise the box was making all along.
+
+   The row gap is borrowed, not chosen: 0.6rem is the figure the title already
+   keeps between itself and the lit box beneath it when a group opens with an
+   intro line (see `.hw26-cat:has(+ .hw26-cat-intro)` below). The distance
+   between the two halves of a wrapped heading and the distance from that
+   heading to what it introduces are the same kind of distance, and the page
+   should only have one answer for it. The column gap is the margin the logo
+   used to carry itself, moved onto the container that now owns the spacing on
+   both axes.
+
+   Baseline-wise this changes nothing: an inline-flex box hands its parent the
+   baseline of its first line, which is the label's, so `align-items: baseline`
+   on the row sits the mark and the label on the one line of type they always
+   did. */
+.hw26-cat:has(.hw26-cat-body) {
+  display: flex;
+  align-items: baseline;
+}
+
+.hw26-cat:has(.hw26-cat-body) .hw26-cat-mark::after {
+  content: " ";
+  white-space: pre;
+}
+
+/* Below about 711px the title has already hit the 2rem floor of its clamp and
+   stops shrinking, while the sheet around it keeps narrowing — so the narrower
+   the phone the less room the indented wrap line has, and at 390px it misses
+   holding "COMPONENTS" by two pixels and the `anywhere` backstop above splits
+   off a lone "S". The two pixels are found inside the mark's own space rather
+   than anywhere else on the line: that one glyph carries the inherited
+   `word-spacing` and the mark's `letter-spacing` — about five pixels together
+   at 2rem — and handing them back under 420px closes the gap between the
+   slashes and the label by an amount no eye reads as a change. Alignment is
+   untouched by construction: the label's start on line one and the indent every
+   wrapped line lands on are the same edge of the same mark box, so narrowing
+   that box moves both together. Under roughly 385px the word cannot physically
+   sit beside the indent at the 2rem floor no matter what the spacing is, and
+   the `anywhere` backstop is there to catch it. */
+@media (max-width: 420px) {
+  .hw26-cat:has(.hw26-cat-body) .hw26-cat-mark::after {
+    word-spacing: 0;
+    letter-spacing: 0;
+  }
+}
+
+.hw26-cat-body {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  column-gap: clamp(0.85rem, 2vw, 1.75rem);
+  row-gap: 0.6rem;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.hw26-cat-partner {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transform: translateY(-0.08em);
+  line-height: 1;
+}
+
+.hw26-cat-partner img {
+  display: block;
+  width: auto;
+  height: 1em;
+  max-width: 5em;
+  object-fit: contain;
+  opacity: 0.78;
+  transition: opacity 220ms var(--hw-ease);
+}
+
+.hw26-cat-partner:is(:hover, :focus-visible) img {
+  opacity: 1;
+}
+
+.hw26-cat-partner:focus-visible {
+  outline: 1px solid var(--hw-mint);
+  outline-offset: 5px;
+}
+
 /* The line a group opens with, under the title and above the cells. Both of
    them have one: the print deadline, which is an instruction for the whole of
    3D Printers and not a fact about the print farm cell it used to hang off,
@@ -3618,10 +3740,19 @@ button.hw26-apply {
  * inks and a mark bringing a third would outrank the copy it is subordinate
  * to. It answers the pointer with a step of opacity rather than of colour,
  * because a white lockup has no accent to take. */
-.hw26-rig-credit {
+.hw26-rig-credit-stack {
   position: absolute;
+  z-index: 4;
   top: var(--rig-corner);
   right: var(--rig-corner);
+  display: flex;
+  width: clamp(62px, 5.4vw, 78px);
+  flex-direction: column;
+  gap: 0.45rem;
+  align-items: flex-end;
+}
+
+.hw26-rig-credit {
   width: auto;
   height: auto;
   max-width: clamp(42px, 3.8vw, 54px);
@@ -3632,6 +3763,38 @@ button.hw26-apply {
 
 .hw26-rig:is(:hover, .hw26-rig--active) .hw26-rig-credit {
   opacity: 1;
+}
+
+.hw26-rig-doc {
+  display: grid;
+  width: 1.7rem;
+  height: 1.7rem;
+  place-items: center;
+  color: var(--hw-silver);
+  transition:
+    color 180ms var(--hw-ease),
+    filter 180ms var(--hw-ease);
+}
+
+.hw26-rig-doc svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.35;
+  stroke-linecap: square;
+  stroke-linejoin: miter;
+}
+
+.hw26-rig-doc:is(:hover, :focus-visible) {
+  color: var(--hw-mint);
+  filter: drop-shadow(0 0 0.5rem color-mix(in srgb, var(--hw-mint) 42%, transparent));
+}
+
+.hw26-rig-doc:focus-visible {
+  outline: 1px solid var(--hw-mint);
+  outline-offset: 3px;
 }
 
 /* Sized so the longest word in the list — MANIPULATORS — clears the cell's
@@ -5810,24 +5973,14 @@ html:not(.hw26-cursor-dom) .hw26-faq-trigger {
   width: calc((100% - 3px) / 2 + 2px);
 }
 
-/* The Sponsors row: prelint, Echo Systems and the cell held for the third
-   name. This was `--two` while the row was one sponsor and one held cell, and
-   the count is stated here rather than left to the base rule's `auto-fit` for
-   the reason every count on this wall is stated — the gaps are the container's
-   `--hw-line` showing through, so a track the row does not fill is not empty
-   space but a lit plate the size of a tile. */
-.hw26-sponsors-lead--three {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+/* Four confirmed sponsors share one continuous row. The count is explicit so
+   the wall never draws an unfilled, line-coloured phantom tile. */
+.hw26-sponsors-lead--four {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
 }
 
-/* A third of the sheet is not a half of it made smaller. At 1440 the sheet is
-   1325px once the gutter is off it, so a track here is 440px and the
-   half-sheet inset would spend 128px of that on air — 29% of the track against
-   the 19% it costs in the cell that figure was chosen for. The stronger reason
-   is a page away: Prize Partners is the other three-across lead row on this
-   sheet, it takes this inset, and two rows of the same plate at two different
-   insets read as two different plates. */
-.hw26-sponsors-lead--three .hw26-sponsor-lead {
+/* A quarter-sheet sponsor cell uses the compact lead-cell inset. */
+.hw26-sponsors-lead--four .hw26-sponsor-lead {
   padding: clamp(1.75rem, 3vw, 2.75rem);
 }
 
@@ -5840,7 +5993,7 @@ html:not(.hw26-cursor-dom) .hw26-faq-trigger {
    half-sheet tiles leave 118px. `contain` and not a bare `max-width`, because
    capping the width of a fixed-height element squashes the mark rather than
    fitting it. */
-.hw26-sponsors-lead--three img {
+.hw26-sponsors-lead--four img {
   max-width: 100%;
   object-fit: contain;
 }
@@ -5881,25 +6034,10 @@ html:not(.hw26-cursor-dom) .hw26-faq-trigger {
     grid-column: span 2;
   }
 
-  .hw26-sponsors-lead--three {
+  .hw26-sponsors-lead--four {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  /* Same span as the Prize row, and it was worth arguing about here because
-     the odd child out is the held cell — so this hands TBA the widest plate on
-     the phone. The alternative is worse in both directions. Left in a half
-     track it leaves the other half of that row bare, and bare on this
-     container is the lit `--hw-line` plate the counts above exist to avoid;
-     dropped to one column so the arithmetic goes away, every tile becomes a
-     full-bleed banner with a mark floating in the middle of it, which is the
-     failure the ecosystem row's floor is written against.
-
-     And the plate is not the claim. A wide plate under a wordmark says that
-     sponsor is bigger; under the word TBA it says there is more room, which is
-     the one thing about that cell that is true. */
-  .hw26-sponsors-lead--three > :last-child {
-    grid-column: span 2;
-  }
   /* Full width, because the row it is half of is one column here and half of
      one column is not a slot — the row *is* the sheet, so a shrunk container
      would only read as a tile that came up short. */
@@ -6230,7 +6368,19 @@ html[data-theme='light'] .hw26-sponsor-lead--tba {
 }
 
 .hw26-sponsor-lead img.hw26-mark--tnkr {
-  height: clamp(30px, 3.2vw, 42px);
+  height: clamp(52px, 5.2vw, 70px);
+  max-width: 100%;
+  object-fit: contain;
+}
+
+.hw26-sponsor-lead img.hw26-mark--montis {
+  height: clamp(24px, 2.8vw, 34px);
+  max-width: 100%;
+  object-fit: contain;
+}
+
+.hw26-sponsor-lead img.hw26-mark--credo {
+  height: clamp(26px, 3vw, 38px);
   max-width: 100%;
   object-fit: contain;
 }
@@ -6550,7 +6700,19 @@ html[data-theme='light'] .hw26-sponsor--static:hover {
 }
 
 .hw26-sponsor img.hw26-mark--tnkr {
-  height: clamp(30px, 3.2vw, 42px);
+  height: clamp(46px, 4.6vw, 60px);
+}
+
+.hw26-sponsor img.hw26-mark--seeed {
+  height: clamp(24px, 2.4vw, 34px);
+  max-width: 100%;
+  object-fit: contain;
+}
+
+.hw26-sponsor img.hw26-mark--botland {
+  height: clamp(26px, 2.6vw, 36px);
+  max-width: 100%;
+  object-fit: contain;
 }
 
 .hw26-sponsor-lockup--machinekind .hw26-sponsor-wordmark {
@@ -6558,10 +6720,10 @@ html[data-theme='light'] .hw26-sponsor--static:hover {
 }
 
 /* Partner credits stay as clean marks over the hardware photography. */
-.hw26-rig-credit[src="/sponsors/tnkr.svg"] {
-  max-width: clamp(58px, 5vw, 72px);
-  max-height: clamp(22px, 2vw, 28px);
-  opacity: 0.88;
+.hw26-rig-credit[src="/sponsors/stealth-startup.svg"] {
+  max-width: clamp(42px, 4.4vw, 56px);
+  max-height: clamp(36px, 3.8vw, 48px);
+  opacity: 0.78;
   object-fit: contain;
 }
 

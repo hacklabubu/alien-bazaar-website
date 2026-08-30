@@ -202,6 +202,7 @@ type Rig = {
   units?: string;
   note?: string;
   photo?: string;
+  docsUrl?: string;
   tba?: boolean;
   dropShadow?: boolean;
   unannounced?: boolean;
@@ -311,18 +312,20 @@ const RIG_GROUPS: { label: string; items: Rig[] }[] = [
         name: "Tri-Arm",
         units: "2x",
         photo: "/hardware/tri-arm-studio.webp",
+        docsUrl: "https://tnkr.ai/theaiwhisperers-workspace/tri-arm#overview",
         credit: {
-          src: "/sponsors/tnkr.svg",
-          label: "In partnership with TNKR",
+          src: "/sponsors/stealth-startup.svg",
+          label: "In partnership with Stealth startup",
         },
       },
       {
         name: "XLeRobot",
         units: "1x",
         photo: "/hardware/xlerobot-studio.png",
+        docsUrl: "https://tnkr.ai/ryans-workspace/xlerobot#overview",
         credit: {
-          src: "/sponsors/tnkr.svg",
-          label: "In partnership with TNKR",
+          src: "/sponsors/stealth-startup.svg",
+          label: "In partnership with Stealth startup",
         },
       },
       {
@@ -336,8 +339,9 @@ const RIG_GROUPS: { label: string; items: Rig[] }[] = [
       },
       {
         name: "Manipulators",
-        units: "2x",
+        units: "5x",
         photo: "/hardware/robo-arm.png",
+        docsUrl: "https://tnkr.ai/eros-builds/so-101-robotic-arm#overview",
         credit: {
           src: "/sponsors/ghost-icon.png",
           label: "In partnership with GHOST",
@@ -364,10 +368,10 @@ const RIG_GROUPS: { label: string; items: Rig[] }[] = [
   {
     label: "Underwater drones",
     items: [
-      { name: "Robo fish", units: "3x", photo: "/hardware/robo-fish.png" },
       {
-        name: "Underwater drone",
+        name: "Build your own",
         units: "1x",
+        note: "Underwater drones. We provide components and tools, you design and assemble it.",
         photo: "/hardware/underwater-drone.png",
       },
     ],
@@ -408,9 +412,10 @@ const RIG_GROUPS: { label: string; items: Rig[] }[] = [
         units: "1x",
         note: "Vladimer. We provide components and tools, you design and assemble it.",
         photo: "/hardware/vladimer-studio.webp",
+        docsUrl: "https://tnkr.ai/vladimirroboticss-workspace/cubebot#overview",
         credit: {
-          src: "/sponsors/tnkr.svg",
-          label: "In partnership with TNKR",
+          src: "/sponsors/stealth-startup.svg",
+          label: "In partnership with Stealth startup",
         },
       },
     ],
@@ -509,7 +514,12 @@ const RIG_GROUPS: { label: string; items: Rig[] }[] = [
  * room and does not name its contents is the honest version of that row —
  * there is more coming, and it is not announced.
  */
-const ADDON_GROUPS: { label: string; intro?: string; items: Rig[] }[] = [
+const ADDON_GROUPS: {
+  label: string;
+  intro?: string;
+  partner?: { name: string; src: string; href: string };
+  items: Rig[];
+}[] = [
   {
     label: "3D Printers",
     intro:
@@ -540,9 +550,57 @@ const ADDON_GROUPS: { label: string; intro?: string; items: Rig[] }[] = [
         },
       },
       {
+        name: "MIC770AI",
+        units: "1x",
+        photo: "/hardware/mic770ai-studio.png",
+        credit: {
+          src: "/sponsors/elmark-white.svg",
+          label: "Supplied by Elmark Automatyka",
+        },
+      },
+      {
+        name: "Nuvo-7160GC",
+        units: "1x",
+        photo: "/hardware/nuvo-7160gc-studio.png",
+        credit: {
+          src: "/sponsors/elmark-white.svg",
+          label: "Supplied by Elmark Automatyka",
+        },
+      },
+      {
+        name: "NRU-52S",
+        units: "1x",
+        photo: "/hardware/nru-52s-studio.png",
+        credit: {
+          src: "/sponsors/elmark-white.svg",
+          label: "Supplied by Elmark Automatyka",
+        },
+      },
+      {
+        name: "SEMIL-1600GC",
+        units: "1x",
+        photo: "/hardware/semil-1600gc-studio.png",
+        credit: {
+          src: "/sponsors/elmark-white.svg",
+          label: "Supplied by Elmark Automatyka",
+        },
+      },
+    ],
+  },
+  {
+    label: "Extra Components",
+    intro: "Additional electronics and components will be announced soon.",
+    partner: {
+      name: "Botland",
+      src: "/sponsors/botland.png",
+      href: "https://botland.com.pl/",
+    },
+    items: [
+      {
         name: "TBA",
-        photo: "/hardware/components.jpeg",
-        blurPhoto: true,
+        units: "?",
+        tba: true,
+        unannounced: true,
       },
     ],
   },
@@ -556,8 +614,8 @@ const PRIZES = [
     image: "/prizes/open-duck-mini-studio.webp",
     note: "For the winning team",
     partner: {
-      name: "TNKR",
-      src: "/sponsors/tnkr.svg",
+      name: "Stealth startup",
+      src: "/sponsors/stealth-startup.svg",
       mark: "hw26-mark--tnkr",
     },
   },
@@ -938,6 +996,14 @@ const HARDWARE_PARTNERS: Partner[] = [
     tile: "hw26-sponsor--diamond",
   },
   {
+    name: "Botland",
+    src: "/sponsors/botland.png",
+    href: "https://botland.com.pl/",
+    mark: "hw26-mark--botland",
+    highlight: true,
+    tile: "hw26-sponsor--diamond",
+  },
+  {
     name: "Lute",
     src: "/sponsors/lute.svg",
     href: "https://www.lute.one/",
@@ -1000,11 +1066,17 @@ const HARDWARE_PARTNERS: Partner[] = [
     mark: "hw26-mark--mab",
   },
   {
-    name: "TNKR",
-    src: "/sponsors/tnkr.svg",
+    name: "Stealth startup",
+    src: "/sponsors/stealth-startup.svg",
     href: "https://tnkr.ai/",
     mark: "hw26-mark--tnkr",
     highlight: true,
+  },
+  {
+    name: "Seeed Studio",
+    src: "/sponsors/seeed-studio.png",
+    href: "https://www.seeedstudio.com/",
+    mark: "hw26-mark--seeed",
   },
   {
     // The faculty's full name is the accessible name and the tooltip; the
@@ -1053,12 +1125,12 @@ const MEDIA_PARTNERS: Partner[] = [
   },
 ];
 
-/** In display order — the row renders this array as written: TNKR, M5Stack,
+/** In display order — the row renders this array as written: Stealth startup, M5Stack,
  * ChronoTap. */
 const PRIZE_PARTNERS: Partner[] = [
   {
-    name: "TNKR",
-    src: "/sponsors/tnkr.svg",
+    name: "Stealth startup",
+    src: "/sponsors/stealth-startup.svg",
     href: "https://tnkr.ai/",
     mark: "hw26-mark--tnkr",
     highlight: true,
@@ -1100,16 +1172,17 @@ const SPONSORS: (Partner | TbaCell)[] = [
     href: "https://echo-systems.eu/",
     mark: "hw26-mark--echosystems",
   },
-  /* The third cell is spoken for and the name is not ours to print yet. The
-     row no longer needs it for its shape — prelint and Echo Systems are two
-     real names and would sit as a pair without help — so what is left is the
-     only argument that was ever any good: dropping the cell would have the
-     page state that this tier closed at two. It has not, and that is a claim
-     the wall would have to un-make in a fortnight. A held cell says the true
-     thing instead, in the one place a reader is already counting sponsors. */
   {
-    name: "TBA",
-    tba: true,
+    name: "Montis VC",
+    src: "/sponsors/montis.svg",
+    href: "https://montis.vc/",
+    mark: "hw26-mark--montis",
+  },
+  {
+    name: "Credo Ventures",
+    src: "/sponsors/credo-ventures.svg",
+    href: "https://www.credoventures.com/",
+    mark: "hw26-mark--credo",
   },
 ];
 
@@ -2307,7 +2380,7 @@ export function PartnerDirectory() {
         </div>
 
         <PartnerSubhead action="sponsor" title="Sponsors" />
-        <div className="hw26-sponsors-lead hw26-sponsors-lead--three">
+        <div className="hw26-sponsors-lead hw26-sponsors-lead--four">
           {SPONSORS.map((partner) => (
             <LeadPartnerTile key={partner.name} partner={partner} />
           ))}
@@ -2612,12 +2685,32 @@ function RigCell({ item, order }: { item: Rig; order: number }) {
           it is the only place on the page that says where these parts come
           from, and a reader who cannot see the lockup would otherwise get a
           cell that is silently missing a fact the sighted one has. */}
-        {item.credit ? (
-          <img
-            alt={item.credit.label}
-            className="hw26-rig-credit"
-            src={item.credit.src}
-          />
+        {item.credit || item.docsUrl ? (
+          <div className="hw26-rig-credit-stack">
+            {item.credit ? (
+              <img
+                alt={item.credit.label}
+                className="hw26-rig-credit"
+                src={item.credit.src}
+              />
+            ) : null}
+
+            {item.docsUrl ? (
+              <a
+                aria-label={`Open ${item.name} documentation`}
+                className="hw26-rig-doc"
+                href={item.docsUrl}
+                rel="noreferrer"
+                target="_blank"
+                title={`${item.name} documentation`}
+              >
+                <svg aria-hidden="true" focusable="false" viewBox="0 0 18 20">
+                  <path d="M3 1.5h7.5L15 6v12.5H3z" />
+                  <path d="M10.5 1.5V6H15M6 10h6M6 13h6" />
+                </svg>
+              </a>
+            ) : null}
+          </div>
         ) : null}
 
         {/* The (i), on the cells that have something to say. Written here, right
@@ -3961,7 +4054,20 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
                 <span aria-hidden="true" className="hw26-cat-mark">
                   ///
                 </span>{" "}
-                {group.label}
+                <span className="hw26-cat-body">
+                  {group.label}
+                  {group.partner ? (
+                    <a
+                      aria-label={`${group.partner.name} website`}
+                      className="hw26-cat-partner"
+                      href={group.partner.href}
+                      rel="noreferrer"
+                      target="_blank"
+                    >
+                      <img alt={group.partner.name} src={group.partner.src} />
+                    </a>
+                  ) : null}
+                </span>
               </h3>
 
               {/* The group's own line, under its title and above its cells —
@@ -4068,11 +4174,8 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
 
           {/* The lead cell, not the wall's small tile: the tier is money, and
               the page says so in the size of the plate rather than in the
-              heading alone. Three cells across the sheet now, which is the
-              arrangement the Prize row already uses and the same one for the
-              same reason: see `--three` in the stylesheet, where the count is
-              stated rather than fitted and the inset comes down to suit a
-              third of a sheet instead of a half.
+              heading alone. Four confirmed sponsors share the sheet, with a
+              fixed count so the line-backed grid cannot create an empty tile.
 
               The tile is `LeadPartnerTile`, the same component the partners
               page maps this array through. It used to be an anchor written out
@@ -4080,7 +4183,7 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
               harmless while every sponsor was a link and stopped being so the
               moment one of them was a held cell: two copies of the markup are
               two places to remember the branch. */}
-          <div className="hw26-sponsors-lead hw26-sponsors-lead--three hw26-reveal">
+          <div className="hw26-sponsors-lead hw26-sponsors-lead--four hw26-reveal">
             {SPONSORS.map((s) => (
               <LeadPartnerTile key={s.name} partner={s} />
             ))}
