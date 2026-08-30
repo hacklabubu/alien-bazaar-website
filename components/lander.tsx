@@ -1179,10 +1179,8 @@ const SPONSORS: (Partner | TbaCell)[] = [
     mark: "hw26-mark--montis",
   },
   {
-    name: "Credo Ventures",
-    src: "/sponsors/credo-ventures.svg",
-    href: "https://www.credoventures.com/",
-    mark: "hw26-mark--credo",
+    name: "TBA",
+    tba: true,
   },
 ];
 
