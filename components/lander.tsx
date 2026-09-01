@@ -203,6 +203,8 @@ type Rig = {
   note?: string;
   photo?: string;
   docsUrl?: string;
+  /** A visible document marker for a BOM that has been announced but not published yet. */
+  docsPending?: string;
   tba?: boolean;
   dropShadow?: boolean;
   unannounced?: boolean;
@@ -239,7 +241,13 @@ type Rig = {
   credit?: { src: string; label: string };
 };
 
-const RIG_GROUPS: { label: string; items: Rig[] }[] = [
+type RigGroup = {
+  label: string;
+  items: Rig[];
+  reference?: { label: string; href: string };
+};
+
+const RIG_GROUPS: RigGroup[] = [
   {
     label: "Drones",
     items: [
@@ -254,10 +262,9 @@ const RIG_GROUPS: { label: string; items: Rig[] }[] = [
         },
       },
       {
-        name: "TBA",
-        units: "?",
-        tba: true,
-        unannounced: true,
+        name: "Skyhover",
+        units: "1x",
+        photo: "/hardware/skyhover-studio.png",
         credit: {
           src: "/sponsors/skymav.png",
           label: "In partnership with SkyMav",
@@ -268,6 +275,7 @@ const RIG_GROUPS: { label: string; items: Rig[] }[] = [
         units: "1x",
         note: "Coaxial tricopter. We provide components and tools, you design and assemble it.",
         photo: "/hardware/drone-build-your-own-studio.webp",
+        docsPending: "BOM coming soon",
         // The white cut of SPRTK's mark rather than the green one the wall
         // carries. On the wall the mark is a tile and its own colour is part
         // of what identifies it; here it is a credit in the corner of a panel
@@ -319,16 +327,6 @@ const RIG_GROUPS: { label: string; items: Rig[] }[] = [
         },
       },
       {
-        name: "XLeRobot",
-        units: "1x",
-        photo: "/hardware/xlerobot-studio.png",
-        docsUrl: "https://tnkr.ai/ryans-workspace/xlerobot#overview",
-        credit: {
-          src: "/sponsors/stealth-startup.svg",
-          label: "In partnership with Stealth startup",
-        },
-      },
-      {
         name: "Robot arms on platform",
         units: "2x",
         photo: "/hardware/robo-arm-big.png",
@@ -351,17 +349,25 @@ const RIG_GROUPS: { label: string; items: Rig[] }[] = [
         name: "Build your own",
         units: "2x",
         note: "Robo arms on a wheeled platform. We provide components and tools, you design and assemble it.",
-        photo: "/hardware/robo-arm-byo.png",
+        photo: "/hardware/robot-arm-byo-v2-studio.png",
         credit: {
           src: "/sponsors/mab.png",
           label: "In partnership with MAB Robotics",
         },
       },
       {
-        name: "TBA",
-        units: "?",
-        tba: true,
-        unannounced: true,
+        name: "Maker Arm",
+        units: "2x",
+        photo: "/hardware/makerarm-studio.png",
+        credit: {
+          src: "/sponsors/makermods.png",
+          label: "In partnership with MakerMods",
+        },
+      },
+      {
+        name: "reBot arm",
+        units: "2x",
+        photo: "/hardware/rebot-arm-studio.png",
       },
     ],
   },
@@ -373,6 +379,10 @@ const RIG_GROUPS: { label: string; items: Rig[] }[] = [
         units: "1x",
         note: "Underwater drones. We provide components and tools, you design and assemble it.",
         photo: "/hardware/underwater-drone.png",
+        credit: {
+          src: "/sponsors/cpsdrone.png",
+          label: "In partnership with CPS Drone",
+        },
       },
     ],
   },
@@ -424,15 +434,18 @@ const RIG_GROUPS: { label: string; items: Rig[] }[] = [
     label: "Humanoids",
     items: [
       {
-        name: "TBA",
-        units: "?",
-        tba: true,
-        unannounced: true,
+        name: "Unitree",
+        units: "1x",
+        photo: "/hardware/unitree-humanoid-studio.png",
       },
     ],
   },
   {
-    label: "Headsets",
+    label: "AR",
+    reference: {
+      label: "Example of use",
+      href: "https://x.com/JohannesTscharn/status/2076934528350704041",
+    },
     items: [
       { name: "Meta Quest", units: "1x", photo: "/hardware/vr-meta.jpeg" },
       {
@@ -440,8 +453,23 @@ const RIG_GROUPS: { label: string; items: Rig[] }[] = [
         units: "1x",
         photo: "/hardware/vr-holo-lens.jpeg",
       },
+      {
+        name: "Spectacles 2024",
+        units: "1x",
+        photo: "/hardware/spectacles-2024-studio.png",
+        credit: {
+          src: "/sponsors/spectacles.svg",
+          label: "In partnership with Spectacles",
+        },
+      },
     ],
   },
+];
+
+/** Keep the open-ended hardware option at the end of every category. */
+const orderRigItems = (items: Rig[]) => [
+  ...items.filter((item) => item.name.trim().toLowerCase() !== "build your own"),
+  ...items.filter((item) => item.name.trim().toLowerCase() === "build your own"),
 ];
 
 /**
@@ -589,7 +617,7 @@ const ADDON_GROUPS: {
   },
   {
     label: "Extra Components",
-    intro: "Additional electronics and components will be announced soon.",
+    intro: "Additional vision and compute modules supplied by Botland.",
     partner: {
       name: "Botland",
       src: "/sponsors/botland.png",
@@ -597,10 +625,24 @@ const ADDON_GROUPS: {
     },
     items: [
       {
-        name: "TBA",
-        units: "?",
-        tba: true,
-        unannounced: true,
+        name: "Luxonis OAK-D",
+        units: "1x",
+        photo: "/hardware/luxonis-oak-d-studio.png",
+      },
+      {
+        name: "Raspberry Pi 5 / 16GB",
+        units: "1x",
+        photo: "/hardware/raspberry-pi-5-16gb-studio.png",
+      },
+      {
+        name: "ArduCam EK031",
+        units: "1x",
+        photo: "/hardware/arducam-ek031-studio.png",
+      },
+      {
+        name: "Arducam B0266",
+        units: "1x",
+        photo: "/hardware/arducam-b0266-studio.png",
       },
     ],
   },
@@ -610,7 +652,7 @@ const PRIZES = [
   {
     rank: 1,
     place: "First place",
-    name: "Open Duck Mini",
+    name: "Open Duck Mini Kit",
     image: "/prizes/open-duck-mini-studio.webp",
     note: "For the winning team",
     partner: {
@@ -624,7 +666,7 @@ const PRIZES = [
     place: "Second place",
     name: "StackChan",
     image: "/prizes/stackchan-studio.webp",
-    note: "One for every team member",
+    note: "2 StackChans for the team",
     partner: {
       name: "M5Stack",
       src: "/sponsors/m5stack.svg",
@@ -634,9 +676,9 @@ const PRIZES = [
   {
     rank: 3,
     place: "Third place",
-    name: "TBA",
-    image: null,
-    note: "To be announced",
+    name: "Raspberry Pi Camera Kit",
+    image: "/prizes/raspberry-pi-camera-kit-studio.png",
+    note: "For the third-place team",
     partner: null,
   },
 ] as const;
@@ -670,17 +712,17 @@ const TIMELINE: {
     what: "Announcement of all hardware, components and bonuses.",
   },
   {
-    when: "1–15 SEP",
+    when: "1–17 SEP",
     title: "Create your team, develop your idea",
     what: "Form a team of 3-5 people. Choose hardware and add your own if needed. Discuss with other teams, come up with solutions and refine your idea. When you're 100% sure, apply via the button in the Teams section.",
   },
   {
-    when: "15 SEP",
+    when: "17 SEP",
     title: "Application deadline",
     what: "Submit your team to participate.",
   },
   {
-    when: "15–18 SEP",
+    when: "17–18 SEP",
     title: "20 teams selected",
     what: "Our jury will choose the best teams in each hardware category based on initiative, communication and collaboration with other teams, idea creativity and prior experience.",
   },
@@ -945,12 +987,26 @@ const SMALL_SPONSORS: Partner[] = [
     href: "https://hackathonhub.eu/",
   },
   {
-    name: "ESRA — European Student Robotics Association",
-    src: "/sponsors/esra.png",
-    href: "https://www.studentrobotics.eu/",
-    mark: "hw26-mark--esra",
+    name: "SMOK Ventures",
+    src: "/sponsors/smok.png",
+    href: "https://www.smok.vc/",
+    mark: "hw26-mark--smok",
+  },
+  {
+    name: "Kogito Ventures",
+    src: "/sponsors/kogito.png",
+    href: "https://www.kogito-ventures.com/",
+    mark: "hw26-mark--kogito",
+  },
+  {
+    name: "Kolektyw3",
+    src: "/sponsors/kolektyw3.png",
+    href: "https://kolektyw3.pl/",
+    mark: "hw26-mark--kolektyw3",
   },
 ];
+
+const ECOSYSTEM_PARTNER_TBA: TbaCell = { name: "TBA", tba: true };
 
 /**
  * The fixed half of the end plate's title block. The cells that depend on the
@@ -1079,6 +1135,26 @@ const HARDWARE_PARTNERS: Partner[] = [
     mark: "hw26-mark--seeed",
   },
   {
+    name: "MakerMods",
+    src: "/sponsors/makermods.png",
+    href: "https://www.makermods.ai/",
+    mark: "hw26-mark--makermods",
+  },
+  {
+    name: "CPS Drone",
+    src: "/sponsors/cpsdrone.png",
+    href: "https://www.cpsdrone.com/",
+    mark: "hw26-mark--cpsdrone",
+    lockup: "hw26-sponsor-lockup--cpsdrone",
+    wordmark: "CPS DRONE",
+  },
+  {
+    name: "Spectacles",
+    src: "/sponsors/spectacles.svg",
+    href: "https://www.spectacles.com/",
+    mark: "hw26-mark--spectacles",
+  },
+  {
     // The faculty's full name is the accessible name and the tooltip; the
     // tile shows "MCHTR", because a small tile that has to carry five Polish
     // words sets them at caption size and stops being a mark on a wall. The
@@ -1105,6 +1181,7 @@ const GOLD_HARDWARE_PARTNERS = VISIBLE_HARDWARE_PARTNERS.filter(
 const STANDARD_HARDWARE_PARTNERS = VISIBLE_HARDWARE_PARTNERS.filter(
   (partner) => !partner.highlight,
 );
+const HARDWARE_PARTNER_TBA: TbaCell = { name: "TBA", tba: true };
 
 /**
  * The media partners. Their own heading rather than a sixth hardware tile:
@@ -1177,6 +1254,24 @@ const SPONSORS: (Partner | TbaCell)[] = [
     src: "/sponsors/montis.svg",
     href: "https://montis.vc/",
     mark: "hw26-mark--montis",
+  },
+  {
+    name: "Portfolion",
+    src: "/sponsors/portfolion.svg",
+    href: "https://www.portfolion.com/",
+    mark: "hw26-mark--portfolion",
+  },
+  {
+    name: "Credo Ventures",
+    src: "/sponsors/credo-ventures.svg",
+    href: "https://www.credoventures.com/",
+    mark: "hw26-mark--credo",
+  },
+  {
+    name: "Inovo VC",
+    src: "/sponsors/inovo.png",
+    href: "https://inovo.vc/",
+    mark: "hw26-mark--inovo",
   },
   {
     name: "TBA",
@@ -2240,7 +2335,15 @@ function useTimelinePin() {
  * nothing — so the mark keeps its alt there and the `title` gives a pointer
  * the same string.
  */
-function SponsorTile({ partner }: { partner: Partner }) {
+function SponsorTile({ partner }: { partner: Partner | TbaCell }) {
+  if ("tba" in partner) {
+    return (
+      <div className="hw26-sponsor hw26-sponsor--static hw26-sponsor--tba">
+        {partner.name}
+      </div>
+    );
+  }
+
   const named = Boolean(partner.href) && Boolean(partner.wordmark);
 
   const logo = (
@@ -2389,14 +2492,14 @@ export function PartnerDirectory() {
 
           <PartnerTierSubhead title="Ecosystem Partners" />
           <div className="hw26-sponsors-rest hw26-sponsors-rest--eco">
-            {[...LEAD_SPONSORS, ...ecosystem].map((partner) => (
+            {[...LEAD_SPONSORS, ...ecosystem, ECOSYSTEM_PARTNER_TBA].map((partner) => (
               <SponsorTile key={partner.name} partner={partner} />
             ))}
           </div>
 
           <PartnerTierSubhead title="Hardware Partners" />
           <div className="hw26-sponsors-rest">
-            {[...GOLD_HARDWARE_PARTNERS, ...hardware].map((partner) => (
+            {[...GOLD_HARDWARE_PARTNERS, ...hardware, HARDWARE_PARTNER_TBA].map((partner) => (
               <SponsorTile key={partner.name} partner={partner} />
             ))}
           </div>
@@ -2683,7 +2786,7 @@ function RigCell({ item, order }: { item: Rig; order: number }) {
           it is the only place on the page that says where these parts come
           from, and a reader who cannot see the lockup would otherwise get a
           cell that is silently missing a fact the sighted one has. */}
-        {item.credit || item.docsUrl ? (
+        {item.credit || item.docsUrl || item.docsPending ? (
           <div className="hw26-rig-credit-stack">
             {item.credit ? (
               <img
@@ -2707,6 +2810,20 @@ function RigCell({ item, order }: { item: Rig; order: number }) {
                   <path d="M10.5 1.5V6H15M6 10h6M6 13h6" />
                 </svg>
               </a>
+            ) : null}
+
+            {item.docsPending ? (
+              <span
+                aria-label={`${item.name}: ${item.docsPending}`}
+                className="hw26-rig-doc hw26-rig-doc--pending"
+                role="img"
+                title={item.docsPending}
+              >
+                <svg aria-hidden="true" focusable="false" viewBox="0 0 18 20">
+                  <path d="M3 1.5h7.5L15 6v12.5H3z" />
+                  <path d="M10.5 1.5V6H15M6 10h6M6 13h4" />
+                </svg>
+              </span>
             ) : null}
           </div>
         ) : null}
@@ -2988,7 +3105,7 @@ export function Endplate({ hackathon }: { hackathon: HardwareEvent }) {
               the stamp rather than one, because the window is the fact. */}
           <div className="hw26-stamp">
             Registration
-            <span>01 SEP — 15 SEP 2026</span>
+            <span>01 SEP — 17 SEP 2026</span>
           </div>
         </div>
 
@@ -3004,7 +3121,7 @@ export function Endplate({ hackathon }: { hackathon: HardwareEvent }) {
           ))}
           <div className="hw26-tb hw26-tb--gate">
             <dt>Applications close</dt>
-            <dd>15 SEP 2026</dd>
+            <dd>17 SEP 2026</dd>
           </div>
           <div className="hw26-tb">
             <dt>Seats</dt>
@@ -3840,7 +3957,7 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
                 fill
                 quality={90}
                 sizes="(max-width: 900px) 100vw, 52vw"
-                src="/hardware/xle.png"
+                src="/hardware/unitree-about-transparent.png"
                 className="hw-about-img"
               />
               {/* <span className="hw26-label">AUTOMATION UNIT /// 06</span> */}
@@ -4014,8 +4131,20 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
                 {group.label}
               </h3>
 
+              {group.reference ? (
+                <a
+                  className="hw26-cat-reference hw26-reveal"
+                  href={group.reference.href}
+                  rel="noreferrer"
+                  target="_blank"
+                >
+                  <span>{group.reference.label}</span>
+                  <span aria-hidden="true">↗</span>
+                </a>
+              ) : null}
+
               <div className="hw26-rigs">
-                {group.items.map((item, i) => (
+                {orderRigItems(group.items).map((item, i) => (
                   <RigCell item={item} key={`${item.name}-${i}`} order={i} />
                 ))}
               </div>
@@ -4209,7 +4338,7 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
               which matters because the reveal observer has already been handed
               these elements. */}
             <div className="hw26-sponsors-rest hw26-sponsors-rest--eco hw26-reveal">
-              {[...LEAD_SPONSORS, ...ecosystem].map((s) => (
+              {[...LEAD_SPONSORS, ...ecosystem, ECOSYSTEM_PARTNER_TBA].map((s) => (
                 <SponsorTile key={s.name} partner={s} />
               ))}
             </div>
@@ -4236,7 +4365,7 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
               new ones — and the reveal observer in `useReveal` is already
               holding these exact elements. */}
             <div className="hw26-sponsors-rest hw26-reveal">
-              {[...GOLD_HARDWARE_PARTNERS, ...hardware].map((p) => (
+              {[...GOLD_HARDWARE_PARTNERS, ...hardware, HARDWARE_PARTNER_TBA].map((p) => (
                 <SponsorTile key={p.name} partner={p} />
               ))}
             </div>
