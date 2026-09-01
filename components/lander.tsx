@@ -616,35 +616,18 @@ const ADDON_GROUPS: {
     },
     items: [
       {
-        name: "Luxonis OAK-D",
-        units: "1x",
-        photo: "/hardware/luxonis-oak-d-studio.png",
-      },
-      {
         name: "Raspberry Pi 5 / 8GB",
         units: "3x",
         photo: "/hardware/raspberry-pi-5-16gb-studio.png",
       },
       {
-        name: "ArduCam EK031",
+        name: "Luxonis OAK-D",
         units: "1x",
-        photo: "/hardware/arducam-ek031-studio.png",
+        photo: "/hardware/luxonis-oak-d-studio.png",
       },
-      {
-        name: "Arducam B0266",
-        units: "1x",
-        photo: "/hardware/arducam-b0266-studio.png",
-      },
-      // The rest of the shelf, carded like the four above. No photograph yet,
-      // so the plate is the panel itself: the count in one corner, the short
-      // name on the bottom edge, and the full part number in the note.
-      {
-        name: "27W Power Supply",
-        units: "3x",
-        note: "Raspberry Pi USB-C power supply",
-      },
-      { name: "Active Cooler", units: "3x", note: "For Raspberry Pi 5" },
-      { name: "microSD 32GB", units: "3x" },
+      // The rest of the shelf, carded like the two above. No photograph yet, so
+      // the plate is the panel itself: the count in one corner, the short name
+      // on the bottom edge, and the full part number in the note.
       {
         name: "Camera Module 3 Wide",
         units: "1x",
@@ -656,12 +639,6 @@ const ADDON_GROUPS: {
         units: "3x",
         note: "Raspberry Pi Pico 2 W microcontroller",
       },
-      {
-        name: "Breadboard 830-point",
-        units: "3x",
-        note: "with jumper wires and power module set",
-      },
-      { name: "Heat shrink tubing", units: "1x", note: "100-piece set" },
     ],
   },
 ];
