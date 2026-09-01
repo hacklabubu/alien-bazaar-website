@@ -694,31 +694,63 @@ html:not(.hw26-cursor-dom) .hw26 [role='button'] * {
   opacity: 0.4;
 }
 
-.hw26-cat-reference {
+/* The note: the line that belongs to a whole list rather than to a cell in
+   it. The section's opening rule, a group's own condition and a group's
+   reference link were three drawings of this one box; they are one class now.
+
+   Mint on a tint of mint with a lit edge on the left, and nothing else drawn
+   round it. Mint is the page's signal for the counted and the conditional and
+   every sentence that lands here is one of those — one unit per team, files
+   in by the 18th, more parts unlocked during the weekend — so the colour is
+   the claim the line was already making without saying so. Sized to its
+   content, because a box that is the sentence is the only box worth drawing:
+   "Each team can reserve 1 hardware unit" is thirty-seven characters and a
+   full-column plate round it would be a third lit rectangle containing
+   nothing.
+
+   Leading is 1.5 rather than the single line the link variant started at: the
+   longest of these sentences wraps, and a wrapped line at 1 sets as two rows
+   of type touching. The `ch` ceiling is there for the reason the brief's is —
+   the face is monospace, so the constraint is a character count, and a
+   sentence run the full width of the sheet is scanned rather than read.
+
+   No top margin, because the title above has already given up its own for
+   this (see the two `:has` rules below). The pull the link variant used to
+   carry was there to close a gap that is now closed at the other end, and
+   applying both would spend the trim twice. */
+.hw26-note {
   display: inline-flex;
   align-items: center;
   gap: 0.55rem;
   width: fit-content;
-  margin: -0.35rem 0 clamp(1.5rem, 2.4vw, 2rem);
+  max-width: 60ch;
+  margin: 0 0 clamp(1.5rem, 2.4vw, 2rem);
   padding: 0.5rem 0.7rem;
   border-left: 1px solid color-mix(in srgb, var(--hw-mint) 58%, transparent);
   color: var(--hw-mint);
   background: color-mix(in srgb, var(--hw-mint) 6%, transparent);
   font-family: var(--font-geist-mono), monospace;
   font-size: 0.7rem;
-  line-height: 1;
+  line-height: 1.5;
   letter-spacing: 0.16em;
   text-decoration: none;
   text-transform: uppercase;
   transition: color 180ms var(--hw-ease), background 180ms var(--hw-ease);
 }
 
-.hw26-cat-reference:is(:hover, :focus-visible) {
+/* The label carries the underline so the line reads as a link; the arrow stays bare. */
+.hw26-note--link > span:first-child {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+}
+
+.hw26-note:is(:hover, :focus-visible) {
   color: var(--hw-mint);
   background: color-mix(in srgb, var(--hw-mint) 6%, transparent);
 }
 
-.hw26-cat-reference:focus-visible {
+.hw26-note:focus-visible {
   outline: 1px solid var(--hw-mint);
   outline-offset: 3px;
 }
@@ -765,8 +797,8 @@ html:not(.hw26-cursor-dom) .hw26 [role='button'] * {
    which is the promise the box was making all along.
 
    The row gap is borrowed, not chosen: 0.6rem is the figure the title already
-   keeps between itself and the lit box beneath it when a group opens with an
-   intro line (see `.hw26-cat:has(+ .hw26-cat-intro)` below). The distance
+   keeps between itself and the lit box beneath it when a group opens with a
+   note (see `.hw26-cat:has(+ .hw26-note)` below). The distance
    between the two halves of a wrapped heading and the distance from that
    heading to what it introduces are the same kind of distance, and the page
    should only have one answer for it. The column gap is the margin the logo
@@ -845,47 +877,11 @@ html:not(.hw26-cursor-dom) .hw26 [role='button'] * {
   outline-offset: 5px;
 }
 
-/* The line a group opens with, under the title and above the cells. Both of
-   them have one: the print deadline, which is an instruction for the whole of
-   3D Printers and not a fact about the print farm cell it used to hang off,
-   and what Components will hand out during the weekend. See ADDON_GROUPS in
-   lander.tsx.
-
-   Back down to the cell caption's size, and the box is why. It used to be set
-   at the brief's body size on the argument that a subsection's opening line
-   has to read as being about everything under it, and that under a 3.75rem
-   title anything caption-sized reads as type that has fallen out of a card.
-   The box answers both without the size: a lit panel under a title is
-   unmissable at any weight, and type that is inside something cannot read as
-   having fallen out of it. What the extra size buys now is a callout loud
-   enough to compete with the heading over it, so it goes back. The colour and
-   the box are further down, on the rule these share with
-   `.hw26-head-intro`.
-
-   A `ch` measure for the same reason the brief has one — it is monospace, the
-   constraint is a character count, and a sentence run across the full 1440px
-   of the sheet is scanned rather than read.
-
-   The title gives up its own bottom margin when one of these follows it. A
-   title and its line are one block; the space that belongs between that block
+/* A group title gives up its own bottom margin when a note follows it. A
+   title and its note are one block; the space that belongs between that block
    and the grid belongs under the pair, not inside it. */
-.hw26-cat:has(+ .hw26-cat-intro) {
+.hw26-cat:has(+ .hw26-note) {
   margin-bottom: 0.6rem;
-}
-
-/* The bottom margin is the group title's, stepped up. It was the same figure
-   `.hw26-cat` carries, which was right while this was a bare line of type —
-   the gap under a sentence and the gap under a heading are the same gap when
-   both are just words. It is a box now, with padding and a ground of its own,
-   and a box's edge sits closer to whatever is under it than a baseline does at
-   the same margin. Half a step more, so the first row of cards clears the box
-   rather than starting at it. */
-.hw26-cat-intro {
-  margin: 0 0 clamp(1.75rem, 2.6vw, 2.25rem);
-  max-width: 60ch;
-  font-size: clamp(0.82rem, 0.92vw, 0.92rem);
-  line-height: 1.7;
-  color: var(--hw-bone);
 }
 
 /* -------------------------------------------------------------
@@ -997,131 +993,12 @@ html:not(.hw26-cursor-dom) .hw26 [role='button'] * {
   min-width: 0;
 }
 
-/* A line under a section title, belonging to everything below it.
-   `.hw26-cat-intro` is the same object one level down — a sentence that is
-   about the whole list under a heading rather than about a card in it — and
-   the pair behave the same way: the title gives up its own bottom margin when
-   one of these follows, because a title and its line are one block and the
-   air belongs under the pair rather than inside it. It cannot live *in*
-   `.hw26-head`; that is a baseline flex row and the line would set beside the
-   title rather than under it.
-
-   The type used to be `.hw26-brief p`'s figure for figure, on the argument
-   that this is prose about the event in the brief's register and should read
-   as the brief's voice arriving one section later. It is a step under that
-   now, and still a step over `.hw26-cat-intro` — the gap between the two is
-   the part that was carrying the argument, and it survives at the smaller
-   pair. The box is what changed the sums: a lit panel does not need to be set
-   large to be read first, and at the old size it was a paragraph on a plate
-   rather than a line in a callout. The 64ch measure stays for the reason it
-   was set: the face is monospace and the constraint is a character count. */
-.hw26-head:has(+ .hw26-head-intro) {
+/* A section title gives up its own bottom margin when a note follows it —
+   same reasoning as `.hw26-cat` above, a step wider because the title is. The
+   note cannot live *in* `.hw26-head`; that is a baseline flex row and the
+   line would set beside the title rather than under it. */
+.hw26-head:has(+ .hw26-note) {
   margin-bottom: 0.9rem;
-}
-
-.hw26-head-intro {
-  margin: 0 0 clamp(2.5rem, 5vw, 4rem);
-  max-width: 64ch;
-  font-size: clamp(0.86rem, 1.04vw, 1rem);
-  line-height: 1.8;
-  color: var(--hw-bone);
-}
-
-/* Both intro lines, boxed and lit.
- *
- * They were bare paragraphs in bone, which is what a subtitle looks like when
- * it is only a subtitle. These three sentences are not that: each one is a
- * condition on everything under it — one unit per team, files in by the 18th,
- * more parts unlocked during the weekend — and a reader who skims past a grey
- * line under a title has skipped a rule rather than a caption. Put in a lit
- * box they are the one thing between the title and the grid that is not the
- * grid, which is the whole job.
- *
- * Mint is the page's signal for the counted and the conditional and it is
- * already spent on exactly this kind of fact — the team cap in the ticker, the
- * live cell on the wall — so the colour is not a new claim, it is the claim
- * these lines were already making without saying so. It is the whole device
- * now: a tint of it behind the line and the line itself in it, with no edge
- * drawn round either. The ring came off and the dark interior it enclosed came
- * off with it, which leaves one translucent green doing both jobs.
- *
- * One layer, on `::before`, chamfered there rather than by a clip on the
- * element. The element itself stays unclipped, which is left over from the
- * bloom these boxes used to throw and is worth keeping: `clip-path` clips an
- * element's own background *and* every descendant it has, pseudo-elements
- * included, so nothing painted inside a clipped box can leave the box at any
- * depth. Clip the element and anything that ever wants to sit past its edge
- * has to be rebuilt from here.
- *
- * The cut is small because the box is. `--rig-cut` is 34px against a panel
- * 420px tall at its shortest and the hero plate takes 28; this is one line of
- * type and its padding — 64px, 82 when the sentence turns — so either figure
- * would read as a bevel taking a third of the height off rather than as a
- * clipped corner. 12px is the corner at this size.
- *
- * One fill for both themes, and translucency is what buys that. Mint flips
- * with the palette — a pale green on the sheet's near-black, the deep
- * `#00794c` on light mode's paper — so a tint of it lands a step off whatever
- * ground it is over in either direction, and there is nothing for a
- * `data-theme` override to correct. 12% is as far as it goes: enough that the
- * panel reads as tinted rather than as a shadow, little enough that the mint
- * type keeps its contrast against it.
- *
- * The type is untouched — same size, same leading, same measure. The measures
- * are restated below because they are character counts and `border-box` would
- * otherwise spend the padding out of the 60 and 64 the notes above set.
- *
- * `fit-content` is what turns the measure back into a ceiling. A `<p>` is a
- * block and takes the whole column whether or not it has anything to put in
- * it, which was invisible while these were bare lines of type and is not once
- * they have a ground of their own: "Each team can reserve 1 hardware unit" is
- * thirty-seven characters and the box round it was drawn at sixty-four, so a
- * third of it was a lit rectangle containing nothing. Sized to its content
- * the box is the sentence, which is the only thing it was ever supposed to be
- * around. The `max-width` rules below stay as the cap they were always
- * written as — they just stop being the width as well. */
-.hw26-head-intro,
-.hw26-cat-intro {
-  --intro-pad-i: clamp(1rem, 2vw, 1.4rem);
-  --intro-cut: 12px;
-  position: relative;
-  /* The layer below sits at negative z-index, which paints it above this
-     element's own background and below its text. That needs a stacking
-     context to be negative *within*, and the bloom's `filter` used to open one
-     as a side effect; with the bloom gone this line is the only thing holding
-     it, so it is load-bearing rather than belt-and-braces. Drop it and the
-     fill falls behind the section. */
-  isolation: isolate;
-  width: fit-content;
-  padding: clamp(0.85rem, 1.6vw, 1.15rem) var(--intro-pad-i);
-  color: var(--hw-mint);
-}
-
-/* The fill, and the whole of the box. The element paints no background of its
-   own — this is it. */
-.hw26-head-intro::before,
-.hw26-cat-intro::before {
-  content: "";
-  position: absolute;
-  z-index: -1;
-  inset: 0;
-  background: color-mix(in srgb, var(--hw-mint) 12%, transparent);
-  clip-path: polygon(
-    0 0,
-    calc(100% - var(--intro-cut)) 0,
-    100% var(--intro-cut),
-    100% 100%,
-    var(--intro-cut) 100%,
-    0 calc(100% - var(--intro-cut))
-  );
-}
-
-.hw26-head-intro {
-  max-width: calc(64ch + 2 * var(--intro-pad-i));
-}
-
-.hw26-cat-intro {
-  max-width: calc(60ch + 2 * var(--intro-pad-i));
 }
 
 /* Exactly one section on the page is centred: the brief, whose copy is a
@@ -1900,12 +1777,6 @@ html:not(.hw26-cursor-dom) .hw26 [role='button'] * {
    compact cell's 24: this is a wide plate of no great height, which is what
    that number was cut for.
 
-   The intro callouts wear the same corner, smaller and on one layer: they
-   have no ring, so there is no inner chamfer to inset. The clip still sits on
-   a pseudo-element rather than on the element itself, which is a shape they
-   arrived at while they still threw a glow, since a clipped element cannot
-   paint anything outside itself. See the note on `.hw26-head-intro`.
-
    The countdown ticking inside a backdrop-filtered element looks like it ought
    to be expensive — a text write dirtying a surface that has to be resampled
    to be redrawn. Splitting the plate so the numerals sat on a layer of their
@@ -2106,7 +1977,9 @@ html:not(.hw26-cursor-dom) .hw26 [role='button'] * {
   );
   transition:
     transform 220ms var(--hw-ease),
-    box-shadow 220ms var(--hw-ease);
+    box-shadow 220ms var(--hw-ease),
+    background 220ms var(--hw-ease),
+    color 220ms var(--hw-ease);
 }
 
 .hw26-apply::after {
@@ -2120,12 +1993,35 @@ html:not(.hw26-cursor-dom) .hw26 [role='button'] * {
   box-shadow: 6px 6px 0 0 color-mix(in srgb, var(--hw-mint) 28%, transparent);
 }
 
+/* The mint fill drops to white under the pointer, the same move the menu's
+   primary action makes, so the two primary controls answer the same way.
+   Written as literal inks rather than as `--hw-snow` and `--hw-on-mint`
+   because both of those tokens flip with the theme and this does not: the
+   button is white in either theme, and the hero panel it sits on re-declares
+   the mint pair locally over the photograph without re-declaring snow, so the
+   tokens would read the page's values and paint the hero button black on light.
+   `#04120c` is the dark theme's on-mint, kept as the ink because it is the one
+   value that is dark in both.
+   Ghost is excluded: it has its own hover, and its `background` is the outline
+   itself rather than a fill to replace.
+   Keyboard focus takes the same fill, again following the menu action: a
+   control reached by tab should look the way it looks under the pointer. */
+.hw26-apply:not(.hw26-apply--ghost):hover,
+.hw26-apply:not(.hw26-apply--ghost):focus-visible {
+  background: #ffffff;
+  color: #04120c;
+}
+
 .hw26-apply:hover::after {
   transform: translateX(5px);
 }
 
+/* Mint rather than snow, because focus now fills the button white and on the
+   dark theme snow is white too — the ring would have vanished into the face it
+   is meant to sit outside of. Mint reads against the white fill and against
+   both grounds. */
 .hw26-apply:focus-visible {
-  outline: 2px solid var(--hw-snow);
+  outline: 2px solid var(--hw-mint);
   outline-offset: 4px;
 }
 
@@ -2419,6 +2315,70 @@ button.hw26-apply {
   .hw26-rigs {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+}
+
+/* The shelf's small parts, under the cells that have a photograph. A list and
+   not a grid, for the reason the markup gives: a plate with nothing on it is
+   a tile-shaped hole, and what a reader wants from a bag of heat shrink is
+   what it is and how many there are. So it is set in the register of the spec
+   rows over in the setup block — a hairline per row, the term in mono on the
+   left and its count against the right edge — which is the page's existing
+   answer to a term and its value, and the counts read in the accent because
+   the count is the thing being looked up.
+
+   Two columns once there is room for two. Nine rows in one column under a
+   three-up wall of cells reads as a receipt taped to the bottom of the
+   section; paired, the list is about as tall as it is wide and sits under the
+   grid as a block rather than a tail. Every colour is a token, so the light
+   theme follows without a rule of its own. */
+.hw26-manifest-head {
+  display: block;
+  margin-top: clamp(1.5rem, 2.4vw, 2rem);
+  margin-bottom: 0.6rem;
+}
+
+.hw26-manifest {
+  margin: 0;
+  display: grid;
+  grid-template-columns: 1fr;
+  border-top: 1px solid var(--hw-line);
+}
+
+@media (min-width: 760px) {
+  .hw26-manifest {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: clamp(1.5rem, 3vw, 3rem);
+  }
+}
+
+.hw26-manifest-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 1rem;
+  padding: 0.7rem 0;
+  border-bottom: 1px solid var(--hw-line);
+}
+
+.hw26-manifest dt {
+  margin: 0;
+  font-family: var(--font-jetbrains-mono), monospace;
+  font-size: clamp(0.78rem, 0.95vw, 0.9rem);
+  line-height: 1.4;
+  color: var(--hw-bone);
+}
+
+/* The same cut the title block's data cells are set in — see `.hw26-tb dd`.
+   These are counts in a hairline list, which is the context that face was
+   drawn for. */
+.hw26-manifest dd {
+  margin: 0;
+  font-family: var(--font-geist-pixel-grid), var(--font-chakra-petch), sans-serif;
+  font-size: 0.8rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--hw-mint);
+  white-space: nowrap;
 }
 
 /* The brief, as prose. This was a three-up grid of chamfered cells holding a
@@ -3417,6 +3377,38 @@ button.hw26-apply {
   transition:
     opacity 620ms var(--hw-ease),
     filter 620ms var(--hw-ease);
+}
+
+/* The picture's lower half is where the name and the note sit, and on a bright
+   render — the robot arm's white cyclorama is the worst of them — bone type at
+   4rem lands on paper. So the plate colour rises back into the picture from the
+   bottom edge: not a bar laid over the photograph but the panel's own fill
+   returning, which is why it is `--hw-steel` and not a black wash, and why it
+   follows the token into light mode as a pale scrim under dark type without a
+   second rule. Four stops rather than two so it eases out instead of ending on
+   a visible line — the top of the run is nearly transparent for the last third
+   of its height, which is what keeps it from reading as a band.
+
+   It lives on the frame and not on the `img`, so the hover zoom moves the
+   picture underneath it and the scrim does not travel. The frame already
+   carries the inner chamfer, which clips this with everything else in it, and
+   the frame's own opacity carries it too: the scrim is exactly as present as
+   the picture it is holding back — 83% at rest, whole under the pointer, and
+   all but gone on the blurred and placeholder plates, which are faint enough
+   that nothing needed holding back. */
+.hw26-rig-photo::after {
+  content: '';
+  position: absolute;
+  inset: auto 0 0;
+  height: 48%;
+  pointer-events: none;
+  background: linear-gradient(
+    to top,
+    color-mix(in srgb, var(--hw-steel) 92%, transparent) 0%,
+    color-mix(in srgb, var(--hw-steel) 74%, transparent) 28%,
+    color-mix(in srgb, var(--hw-steel) 38%, transparent) 62%,
+    transparent 100%
+  );
 }
 
 /* Focused, the render is simply the file: full opacity, no filter, nothing
@@ -4522,17 +4514,6 @@ button.hw26-apply {
   box-shadow: 0 0 2.5rem color-mix(in srgb, var(--hw-mint) 8%, transparent);
 }
 
-.hw26-prize-index {
-  position: absolute;
-  z-index: 2;
-  top: clamp(1.1rem, 2vw, 1.6rem);
-  left: clamp(1.25rem, 2.4vw, 1.9rem);
-  font-family: var(--font-geist-pixel-circle), var(--font-chakra-petch), sans-serif;
-  font-size: clamp(2.4rem, 4.5vw, 4rem);
-  line-height: 1;
-  color: var(--hw-line-hi);
-}
-
 .hw26-prize-credit {
   position: absolute;
   z-index: 3;
@@ -4557,10 +4538,6 @@ button.hw26-apply {
    the card beside it. */
 .hw26-prize-credit.hw26-mark--m5stack {
   filter: brightness(0) invert(1);
-}
-
-.hw26-prize--1 .hw26-prize-index {
-  color: var(--hw-mint);
 }
 
 .hw26-prize-media,
@@ -4617,7 +4594,7 @@ button.hw26-apply {
 }
 
 .hw26-prize-copy h3 {
-  margin: 0.55rem 0 0;
+  margin: 0;
   max-width: 12ch;
   font-family: var(--font-chakra-petch), sans-serif;
   font-size: clamp(1.65rem, 3vw, 2.8rem);
@@ -4674,8 +4651,11 @@ button.hw26-apply {
   position: relative;
   z-index: 1;
   font-family: var(--font-geist-pixel-square), var(--font-chakra-petch), sans-serif;
-  font-size: clamp(2.5rem, 6vw, 5.25rem);
+  font-size: clamp(1.15rem, 2.4vw, 2.1rem);
   line-height: 1;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
   color: var(--hw-line-hi);
 }
 
@@ -5751,15 +5731,16 @@ html:not(.hw26-cursor-dom) .hw26-faq-trigger {
 
 /* The answer carries the padding, not the wrapper — anything the wrapper held
    would be height the closed row could not get rid of, and a sliver of blank
-   plate under every shut question. The gap over the answer is the trigger's
-   own bottom padding, which is already the right distance.
+   plate under every shut question. The gap over the answer is the answer's
+   own: the trigger's highlighted plate ends at its bottom edge, and the text
+   needs air under that edge whether or not the plate is lit.
 
    A `ch` measure for the reason the brief has one: this is monospace, the
    constraint is a character count, and an answer run across the full sheet is
    scanned rather than read. */
 .hw26-faq-a {
   margin: 0;
-  padding: 0 var(--faq-pad-x) var(--faq-pad-y);
+  padding: var(--faq-pad-y) var(--faq-pad-x);
   max-width: 84ch;
   font-size: clamp(0.9rem, 1.05vw, 1rem);
   line-height: 1.7;
@@ -6191,12 +6172,16 @@ html:not(.hw26-cursor-dom) .hw26-faq-trigger {
 }
 
 /* A small set of strategic partners is called out in warm signal ink. The
-   treatment stays inside the tile so neighbouring grid cells cannot cover it. */
+   treatment stays inside the tile so neighbouring grid cells cannot cover it.
+
+   The ring is held just above the plate's own value rather than run at full
+   ink. The tint and the inner glow are what carry the callout; a bright
+   hairline drawn around them was shouting over the thing it was framing. */
 .hw26-sponsor-lead.hw26-partner-highlight,
 .hw26-sponsor.hw26-partner-highlight {
   background: color-mix(in srgb, var(--hw-gold) 7%, var(--hw-steel));
   box-shadow:
-    inset 0 0 0 1px color-mix(in srgb, var(--hw-gold) 72%, transparent),
+    inset 0 0 0 1px color-mix(in srgb, var(--hw-gold) 18%, transparent),
     inset 0 0 2.5rem color-mix(in srgb, var(--hw-gold) 8%, transparent);
 }
 
@@ -6206,7 +6191,7 @@ html:not(.hw26-cursor-dom) .hw26-faq-trigger {
 .hw26-sponsor.hw26-partner-highlight:focus-visible {
   background: color-mix(in srgb, var(--hw-gold) 11%, var(--hw-steel-hi));
   box-shadow:
-    inset 0 0 0 1px var(--hw-gold),
+    inset 0 0 0 1px color-mix(in srgb, var(--hw-gold) 26%, transparent),
     inset 0 0 3rem color-mix(in srgb, var(--hw-gold) 12%, transparent);
 }
 
@@ -6225,7 +6210,7 @@ html:not(.hw26-cursor-dom) .hw26-faq-trigger {
 .hw26-sponsor.hw26-partner-highlight.hw26-sponsor--diamond {
   background: color-mix(in srgb, var(--hw-diamond) 24%, var(--hw-steel));
   box-shadow:
-    inset 0 0 0 1px color-mix(in srgb, var(--hw-diamond) 72%, transparent),
+    inset 0 0 0 1px color-mix(in srgb, var(--hw-diamond) 16%, transparent),
     inset 0 0 2.5rem color-mix(in srgb, var(--hw-diamond) 10%, transparent);
 }
 
@@ -6233,7 +6218,7 @@ html:not(.hw26-cursor-dom) .hw26-faq-trigger {
 .hw26-sponsor.hw26-partner-highlight.hw26-sponsor--diamond:focus-visible {
   background: color-mix(in srgb, var(--hw-diamond) 30%, var(--hw-steel-hi));
   box-shadow:
-    inset 0 0 0 1px var(--hw-diamond),
+    inset 0 0 0 1px color-mix(in srgb, var(--hw-diamond) 24%, transparent),
     inset 0 0 3rem color-mix(in srgb, var(--hw-diamond) 14%, transparent);
 }
 
@@ -6809,7 +6794,7 @@ html[data-theme='light'] .hw26-sponsor--static:hover {
   object-fit: contain;
 }
 
-.hw26-rig-credit[src="/sponsors/makermods.png"] {
+.hw26-rig-credit[src="/sponsors/makermods.webp"] {
   max-width: clamp(58px, 5.4vw, 78px);
   max-height: clamp(22px, 2vw, 28px);
   filter: brightness(0) invert(1);
@@ -6817,7 +6802,7 @@ html[data-theme='light'] .hw26-sponsor--static:hover {
   object-fit: contain;
 }
 
-.hw26-rig-credit[src="/sponsors/cpsdrone.png"] {
+.hw26-rig-credit[src="/sponsors/cpsdrone.webp"] {
   max-width: clamp(28px, 2.8vw, 38px);
   max-height: clamp(28px, 2.8vw, 38px);
   opacity: 0.76;
@@ -6845,7 +6830,7 @@ html[data-theme='light'] .hw26-sponsor--static:hover {
 
 .hw26-rig-credit:is(
     [src="/sponsors/epikor.svg"],
-    [src="/sponsors/skymav.png"],
+    [src="/sponsors/skymav.webp"],
     [src="/sponsors/machinekind.webp"]
   ) {
   max-width: clamp(54px, 5vw, 72px);
@@ -6854,7 +6839,7 @@ html[data-theme='light'] .hw26-sponsor--static:hover {
   object-fit: contain;
 }
 
-.hw26-rig-credit[src="/sponsors/ghost-icon.png"] {
+.hw26-rig-credit[src="/sponsors/ghost-icon.webp"] {
   max-width: clamp(30px, 3vw, 42px);
   max-height: clamp(30px, 3vw, 42px);
   opacity: 0.42;
@@ -6862,7 +6847,7 @@ html[data-theme='light'] .hw26-sponsor--static:hover {
 }
 
 .hw26-rig:is(:hover, .hw26-rig--active)
-  .hw26-rig-credit[src="/sponsors/ghost-icon.png"] {
+  .hw26-rig-credit[src="/sponsors/ghost-icon.webp"] {
   opacity: 0.58;
 }
 
@@ -6880,7 +6865,7 @@ html[data-theme='light'] .hw26-sponsor--static:hover {
   object-fit: contain;
 }
 
-.hw26-rig-credit[src="/sponsors/mab.png"] {
+.hw26-rig-credit[src="/sponsors/mab.webp"] {
   max-width: clamp(58px, 5.4vw, 78px);
   max-height: clamp(22px, 2vw, 28px);
   opacity: 0.72;
@@ -7330,6 +7315,24 @@ html[data-theme='light'] .hw26-sponsor--static:hover {
 }
 
 .hw26-tb--mint dd {
+  color: var(--hw-mint);
+}
+
+/* A tile with an address in it is the link, not just the value: the anchor's
+   pseudo-element is stretched over the whole cell so the pointer target is
+   the plate, while the underline stays on the value. */
+.hw26-tb:has(.hw26-tb-link) {
+  position: relative;
+}
+
+.hw26-tb-link::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+}
+
+.hw26-tb:has(.hw26-tb-link:hover) dd,
+.hw26-tb:has(.hw26-tb-link:focus-visible) dd {
   color: var(--hw-mint);
 }
 

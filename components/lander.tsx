@@ -120,12 +120,9 @@ function contactHref(subject: string) {
  * machine the reader is specifically looking for. Headsets stay last, because
  * they are the one group here that is not a machine on the floor at all.
  *
- * That group is titled by the object and not by the technology, which is the
- * shape every other title here already has — "Robot arms", "Drones". Called
- * "VR" it was naming a technique, and half of what is in it is not that: a
- * Quest is a VR headset and a HoloLens is a mixed-reality one, and a reader
- * who came for the HoloLens would be looking for it under a heading that
- * excludes it. "Headsets" is what both of them are.
+ * That group holds the headset, and it is titled by the object and not by the
+ * technology — which is the shape every other title here already has: "Robot
+ * arms", "Drones".
  *
  * One line per entry, and for two of them one short caption under it. Not the
  * blurb that came off this section earlier — that was a paragraph per cell at
@@ -266,7 +263,7 @@ const RIG_GROUPS: RigGroup[] = [
         units: "1x",
         photo: "/hardware/skyhover-studio.png",
         credit: {
-          src: "/sponsors/skymav.png",
+          src: "/sponsors/skymav.webp",
           label: "In partnership with SkyMav",
         },
       },
@@ -282,7 +279,7 @@ const RIG_GROUPS: RigGroup[] = [
         // whose only two inks are snow and mint, and a green lockup would be
         // the one thing on the sheet asserting a third.
         credit: {
-          src: "/sponsors/sprtk-white.png",
+          src: "/sponsors/sprtk-white.webp",
           label: "Parts supplied by SPRTK",
         },
       },
@@ -317,6 +314,20 @@ const RIG_GROUPS: RigGroup[] = [
         photo: "/hardware/a1xy-studio.webp",
       },
       {
+        name: "Maker Arm",
+        units: "2x",
+        photo: "/hardware/makerarm-studio.png",
+        credit: {
+          src: "/sponsors/makermods.webp",
+          label: "In partnership with MakerMods",
+        },
+      },
+      {
+        name: "reBot arm",
+        units: "2x",
+        photo: "/hardware/rebot-arm-studio.png",
+      },
+      {
         name: "Tri-Arm",
         units: "2x",
         photo: "/hardware/tri-arm-studio.webp",
@@ -331,7 +342,7 @@ const RIG_GROUPS: RigGroup[] = [
         units: "2x",
         photo: "/hardware/robo-arm-big.png",
         credit: {
-          src: "/sponsors/ghost-icon.png",
+          src: "/sponsors/ghost-icon.webp",
           label: "In partnership with GHOST",
         },
       },
@@ -341,7 +352,7 @@ const RIG_GROUPS: RigGroup[] = [
         photo: "/hardware/robo-arm.png",
         docsUrl: "https://tnkr.ai/eros-builds/so-101-robotic-arm#overview",
         credit: {
-          src: "/sponsors/ghost-icon.png",
+          src: "/sponsors/ghost-icon.webp",
           label: "In partnership with GHOST",
         },
       },
@@ -351,23 +362,9 @@ const RIG_GROUPS: RigGroup[] = [
         note: "Robo arms on a wheeled platform. We provide components and tools, you design and assemble it.",
         photo: "/hardware/robot-arm-byo-v2-studio.png",
         credit: {
-          src: "/sponsors/mab.png",
+          src: "/sponsors/mab.webp",
           label: "In partnership with MAB Robotics",
         },
-      },
-      {
-        name: "Maker Arm",
-        units: "2x",
-        photo: "/hardware/makerarm-studio.png",
-        credit: {
-          src: "/sponsors/makermods.png",
-          label: "In partnership with MakerMods",
-        },
-      },
-      {
-        name: "reBot arm",
-        units: "2x",
-        photo: "/hardware/rebot-arm-studio.png",
       },
     ],
   },
@@ -380,7 +377,7 @@ const RIG_GROUPS: RigGroup[] = [
         note: "Underwater drones. We provide components and tools, you design and assemble it.",
         photo: "/hardware/underwater-drone.png",
         credit: {
-          src: "/sponsors/cpsdrone.png",
+          src: "/sponsors/cpsdrone.webp",
           label: "In partnership with CPS Drone",
         },
       },
@@ -447,12 +444,6 @@ const RIG_GROUPS: RigGroup[] = [
       href: "https://x.com/JohannesTscharn/status/2076934528350704041",
     },
     items: [
-      { name: "Meta Quest", units: "1x", photo: "/hardware/vr-meta.jpeg" },
-      {
-        name: "Microsoft HoloLens",
-        units: "1x",
-        photo: "/hardware/vr-holo-lens.jpeg",
-      },
       {
         name: "Spectacles 2024",
         units: "1x",
@@ -547,6 +538,7 @@ const ADDON_GROUPS: {
   intro?: string;
   partner?: { name: string; src: string; href: string };
   items: Rig[];
+  manifest?: { name: string; units: string }[];
 }[] = [
   {
     label: "3D Printers",
@@ -620,7 +612,7 @@ const ADDON_GROUPS: {
     intro: "Additional vision and compute modules supplied by Botland.",
     partner: {
       name: "Botland",
-      src: "/sponsors/botland.png",
+      src: "/sponsors/botland.webp",
       href: "https://botland.com.pl/",
     },
     items: [
@@ -645,16 +637,38 @@ const ADDON_GROUPS: {
         photo: "/hardware/arducam-b0266-studio.png",
       },
     ],
+    // The rest of the shelf, as a list rather than four more cells. Same
+    // argument the docblock above makes for Components being one cell and not
+    // four, running the other way: a card is a claim that the thing is worth
+    // looking at, and these are a power supply, a cooler and a bag of heat
+    // shrink. A plate with no photograph on it and "heat shrink tubing set,
+    // 100 pcs" set at display size is not a tile, it is a tile-shaped hole.
+    // What a reader wants from these is what it is and how many there are,
+    // which is a packing list, so this is a packing list.
+    manifest: [
+      { name: "Raspberry Pi 5 / 8GB", units: "3x" },
+      { name: "Raspberry Pi 27W USB-C Power Supply", units: "3x" },
+      { name: "Raspberry Pi Active Cooler", units: "3x" },
+      { name: "microSD card 32GB", units: "3x" },
+      { name: "Raspberry Pi Camera Module 3 Wide", units: "1x" },
+      { name: "ESP32-S3-DevKitC-1-N8R8", units: "3x" },
+      { name: "Raspberry Pi Pico 2 W", units: "3x" },
+      {
+        name: "Breadboard 830-point + jumper wires + power module set",
+        units: "3x",
+      },
+      { name: "Heat shrink tubing set, 100 pcs", units: "1x" },
+    ],
   },
 ];
 
 const PRIZES = [
   {
     rank: 1,
-    place: "First place",
+    place: "1st place",
     name: "Open Duck Mini Kit",
     image: "/prizes/open-duck-mini-studio.webp",
-    note: "For the winning team",
+    note: "1 kit for the team: parts, hardware, and electronics, ready to assemble",
     partner: {
       name: "Stealth startup",
       src: "/sponsors/stealth-startup.svg",
@@ -663,7 +677,7 @@ const PRIZES = [
   },
   {
     rank: 2,
-    place: "Second place",
+    place: "2nd place",
     name: "StackChan",
     image: "/prizes/stackchan-studio.webp",
     note: "2 StackChans for the team",
@@ -675,10 +689,9 @@ const PRIZES = [
   },
   {
     rank: 3,
-    place: "Third place",
+    place: "3rd place",
     name: "Raspberry Pi Camera Kit",
-    image: "/prizes/raspberry-pi-camera-kit-studio.png",
-    note: "For the third-place team",
+    image: "/prizes/raspberry-pi-camera-kit-studio.webp",
     partner: null,
   },
 ] as const;
@@ -825,7 +838,7 @@ const ORGANIZERS: {
     name: "Hacklab",
     // White mark, drawn for the dark plate the organizer cells keep in
     // both themes.
-    src: "/sponsors/hacklab.png",
+    src: "/sponsors/hacklab.webp",
     href: "https://hacklab.so",
   },
 ];
@@ -938,7 +951,7 @@ const LEAD_SPONSORS: Partner[] = [
   },
     {
     name: "Google Developer Groups",
-    src: "/sponsors/GDG.png",
+    src: "/sponsors/GDG.webp",
     href: "https://gdg.community.dev/",
   },
   {
@@ -962,13 +975,13 @@ const LEAD_SPONSORS: Partner[] = [
 const SMALL_SPONSORS: Partner[] = [
   {
     name: "AI Tinkerers Poland",
-    src: "/sponsors/ai-tinkerers-poland.png",
+    src: "/sponsors/ai-tinkerers-poland.webp",
     href: "https://poland.aitinkerers.org/",
     mark: "hw26-mark--aitinkerers",
   },
   {
     name: "Eurotech Federation",
-    src: "/sponsors/eurotech.png",
+    src: "/sponsors/eurotech.webp",
     href: "https://www.eurotech-federation.com/",
     // Cropped to the lockup on its own deep blue, not a cut-out mark: every
     // pixel of it is ink, so it reads far heavier per unit of height than the
@@ -977,30 +990,30 @@ const SMALL_SPONSORS: Partner[] = [
   },
   {
     name: "Oxbridge Frontier Intelligence",
-    src: "/sponsors/ofi.png",
+    src: "/sponsors/ofi.webp",
     href: "https://www.oxbridgefrontier.com/",
     mark: "hw26-mark--ofi",
   },
   {
     name: "Hackathon Hub",
-    src: "/sponsors/hackathonhub.png",
+    src: "/sponsors/hackathonhub.webp",
     href: "https://hackathonhub.eu/",
   },
   {
     name: "SMOK Ventures",
-    src: "/sponsors/smok.png",
+    src: "/sponsors/smok.webp",
     href: "https://www.smok.vc/",
     mark: "hw26-mark--smok",
   },
   {
     name: "Kogito Ventures",
-    src: "/sponsors/kogito.png",
+    src: "/sponsors/kogito.webp",
     href: "https://www.kogito-ventures.com/",
     mark: "hw26-mark--kogito",
   },
   {
     name: "Kolektyw3",
-    src: "/sponsors/kolektyw3.png",
+    src: "/sponsors/kolektyw3.webp",
     href: "https://kolektyw3.pl/",
     mark: "hw26-mark--kolektyw3",
   },
@@ -1012,14 +1025,27 @@ const ECOSYSTEM_PARTNER_TBA: TbaCell = { name: "TBA", tba: true };
  * The fixed half of the end plate's title block. The cells that depend on the
  * event row are rendered beside these so both halves stay one grid.
  */
-const TITLE_BLOCK = [
+type TitleBlockCell = {
+  k: string;
+  v: string;
+  /** Accent modifier, appended as `hw26-tb--{tone}`. */
+  tone?: string;
+  /** Set on a cell whose value is an address; the whole tile becomes the link. */
+  href?: string;
+};
+
+const TITLE_BLOCK: TitleBlockCell[] = [
   { k: "Project", v: "AB—WAW—26" },
   { k: "Sheet", v: "07 / 07" },
   { k: "Rev", v: "03" },
   { k: "Status", v: "Issued", tone: "mint" },
   { k: "Theme", v: "Home automation" },
   { k: "Venue", v: "Hacker Bloc" },
-  { k: "Coord", v: "52.2297°N 21.0122°E" },
+  {
+    k: "Coord",
+    v: "52.1702°N 21.0762°E",
+    href: "https://maps.app.goo.gl/aXgaecW3vufQZBu49",
+  },
   { k: "Duration", v: "48 WORK H" },
 ];
 
@@ -1053,9 +1079,18 @@ const HARDWARE_PARTNERS: Partner[] = [
   },
   {
     name: "Botland",
-    src: "/sponsors/botland.png",
+    src: "/sponsors/botland.webp",
     href: "https://botland.com.pl/",
     mark: "hw26-mark--botland",
+    highlight: true,
+    tile: "hw26-sponsor--diamond",
+  },
+  {
+    // Another partner at Diamond, so the tile wears the same diamond ink.
+    name: "Spectacles",
+    src: "/sponsors/spectacles.svg",
+    href: "https://www.spectacles.com/",
+    mark: "hw26-mark--spectacles",
     highlight: true,
     tile: "hw26-sponsor--diamond",
   },
@@ -1067,7 +1102,7 @@ const HARDWARE_PARTNERS: Partner[] = [
   },
   {
     name: "SPRTK",
-    src: "/sponsors/sprtk.png",
+    src: "/sponsors/sprtk.webp",
     href: "https://sprtk.com/",
     mark: "hw26-mark--sprtk",
   },
@@ -1079,7 +1114,7 @@ const HARDWARE_PARTNERS: Partner[] = [
   },
   {
     name: "BMF — Brave Mind Fighters",
-    src: "/sponsors/bmf.png",
+    src: "/sponsors/bmf.webp",
     href: "https://bravemindfighters.com/",
     // A helmet stacked over its wordmark: nearly square, so it needs well
     // over the row's height to read at the row's size.
@@ -1095,13 +1130,13 @@ const HARDWARE_PARTNERS: Partner[] = [
   },
   {
     name: "SkyMav",
-    src: "/sponsors/skymav.png",
+    src: "/sponsors/skymav.webp",
     href: "https://skymav.pl/",
     highlight: true,
   },
   {
     name: "GHOST",
-    src: "/sponsors/ghost-icon.png",
+    src: "/sponsors/ghost-icon.webp",
     href: "https://ghostpai.github.io/",
     // Their official icon, untouched: white line art on the red plate they
     // publish it on, square. It is not a lockup on its own — no name in it —
@@ -1113,7 +1148,7 @@ const HARDWARE_PARTNERS: Partner[] = [
   },
   {
     name: "MAB Robotics",
-    src: "/sponsors/mab.png",
+    src: "/sponsors/mab.webp",
     href: "https://www.mabrobotics.pl/",
     // The full lockup rather than the bare monogram it used to be: a heavy
     // three-letter mark with "robotics" tucked under its right shoulder, and
@@ -1130,29 +1165,23 @@ const HARDWARE_PARTNERS: Partner[] = [
   },
   {
     name: "Seeed Studio",
-    src: "/sponsors/seeed-studio.png",
+    src: "/sponsors/seeed-studio.webp",
     href: "https://www.seeedstudio.com/",
     mark: "hw26-mark--seeed",
   },
   {
     name: "MakerMods",
-    src: "/sponsors/makermods.png",
+    src: "/sponsors/makermods.webp",
     href: "https://www.makermods.ai/",
     mark: "hw26-mark--makermods",
   },
   {
     name: "CPS Drone",
-    src: "/sponsors/cpsdrone.png",
+    src: "/sponsors/cpsdrone.webp",
     href: "https://www.cpsdrone.com/",
     mark: "hw26-mark--cpsdrone",
     lockup: "hw26-sponsor-lockup--cpsdrone",
     wordmark: "CPS DRONE",
-  },
-  {
-    name: "Spectacles",
-    src: "/sponsors/spectacles.svg",
-    href: "https://www.spectacles.com/",
-    mark: "hw26-mark--spectacles",
   },
   {
     // The faculty's full name is the accessible name and the tooltip; the
@@ -1164,7 +1193,7 @@ const HARDWARE_PARTNERS: Partner[] = [
     // White line art on transparent, keyed off the black-on-white source they
     // publish, and square. Like GHOST's, the file is a symbol with no name in
     // it, so the word is set live underneath rather than cut into a bitmap.
-    src: "/sponsors/mchtr.png",
+    src: "/sponsors/mchtr.webp",
     href: "https://www.mchtr.pw.edu.pl/",
     mark: "hw26-mark--mchtr",
     lockup: "hw26-sponsor-lockup--mchtr",
@@ -1196,7 +1225,7 @@ const HARDWARE_PARTNER_TBA: TbaCell = { name: "TBA", tba: true };
 const MEDIA_PARTNERS: Partner[] = [
   {
     name: "Przygody Przedsiębiorców",
-    src: "/sponsors/przygody.png",
+    src: "/sponsors/przygody.webp",
     href: "https://youtube.com/@przygodyprzedsiebiorcow",
     mark: "hw26-mark--przygody",
   },
@@ -1220,7 +1249,7 @@ const PRIZE_PARTNERS: Partner[] = [
   },
   {
     name: "ChronoTap",
-    src: "/sponsors/chronotap.png",
+    src: "/sponsors/chronotap.webp",
     href: "https://chronotap.co",
     mark: "hw26-mark--chronotap",
   },
@@ -1269,7 +1298,7 @@ const SPONSORS: (Partner | TbaCell)[] = [
   },
   {
     name: "Inovo VC",
-    src: "/sponsors/inovo.png",
+    src: "/sponsors/inovo.webp",
     href: "https://inovo.vc/",
     mark: "hw26-mark--inovo",
   },
@@ -2305,6 +2334,82 @@ function useTimelinePin() {
 }
 
 /**
+ * Intrinsic pixel size of every mark and prize plate the page serves through a
+ * plain `<img>`, keyed by `src`.
+ *
+ * These are `width`/`height` *attributes*, not CSS: every one of these images
+ * is sized by a rule that pins one axis and leaves the other `auto`, so the
+ * pair only tells the browser the aspect ratio. That is the whole point —
+ * with it the layout box is reserved before the bytes land and the mark stops
+ * shifting the row it sits in when it decodes. Without it these are the
+ * page's remaining CLS.
+ *
+ * Rasters are the file's real pixel size after the WebP pass; SVG figures are
+ * the file's `viewBox`, which is the same ratio at any size. Keep an entry in
+ * step with its file — a stale pair is a wrong ratio, which is worse than no
+ * pair at all.
+ */
+const MARK_DIMENSIONS: Record<string, [number, number]> = {
+  "/prizes/open-duck-mini-studio.webp": [1086, 1448],
+  "/prizes/raspberry-pi-camera-kit-studio.webp": [1086, 1448],
+  "/prizes/stackchan-studio.webp": [1122, 1402],
+  "/sponsors/GDG.webp": [600, 154],
+  "/sponsors/ai-tinkerers-poland.webp": [300, 39],
+  "/sponsors/bmf.webp": [452, 400],
+  "/sponsors/botland.webp": [265, 61],
+  "/sponsors/chronotap.webp": [600, 85],
+  "/sponsors/cpsdrone.webp": [401, 400],
+  "/sponsors/credo-ventures.svg": [336, 91],
+  "/sponsors/echo-systems.svg": [520, 240],
+  "/sponsors/elmark-white.svg": [1000, 289],
+  "/sponsors/elmark.svg": [1000, 289],
+  "/sponsors/epikor.svg": [2522, 986],
+  "/sponsors/eurotech.webp": [505, 191],
+  "/sponsors/fictionlab.svg": [2540, 487],
+  "/sponsors/ghost-icon.webp": [320, 320],
+  "/sponsors/hackathonhub.webp": [400, 400],
+  "/sponsors/hacklab.webp": [600, 312],
+  "/sponsors/inovo.webp": [600, 116],
+  "/sponsors/kogito.webp": [600, 171],
+  "/sponsors/kolektyw3.webp": [600, 96],
+  "/sponsors/lute.svg": [160, 62],
+  "/sponsors/m5stack.svg": [12594, 2492],
+  "/sponsors/mab.webp": [600, 203],
+  "/sponsors/machinekind.webp": [72, 61],
+  "/sponsors/makermods.webp": [600, 240],
+  "/sponsors/mchtr.webp": [320, 322],
+  "/sponsors/montis.svg": [170, 26],
+  "/sponsors/nvidia.svg": [618, 516],
+  "/sponsors/ofi.webp": [600, 221],
+  "/sponsors/portfolion.svg": [166, 39],
+  "/sponsors/prelint.svg": [1913, 390],
+  "/sponsors/przygody.webp": [598, 136],
+  "/sponsors/seeed-studio.webp": [600, 82],
+  "/sponsors/skymav.webp": [496, 128],
+  "/sponsors/smok.webp": [440, 399],
+  "/sponsors/spectacles.svg": [100, 19],
+  "/sponsors/sprtk-white.webp": [306, 350],
+  "/sponsors/sprtk.webp": [306, 350],
+  "/sponsors/startwarsaw.svg": [686, 318],
+  "/sponsors/stealth-startup.svg": [240, 202],
+};
+
+/**
+ * The `width`/`height` pair for a mark, spread into an `<img>`, or nothing at
+ * all when the file is not in the table.
+ *
+ * A few srcs carry a `#fragment` — two tiers showing the same file need two
+ * distinct `src` strings so the CSS attribute selectors can tell them apart —
+ * so the fragment comes off before the lookup. Unknown srcs return an empty
+ * object rather than a guess: no ratio is a repaint, a wrong ratio is a
+ * distorted logo.
+ */
+function dims(src: string): { width?: number; height?: number } {
+  const found = MARK_DIMENSIONS[src.split("#")[0]];
+  return found ? { width: found[0], height: found[1] } : {};
+}
+
+/**
  * One small tile on the sponsor wall — hardware partners, media partners and
  * sponsors all wear it, which is why it is a component rather than three
  * copies of the same map body.
@@ -2350,7 +2455,10 @@ function SponsorTile({ partner }: { partner: Partner | TbaCell }) {
     <img
       alt={named ? "" : partner.name}
       className={`hw26-sponsor-logo${partner.mark ? ` ${partner.mark}` : ""}`}
+      decoding="async"
+      loading="lazy"
       src={partner.src}
+      {...dims(partner.src)}
     />
   );
 
@@ -2418,7 +2526,14 @@ function LeadPartnerTile({ partner }: { partner: Partner | TbaCell }) {
       rel="noopener noreferrer"
       target="_blank"
     >
-      <img alt={partner.name} className={partner.mark} src={partner.src} />
+      <img
+        alt={partner.name}
+        className={partner.mark}
+        decoding="async"
+        loading="lazy"
+        src={partner.src}
+        {...dims(partner.src)}
+      />
     </a>
   );
 }
@@ -2533,7 +2648,10 @@ export function PartnerDirectory() {
               <img
                 alt={organizer.name}
                 className={`hw26-org-logo${organizer.mark ? ` ${organizer.mark}` : ""}`}
+                decoding="async"
+                loading="lazy"
                 src={organizer.src}
+                {...dims(organizer.src)}
               />
             </a>
           ))}
@@ -2627,6 +2745,33 @@ function Faq() {
       </div>
     </div>
   );
+}
+
+/**
+ * The line that belongs to a whole list rather than to a cell in it.
+ *
+ * One object, one class. The section's opening rule, a group's own condition
+ * and a group's reference link were three implementations of the same box —
+ * mint on a tint of mint, mono, tracked and set small under the title — so
+ * they are one component now. The link variant is that same box with an
+ * arrow: the label carries the underline, the arrow stays bare.
+ */
+function HwNote({ children, href }: { children: ReactNode; href?: string }) {
+  if (href) {
+    return (
+      <a
+        className="hw26-note hw26-note--link hw26-reveal"
+        href={href}
+        rel="noreferrer"
+        target="_blank"
+      >
+        <span>{children}</span>
+        <span aria-hidden="true">↗</span>
+      </a>
+    );
+  }
+
+  return <p className="hw26-note hw26-reveal">{children}</p>;
 }
 
 /**
@@ -2792,7 +2937,10 @@ function RigCell({ item, order }: { item: Rig; order: number }) {
               <img
                 alt={item.credit.label}
                 className="hw26-rig-credit"
+                decoding="async"
+                loading="lazy"
                 src={item.credit.src}
+                {...dims(item.credit.src)}
               />
             ) : null}
 
@@ -3116,7 +3264,20 @@ export function Endplate({ hackathon }: { hackathon: HardwareEvent }) {
               key={cell.k}
             >
               <dt>{cell.k}</dt>
-              <dd>{cell.v}</dd>
+              <dd>
+                {cell.href ? (
+                  <a
+                    className="hw26-spec-link hw26-tb-link"
+                    href={cell.href}
+                    rel="noopener noreferrer"
+                    target="_blank"
+                  >
+                    {cell.v}
+                  </a>
+                ) : (
+                  cell.v
+                )}
+              </dd>
             </div>
           ))}
           <div className="hw26-tb hw26-tb--gate">
@@ -3702,9 +3863,18 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
             what the page feels like. Desktop keeps `100vw`, which is correct
             there: at 1440x900 DPR2 it already resolves to the 3840 candidate. */}
         <div className="hw26-hero-stage">
+          {/* `fetchPriority` is explicit rather than left to `priority`. In
+              Next 16 `priority` emits the `<link rel=preload as=image>` and
+              nothing else: the preload goes out with no `fetchpriority`, so
+              the browser queues it at the default image priority and the two
+              hero plates — the LCP — compete on equal terms with every other
+              image the document asks for. Passing it through puts
+              `fetchpriority="high"` on both the preload link and the `img`,
+              which is the whole of what `priority` is supposed to buy. */}
           <Image
             alt=""
             className="hw26-hero-layer hw26-hero-layer--bg"
+            fetchPriority="high"
             fill
             priority
             quality={90}
@@ -3732,6 +3902,7 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
           <Image
             alt=""
             className="hw26-hero-layer hw26-hero-layer--fg"
+            fetchPriority="high"
             fill
             priority
             quality={90}
@@ -3753,12 +3924,33 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
               same split the wordmark makes between the h1 and the two words.
               See the two blocks in the stylesheet. */}
           <span className="hw26-hero-tittle">
+            {/* `sizes` is the whole reason this mark is not a download the
+                size of the hero. With no `sizes` Next treats an intrinsically
+                sized image as a 1x/2x pair off its `width`, which rounds 274
+                up to the 384 and 640 candidates — a 640px-wide plate for a
+                mark that never paints wider than about 41px.
+
+                The real figures, from `.hw26-hero-tittle`: the mark is
+                `0.38em` tall on `--hero-title-fs` with `width: auto`, and the
+                art is 274x379, so its width is 0.38 x (274/379) = 0.2747em of
+                that size. `--hero-title-fs` is `min(16.5cqh, (100vw - 2 x
+                gutter) / 4.93)`, and on a phone the width branch always wins:
+                at 700px that is 130.6px, so the mark is 35.9px across, and
+                narrower on every smaller screen. Above 700 the `cqh` cap takes
+                over and the mark settles around 41px at 1440x900, reaching
+                about 65px on a 2560-wide display. 40px and 72px are those two
+                ceilings rounded up.
+
+                `priority` stays: the mark sits over the wordmark in the first
+                viewport, so it is fetched with the hero either way — this only
+                decides how many bytes that fetch is. */}
             <Image
               alt=""
               className="hw26-hero-tittle-img"
               height={379}
               priority
               quality={90}
+              sizes="(max-width: 700px) 40px, 72px"
               src="/hero/ab-logo.png"
               width={274}
             />
@@ -4109,12 +4301,8 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
           {/* The one rule that governs everything under this title, said
               before the sheet rather than after it. It is the same object the
               add-on groups' `intro` is, one level up: a line that belongs to
-              the whole list under a heading and not to any cell in it. Set at
-              the brief's size, because it is the brief's kind of sentence —
-              prose about the event, not a caption on a panel. */}
-          <p className="hw26-head-intro hw26-reveal">
-            Each team can reserve 1 hardware unit
-          </p>
+              the whole list under a heading and not to any cell in it. */}
+          <HwNote>Each team can reserve 1 hardware unit</HwNote>
 
           {RIG_GROUPS.map((group) => (
             <div className="hw26-rig-group" key={group.label}>
@@ -4132,15 +4320,9 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
               </h3>
 
               {group.reference ? (
-                <a
-                  className="hw26-cat-reference hw26-reveal"
-                  href={group.reference.href}
-                  rel="noreferrer"
-                  target="_blank"
-                >
-                  <span>{group.reference.label}</span>
-                  <span aria-hidden="true">↗</span>
-                </a>
+                <HwNote href={group.reference.href}>
+                  {group.reference.label}
+                </HwNote>
               ) : null}
 
               <div className="hw26-rigs">
@@ -4191,7 +4373,13 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
                       rel="noreferrer"
                       target="_blank"
                     >
-                      <img alt={group.partner.name} src={group.partner.src} />
+                      <img
+                        alt={group.partner.name}
+                        decoding="async"
+                        loading="lazy"
+                        src={group.partner.src}
+                        {...dims(group.partner.src)}
+                      />
                     </a>
                   ) : null}
                 </span>
@@ -4203,15 +4391,32 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
                   card in it. Both groups set one, and the field stays
                   optional for the group that arrives without a condition on
                   it rather than because either of these is that group. */}
-              {group.intro ? (
-                <p className="hw26-cat-intro hw26-reveal">{group.intro}</p>
-              ) : null}
+              {group.intro ? <HwNote>{group.intro}</HwNote> : null}
 
               <div className="hw26-rigs">
                 {group.items.map((item, i) => (
                   <RigCell item={item} key={item.name} order={i} />
                 ))}
               </div>
+
+              {/* The small parts, under the cells that have a photograph —
+                  see the note on the group's `manifest` for why these are a
+                  list and not four more plates. */}
+              {group.manifest ? (
+                <>
+                  <p className="hw26-label hw26-manifest-head">
+                    Also on the shelf
+                  </p>
+                  <dl className="hw26-manifest hw26-reveal">
+                    {group.manifest.map((part) => (
+                      <div className="hw26-manifest-row" key={part.name}>
+                        <dt>{part.name}</dt>
+                        <dd>{part.units}</dd>
+                      </div>
+                    ))}
+                  </dl>
+                </>
+              ) : null}
             </div>
           ))}
         </div>
@@ -4232,21 +4437,26 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
                 key={prize.rank}
               >
                 <div className="hw26-prize-card">
-                  <span className="hw26-prize-index">
-                    {String(prize.rank).padStart(2, "0")}
-                  </span>
-
                   {prize.partner ? (
                     <img
                       alt={`${prize.partner.name} prize partner`}
                       className={`hw26-prize-credit ${prize.partner.mark}`}
+                      decoding="async"
+                      loading="lazy"
                       src={prize.partner.src}
+                      {...dims(prize.partner.src)}
                     />
                   ) : null}
 
                   {prize.image ? (
                     <div className="hw26-prize-media">
-                      <img alt={prize.name} src={prize.image} />
+                      <img
+                        alt={prize.name}
+                        decoding="async"
+                        loading="lazy"
+                        src={prize.image}
+                        {...dims(prize.image)}
+                      />
                     </div>
                   ) : (
                     <div aria-hidden="true" className="hw26-prize-tba">
@@ -4255,16 +4465,17 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
                   )}
 
                   <div className="hw26-prize-copy">
-                    <span className="hw26-label hw26-label--mint">
-                      {prize.place}
-                    </span>
                     <h3>{prize.name}</h3>
-                    <p>{prize.note}</p>
+                    {"note" in prize ? <p>{prize.note}</p> : null}
                   </div>
                 </div>
 
-                <div aria-hidden="true" className="hw26-prize-step">
-                  <span>{prize.rank}</span>
+                {/* The step is the only place the rank is written, so it is
+                    read out rather than hidden — the mint label that used to
+                    repeat it above the title is gone. The hatching (`<i />`)
+                    stays decorative. */}
+                <div className="hw26-prize-step">
+                  <span>{prize.place}</span>
                   <i />
                 </div>
               </article>
@@ -4382,7 +4593,14 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
                   rel="noopener noreferrer"
                   target="_blank"
                 >
-                  <img alt={p.name} className={p.mark} src={p.src} />
+                  <img
+                    alt={p.name}
+                    className={p.mark}
+                    decoding="async"
+                    loading="lazy"
+                    src={p.src}
+                    {...dims(p.src)}
+                  />
                 </a>
               ))}
             </div>
@@ -4399,7 +4617,14 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
                   rel="noopener noreferrer"
                   target="_blank"
                 >
-                  <img alt={p.name} className={p.mark} src={p.src} />
+                  <img
+                    alt={p.name}
+                    className={p.mark}
+                    decoding="async"
+                    loading="lazy"
+                    src={p.src}
+                    {...dims(p.src)}
+                  />
                 </a>
               ))}
             </div>
@@ -4440,7 +4665,10 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
                 <img
                   alt={org.name}
                   className={`hw26-org-logo${org.mark ? ` ${org.mark}` : ""}`}
+                  decoding="async"
+                  loading="lazy"
                   src={org.src}
+                  {...dims(org.src)}
                 />
               </a>
             ))}
