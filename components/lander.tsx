@@ -538,7 +538,6 @@ const ADDON_GROUPS: {
   intro?: string;
   partner?: { name: string; src: string; href: string };
   items: Rig[];
-  manifest?: { name: string; units: string }[];
 }[] = [
   {
     label: "3D Printers",
@@ -626,38 +625,34 @@ const ADDON_GROUPS: {
         units: "1x",
         photo: "/hardware/raspberry-pi-5-16gb-studio.png",
       },
-      {
-        name: "ArduCam EK031",
-        units: "1x",
-        photo: "/hardware/arducam-ek031-studio.png",
-      },
-      {
-        name: "Arducam B0266",
-        units: "1x",
-        photo: "/hardware/arducam-b0266-studio.png",
-      },
-    ],
-    // The rest of the shelf, as a list rather than four more cells. Same
-    // argument the docblock above makes for Components being one cell and not
-    // four, running the other way: a card is a claim that the thing is worth
-    // looking at, and these are a power supply, a cooler and a bag of heat
-    // shrink. A plate with no photograph on it and "heat shrink tubing set,
-    // 100 pcs" set at display size is not a tile, it is a tile-shaped hole.
-    // What a reader wants from these is what it is and how many there are,
-    // which is a packing list, so this is a packing list.
-    manifest: [
+      // The rest of the shelf, carded like the two above. No photograph yet,
+      // so the plate is the panel itself: the count in one corner, the short
+      // name on the bottom edge, and the full part number in the note.
       { name: "Raspberry Pi 5 / 8GB", units: "3x" },
-      { name: "Raspberry Pi 27W USB-C Power Supply", units: "3x" },
-      { name: "Raspberry Pi Active Cooler", units: "3x" },
-      { name: "microSD card 32GB", units: "3x" },
-      { name: "Raspberry Pi Camera Module 3 Wide", units: "1x" },
-      { name: "ESP32-S3-DevKitC-1-N8R8", units: "3x" },
-      { name: "Raspberry Pi Pico 2 W", units: "3x" },
       {
-        name: "Breadboard 830-point + jumper wires + power module set",
+        name: "27W Power Supply",
         units: "3x",
+        note: "Raspberry Pi USB-C power supply",
       },
-      { name: "Heat shrink tubing set, 100 pcs", units: "1x" },
+      { name: "Active Cooler", units: "3x", note: "For Raspberry Pi 5" },
+      { name: "microSD 32GB", units: "3x" },
+      {
+        name: "Camera Module 3 Wide",
+        units: "1x",
+        note: "Raspberry Pi wide-angle camera",
+      },
+      { name: "ESP32-S3 DevKit", units: "3x", note: "DevKitC-1-N8R8" },
+      {
+        name: "Pico 2 W",
+        units: "3x",
+        note: "Raspberry Pi Pico 2 W microcontroller",
+      },
+      {
+        name: "Breadboard 830-point",
+        units: "3x",
+        note: "with jumper wires and power module set",
+      },
+      { name: "Heat shrink tubing", units: "1x", note: "100-piece set" },
     ],
   },
 ];
@@ -4398,25 +4393,6 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
                   <RigCell item={item} key={item.name} order={i} />
                 ))}
               </div>
-
-              {/* The small parts, under the cells that have a photograph —
-                  see the note on the group's `manifest` for why these are a
-                  list and not four more plates. */}
-              {group.manifest ? (
-                <>
-                  <p className="hw26-label hw26-manifest-head">
-                    Also on the shelf
-                  </p>
-                  <dl className="hw26-manifest hw26-reveal">
-                    {group.manifest.map((part) => (
-                      <div className="hw26-manifest-row" key={part.name}>
-                        <dt>{part.name}</dt>
-                        <dd>{part.units}</dd>
-                      </div>
-                    ))}
-                  </dl>
-                </>
-              ) : null}
             </div>
           ))}
         </div>
