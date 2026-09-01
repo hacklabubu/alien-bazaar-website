@@ -630,19 +630,24 @@ const ADDON_GROUPS: {
         units: "1x",
         photo: "/hardware/arducam-ek031-studio.png",
       },
-      // The rest of the shelf, carded like the three above. No photograph yet, so
-      // the plate is the panel itself: the count in one corner, the short name
-      // on the bottom edge, and the full part number in the note.
+      // These three were carded before their photos arrived; they now match the rest.
       {
         name: "Camera Module 3 Wide",
         units: "1x",
         note: "Raspberry Pi wide-angle camera",
+        photo: "/hardware/raspberry-pi-camera-module-3-wide-studio.webp",
       },
-      { name: "ESP32-S3 DevKit", units: "3x", note: "DevKitC-1-N8R8" },
+      {
+        name: "ESP32-S3 DevKit",
+        units: "3x",
+        note: "DevKitC-1-N8R8",
+        photo: "/hardware/esp32-s3-devkit-studio.webp",
+      },
       {
         name: "Pico 2 W",
         units: "3x",
         note: "Raspberry Pi Pico 2 W microcontroller",
+        photo: "/hardware/raspberry-pi-pico-2-w-studio.webp",
       },
     ],
   },
