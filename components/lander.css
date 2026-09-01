@@ -694,6 +694,35 @@ html:not(.hw26-cursor-dom) .hw26 [role='button'] * {
   opacity: 0.4;
 }
 
+.hw26-cat-reference {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  width: fit-content;
+  margin: -0.35rem 0 clamp(1.5rem, 2.4vw, 2rem);
+  padding: 0.5rem 0.7rem;
+  border-left: 1px solid color-mix(in srgb, var(--hw-mint) 58%, transparent);
+  color: var(--hw-mint);
+  background: color-mix(in srgb, var(--hw-mint) 6%, transparent);
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 0.7rem;
+  line-height: 1;
+  letter-spacing: 0.16em;
+  text-decoration: none;
+  text-transform: uppercase;
+  transition: color 180ms var(--hw-ease), background 180ms var(--hw-ease);
+}
+
+.hw26-cat-reference:is(:hover, :focus-visible) {
+  color: var(--hw-mint);
+  background: color-mix(in srgb, var(--hw-mint) 6%, transparent);
+}
+
+.hw26-cat-reference:focus-visible {
+  outline: 1px solid var(--hw-mint);
+  outline-offset: 3px;
+}
+
 /* The title minus its mark: the label and, when a group has one, the partner's
    logo, held in one box so that the pair can wrap as a pair. The mark is
    deliberately left outside it. A logo that runs out of room on a phone has to
@@ -2489,17 +2518,9 @@ button.hw26-apply {
 .hw26-about-visual img {
   z-index: 2;
   object-fit: contain;
-  transform: scaleX(-1);
-  object-position: right center;
+  object-position: 78% center;
   filter: saturate(0.78) contrast(1.06)
     drop-shadow(0 0 2.5rem rgba(0, 0, 0, 0.52));
-  /* A 1rem fade-in on the image's visual-left edge: fully transparent on the
-     edge itself, opaque one rem in. The gradient is written `to left` because
-     the element is mirrored by the transform above — a mask is painted in the
-     element's own space and flipped with it, so the edge that shows on the
-     page's left is the element's right. */
-  -webkit-mask-image: linear-gradient(to left, transparent 0, #000 1rem);
-  mask-image: linear-gradient(to left, transparent 0, #000 1rem);
 }
 
 .hw26-about-visual .hw26-label {
@@ -2599,9 +2620,9 @@ button.hw26-apply {
      figure written on the same element. The img carries no reveal class, so
      the tenth-opacity ground survives the reveal firing. */
   .hw26-about-visual img {
-    object-fit: cover;
-    object-position: center;
-    opacity: 0.1;
+    object-fit: contain;
+    object-position: right center;
+    opacity: 0.12;
     /* The desktop edge fade comes off: as a full-bleed ground the image's
        edges are the section's own, and the tenth-opacity wash is the whole
        of the treatment. */
@@ -3802,6 +3823,16 @@ button.hw26-apply {
 .hw26-rig-doc:focus-visible {
   outline: 1px solid var(--hw-mint);
   outline-offset: 3px;
+}
+
+.hw26-rig-doc--pending {
+  color: color-mix(in srgb, var(--hw-silver) 48%, transparent);
+  cursor: help;
+}
+
+.hw26-rig-doc--pending:is(:hover, :focus-visible) {
+  color: color-mix(in srgb, var(--hw-mint) 62%, var(--hw-silver));
+  filter: none;
 }
 
 /* Sized so the longest word in the list — MANIPULATORS — clears the cell's
@@ -6046,6 +6077,10 @@ html:not(.hw26-cursor-dom) .hw26-faq-trigger {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
+  .hw26-sponsors-lead--four > :last-child:nth-child(odd) {
+    grid-column: span 2;
+  }
+
   /* Full width, because the row it is half of is one column here and half of
      one column is not a slot — the row *is* the sheet, so a shrunk container
      would only read as a tile that came up short. */
@@ -6434,7 +6469,7 @@ html[data-theme='light'] .hw26-sponsor-lead--tba {
    these two counts. */
 .hw26-sponsors-rest {
   display: grid;
-  grid-template-columns: repeat(9, minmax(0, 1fr));
+  grid-template-columns: repeat(8, minmax(0, 1fr));
   gap: 1px;
   background: var(--hw-line);
   border: 1px solid var(--hw-line);
@@ -6445,7 +6480,7 @@ html[data-theme='light'] .hw26-sponsor-lead--tba {
    hardware wall's nine are. The narrower breakpoints below apply to both —
    four then two columns divide eight exactly. */
 .hw26-sponsors-rest--eco {
-  grid-template-columns: repeat(8, minmax(0, 1fr));
+  grid-template-columns: repeat(6, minmax(0, 1fr));
 }
 
 @media (max-width: 1580px) {
@@ -6575,6 +6610,15 @@ html[data-theme='light'] .hw26-sponsor.hw26-sponsor--diamond:hover {
 .hw26-sponsor--static:hover {
   background: var(--hw-steel);
   box-shadow: none;
+}
+
+.hw26-sponsor--tba {
+  font-family: var(--font-chakra-petch), sans-serif;
+  font-size: clamp(1.15rem, 2vw, 1.65rem);
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-indent: 0.18em;
+  color: #8b928d;
 }
 
 html[data-theme='light'] .hw26-sponsor--static:hover {
@@ -6720,6 +6764,70 @@ html[data-theme='light'] .hw26-sponsor--static:hover {
 .hw26-sponsor img.hw26-mark--botland {
   height: clamp(26px, 2.6vw, 36px);
   max-width: 100%;
+  object-fit: contain;
+}
+
+.hw26-sponsor img.hw26-mark--makermods,
+.hw26-sponsor-lead img.hw26-mark--inovo,
+.hw26-sponsor-lead img.hw26-mark--portfolion,
+.hw26-sponsor img.hw26-mark--kolektyw3 {
+  filter: brightness(0) invert(1);
+}
+
+.hw26-sponsor img.hw26-mark--makermods {
+  height: clamp(28px, 2.8vw, 38px);
+}
+
+.hw26-sponsor img.hw26-mark--spectacles,
+.hw26-sponsor img.hw26-mark--kogito {
+  width: clamp(92px, 8vw, 120px);
+  height: auto;
+}
+
+.hw26-sponsor img.hw26-mark--smok {
+  width: clamp(42px, 4vw, 56px);
+  height: clamp(42px, 4vw, 56px);
+  object-fit: contain;
+}
+
+.hw26-sponsor-lockup--cpsdrone {
+  --hw26-lockup-icon: clamp(42px, 3.5vw, 50px);
+  --hw26-lockup-track: 0.14em;
+  width: clamp(82px, 7vw, 96px);
+}
+
+.hw26-sponsor img.hw26-mark--cpsdrone {
+  width: var(--hw26-lockup-icon);
+  height: var(--hw26-lockup-icon);
+  object-fit: contain;
+}
+
+.hw26-sponsor-lead img.hw26-mark--portfolion,
+.hw26-sponsor-lead img.hw26-mark--inovo {
+  height: clamp(24px, 2.7vw, 36px);
+  max-width: 100%;
+  object-fit: contain;
+}
+
+.hw26-rig-credit[src="/sponsors/makermods.png"] {
+  max-width: clamp(58px, 5.4vw, 78px);
+  max-height: clamp(22px, 2vw, 28px);
+  filter: brightness(0) invert(1);
+  opacity: 0.82;
+  object-fit: contain;
+}
+
+.hw26-rig-credit[src="/sponsors/cpsdrone.png"] {
+  max-width: clamp(28px, 2.8vw, 38px);
+  max-height: clamp(28px, 2.8vw, 38px);
+  opacity: 0.76;
+  object-fit: contain;
+}
+
+.hw26-rig-credit[src="/sponsors/spectacles.svg"] {
+  max-width: clamp(58px, 5.4vw, 78px);
+  max-height: clamp(18px, 1.8vw, 24px);
+  opacity: 0.82;
   object-fit: contain;
 }
 
