@@ -4140,7 +4140,7 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
                 fill
                 quality={90}
                 sizes="(max-width: 900px) 100vw, 52vw"
-                src="/hardware/unitree-about-transparent.png"
+                src="/hardware/unitree-humanoid-about.webp"
                 className="hw-about-img"
               />
               {/* <span className="hw26-label">AUTOMATION UNIT /// 06</span> */}
