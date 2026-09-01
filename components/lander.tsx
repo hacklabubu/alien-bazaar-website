@@ -625,7 +625,12 @@ const ADDON_GROUPS: {
         units: "1x",
         photo: "/hardware/luxonis-oak-d-studio.png",
       },
-      // The rest of the shelf, carded like the two above. No photograph yet, so
+      {
+        name: "ArduCam EK031",
+        units: "1x",
+        photo: "/hardware/arducam-ek031-studio.png",
+      },
+      // The rest of the shelf, carded like the three above. No photograph yet, so
       // the plate is the panel itself: the count in one corner, the short name
       // on the bottom edge, and the full part number in the note.
       {
