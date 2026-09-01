@@ -621,14 +621,23 @@ const ADDON_GROUPS: {
         photo: "/hardware/luxonis-oak-d-studio.png",
       },
       {
-        name: "Raspberry Pi 5 / 16GB",
-        units: "1x",
+        name: "Raspberry Pi 5 / 8GB",
+        units: "3x",
         photo: "/hardware/raspberry-pi-5-16gb-studio.png",
       },
-      // The rest of the shelf, carded like the two above. No photograph yet,
+      {
+        name: "ArduCam EK031",
+        units: "1x",
+        photo: "/hardware/arducam-ek031-studio.png",
+      },
+      {
+        name: "Arducam B0266",
+        units: "1x",
+        photo: "/hardware/arducam-b0266-studio.png",
+      },
+      // The rest of the shelf, carded like the four above. No photograph yet,
       // so the plate is the panel itself: the count in one corner, the short
       // name on the bottom edge, and the full part number in the note.
-      { name: "Raspberry Pi 5 / 8GB", units: "3x" },
       {
         name: "27W Power Supply",
         units: "3x",
