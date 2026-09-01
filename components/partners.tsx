@@ -45,8 +45,18 @@ export function PartnersPage({ hackathon }: { hackathon: HardwareEvent }) {
                   media='(max-width: 900px)'
                   srcSet='/partners-world-map-mobile.svg'
                 />
+                {/* No `width`/`height` here, unlike every other plain `img` on
+                    the site. The three sources above are three different
+                    drawings — 1200x520 desktop, 720x570 mobile, 1200x360
+                    landscape — and an attribute pair on the fallback `img`
+                    would pin one ratio onto whichever of them the media query
+                    picked. A wrong reserved box is worse than none; the map is
+                    below a full partner directory, so it is never the LCP and
+                    lazy is safe. */}
                 <img
                   alt='Partner locations: United States, England, Germany, Switzerland, Poland and China. Alien Bazaar is based in Poland.'
+                  decoding='async'
+                  loading='lazy'
                   src='/partners-world-map.svg'
                 />
               </picture>

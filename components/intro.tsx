@@ -92,7 +92,7 @@ export function useScramble(
 
 /** Streams down the left. Machine chatter — atmosphere, not reading matter. */
 const LOG = [
-  'ACQ  52.2297N 21.0122E',
+  'ACQ  52.1702N 21.0762E',
   'NODE HACKER-HOUSE-01',
   'LINK 10G  LAT 0.4MS',
   'PWR  3-PHASE STABLE',
@@ -122,7 +122,7 @@ const STAGES = [
 
 function Hud() {
   const key = useScramble('9F4C-A17E-002B-ABWAW26', 220, 620)
-  const coord = useScramble('52.2297N 21.0122E', 140, 520)
+  const coord = useScramble('52.1702N 21.0762E', 140, 520)
 
   return (
     <div className='hw26-i-hud'>
