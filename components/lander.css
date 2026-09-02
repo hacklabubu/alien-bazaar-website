@@ -6730,7 +6730,7 @@ html[data-theme='light'] .hw26-sponsor--static:hover {
   object-fit: contain;
 }
 
-.hw26-rig-credit[src="/sponsors/makermods.webp"] {
+.hw26-rig-credit[src="/partners/hardware/makermods.webp"] {
   max-width: clamp(58px, 5.4vw, 78px);
   max-height: clamp(22px, 2vw, 28px);
   filter: brightness(0) invert(1);
@@ -6738,14 +6738,14 @@ html[data-theme='light'] .hw26-sponsor--static:hover {
   object-fit: contain;
 }
 
-.hw26-rig-credit[src="/sponsors/cpsdrone.webp"] {
+.hw26-rig-credit[src="/partners/hardware/cpsdrone.webp"] {
   max-width: clamp(28px, 2.8vw, 38px);
   max-height: clamp(28px, 2.8vw, 38px);
   opacity: 0.76;
   object-fit: contain;
 }
 
-.hw26-rig-credit[src="/sponsors/spectacles.svg"] {
+.hw26-rig-credit[src="/partners/hardware/spectacles.svg"] {
   max-width: clamp(58px, 5.4vw, 78px);
   max-height: clamp(18px, 1.8vw, 24px);
   opacity: 0.82;
@@ -6757,7 +6757,7 @@ html[data-theme='light'] .hw26-sponsor--static:hover {
 }
 
 /* Partner credits stay as clean marks over the hardware photography. */
-.hw26-rig-credit[src="/sponsors/stealth-startup.svg"] {
+.hw26-rig-credit[src="/partners/hardware/stealth-startup.svg"] {
   max-width: clamp(42px, 4.4vw, 56px);
   max-height: clamp(36px, 3.8vw, 48px);
   opacity: 0.78;
@@ -6765,9 +6765,9 @@ html[data-theme='light'] .hw26-sponsor--static:hover {
 }
 
 .hw26-rig-credit:is(
-    [src="/sponsors/epikor.svg"],
-    [src="/sponsors/skymav.webp"],
-    [src="/sponsors/machinekind.webp"]
+    [src="/partners/organizers/epikor.svg"],
+    [src="/partners/hardware/skymav.webp"],
+    [src="/partners/hardware/machinekind.webp"]
   ) {
   max-width: clamp(54px, 5vw, 72px);
   max-height: clamp(22px, 2vw, 30px);
@@ -6775,7 +6775,7 @@ html[data-theme='light'] .hw26-sponsor--static:hover {
   object-fit: contain;
 }
 
-.hw26-rig-credit[src="/sponsors/ghost-icon.webp"] {
+.hw26-rig-credit[src="/partners/hardware/ghost-icon.webp"] {
   max-width: clamp(30px, 3vw, 42px);
   max-height: clamp(30px, 3vw, 42px);
   opacity: 0.42;
@@ -6783,7 +6783,7 @@ html[data-theme='light'] .hw26-sponsor--static:hover {
 }
 
 .hw26-rig:is(:hover, .hw26-rig--active)
-  .hw26-rig-credit[src="/sponsors/ghost-icon.webp"] {
+  .hw26-rig-credit[src="/partners/hardware/ghost-icon.webp"] {
   opacity: 0.58;
 }
 
@@ -6794,14 +6794,14 @@ html[data-theme='light'] .hw26-sponsor--static:hover {
    white cut, so the corner keeps the cell's two inks and needs none of
    GHOST's dimming: that filter exists because a saturated plate shouts over a
    photograph, and there is no saturation left in this one to shout with. */
-.hw26-rig-credit[src="/sponsors/elmark-white.svg"] {
+.hw26-rig-credit[src="/partners/hardware/elmark-white.svg"] {
   max-width: clamp(62px, 5.4vw, 78px);
   max-height: clamp(24px, 2.2vw, 30px);
   opacity: 0.9;
   object-fit: contain;
 }
 
-.hw26-rig-credit[src="/sponsors/mab.webp"] {
+.hw26-rig-credit[src="/partners/hardware/mab.webp"] {
   max-width: clamp(58px, 5.4vw, 78px);
   max-height: clamp(22px, 2vw, 28px);
   opacity: 0.72;

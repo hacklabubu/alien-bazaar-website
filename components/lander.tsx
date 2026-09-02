@@ -254,7 +254,7 @@ const RIG_GROUPS: RigGroup[] = [
         photo: "/hardware/tbot.webp",
         dropShadow: true,
         credit: {
-          src: "/sponsors/epikor.svg",
+          src: "/partners/organizers/epikor.svg",
           label: "Developed by Epikor",
         },
       },
@@ -263,7 +263,7 @@ const RIG_GROUPS: RigGroup[] = [
         units: "1x",
         photo: "/hardware/skyhover-studio.png",
         credit: {
-          src: "/sponsors/skymav.webp",
+          src: "/partners/hardware/skymav.webp",
           label: "In partnership with SkyMav",
         },
       },
@@ -279,7 +279,7 @@ const RIG_GROUPS: RigGroup[] = [
         // whose only two inks are snow and mint, and a green lockup would be
         // the one thing on the sheet asserting a third.
         credit: {
-          src: "/sponsors/sprtk-white.webp",
+          src: "/partners/hardware/sprtk-white.webp",
           label: "Parts supplied by SPRTK",
         },
       },
@@ -304,7 +304,7 @@ const RIG_GROUPS: RigGroup[] = [
         // is part of the identity; in the corner of a photographed cell it is
         // one ink too many.
         credit: {
-          src: "/sponsors/elmark-white.svg",
+          src: "/partners/hardware/elmark-white.svg",
           label: "In partnership with Elmark Automatyka",
         },
       },
@@ -318,7 +318,7 @@ const RIG_GROUPS: RigGroup[] = [
         units: "2x",
         photo: "/hardware/makerarm-studio.png",
         credit: {
-          src: "/sponsors/makermods.webp",
+          src: "/partners/hardware/makermods.webp",
           label: "In partnership with MakerMods",
         },
       },
@@ -333,7 +333,7 @@ const RIG_GROUPS: RigGroup[] = [
         photo: "/hardware/tri-arm-studio.webp",
         docsUrl: "https://tnkr.ai/theaiwhisperers-workspace/tri-arm#overview",
         credit: {
-          src: "/sponsors/stealth-startup.svg",
+          src: "/partners/hardware/stealth-startup.svg",
           label: "In partnership with Stealth startup",
         },
       },
@@ -342,7 +342,7 @@ const RIG_GROUPS: RigGroup[] = [
         units: "2x",
         photo: "/hardware/robo-arm-big.png",
         credit: {
-          src: "/sponsors/ghost-icon.webp",
+          src: "/partners/hardware/ghost-icon.webp",
           label: "In partnership with GHOST",
         },
       },
@@ -352,7 +352,7 @@ const RIG_GROUPS: RigGroup[] = [
         photo: "/hardware/robo-arm.png",
         docsUrl: "https://tnkr.ai/eros-builds/so-101-robotic-arm#overview",
         credit: {
-          src: "/sponsors/ghost-icon.webp",
+          src: "/partners/hardware/ghost-icon.webp",
           label: "In partnership with GHOST",
         },
       },
@@ -362,7 +362,7 @@ const RIG_GROUPS: RigGroup[] = [
         note: "Robo arms on a wheeled platform. We provide components and tools, you design and assemble it.",
         photo: "/hardware/robot-arm-byo-v2-studio.png",
         credit: {
-          src: "/sponsors/mab.webp",
+          src: "/partners/hardware/mab.webp",
           label: "In partnership with MAB Robotics",
         },
       },
@@ -377,7 +377,7 @@ const RIG_GROUPS: RigGroup[] = [
         note: "Underwater drones. We provide components and tools, you design and assemble it.",
         photo: "/hardware/underwater-drone.png",
         credit: {
-          src: "/sponsors/cpsdrone.webp",
+          src: "/partners/hardware/cpsdrone.webp",
           label: "In partnership with CPS Drone",
         },
       },
@@ -395,7 +395,7 @@ const RIG_GROUPS: RigGroup[] = [
         units: "1x",
         photo: "/hardware/robodog-w01-tek.jpeg",
         credit: {
-          src: "/sponsors/machinekind.webp",
+          src: "/partners/hardware/machinekind.webp",
           label: "In partnership with Machinekind",
         },
       },
@@ -421,7 +421,7 @@ const RIG_GROUPS: RigGroup[] = [
         photo: "/hardware/vladimer-studio.webp",
         docsUrl: "https://tnkr.ai/vladimirroboticss-workspace/cubebot#overview",
         credit: {
-          src: "/sponsors/stealth-startup.svg",
+          src: "/partners/hardware/stealth-startup.svg",
           label: "In partnership with Stealth startup",
         },
       },
@@ -448,10 +448,6 @@ const RIG_GROUPS: RigGroup[] = [
         name: "Spectacles 2024",
         units: "1x",
         photo: "/hardware/spectacles-2024-studio.png",
-        credit: {
-          src: "/sponsors/spectacles.svg",
-          label: "In partnership with Spectacles",
-        },
       },
     ],
   },
@@ -564,7 +560,7 @@ const ADDON_GROUPS: {
         name: "Leo Rover",
         photo: "/hardware/leo-rover.png",
         credit: {
-          src: "/sponsors/fictionlab.svg",
+          src: "/partners/hardware/fictionlab.svg",
           label: "In partnership with Fictionlab",
         },
       },
@@ -573,7 +569,7 @@ const ADDON_GROUPS: {
         units: "1x",
         photo: "/hardware/mic770ai-studio.png",
         credit: {
-          src: "/sponsors/elmark-white.svg",
+          src: "/partners/hardware/elmark-white.svg",
           label: "Supplied by Elmark Automatyka",
         },
       },
@@ -582,7 +578,7 @@ const ADDON_GROUPS: {
         units: "1x",
         photo: "/hardware/nuvo-7160gc-studio.png",
         credit: {
-          src: "/sponsors/elmark-white.svg",
+          src: "/partners/hardware/elmark-white.svg",
           label: "Supplied by Elmark Automatyka",
         },
       },
@@ -591,7 +587,7 @@ const ADDON_GROUPS: {
         units: "1x",
         photo: "/hardware/nru-52s-studio.png",
         credit: {
-          src: "/sponsors/elmark-white.svg",
+          src: "/partners/hardware/elmark-white.svg",
           label: "Supplied by Elmark Automatyka",
         },
       },
@@ -600,7 +596,7 @@ const ADDON_GROUPS: {
         units: "1x",
         photo: "/hardware/semil-1600gc-studio.png",
         credit: {
-          src: "/sponsors/elmark-white.svg",
+          src: "/partners/hardware/elmark-white.svg",
           label: "Supplied by Elmark Automatyka",
         },
       },
@@ -611,7 +607,7 @@ const ADDON_GROUPS: {
     intro: "Additional vision and compute modules supplied by Botland.",
     partner: {
       name: "Botland",
-      src: "/sponsors/botland.webp",
+      src: "/partners/hardware/botland.webp",
       href: "https://botland.com.pl/",
     },
     items: [
@@ -662,7 +658,7 @@ const PRIZES = [
     note: "1 kit for the team: parts, hardware, and electronics, ready to assemble",
     partner: {
       name: "Stealth startup",
-      src: "/sponsors/stealth-startup.svg",
+      src: "/partners/hardware/stealth-startup.svg",
       mark: "hw26-mark--tnkr",
     },
   },
@@ -674,7 +670,7 @@ const PRIZES = [
     note: "2 StackChans for the team",
     partner: {
       name: "M5Stack",
-      src: "/sponsors/m5stack.svg",
+      src: "/partners/prizes/m5stack.svg",
       mark: "hw26-mark--m5stack",
     },
   },
@@ -821,7 +817,7 @@ const ORGANIZERS: {
     //
     // A lockup is not the same object as a glyph, so it cannot keep the
     // glyph's height: see the sizing note in the stylesheet.
-    src: "/sponsors/epikor.svg",
+    src: "/partners/organizers/epikor.svg",
     href: "https://epikor.eu",
     mark: "hw26-org-logo--epikor",
   },
@@ -829,7 +825,7 @@ const ORGANIZERS: {
     name: "Hacklab",
     // White mark, drawn for the dark plate the organizer cells keep in
     // both themes.
-    src: "/sponsors/hacklab.webp",
+    src: "/partners/organizers/hacklab.webp",
     href: "https://hacklab.so",
   },
 ];
@@ -933,7 +929,7 @@ type TbaCell = {
 const LEAD_SPONSORS: Partner[] = [
   {
     name: "NVIDIA",
-    src: "/sponsors/nvidia.svg",
+    src: "/partners/ecosystem/nvidia.svg",
     href: "https://www.nvidia.com",
     // Their two-colour mark is the stacked lockup, so matching a horizontal
     // wordmark's height would leave it reading half the size.
@@ -942,12 +938,12 @@ const LEAD_SPONSORS: Partner[] = [
   },
     {
     name: "Google Developer Groups",
-    src: "/sponsors/GDG.webp",
+    src: "/partners/ecosystem/GDG.webp",
     href: "https://gdg.community.dev/",
   },
   {
     name: "START Warsaw",
-    src: "/sponsors/startwarsaw.svg",
+    src: "/partners/ecosystem/startwarsaw.svg",
     href: "https://www.startwarsaw.org/",
   },
 ];
@@ -966,13 +962,13 @@ const LEAD_SPONSORS: Partner[] = [
 const SMALL_SPONSORS: Partner[] = [
   {
     name: "AI Tinkerers Poland",
-    src: "/sponsors/ai-tinkerers-poland.webp",
+    src: "/partners/ecosystem/ai-tinkerers-poland.webp",
     href: "https://poland.aitinkerers.org/",
     mark: "hw26-mark--aitinkerers",
   },
   {
     name: "Eurotech Federation",
-    src: "/sponsors/eurotech.webp",
+    src: "/partners/ecosystem/eurotech.webp",
     href: "https://www.eurotech-federation.com/",
     // Cropped to the lockup on its own deep blue, not a cut-out mark: every
     // pixel of it is ink, so it reads far heavier per unit of height than the
@@ -981,30 +977,30 @@ const SMALL_SPONSORS: Partner[] = [
   },
   {
     name: "Oxbridge Frontier Intelligence",
-    src: "/sponsors/ofi.webp",
+    src: "/partners/ecosystem/ofi.webp",
     href: "https://www.oxbridgefrontier.com/",
     mark: "hw26-mark--ofi",
   },
   {
     name: "Hackathon Hub",
-    src: "/sponsors/hackathonhub.webp",
+    src: "/partners/ecosystem/hackathonhub.webp",
     href: "https://hackathonhub.eu/",
   },
   {
     name: "SMOK Ventures",
-    src: "/sponsors/smok.webp",
+    src: "/partners/ecosystem/smok.webp",
     href: "https://www.smok.vc/",
     mark: "hw26-mark--smok",
   },
   {
     name: "Kogito Ventures",
-    src: "/sponsors/kogito.webp",
+    src: "/partners/ecosystem/kogito.webp",
     href: "https://www.kogito-ventures.com/",
     mark: "hw26-mark--kogito",
   },
   {
     name: "Kolektyw3",
-    src: "/sponsors/kolektyw3.webp",
+    src: "/partners/ecosystem/kolektyw3.webp",
     href: "https://kolektyw3.pl/",
     mark: "hw26-mark--kolektyw3",
   },
@@ -1062,7 +1058,7 @@ const HARDWARE_PARTNERS: Partner[] = [
     // the rank above the gold every other highlighted partner wears, so the
     // tile takes the diamond ink. Whoever holds that tier wears this plate.
     name: "Elmark Automatyka",
-    src: "/sponsors/elmark.svg",
+    src: "/partners/hardware/elmark.svg",
     href: "https://www.elmark.com.pl",
     mark: "hw26-mark--elmark",
     highlight: true,
@@ -1070,7 +1066,7 @@ const HARDWARE_PARTNERS: Partner[] = [
   },
   {
     name: "Botland",
-    src: "/sponsors/botland.webp",
+    src: "/partners/hardware/botland.webp",
     href: "https://botland.com.pl/",
     mark: "hw26-mark--botland",
     highlight: true,
@@ -1079,33 +1075,34 @@ const HARDWARE_PARTNERS: Partner[] = [
   {
     // Another partner at Diamond, so the tile wears the same diamond ink.
     name: "Spectacles",
-    src: "/sponsors/spectacles.svg",
+    src: "/partners/hardware/spectacles.svg",
     href: "https://www.spectacles.com/",
     mark: "hw26-mark--spectacles",
     highlight: true,
     tile: "hw26-sponsor--diamond",
+    hidden: true,
   },
   {
     name: "Lute",
-    src: "/sponsors/lute.svg",
+    src: "/partners/hardware/lute.svg",
     href: "https://www.lute.one/",
     mark: "hw26-mark--lute",
   },
   {
     name: "SPRTK",
-    src: "/sponsors/sprtk.webp",
+    src: "/partners/hardware/sprtk.webp",
     href: "https://sprtk.com/",
     mark: "hw26-mark--sprtk",
   },
     {
     name: "Fictionlab",
-    src: "/sponsors/fictionlab.svg",
+    src: "/partners/hardware/fictionlab.svg",
     href: "https://fictionlab.pl/",
     mark: "hw26-mark--fictionlab",
   },
   {
     name: "BMF — Brave Mind Fighters",
-    src: "/sponsors/bmf.webp",
+    src: "/partners/hardware/bmf.webp",
     href: "https://bravemindfighters.com/",
     // A helmet stacked over its wordmark: nearly square, so it needs well
     // over the row's height to read at the row's size.
@@ -1113,7 +1110,7 @@ const HARDWARE_PARTNERS: Partner[] = [
   },
   {
     name: "Machinekind",
-    src: "/sponsors/machinekind.webp",
+    src: "/partners/hardware/machinekind.webp",
     href: "https://machinekind.ai/",
     mark: "hw26-mark--machinekind",
     lockup: "hw26-sponsor-lockup--machinekind",
@@ -1121,13 +1118,13 @@ const HARDWARE_PARTNERS: Partner[] = [
   },
   {
     name: "SkyMav",
-    src: "/sponsors/skymav.webp",
+    src: "/partners/hardware/skymav.webp",
     href: "https://skymav.pl/",
     highlight: true,
   },
   {
     name: "GHOST",
-    src: "/sponsors/ghost-icon.webp",
+    src: "/partners/hardware/ghost-icon.webp",
     href: "https://ghostpai.github.io/",
     // Their official icon, untouched: white line art on the red plate they
     // publish it on, square. It is not a lockup on its own — no name in it —
@@ -1139,7 +1136,7 @@ const HARDWARE_PARTNERS: Partner[] = [
   },
   {
     name: "MAB Robotics",
-    src: "/sponsors/mab.webp",
+    src: "/partners/hardware/mab.webp",
     href: "https://www.mabrobotics.pl/",
     // The full lockup rather than the bare monogram it used to be: a heavy
     // three-letter mark with "robotics" tucked under its right shoulder, and
@@ -1149,26 +1146,26 @@ const HARDWARE_PARTNERS: Partner[] = [
   },
   {
     name: "Stealth startup",
-    src: "/sponsors/stealth-startup.svg",
+    src: "/partners/hardware/stealth-startup.svg",
     href: "https://tnkr.ai/",
     mark: "hw26-mark--tnkr",
     highlight: true,
   },
   {
     name: "Seeed Studio",
-    src: "/sponsors/seeed-studio.webp",
+    src: "/partners/hardware/seeed-studio.webp",
     href: "https://www.seeedstudio.com/",
     mark: "hw26-mark--seeed",
   },
   {
     name: "MakerMods",
-    src: "/sponsors/makermods.webp",
+    src: "/partners/hardware/makermods.webp",
     href: "https://www.makermods.ai/",
     mark: "hw26-mark--makermods",
   },
   {
     name: "CPS Drone",
-    src: "/sponsors/cpsdrone.webp",
+    src: "/partners/hardware/cpsdrone.webp",
     href: "https://www.cpsdrone.com/",
     mark: "hw26-mark--cpsdrone",
     lockup: "hw26-sponsor-lockup--cpsdrone",
@@ -1184,7 +1181,7 @@ const HARDWARE_PARTNERS: Partner[] = [
     // White line art on transparent, keyed off the black-on-white source they
     // publish, and square. Like GHOST's, the file is a symbol with no name in
     // it, so the word is set live underneath rather than cut into a bitmap.
-    src: "/sponsors/mchtr.webp",
+    src: "/partners/hardware/mchtr.webp",
     href: "https://www.mchtr.pw.edu.pl/",
     mark: "hw26-mark--mchtr",
     lockup: "hw26-sponsor-lockup--mchtr",
@@ -1216,7 +1213,7 @@ const HARDWARE_PARTNER_TBA: TbaCell = { name: "TBA", tba: true };
 const MEDIA_PARTNERS: Partner[] = [
   {
     name: "Przygody Przedsiębiorców",
-    src: "/sponsors/przygody.webp",
+    src: "/partners/media/przygody.webp",
     href: "https://youtube.com/@przygodyprzedsiebiorcow",
     mark: "hw26-mark--przygody",
   },
@@ -1227,20 +1224,20 @@ const MEDIA_PARTNERS: Partner[] = [
 const PRIZE_PARTNERS: Partner[] = [
   {
     name: "Stealth startup",
-    src: "/sponsors/stealth-startup.svg",
+    src: "/partners/hardware/stealth-startup.svg",
     href: "https://tnkr.ai/",
     mark: "hw26-mark--tnkr",
     highlight: true,
   },
   {
     name: "M5Stack",
-    src: "/sponsors/m5stack.svg",
+    src: "/partners/prizes/m5stack.svg",
     href: "https://m5stack.com/",
     mark: "hw26-mark--m5stack",
   },
   {
     name: "ChronoTap",
-    src: "/sponsors/chronotap.webp",
+    src: "/partners/prizes/chronotap.webp",
     href: "https://chronotap.co",
     mark: "hw26-mark--chronotap",
   },
@@ -1259,37 +1256,37 @@ const PRIZE_PARTNERS: Partner[] = [
 const SPONSORS: (Partner | TbaCell)[] = [
   {
     name: "prelint",
-    src: "/sponsors/prelint.svg",
+    src: "/partners/sponsors/prelint.svg",
     href: "https://prelint.com/",
     mark: "hw26-mark--prelint",
   },
   {
     name: "Echo Systems",
-    src: "/sponsors/echo-systems.svg",
+    src: "/partners/sponsors/echo-systems.svg",
     href: "https://echo-systems.eu/",
     mark: "hw26-mark--echosystems",
   },
   {
     name: "Montis VC",
-    src: "/sponsors/montis.svg",
+    src: "/partners/sponsors/montis.svg",
     href: "https://montis.vc/",
     mark: "hw26-mark--montis",
   },
   {
     name: "Portfolion",
-    src: "/sponsors/portfolion.svg",
+    src: "/partners/sponsors/portfolion.svg",
     href: "https://www.portfolion.com/",
     mark: "hw26-mark--portfolion",
   },
   {
     name: "Credo Ventures",
-    src: "/sponsors/credo-ventures.svg",
+    src: "/partners/sponsors/credo-ventures.svg",
     href: "https://www.credoventures.com/",
     mark: "hw26-mark--credo",
   },
   {
     name: "Inovo VC",
-    src: "/sponsors/inovo.webp",
+    src: "/partners/sponsors/inovo.webp",
     href: "https://inovo.vc/",
     mark: "hw26-mark--inovo",
   },
@@ -2341,48 +2338,61 @@ function useTimelinePin() {
  * pair at all.
  */
 const MARK_DIMENSIONS: Record<string, [number, number]> = {
+  // Prize plates.
   "/prizes/open-duck-mini-studio.webp": [1086, 1448],
   "/prizes/raspberry-pi-camera-kit-studio.webp": [1086, 1448],
   "/prizes/stackchan-studio.webp": [1122, 1402],
-  "/sponsors/GDG.webp": [600, 154],
-  "/sponsors/ai-tinkerers-poland.webp": [300, 39],
-  "/sponsors/bmf.webp": [452, 400],
-  "/sponsors/botland.webp": [265, 61],
-  "/sponsors/chronotap.webp": [600, 85],
-  "/sponsors/cpsdrone.webp": [401, 400],
-  "/sponsors/credo-ventures.svg": [336, 91],
-  "/sponsors/echo-systems.svg": [520, 240],
-  "/sponsors/elmark-white.svg": [1000, 289],
-  "/sponsors/elmark.svg": [1000, 289],
-  "/sponsors/epikor.svg": [2522, 986],
-  "/sponsors/eurotech.webp": [505, 191],
-  "/sponsors/fictionlab.svg": [2540, 487],
-  "/sponsors/ghost-icon.webp": [320, 320],
-  "/sponsors/hackathonhub.webp": [400, 400],
-  "/sponsors/hacklab.webp": [600, 312],
-  "/sponsors/inovo.webp": [600, 116],
-  "/sponsors/kogito.webp": [600, 171],
-  "/sponsors/kolektyw3.webp": [600, 96],
-  "/sponsors/lute.svg": [160, 62],
-  "/sponsors/m5stack.svg": [12594, 2492],
-  "/sponsors/mab.webp": [600, 203],
-  "/sponsors/machinekind.webp": [72, 61],
-  "/sponsors/makermods.webp": [600, 240],
-  "/sponsors/mchtr.webp": [320, 322],
-  "/sponsors/montis.svg": [170, 26],
-  "/sponsors/nvidia.svg": [618, 516],
-  "/sponsors/ofi.webp": [600, 221],
-  "/sponsors/portfolion.svg": [166, 39],
-  "/sponsors/prelint.svg": [1913, 390],
-  "/sponsors/przygody.webp": [598, 136],
-  "/sponsors/seeed-studio.webp": [600, 82],
-  "/sponsors/skymav.webp": [496, 128],
-  "/sponsors/smok.webp": [440, 399],
-  "/sponsors/spectacles.svg": [100, 19],
-  "/sponsors/sprtk-white.webp": [306, 350],
-  "/sponsors/sprtk.webp": [306, 350],
-  "/sponsors/startwarsaw.svg": [686, 318],
-  "/sponsors/stealth-startup.svg": [240, 202],
+
+  // Sponsors.
+  "/partners/sponsors/credo-ventures.svg": [336, 91],
+  "/partners/sponsors/echo-systems.svg": [520, 240],
+  "/partners/sponsors/inovo.webp": [600, 116],
+  "/partners/sponsors/montis.svg": [170, 26],
+  "/partners/sponsors/portfolion.svg": [166, 39],
+  "/partners/sponsors/prelint.svg": [1913, 390],
+
+  // Ecosystem partners.
+  "/partners/ecosystem/GDG.webp": [600, 154],
+  "/partners/ecosystem/ai-tinkerers-poland.webp": [300, 39],
+  "/partners/ecosystem/eurotech.webp": [505, 191],
+  "/partners/ecosystem/hackathonhub.webp": [400, 400],
+  "/partners/ecosystem/kogito.webp": [600, 171],
+  "/partners/ecosystem/kolektyw3.webp": [600, 96],
+  "/partners/ecosystem/nvidia.svg": [618, 516],
+  "/partners/ecosystem/ofi.webp": [600, 221],
+  "/partners/ecosystem/smok.webp": [440, 399],
+  "/partners/ecosystem/startwarsaw.svg": [686, 318],
+
+  // Hardware partners.
+  "/partners/hardware/bmf.webp": [452, 400],
+  "/partners/hardware/botland.webp": [265, 61],
+  "/partners/hardware/cpsdrone.webp": [401, 400],
+  "/partners/hardware/elmark-white.svg": [1000, 289],
+  "/partners/hardware/elmark.svg": [1000, 289],
+  "/partners/hardware/fictionlab.svg": [2540, 487],
+  "/partners/hardware/ghost-icon.webp": [320, 320],
+  "/partners/hardware/lute.svg": [160, 62],
+  "/partners/hardware/mab.webp": [600, 203],
+  "/partners/hardware/machinekind.webp": [72, 61],
+  "/partners/hardware/makermods.webp": [600, 240],
+  "/partners/hardware/mchtr.webp": [320, 322],
+  "/partners/hardware/seeed-studio.webp": [600, 82],
+  "/partners/hardware/skymav.webp": [496, 128],
+  "/partners/hardware/spectacles.svg": [100, 19],
+  "/partners/hardware/sprtk-white.webp": [306, 350],
+  "/partners/hardware/sprtk.webp": [306, 350],
+  "/partners/hardware/stealth-startup.svg": [240, 202],
+
+  // Media partners.
+  "/partners/media/przygody.webp": [598, 136],
+
+  // Prize partners.
+  "/partners/prizes/chronotap.webp": [600, 85],
+  "/partners/prizes/m5stack.svg": [12594, 2492],
+
+  // Organizers.
+  "/partners/organizers/epikor.svg": [2522, 986],
+  "/partners/organizers/hacklab.webp": [600, 312],
 };
 
 /**
@@ -3968,10 +3978,10 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
             <span className="hw26-hero-nvidia-label">Powered by</span>
             <span aria-hidden="true" className="hw26-hero-nvidia-brand">
               <svg className="hw26-hero-nvidia-eye" viewBox="1070 110 350 240">
-                <use href="/sponsors/nvidia.svg#g" />
+                <use href="/partners/ecosystem/nvidia.svg#g" />
               </svg>
               <svg className="hw26-hero-nvidia-word" viewBox="1040 375 460 100">
-                <use href="/sponsors/nvidia.svg#f" />
+                <use href="/partners/ecosystem/nvidia.svg#f" />
               </svg>
             </span>
           </a>
