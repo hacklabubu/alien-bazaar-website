@@ -1,0 +1,170 @@
+/* =============================================================
+   AGENDA PAGE — scoped under .hw26
+
+   Tokens, section frame, buttons and the end plate all come from
+   lander.css; this file owns only the schedule itself — the day
+   heads, the time/entry rows and the accommodation callout. The
+   row's visual language is the FAQ list's: hairlines between
+   rows, a small tracked mono label on the left, Chakra Petch on
+   the titles.
+   ============================================================= */
+
+.hw26 .hw26-agenda-lead {
+  max-width: 62ch;
+  margin: 0 0 clamp(2.5rem, 5vw, 4rem);
+  color: var(--hw-bone);
+  font-size: clamp(0.92rem, 1.2vw, 1.05rem);
+  line-height: 1.7;
+}
+
+/* -------------------------------------------------------------
+   Day block
+   ------------------------------------------------------------- */
+
+.hw26 .hw26-agenda-day + .hw26-agenda-day {
+  margin-top: clamp(2.75rem, 6vw, 4.5rem);
+}
+
+/* Label and date on one baseline where there is room, stacked where there is
+   not — the date is an aside to the day number, not a second heading, so it
+   only ever wraps under it rather than pushing it around. */
+.hw26 .hw26-agenda-dayhead {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0.5rem 1rem;
+  padding-bottom: 0.9rem;
+  border-bottom: 1px solid var(--hw-line-hi);
+}
+
+.hw26 .hw26-agenda-dayhead h3 {
+  margin: 0;
+  font-family: var(--font-chakra-petch), sans-serif;
+  font-weight: 800;
+  text-transform: uppercase;
+  font-size: clamp(1.35rem, 2.4vw, 1.9rem);
+  line-height: 1;
+  letter-spacing: 0.02em;
+  color: var(--hw-snow);
+}
+
+.hw26 .hw26-agenda-date {
+  margin: 0;
+  font-family: var(--font-jetbrains-mono), monospace;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--hw-silver);
+}
+
+/* -------------------------------------------------------------
+   Entries
+   ------------------------------------------------------------- */
+
+.hw26 .hw26-agenda-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* `time | title + description`. The time column is fixed rather than
+   `auto`, so the titles line up down the whole page instead of shifting a
+   few pixels between "09:00" and "All day". */
+.hw26 .hw26-agenda-row {
+  display: grid;
+  grid-template-columns: 7.5rem minmax(0, 1fr);
+  gap: 0.5rem 1.5rem;
+  padding: clamp(1.1rem, 2vw, 1.5rem) 0;
+}
+
+/* Between rows only: the day head above already draws the first row's top
+   edge, and the last row's bottom is the gap before the next day. */
+.hw26 .hw26-agenda-row + .hw26-agenda-row {
+  border-top: 1px solid var(--hw-line-hi);
+}
+
+.hw26 .hw26-agenda-slot {
+  font-family: var(--font-jetbrains-mono), monospace;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--hw-mint);
+  /* Optically level with the first line of the title beside it rather than
+     with its box, which is what a 10px label set against 1.35rem type needs
+     to stop reading as though it had floated up. */
+  padding-top: 0.35rem;
+}
+
+.hw26 .hw26-agenda-title {
+  margin: 0 0 0.4rem;
+  font-family: var(--font-chakra-petch), sans-serif;
+  font-weight: 700;
+  font-size: clamp(1.05rem, 1.6vw, 1.3rem);
+  line-height: 1.2;
+  letter-spacing: 0.01em;
+  color: var(--hw-snow);
+  overflow-wrap: break-word;
+}
+
+.hw26 .hw26-agenda-body {
+  margin: 0;
+  max-width: 72ch;
+  color: var(--hw-bone);
+  font-size: clamp(0.88rem, 1.05vw, 0.98rem);
+  line-height: 1.7;
+}
+
+/* -------------------------------------------------------------
+   Accommodation callout
+   ------------------------------------------------------------- */
+
+/* `.hw26-note`'s plate — mint hairline on the left, a faint mint wash — with
+   its type thrown away. That class is uppercase, tracked at 0.16em and sized
+   for a single line; this is a paragraph, so it is set as body copy and left
+   to wrap. */
+.hw26 .hw26-agenda-callout {
+  display: block;
+  max-width: 72ch;
+  margin-top: clamp(2.75rem, 6vw, 4.5rem);
+  padding: clamp(1rem, 2vw, 1.4rem) clamp(1.1rem, 2.2vw, 1.6rem);
+  border-left: 1px solid color-mix(in srgb, var(--hw-mint) 58%, transparent);
+  background: color-mix(in srgb, var(--hw-mint) 6%, transparent);
+}
+
+.hw26 .hw26-agenda-callout h3 {
+  margin: 0 0 0.6rem;
+  font-family: var(--font-jetbrains-mono), monospace;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--hw-mint);
+}
+
+.hw26 .hw26-agenda-callout p {
+  margin: 0;
+  color: var(--hw-bone);
+  font-size: clamp(0.88rem, 1.05vw, 0.98rem);
+  line-height: 1.7;
+}
+
+/* -------------------------------------------------------------
+   Narrow
+   ------------------------------------------------------------- */
+
+/* One column below 720px: a 7.5rem gutter for a 10px label is most of a phone's
+   measure spent on four characters, and the description underneath is left
+   setting at about twenty. The time goes above the title instead, which is
+   the same reading order in less width. */
+@media (max-width: 720px) {
+  .hw26 .hw26-agenda-row {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.45rem;
+  }
+
+  .hw26 .hw26-agenda-slot {
+    padding-top: 0;
+  }
+}

@@ -6688,15 +6688,10 @@ html[data-theme='light'] .hw26-sponsor--static:hover {
   object-fit: contain;
 }
 
-.hw26-sponsor img.hw26-mark--makermods,
 .hw26-sponsor-lead img.hw26-mark--inovo,
 .hw26-sponsor-lead img.hw26-mark--portfolion,
 .hw26-sponsor img.hw26-mark--kolektyw3 {
   filter: brightness(0) invert(1);
-}
-
-.hw26-sponsor img.hw26-mark--makermods {
-  height: clamp(28px, 2.8vw, 38px);
 }
 
 .hw26-sponsor img.hw26-mark--spectacles,
@@ -6727,14 +6722,6 @@ html[data-theme='light'] .hw26-sponsor--static:hover {
 .hw26-sponsor-lead img.hw26-mark--inovo {
   height: clamp(24px, 2.7vw, 36px);
   max-width: 100%;
-  object-fit: contain;
-}
-
-.hw26-rig-credit[src="/partners/hardware/makermods.webp"] {
-  max-width: clamp(58px, 5.4vw, 78px);
-  max-height: clamp(22px, 2vw, 28px);
-  filter: brightness(0) invert(1);
-  opacity: 0.82;
   object-fit: contain;
 }
 

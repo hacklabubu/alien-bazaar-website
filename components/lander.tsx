@@ -314,15 +314,6 @@ const RIG_GROUPS: RigGroup[] = [
         photo: "/hardware/a1xy-studio.webp",
       },
       {
-        name: "Maker Arm",
-        units: "2x",
-        photo: "/hardware/makerarm-studio.png",
-        credit: {
-          src: "/partners/hardware/makermods.webp",
-          label: "In partnership with MakerMods",
-        },
-      },
-      {
         name: "reBot arm",
         units: "2x",
         photo: "/hardware/rebot-arm-studio.png",
@@ -1158,12 +1149,6 @@ const HARDWARE_PARTNERS: Partner[] = [
     mark: "hw26-mark--seeed",
   },
   {
-    name: "MakerMods",
-    src: "/partners/hardware/makermods.webp",
-    href: "https://www.makermods.ai/",
-    mark: "hw26-mark--makermods",
-  },
-  {
     name: "CPS Drone",
     src: "/partners/hardware/cpsdrone.webp",
     href: "https://www.cpsdrone.com/",
@@ -1304,10 +1289,10 @@ const SPONSORS: (Partner | TbaCell)[] = [
  * sleep, what they may bring, who pays for the journey — and the last is the
  * escape hatch for everything not on the list.
  *
- * The start time is written out here as well as being counted down to in the
- * hero, and the two are the same figure: `EVENT.startsAt` in `lib/event.ts` is
- * 08:00 on the 25th. A reader who wants the hour rather than the remaining
- * hours should not have to subtract one from the other.
+ * The start time is not answered here: the hero counts down to `EVENT.startsAt`
+ * in `lib/event.ts`, which is 08:30 on the 25th, and the agenda page states the
+ * same hour. A reader who wants the hour rather than the remaining hours has it
+ * there without having to subtract one from the other.
  *
  * The answers are the organisers' own words and are left alone. Everything
  * else on this page is written copy and reads like it; an FAQ answer is a fact
@@ -2082,9 +2067,9 @@ function useTimelinePin() {
     //                  the pin now is on a short window: 1497px of pin at
     //                  1440 wide wants a 748px lead and a 700px-tall window
     //                  gives it 700. That is a recent change and it is the
-    //                  lead-in that caused it — starting the line on the
-    //                  centre of the screen rather than a third of the way
-    //                  across added ~240px to the track's width, and the pin
+    //                  lead-in that caused it — starting the line two thirds
+    //                  of the way across the screen rather than a third adds
+    //                  a few hundred pixels to the track's width, and the pin
     //                  is measured from that width. Nothing about the feel
     //                  turns on it: at the crossover the two ceilings are
     //                  within a few per cent of each other, and past it the
@@ -2186,20 +2171,21 @@ function useTimelinePin() {
       // so the first pixel of the pin immediately takes "NOW" off toward it,
       // and the stop the section opens on is the one stop the reader never
       // gets to see cross the screen. Leading the track in by the distance
-      // from the port's edge to the middle of the viewport starts it there
-      // instead, and gives the first stop a whole half-screen to cross before
-      // it leaves.
+      // from the port's edge to two thirds of the way across the viewport
+      // starts it there instead, and gives the first stop two thirds of a
+      // screen to cross before it leaves.
       //
-      // The middle rather than a third, which is where this started. A third
-      // was argued for on the grounds that the half-screen to its right is
-      // spent on empty track — true, and it is the wrong thing to be counting.
-      // What the reader is being shown at `progress = 0` is one stop and the
-      // word NOW, and a stop that opens at a third has already used two thirds
-      // of its run before the sweep has moved a pixel. Opening on the centre
-      // line is what makes "NOW" read as the present rather than as something
-      // already on its way out, and the empty half is not empty for long: it
-      // is the runway the first stop is about to travel, and it is filled by
-      // the second stop arriving behind it.
+      // Two thirds rather than a half, which is where this sat before, or the
+      // third it started on. A third was argued for on the grounds that the
+      // screen to its right is spent on empty track — true, and it is the
+      // wrong thing to be counting. What the reader is being shown at
+      // `progress = 0` is one stop and the word NOW, and a stop that opens at
+      // a third has already used two thirds of its run before the sweep has
+      // moved a pixel. Opening two thirds of the way across is what makes
+      // "NOW" read as the present rather than as something already on its way
+      // out, and the empty third is not empty for long: it is the runway the
+      // first stop is about to travel, and it is filled by the second stop
+      // arriving behind it.
       //
       // Padding rather than a starting translate, because padding is a
       // *layout* figure and the translate is not: it lands in `scrollWidth`,
@@ -2223,13 +2209,15 @@ function useTimelinePin() {
       trackEl.style.removeProperty("--tl-lead-start");
       if (trackEl.scrollWidth <= portEl.clientWidth) return unpin();
 
-      // Clamped at 0 for a port whose left edge is already past the middle of
-      // the screen the line is meant to start on. Read from layout rather than
+      // Clamped at 0 for a port whose left edge is already past the two-thirds
+      // mark the line is meant to start on. Read from layout rather than
       // derived, so whatever the box model does with padding on a `max-content`
       // box is measured and not assumed.
       const lead = Math.max(
         0,
-        Math.round(window.innerWidth / 2 - portEl.getBoundingClientRect().left),
+        Math.round(
+          (window.innerWidth * 2) / 3 - portEl.getBoundingClientRect().left,
+        ),
       );
       trackEl.style.setProperty("--tl-lead-start", `${lead}px`);
 
@@ -2374,7 +2362,6 @@ const MARK_DIMENSIONS: Record<string, [number, number]> = {
   "/partners/hardware/lute.svg": [160, 62],
   "/partners/hardware/mab.webp": [600, 203],
   "/partners/hardware/machinekind.webp": [72, 61],
-  "/partners/hardware/makermods.webp": [600, 240],
   "/partners/hardware/mchtr.webp": [320, 322],
   "/partners/hardware/seeed-studio.webp": [600, 82],
   "/partners/hardware/skymav.webp": [496, 128],
@@ -3429,9 +3416,9 @@ function SiteMenu() {
                 <Link href="/team" onClick={close}>
                   <span>07</span> Team
                 </Link>
-                <span aria-disabled="true" className="hw26-menu-link--tba">
-                  <span>08</span> Agenda <em>TBA</em>
-                </span>
+                <Link href="/agenda" onClick={close}>
+                  <span>08</span> Agenda
+                </Link>
               </nav>
             </div>
 
