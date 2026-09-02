@@ -448,10 +448,6 @@ const RIG_GROUPS: RigGroup[] = [
         name: "Spectacles 2024",
         units: "1x",
         photo: "/hardware/spectacles-2024-studio.png",
-        credit: {
-          src: "/partners/hardware/spectacles.svg",
-          label: "In partnership with Spectacles",
-        },
       },
     ],
   },
@@ -1084,6 +1080,7 @@ const HARDWARE_PARTNERS: Partner[] = [
     mark: "hw26-mark--spectacles",
     highlight: true,
     tile: "hw26-sponsor--diamond",
+    hidden: true,
   },
   {
     name: "Lute",
