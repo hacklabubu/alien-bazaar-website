@@ -28,12 +28,12 @@ export const EVENT: HardwareEvent = {
   title: 'Alien Bazaar — Warsaw 2026',
   summary:
     'Three days of home automation at the Hacker House in Warsaw. Every team books one machine, teams wire their machines into each other, and what gets pitched to investors after 48 work hours is the combined system.',
-  // 08:00 on the first day. The doors open at eight and the 48 work hours are
+  // 08:30 on the first day. The doors open at half past eight and the 48 work hours are
   // counted from there, which is also what the hero clock on the lander counts
-  // down to — it reads this field directly, and the FAQ's "what time is it
-  // starting" answer is the same figure written out.
-  startsAt: new Date('2026-09-25T08:00:00+02:00'),
-  endsAt: new Date('2026-09-27T20:00:00+02:00'),
+  // down to — it reads this field directly, and the agenda page (`/agenda`,
+  // `components/agenda.tsx`) opens on the same hour.
+  startsAt: new Date('2026-09-25T08:30:00+02:00'),
+  endsAt: new Date('2026-09-27T21:00:00+02:00'),
   timezone: 'Europe/Warsaw',
   location: 'Hacker Bloc powered by Epikor and Hacklab — Warsaw, Poland',
   maxTeamSize: 5,
