@@ -11,6 +11,16 @@ const nextConfig: NextConfig = {
   images: {
     qualities: [75, 90],
   },
+
+  /**
+   * Dev only. Next 16 refuses any `/_next/*` request whose Origin is not
+   * localhost or a host listed here, which breaks the HMR socket and, on some
+   * browsers, the client bundle itself when the dev server is opened over
+   * Tailscale. Entries are hostnames, no scheme or port; `*` matches one
+   * dotted segment, so `100.*.*.*` covers every address in Tailscale's CGNAT
+   * range and `*.ts.net` covers MagicDNS names. Ignored by `next build`.
+   */
+  allowedDevOrigins: ['100.*.*.*', '*.ts.net', '10.0.14.3'],
 }
 
 export default nextConfig

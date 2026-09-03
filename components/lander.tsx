@@ -242,6 +242,12 @@ type Rig = {
 type RigGroup = {
   label: string;
   items: Rig[];
+  /**
+   * The group's own condition, set under its title and above its cells — the
+   * same object the add-on groups' `intro` is. Where a group also carries a
+   * `reference`, the intro comes first: the rule before the pointer.
+   */
+  intro?: string;
   reference?: { label: string; href: string };
 };
 
@@ -431,6 +437,7 @@ const RIG_GROUPS: RigGroup[] = [
   },
   {
     label: "AR",
+    intro: "Every team gets 1 Spectacles glasses",
     reference: {
       label: "Example of use",
       href: "https://x.com/JohannesTscharn/status/2076934528350704041",
@@ -438,8 +445,12 @@ const RIG_GROUPS: RigGroup[] = [
     items: [
       {
         name: "Spectacles 2024",
-        units: "1x",
+        units: "20x",
         photo: "/hardware/spectacles-2024-no-logo.png",
+        credit: {
+          src: "/partners/hardware/spectacles.svg",
+          label: "In partnership with Spectacles",
+        },
       },
     ],
   },
@@ -1088,7 +1099,6 @@ const HARDWARE_PARTNERS: Partner[] = [
     mark: "hw26-mark--spectacles",
     highlight: true,
     tile: "hw26-sponsor--diamond",
-    hidden: true,
   },
   {
     name: "Lute",
@@ -4343,6 +4353,8 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
                   Showcase your product <span>$1,000 →</span>
                 </button>
               ) : null}
+
+              {group.intro ? <HwNote>{group.intro}</HwNote> : null}
 
               {group.reference ? (
                 <HwNote href={group.reference.href}>
