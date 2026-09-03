@@ -884,6 +884,20 @@ html:not(.hw26-cursor-dom) .hw26 [role='button'] * {
   margin-bottom: 0.6rem;
 }
 
+/* Two notes under one title — a group's own condition and its reference
+   link — stack rather than sit on one line. The box is inline-flex so it
+   shrinks to its sentence, which also means a second one would flow on
+   beside the first with nothing between them; making the follower a block
+   puts it on its own line, and the first gives up most of its bottom margin
+   so the pair reads as one block over the grid. */
+.hw26-note:has(+ .hw26-note) {
+  margin-bottom: 0.5rem;
+}
+
+.hw26-note + .hw26-note {
+  display: flex;
+}
+
 /* -------------------------------------------------------------
    Geist Pixel — the third face, on a short leash.
 
