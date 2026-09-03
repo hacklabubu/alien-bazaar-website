@@ -39,6 +39,7 @@ const LIMITS = {
 } as const;
 
 const CATEGORIES = {
+  exhibit: new Set(["Product showcase - $1,000"]),
   partner: new Set([
     "Ecosystem partner",
     "Hardware partner",
@@ -137,7 +138,11 @@ export async function POST(request: Request) {
   if (field(body.companyFax)) return NextResponse.json({ ok: true });
 
   const kind =
-    body.kind === "partner" || body.kind === "sponsor" ? body.kind : "";
+    body.kind === "exhibit" ||
+    body.kind === "partner" ||
+    body.kind === "sponsor"
+      ? body.kind
+      : "";
   const category = field(body.category);
   const email = field(body.email).toLowerCase();
   const message = field(body.message);

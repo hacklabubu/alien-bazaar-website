@@ -4,7 +4,7 @@ import { FormEvent, useEffect, useId, useRef, useState } from "react";
 
 import "./inquiry-modal.css";
 
-type InquiryKind = "partner" | "sponsor";
+type InquiryKind = "exhibit" | "partner" | "sponsor";
 
 type InquiryModalProps = {
   kind: InquiryKind;
@@ -19,6 +19,8 @@ export function InquiryModal({
   onClose,
   options,
 }: InquiryModalProps) {
+  const isExhibit = kind === "exhibit";
+  const isPartner = kind === "partner";
   const titleId = useId();
   const firstField = useRef<HTMLInputElement>(null);
   const openedAt = useRef(Date.now());
@@ -139,14 +141,16 @@ export function InquiryModal({
           <div className="ab-inquiry-success">
             <span className="hw26-label hw26-label--mint">Request sent</span>
             <h2 id={titleId}>
-              {kind === "partner"
-                ? "Let’s build together"
-                : "Let’s make it happen"}
+              {isExhibit
+                ? "See you on the floor"
+                : isPartner
+                  ? "Let’s build together"
+                  : "Let’s make it happen"}
             </h2>
             <p>
-              Your request has been sent. Our{" "}
-              {kind === "partner" ? "partnership" : "sponsorship"} team will
-              contact you within 24 hours.
+              {isExhibit
+                ? "Your showcase request has been sent. Our exhibition team will contact you within 24 hours."
+                : `Your request has been sent. Our ${isPartner ? "partnership" : "sponsorship"} team will contact you within 24 hours.`}
             </p>
             <button className="hw26-apply" onClick={onClose} type="button">
               Done
@@ -155,10 +159,18 @@ export function InquiryModal({
         ) : (
           <>
             <span className="hw26-label hw26-label--mint">
-              {kind === "partner" ? "Partner request" : "Sponsor request"}
+              {isExhibit
+                ? "Exhibition request · $1,000"
+                : isPartner
+                  ? "Partner request"
+                  : "Sponsor request"}
             </span>
             <h2 id={titleId}>
-              {kind === "partner" ? "Tell us about you" : "Start sponsorship"}
+              {isExhibit
+                ? "Showcase your product"
+                : isPartner
+                  ? "Tell us about you"
+                  : "Start sponsorship"}
             </h2>
             <p className="ab-inquiry-intro">
               A few details are enough. We’ll review them and get back to you
@@ -238,7 +250,11 @@ export function InquiryModal({
 
               <label>
                 <span>
-                  {kind === "partner" ? "Partnership type" : "Package"}
+                  {isExhibit
+                    ? "Exhibition package"
+                    : isPartner
+                      ? "Partnership type"
+                      : "Package"}
                 </span>
                 <select
                   name="category"
@@ -258,9 +274,11 @@ export function InquiryModal({
                 <textarea
                   name="message"
                   placeholder={
-                    kind === "partner"
-                      ? "What can we build or offer together?"
-                      : "What would you like to achieve at Alien Bazaar?"
+                    isExhibit
+                      ? "What hardware would you like to exhibit?"
+                      : isPartner
+                        ? "What can we build or offer together?"
+                        : "What would you like to achieve at Alien Bazaar?"
                   }
                   required
                   rows={4}

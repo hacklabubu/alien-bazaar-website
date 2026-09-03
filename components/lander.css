@@ -5803,6 +5803,21 @@ html:not(.hw26-cursor-dom) .hw26-faq-trigger {
   outline: 0;
 }
 
+.hw26-exhibit-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: clamp(1rem, 3vw, 2.5rem);
+  min-width: min(100%, 330px);
+  margin: -0.25rem 0 clamp(1.5rem, 2.4vw, 2rem);
+  border: 0;
+  cursor: pointer;
+}
+
+.hw26-exhibit-cta span {
+  white-space: nowrap;
+}
+
 .hw26-sponsors-lead + .hw26-partner-subhead,
 .hw26-sponsors-rest + .hw26-partner-subhead,
 .hw26-partner-family + .hw26-partner-subhead {
@@ -6692,6 +6707,15 @@ html[data-theme='light'] .hw26-sponsor--static:hover {
 .hw26-sponsor-lead img.hw26-mark--portfolion,
 .hw26-sponsor img.hw26-mark--kolektyw3 {
   filter: brightness(0) invert(1);
+}
+
+.hw26-sponsor img.hw26-mark--the-heart {
+  height: clamp(30px, 3vw, 42px);
+}
+
+.hw26-sponsor img.hw26-mark--polcero {
+  width: clamp(112px, 9vw, 138px);
+  height: auto;
 }
 
 .hw26-sponsor img.hw26-mark--spectacles,
