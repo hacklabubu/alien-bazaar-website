@@ -26,6 +26,7 @@ import "./lander.css";
 // <HardwareIntro /> render at the top of the tree to bring it back.
 // import { HardwareIntro } from './intro'
 import { JOIN_URL, type HardwareEvent } from "../lib/event";
+import { InquiryModal } from "./inquiry-modal";
 
 /**
  * Alien Bazaar — Warsaw 2026. The event's own landing page.
@@ -438,7 +439,17 @@ const RIG_GROUPS: RigGroup[] = [
       {
         name: "Spectacles 2024",
         units: "1x",
-        photo: "/hardware/spectacles-2024-studio.png",
+        photo: "/hardware/spectacles-2024-no-logo.png",
+      },
+    ],
+  },
+  {
+    label: "Exhibits",
+    items: [
+      {
+        name: "Flying machine",
+        units: "1x",
+        photo: "/hardware/flying-car-studio.png",
       },
     ],
   },
@@ -995,6 +1006,12 @@ const SMALL_SPONSORS: Partner[] = [
     href: "https://kolektyw3.pl/",
     mark: "hw26-mark--kolektyw3",
   },
+  {
+    name: "The Heart",
+    src: "/partners/ecosystem/the-heart.svg",
+    href: "https://www.theheart.tech/",
+    mark: "hw26-mark--the-heart",
+  },
 ];
 
 const ECOSYSTEM_PARTNER_TBA: TbaCell = { name: "TBA", tba: true };
@@ -1147,6 +1164,13 @@ const HARDWARE_PARTNERS: Partner[] = [
     src: "/partners/hardware/seeed-studio.webp",
     href: "https://www.seeedstudio.com/",
     mark: "hw26-mark--seeed",
+  },
+  {
+    name: "POLCERO Jet One",
+    src: "/partners/hardware/polcero.svg",
+    href: "https://jetone.polcero.com/",
+    mark: "hw26-mark--polcero",
+    highlight: true,
   },
   {
     name: "CPS Drone",
@@ -2350,6 +2374,7 @@ const MARK_DIMENSIONS: Record<string, [number, number]> = {
   "/partners/ecosystem/ofi.webp": [600, 221],
   "/partners/ecosystem/smok.webp": [440, 399],
   "/partners/ecosystem/startwarsaw.svg": [686, 318],
+  "/partners/ecosystem/the-heart.svg": [117, 41],
 
   // Hardware partners.
   "/partners/hardware/bmf.webp": [452, 400],
@@ -2363,6 +2388,7 @@ const MARK_DIMENSIONS: Record<string, [number, number]> = {
   "/partners/hardware/mab.webp": [600, 203],
   "/partners/hardware/machinekind.webp": [72, 61],
   "/partners/hardware/mchtr.webp": [320, 322],
+  "/partners/hardware/polcero.svg": [367, 70],
   "/partners/hardware/seeed-studio.webp": [600, 82],
   "/partners/hardware/skymav.webp": [496, 128],
   "/partners/hardware/spectacles.svg": [100, 19],
@@ -3744,6 +3770,7 @@ function BriefRain() {
 
 export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
   const root = useReveal();
+  const [exhibitOpen, setExhibitOpen] = useState(false);
   // Hung off the page root the reveal observer already holds, rather than a
   // ref of its own on the same element — the cells are two sections apart and
   // the only thing this needs is a node that contains both.
@@ -4307,6 +4334,16 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
                 {group.label}
               </h3>
 
+              {group.label === "Exhibits" ? (
+                <button
+                  className="hw26-sponsor-cta hw26-exhibit-cta hw26-reveal"
+                  onClick={() => setExhibitOpen(true)}
+                  type="button"
+                >
+                  Showcase your product <span>$1,000 →</span>
+                </button>
+              ) : null}
+
               {group.reference ? (
                 <HwNote href={group.reference.href}>
                   {group.reference.label}
@@ -4661,6 +4698,15 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
 
       {/* ---------------- END PLATE ---------------- */}
       <Endplate hackathon={hackathon} />
+
+      {exhibitOpen ? (
+        <InquiryModal
+          initialCategory="Product showcase - $1,000"
+          kind="exhibit"
+          onClose={() => setExhibitOpen(false)}
+          options={["Product showcase - $1,000"]}
+        />
+      ) : null}
     </div>
   );
 }

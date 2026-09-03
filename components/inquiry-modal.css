@@ -1,6 +1,6 @@
 .ab-inquiry-backdrop {
   position: fixed;
-  z-index: 200;
+  z-index: 1100;
   inset: 0;
   display: grid;
   place-items: center;
