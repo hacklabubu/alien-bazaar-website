@@ -25,8 +25,9 @@ import "./lander.css";
 // intro.css are untouched and still build — uncomment this line and the
 // <HardwareIntro /> render at the top of the tree to bring it back.
 // import { HardwareIntro } from './intro'
-import { JOIN_URL, type HardwareEvent } from "../lib/event";
+import { type HardwareEvent } from "../lib/event";
 import { InquiryModal } from "./inquiry-modal";
+import { JoinLink } from "./join-link";
 
 /**
  * Alien Bazaar — Warsaw 2026. The event's own landing page.
@@ -3459,12 +3460,12 @@ function SiteMenu() {
             </div>
 
             <div className="hw26-menu-actions">
-              <a
+              <JoinLink
+                control="menu"
                 className="hw26-menu-action hw26-menu-action--primary"
-                href={JOIN_URL}
               >
                 Apply now <span aria-hidden="true">→</span>
-              </a>
+              </JoinLink>
               <a className="hw26-menu-action" href="/sponsor">
                 Become a sponsor <span aria-hidden="true">→</span>
               </a>
@@ -4030,9 +4031,9 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
           {/* Applications are open, so the control is a link again. Same tab:
               the reader is being handed off to the form, not sent to read
               something on the side. */}
-          <a className="hw26-apply" href={JOIN_URL}>
+          <JoinLink control="hero" className="hw26-apply">
             Register now
-          </a>
+          </JoinLink>
         </div>
       </header>
 
@@ -4701,9 +4702,9 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
           <div className="hw26-reveal">
             {/* The last thing on the page, so it gets the large cut of the
                 same link the hero opens with. */}
-            <a className="hw26-apply hw26-apply--lg" href={JOIN_URL}>
+            <JoinLink control="closer" className="hw26-apply hw26-apply--lg">
               Register now
-            </a>
+            </JoinLink>
           </div>
         </div>
       </section>

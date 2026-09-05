@@ -38,6 +38,39 @@ The override replaces the destination outright, so it reaches every join
 control on the site — the hero, the timeline stop, the closer and the menu
 overlay's "Apply now".
 
+### Source attribution
+
+Applications happen on hacklab.so, so without help the hop off this site erases
+where the person came from: hacklab sees a referrer of alienbazaar.com and
+nothing else, and every signup looks the same. `proxy.ts` closes that gap. On
+the first page request it works out a first touch — from `utm_*` params if the
+link carried any, otherwise from the `Referer` header, mapped to a canonical
+name (`instagram.com` and `l.instagram.com` both become `ig`, any `google.*`
+becomes `google`) — and stores it in an `ab_ft` cookie for thirty days. It runs
+on the server so the cookie exists before the first paint, which matters because
+somebody arriving from a story can press "Register now" before the bundle has
+finished loading. A direct visit deliberately stores nothing, so a person who
+types the address today and returns through an Instagram story next week is
+still credited to Instagram.
+
+Every join control then appends `utm_*` to its hacklab URL, reading that cookie
+after mount. `utm_source` and `utm_medium` are the remembered origin, or
+`alienbazaar.com` / `direct` when there is none; `utm_campaign` is the inbound
+link's own campaign or `ab26`; `utm_content` is the inbound link's content tag
+or, failing that, which button was pressed (`menu`, `hero`, `closer`). hacklab's
+middleware records those on its own first-touch cookie and attaches them to the
+signup event, so signups can be broken down by original source, and
+`utm_campaign=ab26` groups everything this site routed. The rewrite lands on the
+anchor's `href` rather than in a click handler, so copying the link or opening
+it in a new tab carries the tag too.
+
+A tagged inbound link is forwarded verbatim — explicit params always beat the
+referrer, because somebody chose them:
+
+```
+https://alienbazaar.com/?utm_source=poster&utm_medium=qr
+```
+
 ## How it is put together
 
 ```
@@ -51,6 +84,7 @@ overlay's "Apply now".
 ├── components/
 │   ├── lander.tsx      the page
 │   ├── lander.css      scoped to .hw26
+│   ├── join-link.tsx   the join controls, tagged with the first touch
 │   ├── team.tsx        the team page
 │   ├── sponsor.tsx     the sponsor page
 │   ├── sponsor.css
@@ -61,7 +95,9 @@ overlay's "Apply now".
 │   └── intro.css
 ├── lib/
 │   ├── event.ts        the event: dates, venue, capacity
+│   ├── attribution.ts  first touch in, utm_* out
 │   └── packages.ts     sponsorship tiers
+├── proxy.ts            stamps the ab_ft cookie on the landing request
 └── public/             photos and sponsor marks
 ```
 
