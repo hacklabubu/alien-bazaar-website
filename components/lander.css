@@ -1505,29 +1505,23 @@ html:not(.hw26-cursor-dom) .hw26 [role='button'] * {
   text-align: left;
 }
 
-/* NVIDIA sits inside the countdown panel as its first centred row. Keeping it
-   outside the art stage makes its contrast independent of the heavily cropped
-   hero composition, especially on portrait phones. Separate
-   crops of the supplied stacked SVG put the official eye and wordmark on one
-   line without duplicating or redrawing the artwork. */
-.hw26-hero-nvidia {
+/* The two powering partners sit inside the countdown panel as one compact
+   lockup, outside the heavily cropped hero composition. */
+.hw26-hero-powered {
   position: relative;
   z-index: 2;
   flex: 0 0 auto;
   display: flex;
   align-items: center;
-  gap: clamp(0.45rem, 0.8vw, 0.75rem);
+  justify-content: center;
+  gap: clamp(0.34rem, 0.62vw, 0.62rem);
   margin-bottom: 0;
   color: #ffffff;
-  text-decoration: none;
   white-space: nowrap;
   filter: drop-shadow(0 0 0.55rem rgba(0, 0, 0, 0.75));
-  transition:
-    color 180ms var(--hw-ease),
-    filter 180ms var(--hw-ease);
 }
 
-.hw26-hero-nvidia-label {
+.hw26-hero-powered-label {
   font-family: var(--font-jetbrains-mono), monospace;
   font-size: clamp(8px, 0.72vw, 11px);
   font-weight: 700;
@@ -1536,9 +1530,21 @@ html:not(.hw26-cursor-dom) .hw26 [role='button'] * {
   text-transform: uppercase;
 }
 
-.hw26-hero-nvidia-brand {
+.hw26-hero-powered-brands {
   display: flex;
   align-items: center;
+  gap: clamp(0.34rem, 0.62vw, 0.62rem);
+}
+
+.hw26-hero-powered-brand {
+  display: flex;
+  align-items: center;
+  color: #ffffff;
+  text-decoration: none;
+  transition: filter 180ms var(--hw-ease);
+}
+
+.hw26-hero-nvidia-brand {
   gap: clamp(0.2rem, 0.3vw, 0.35rem);
 }
 
@@ -1558,13 +1564,44 @@ html:not(.hw26-cursor-dom) .hw26 [role='button'] * {
   height: auto;
 }
 
-.hw26-hero-nvidia:hover,
-.hw26-hero-nvidia:focus-visible {
-  color: #ffffff;
+.hw26-hero-powered-x {
+  color: color-mix(in srgb, #ffffff 58%, transparent);
+  font-family: var(--font-chakra-petch), sans-serif;
+  font-size: clamp(0.78rem, 1.05vw, 1.05rem);
+  line-height: 1;
+}
+
+.hw26-hero-huggingface {
+  gap: clamp(0.25rem, 0.38vw, 0.4rem);
+  font-family: var(--font-chakra-petch), sans-serif;
+  font-size: clamp(0.65rem, 0.92vw, 0.88rem);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.hw26-hero-huggingface img {
+  width: clamp(24px, 2.2vw, 36px);
+  height: auto;
+}
+
+.hw26-hero-powered-brand:hover,
+.hw26-hero-powered-brand:focus-visible {
   filter:
     drop-shadow(0 0 0.55rem rgba(0, 0, 0, 0.75))
     drop-shadow(0 0 0.65rem rgba(118, 185, 0, 0.22));
   outline: 0;
+}
+
+@media (max-width: 600px) {
+  .hw26-hero-powered {
+    flex-direction: column;
+    gap: 0.48rem;
+  }
+
+  .hw26-hero-powered-label {
+    text-align: center;
+  }
 }
 
 .hw26-title-word {
@@ -3717,12 +3754,32 @@ button.hw26-apply {
   right: var(--rig-corner);
   display: flex;
   width: clamp(62px, 5.4vw, 78px);
+  max-width: none;
   flex-direction: column;
   gap: 0.45rem;
   align-items: flex-end;
 }
 
+.hw26-rig-credit-stack--multi {
+  width: auto;
+  max-width: 48%;
+}
+
+.hw26-rig-credit-row {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: clamp(0.38rem, 0.58vw, 0.62rem);
+  width: 100%;
+  max-width: 100%;
+}
+
+.hw26-rig-credit-stack--multi .hw26-rig-credit-row {
+  width: auto;
+}
+
 .hw26-rig-credit {
+  flex: 0 1 auto;
   width: auto;
   height: auto;
   max-width: clamp(42px, 3.8vw, 54px);
@@ -6345,6 +6402,12 @@ html[data-theme='light'] .hw26-sponsor-lead--tba {
   height: clamp(52px, 6.3vw, 76px);
 }
 
+.hw26-sponsor-lead img.hw26-mark--nexero {
+  height: clamp(68px, 6.3vw, 92px);
+  max-width: 100%;
+  object-fit: contain;
+}
+
 /* Media and prize partners use the same half-sheet lead plate as Sponsors.
    Both marks are especially wide, so their height stays below the generic
    lead figure while the larger card gives them the intended visual weight. */
@@ -6696,6 +6759,23 @@ html[data-theme='light'] .hw26-sponsor--static:hover {
   width: clamp(88px, 7.4vw, 104px);
 }
 
+.hw26-sponsor-lockup--huggingface {
+  --hw26-lockup-icon: clamp(38px, 3.4vw, 48px);
+  --hw26-lockup-track: 0.08em;
+  width: clamp(88px, 7.8vw, 112px);
+}
+
+.hw26-sponsor img.hw26-mark--huggingface {
+  width: var(--hw26-lockup-icon);
+  height: var(--hw26-lockup-icon);
+  filter: none;
+}
+
+.hw26-sponsor-lockup--huggingface .hw26-sponsor-wordmark {
+  font-size: clamp(7px, 0.64vw, 9px);
+  white-space: nowrap;
+}
+
 .hw26-sponsor img.hw26-mark--machinekind {
   width: var(--hw26-lockup-icon);
   height: auto;
@@ -6709,6 +6789,12 @@ html[data-theme='light'] .hw26-sponsor--static:hover {
   height: clamp(24px, 2.4vw, 34px);
   max-width: 100%;
   object-fit: contain;
+}
+
+.hw26-sponsor img.hw26-mark--xkom {
+  width: clamp(96px, 8vw, 124px);
+  height: auto;
+  filter: brightness(0) invert(1);
 }
 
 .hw26-sponsor img.hw26-mark--botland {
@@ -6725,6 +6811,10 @@ html[data-theme='light'] .hw26-sponsor--static:hover {
 
 .hw26-sponsor img.hw26-mark--the-heart {
   height: clamp(30px, 3vw, 42px);
+}
+
+.hw26-sponsor img.hw26-mark--echosystems {
+  height: clamp(48px, 4.8vw, 64px);
 }
 
 .hw26-sponsor img.hw26-mark--polcero {
@@ -6777,6 +6867,23 @@ html[data-theme='light'] .hw26-sponsor--static:hover {
   object-fit: contain;
 }
 
+.hw26-rig-credit[src="/partners/sponsors/nexero.png"] {
+  max-width: clamp(30px, 3vw, 40px);
+  max-height: clamp(30px, 3vw, 40px);
+  opacity: 0.84;
+  object-fit: contain;
+}
+
+.hw26-rig-credit:is(
+    [src="/partners/hardware/seeed-studio.webp"],
+    [src="/partners/hardware/polcero.svg"]
+  ) {
+  max-width: clamp(62px, 6vw, 82px);
+  max-height: clamp(20px, 2vw, 28px);
+  opacity: 0.88;
+  object-fit: contain;
+}
+
 .hw26-sponsor-lockup--machinekind .hw26-sponsor-wordmark {
   font-size: clamp(8px, 0.7vw, 10px);
 }
@@ -6824,6 +6931,21 @@ html[data-theme='light'] .hw26-sponsor--static:hover {
   max-height: clamp(24px, 2.2vw, 30px);
   opacity: 0.9;
   object-fit: contain;
+}
+
+.hw26-rig-credit[src="/partners/hardware/fictionlab.svg"] {
+  max-width: clamp(62px, 5.4vw, 78px);
+  max-height: clamp(22px, 2vw, 28px);
+  opacity: 0.9;
+  object-fit: contain;
+}
+
+.hw26-rig-credit[src="/partners/hardware/x-kom.png"] {
+  max-width: clamp(62px, 5.4vw, 78px);
+  max-height: clamp(22px, 2vw, 28px);
+  opacity: 0.9;
+  object-fit: contain;
+  filter: brightness(0) invert(1);
 }
 
 .hw26-rig-credit[src="/partners/hardware/mab.webp"] {
