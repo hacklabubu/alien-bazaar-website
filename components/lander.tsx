@@ -238,6 +238,8 @@ type Rig = {
    * stylesheet's placement note is on `.hw26-rig-credit`.
    */
   credit?: { src: string; label: string };
+  /** Additional marks shown beside the primary hardware credit. */
+  credits?: { src: string; label: string }[];
 };
 
 type RigGroup = {
@@ -290,6 +292,12 @@ const RIG_GROUPS: RigGroup[] = [
           src: "/partners/hardware/sprtk-white.webp",
           label: "Parts supplied by SPRTK",
         },
+        credits: [
+          {
+            src: "/partners/sponsors/nexero.png",
+            label: "In partnership with Nexero",
+          },
+        ],
       },
     ],
   },
@@ -325,6 +333,10 @@ const RIG_GROUPS: RigGroup[] = [
         name: "reBot arm",
         units: "2x",
         photo: "/hardware/rebot-arm-studio.png",
+        credit: {
+          src: "/partners/hardware/seeed-studio.webp",
+          label: "In partnership with Seeed Studio",
+        },
       },
       {
         name: "Tri-Arm",
@@ -430,9 +442,22 @@ const RIG_GROUPS: RigGroup[] = [
     label: "Humanoids",
     items: [
       {
-        name: "Unitree",
+        name: "Unitree G1",
         units: "1x",
         photo: "/hardware/unitree-humanoid-studio.png",
+        credit: {
+          src: "/partners/hardware/x-kom.png",
+          label: "In partnership with x-kom",
+        },
+      },
+      {
+        name: "Unitree R1",
+        units: "1x",
+        photo: "/hardware/unitree-r1-studio.png",
+        credit: {
+          src: "/partners/hardware/x-kom.png",
+          label: "In partnership with x-kom",
+        },
       },
     ],
   },
@@ -462,6 +487,10 @@ const RIG_GROUPS: RigGroup[] = [
         name: "Flying machine",
         units: "1x",
         photo: "/hardware/flying-car-studio.png",
+        credit: {
+          src: "/partners/hardware/polcero.svg",
+          label: "In partnership with POLCERO",
+        },
       },
     ],
   },
@@ -949,11 +978,23 @@ const LEAD_SPONSORS: Partner[] = [
     // wordmark's height would leave it reading half the size.
     mark: "hw26-mark--stacked",
     highlight: true,
+    tile: "hw26-sponsor--diamond",
   },
-    {
+  {
+    name: "Hugging Face",
+    src: "/partners/ecosystem/hugging-face-color.svg",
+    href: "https://huggingface.co/",
+    mark: "hw26-mark--huggingface",
+    lockup: "hw26-sponsor-lockup--huggingface",
+    wordmark: "HUGGING FACE",
+    highlight: true,
+    tile: "hw26-sponsor--diamond",
+  },
+  {
     name: "Google Developer Groups",
     src: "/partners/ecosystem/GDG.webp",
     href: "https://gdg.community.dev/",
+    highlight: true,
   },
   {
     name: "START Warsaw",
@@ -1023,6 +1064,12 @@ const SMALL_SPONSORS: Partner[] = [
     src: "/partners/ecosystem/the-heart.svg",
     href: "https://www.theheart.tech/",
     mark: "hw26-mark--the-heart",
+  },
+  {
+    name: "Echo Systems",
+    src: "/partners/sponsors/echo-systems.svg",
+    href: "https://echo-systems.eu/",
+    mark: "hw26-mark--echosystems",
   },
 ];
 
@@ -1136,10 +1183,19 @@ const HARDWARE_PARTNERS: Partner[] = [
     wordmark: "MACHINEKIND",
   },
   {
+    name: "x-kom",
+    src: "/partners/hardware/x-kom.png",
+    href: "https://www.x-kom.pl/",
+    mark: "hw26-mark--xkom",
+    highlight: true,
+    tile: "hw26-sponsor--diamond",
+  },
+  {
     name: "SkyMav",
     src: "/partners/hardware/skymav.webp",
     href: "https://skymav.pl/",
     highlight: true,
+    tile: "hw26-sponsor--diamond",
   },
   {
     name: "GHOST",
@@ -1281,10 +1337,10 @@ const SPONSORS: (Partner | TbaCell)[] = [
     mark: "hw26-mark--prelint",
   },
   {
-    name: "Echo Systems",
-    src: "/partners/sponsors/echo-systems.svg",
-    href: "https://echo-systems.eu/",
-    mark: "hw26-mark--echosystems",
+    name: "Nexero",
+    src: "/partners/sponsors/nexero.png",
+    href: "https://nexero.eu/",
+    mark: "hw26-mark--nexero",
   },
   {
     name: "Montis VC",
@@ -2371,6 +2427,7 @@ const MARK_DIMENSIONS: Record<string, [number, number]> = {
   "/partners/sponsors/echo-systems.svg": [520, 240],
   "/partners/sponsors/inovo.webp": [600, 116],
   "/partners/sponsors/montis.svg": [170, 26],
+  "/partners/sponsors/nexero.png": [1080, 1080],
   "/partners/sponsors/portfolion.svg": [166, 39],
   "/partners/sponsors/prelint.svg": [1913, 390],
 
@@ -2379,6 +2436,8 @@ const MARK_DIMENSIONS: Record<string, [number, number]> = {
   "/partners/ecosystem/ai-tinkerers-poland.webp": [300, 39],
   "/partners/ecosystem/eurotech.webp": [505, 191],
   "/partners/ecosystem/hackathonhub.webp": [400, 400],
+  "/partners/ecosystem/hugging-face-color.svg": [95, 88],
+  "/partners/ecosystem/hugging-face.svg": [1500, 1500],
   "/partners/ecosystem/kogito.webp": [600, 171],
   "/partners/ecosystem/kolektyw3.webp": [600, 96],
   "/partners/ecosystem/nvidia.svg": [618, 516],
@@ -2406,6 +2465,7 @@ const MARK_DIMENSIONS: Record<string, [number, number]> = {
   "/partners/hardware/sprtk-white.webp": [306, 350],
   "/partners/hardware/sprtk.webp": [306, 350],
   "/partners/hardware/stealth-startup.svg": [240, 202],
+  "/partners/hardware/x-kom.png": [1500, 447],
 
   // Media partners.
   "/partners/media/przygody.webp": [598, 136],
@@ -2956,17 +3016,29 @@ function RigCell({ item, order }: { item: Rig; order: number }) {
           it is the only place on the page that says where these parts come
           from, and a reader who cannot see the lockup would otherwise get a
           cell that is silently missing a fact the sighted one has. */}
-        {item.credit || item.docsUrl || item.docsPending ? (
-          <div className="hw26-rig-credit-stack">
-            {item.credit ? (
-              <img
-                alt={item.credit.label}
-                className="hw26-rig-credit"
-                decoding="async"
-                loading="lazy"
-                src={item.credit.src}
-                {...dims(item.credit.src)}
-              />
+        {item.credit || item.credits?.length || item.docsUrl || item.docsPending ? (
+          <div
+            className={`hw26-rig-credit-stack${
+              item.credits?.length ? " hw26-rig-credit-stack--multi" : ""
+            }`}
+          >
+            {item.credit || item.credits?.length ? (
+              <div className="hw26-rig-credit-row">
+                {[
+                  ...(item.credit ? [item.credit] : []),
+                  ...(item.credits ?? []),
+                ].map((credit) => (
+                  <img
+                    alt={credit.label}
+                    className="hw26-rig-credit"
+                    decoding="async"
+                    key={`${item.name}-${credit.src}`}
+                    loading="lazy"
+                    src={credit.src}
+                    {...dims(credit.src)}
+                  />
+                ))}
+              </div>
             ) : null}
 
             {item.docsUrl ? (
@@ -3993,23 +4065,41 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
         </div>
 
         <div className="hw26-hero-panel">
-          <a
-            aria-label="Powered by NVIDIA"
-            className="hw26-hero-nvidia"
-            href="https://www.nvidia.com"
-            rel="noreferrer"
-            target="_blank"
-          >
-            <span className="hw26-hero-nvidia-label">Powered by</span>
-            <span aria-hidden="true" className="hw26-hero-nvidia-brand">
-              <svg className="hw26-hero-nvidia-eye" viewBox="1070 110 350 240">
-                <use href="/partners/ecosystem/nvidia.svg#g" />
-              </svg>
-              <svg className="hw26-hero-nvidia-word" viewBox="1040 375 460 100">
-                <use href="/partners/ecosystem/nvidia.svg#f" />
-              </svg>
+          <div className="hw26-hero-powered">
+            <span className="hw26-hero-powered-label">Powered by</span>
+            <span className="hw26-hero-powered-brands">
+              <a
+                aria-label="NVIDIA"
+                className="hw26-hero-powered-brand hw26-hero-nvidia-brand"
+                href="https://www.nvidia.com"
+                rel="noreferrer"
+                target="_blank"
+              >
+                <svg className="hw26-hero-nvidia-eye" viewBox="1070 110 350 240">
+                  <use href="/partners/ecosystem/nvidia.svg#g" />
+                </svg>
+                <svg className="hw26-hero-nvidia-word" viewBox="1040 375 460 100">
+                  <use href="/partners/ecosystem/nvidia.svg#f" />
+                </svg>
+              </a>
+              <span aria-hidden="true" className="hw26-hero-powered-x">×</span>
+              <a
+                aria-label="Hugging Face"
+                className="hw26-hero-powered-brand hw26-hero-huggingface"
+                href="https://huggingface.co/"
+                rel="noreferrer"
+                target="_blank"
+              >
+                <img
+                  alt=""
+                  decoding="async"
+                  src="/partners/ecosystem/hugging-face-color.svg"
+                  {...dims("/partners/ecosystem/hugging-face-color.svg")}
+                />
+                <span>Hugging Face</span>
+              </a>
             </span>
-          </a>
+          </div>
 
           {/* The line above the clock says what is being counted towards.
               The when and the where moved to the ribbon directly below the
@@ -4018,7 +4108,7 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
               with a claim attached is worth more than a number with a date
               the reader is about to see again. */}
           <p className="hw26-label hw26-hero-when">
-            The boldest hardware hackathon in Europe starts in:
+            The craziest hardware hackathon in Europe starts in:
           </p>
 
           {/* Straight off the event row. The page had a constant of its own
