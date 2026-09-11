@@ -4539,10 +4539,10 @@ button.hw26-apply {
    beside the blue icon — so on the near-black prize card it all but vanishes.
    Knocking it out to flat white is the same move the sponsor wall already makes
    with the same file, for the same reason. Scoped to this one mark because the
-   TNKR file is white to begin with and inverting it would turn it black. The
-   0.76 above still stands: recessed to the corner is the point, and at that
-   opacity the knocked-out mark carries exactly the weight of the TNKR credit on
-   the card beside it. */
+   stealth partner's file is white to begin with and inverting it would turn it
+   black. The 0.76 above still stands: recessed to the corner is the point, and
+   at that opacity the knocked-out mark carries exactly the weight of the
+   stealth credit on the card beside it. */
 .hw26-prize-credit.hw26-mark--m5stack {
   filter: brightness(0) invert(1);
 }
@@ -6186,8 +6186,13 @@ html:not(.hw26-cursor-dom) .hw26-faq-trigger {
    override further down. This rule is the definition of "you can click this",
    and a tile that clicks nowhere should never have matched it — cancelling
    the bloom afterwards would leave the wall saying the thing and then taking
-   it back. Same `:not()` on the light theme's copy of this rule. */
-.hw26-sponsor-lead:not(.hw26-sponsor-lead--tba):hover {
+   it back. Same `:not()` on the light theme's copy of this rule.
+
+   The link-less cell is excluded on the same argument. That one does have a
+   mark and a partner behind it — what it has no address for is a partner the
+   wall is not naming — but from under the pointer the two are the same cell:
+   a plate that lights up and then opens nothing. */
+.hw26-sponsor-lead:not(.hw26-sponsor-lead--tba):not(.hw26-sponsor-lead--static):hover {
   background: var(--hw-steel-hi);
   box-shadow: inset 0 0 0 1px
     color-mix(in srgb, var(--hw-mint) 40%, transparent);
@@ -6207,9 +6212,17 @@ html:not(.hw26-cursor-dom) .hw26-faq-trigger {
     inset 0 0 2.5rem color-mix(in srgb, var(--hw-gold) 8%, transparent);
 }
 
-.hw26-sponsor-lead.hw26-partner-highlight:hover,
+/* The `:not()`s keep the link-less tiles out of the bloom, repeated here
+   because this pair outranks the plain hover rules that already exclude them.
+   The lead cell is then done — dropping out of every hover rule leaves it on
+   its rest plate, which is what it should look like. The small tile is not:
+   the wall's own `.hw26-sponsor:hover` is waiting below at the same weight as
+   the rest rule, so that one is caught by a block of its own down there.
+   `:focus-visible` needs no guard — the static tiles are divs and never take
+   focus. */
+.hw26-sponsor-lead.hw26-partner-highlight:not(.hw26-sponsor-lead--static):hover,
 .hw26-sponsor-lead.hw26-partner-highlight:focus-visible,
-.hw26-sponsor.hw26-partner-highlight:hover,
+.hw26-sponsor.hw26-partner-highlight:not(.hw26-sponsor--static):hover,
 .hw26-sponsor.hw26-partner-highlight:focus-visible {
   background: color-mix(in srgb, var(--hw-gold) 11%, var(--hw-steel-hi));
   box-shadow:
@@ -6261,7 +6274,8 @@ html[data-theme='light'] .hw26-sponsor-lead {
   background: #0f1110;
 }
 
-html[data-theme='light'] .hw26-sponsor-lead:not(.hw26-sponsor-lead--tba):hover {
+html[data-theme='light']
+  .hw26-sponsor-lead:not(.hw26-sponsor-lead--tba):not(.hw26-sponsor-lead--static):hover {
   background: #171a18;
 }
 
@@ -6423,7 +6437,7 @@ html[data-theme='light'] .hw26-sponsor-lead--tba {
   object-fit: contain;
 }
 
-.hw26-sponsor-lead img.hw26-mark--tnkr {
+.hw26-sponsor-lead img.hw26-mark--stealth {
   height: clamp(52px, 5.2vw, 70px);
   max-width: 100%;
   object-fit: contain;
@@ -6619,10 +6633,29 @@ html[data-theme='light'] .hw26-sponsor.hw26-sponsor--diamond:hover {
    class both wear, and a plate that lights up under the pointer and then does
    nothing is a broken link with extra steps. Held at rest in both themes, and
    the cursor is left alone, so the only thing the tile ever says is what it
-   is: a mark on the wall. */
+   is: a mark on the wall.
+
+   The figures are restated rather than left to fall through, which is the
+   whole mechanism: `.hw26-sponsor:hover` is the same weight as the callout's
+   rest rule and sits below it, so a link-less tile dropped out of here does
+   not land back on its own plate — it lands on the hover plate of the cell
+   beside it. Naming the values is what stops that, and it is why the gold cell
+   gets a second block instead of a carve-out from this one: it rests on a
+   different plate, and this rule only knows the plain one. */
 .hw26-sponsor--static:hover {
   background: var(--hw-steel);
   box-shadow: none;
+}
+
+/* The gold callout's rest values, held through the hover. Three classes, so it
+   outranks both the plain hold directly above and `.hw26-sponsor:hover` further
+   up. Kept in step with the callout's own rest rule — if that plate moves, this
+   moves with it. */
+.hw26-sponsor--static.hw26-partner-highlight:hover {
+  background: color-mix(in srgb, var(--hw-gold) 7%, var(--hw-steel));
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, var(--hw-gold) 18%, transparent),
+    inset 0 0 2.5rem color-mix(in srgb, var(--hw-gold) 8%, transparent);
 }
 
 .hw26-sponsor--tba {
@@ -6781,7 +6814,7 @@ html[data-theme='light'] .hw26-sponsor--static:hover {
   height: auto;
 }
 
-.hw26-sponsor img.hw26-mark--tnkr {
+.hw26-sponsor img.hw26-mark--stealth {
   height: clamp(46px, 4.6vw, 60px);
 }
 
