@@ -226,8 +226,8 @@ type Rig = {
   blurPhoto?: boolean;
   /**
    * Optional partner attribution for hardware supplied or developed with a
-   * partner. It is used both by the "Build your own" cards and by TNKR-backed
-   * machines such as Tri-Arm and Vladimer.
+   * partner. It is used both by the "Build your own" cards and by machines a
+   * partner is behind, such as Tri-Arm and Vladimer.
    *
    * A field and not a flag, so the second one cost a file and a line of copy
    * and no new mechanism.
@@ -702,7 +702,7 @@ const PRIZES = [
     partner: {
       name: "Stealth startup",
       src: "/partners/hardware/stealth-startup.svg",
-      mark: "hw26-mark--tnkr",
+      mark: "hw26-mark--stealth",
     },
   },
   {
@@ -1220,10 +1220,16 @@ const HARDWARE_PARTNERS: Partner[] = [
     mark: "hw26-mark--mab",
   },
   {
+    // No `href`, and that is the whole point of the tile rather than an
+    // address nobody got round to filling in. The partner is not named yet,
+    // and a link is a name: one hover and the status bar reads out the thing
+    // the mark is deliberately not saying. `SponsorTile` draws an hrefless
+    // partner as a static div, so there is nothing to press and nothing in
+    // the tab order. Do not put one back until the name itself can go on the
+    // wall.
     name: "Stealth startup",
     src: "/partners/hardware/stealth-startup.svg",
-    href: "https://tnkr.ai/",
-    mark: "hw26-mark--tnkr",
+    mark: "hw26-mark--stealth",
     highlight: true,
   },
   {
@@ -1299,10 +1305,12 @@ const MEDIA_PARTNERS: Partner[] = [
  * ChronoTap. */
 const PRIZE_PARTNERS: Partner[] = [
   {
+    // Link-less for the reason given on the same partner in
+    // `HARDWARE_PARTNERS`: the address names them and the wall does not. The
+    // row below branches on `href` and draws this one as a static tile.
     name: "Stealth startup",
     src: "/partners/hardware/stealth-startup.svg",
-    href: "https://tnkr.ai/",
-    mark: "hw26-mark--tnkr",
+    mark: "hw26-mark--stealth",
     highlight: true,
   },
   {
@@ -4716,16 +4724,18 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
 
             <PartnerTierSubhead reveal title="Prize Partners" />
 
+            {/* Branching on `href`, the same way `SponsorTile` does one wall
+                up. One of these partners is unnamed and therefore has no
+                address to point at, and an anchor with the href left off is
+                the worst of both: it keeps the hover and the pointer of a
+                link, and gives a keyboard a stop it cannot open. The static
+                cell is a div at the same size on the same plate, so the row
+                is unchanged to look at — `title` for the pointer, and the
+                mark's `alt` carrying the name, since a label on a div with no
+                role labels nothing. */}
             <div className="hw26-sponsors-lead hw26-sponsors-lead--prize hw26-reveal">
-              {PRIZE_PARTNERS.map((p) => (
-                <a
-                  aria-label={p.name}
-                  className={`hw26-sponsor-lead${p.highlight ? " hw26-partner-highlight" : ""}`}
-                  href={p.href}
-                  key={p.name}
-                  rel="noopener noreferrer"
-                  target="_blank"
-                >
+              {PRIZE_PARTNERS.map((p) => {
+                const mark = (
                   <img
                     alt={p.name}
                     className={p.mark}
@@ -4734,8 +4744,33 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
                     src={p.src}
                     {...dims(p.src)}
                   />
-                </a>
-              ))}
+                );
+
+                if (!p.href) {
+                  return (
+                    <div
+                      className={`hw26-sponsor-lead hw26-sponsor-lead--static${p.highlight ? " hw26-partner-highlight" : ""}`}
+                      key={p.name}
+                      title={p.name}
+                    >
+                      {mark}
+                    </div>
+                  );
+                }
+
+                return (
+                  <a
+                    aria-label={p.name}
+                    className={`hw26-sponsor-lead${p.highlight ? " hw26-partner-highlight" : ""}`}
+                    href={p.href}
+                    key={p.name}
+                    rel="noopener noreferrer"
+                    target="_blank"
+                  >
+                    {mark}
+                  </a>
+                );
+              })}
             </div>
           </div>
 
