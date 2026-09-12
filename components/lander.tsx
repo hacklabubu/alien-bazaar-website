@@ -1100,7 +1100,7 @@ const TITLE_BLOCK: TitleBlockCell[] = [
     v: "52.1702°N 21.0762°E",
     href: "https://maps.app.goo.gl/aXgaecW3vufQZBu49",
   },
-  { k: "Duration", v: "48 WORK H" },
+  { k: "Duration", v: "3 DAYS" },
 ];
 
 /**

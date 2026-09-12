@@ -4,9 +4,9 @@ Dedicated landing page for **Alien Bazaar — Warsaw 2026** — 25–27 Septembe
 2026, at Hacker Bloc powered by Epikor and Hacklab, Warsaw, Poland.
 
 Three days of home automation. Every team books one machine, teams wire their
-machines into each other, and what gets pitched to investors after 48 work
-hours is the combined system. Room for 100, teams of up to four. Applications
-are handled on
+machines into each other, and what gets pitched to investors at the end of
+the build is the combined system. Room for 100, teams of up to four.
+Applications are handled on
 [hacklab.so](https://hacklab.so/hackathons/ab26); this repo
 is only the poster.
 
