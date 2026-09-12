@@ -1151,10 +1151,9 @@ html:not(.hw26-cursor-dom) .hw26 [role='button'] * {
      re-measuring — as it does if the words ever change. */
   --hero-title-em: 4.93;
 
-  /* The resolved size, named once because two children need it to agree:
-     the title sets its type from it, and the mark above the I measures its
-     own height and offsets in ems of it. `cqh` inside resolves against this
-     element for both of them, since both are its descendants. */
+  /* The resolved size, named once so the title can set its type from it.
+     `cqh` inside resolves against this element, since the title is its
+     descendant. */
   --hero-title-fs: min(
     var(--hero-title-size),
     calc((100vw - 2 * var(--hw-gutter)) / var(--hero-title-em))
@@ -1268,9 +1267,7 @@ html:not(.hw26-cursor-dom) .hw26 [role='button'] * {
      steady, but a wordmark that pulses on a beat is a strobe rather than a
      screen. `opacity` rather than `filter: brightness()` for two reasons: the
      filter slot above is already spent, and opacity is composited, so this
-     costs nothing per frame and the five-pass filter result stays cached. The
-     alien mark runs the same keyframes at the same period, so the two flicker
-     together rather than beating against each other. */
+     costs nothing per frame and the five-pass filter result stays cached. */
   animation: hw26-crt-flicker 3.1s linear infinite;
 }
 
@@ -1312,12 +1309,12 @@ html:not(.hw26-cursor-dom) .hw26 [role='button'] * {
 
 /* ---- the flicker stops when nobody is looking at it ----
 
-   `hw26-crt-flicker` is `infinite` on both the wordmark and the mark, and
-   `infinite` means exactly that: scroll to the FAQ and the hero is still
-   animating two elements off the top of the screen, forever. It is an opacity
-   animation and therefore composited and cheap per frame, but the frames never
-   stop being asked for — and each one is asked for on top of a five-pass
-   `drop-shadow` chain that has to be held alive to be composited against.
+   `hw26-crt-flicker` is `infinite` on the wordmark, and `infinite` means
+   exactly that: scroll to the FAQ and the hero is still animating it off the
+   top of the screen, forever. It is an opacity animation and therefore
+   composited and cheap per frame, but the frames never stop being asked for —
+   and each one is asked for on top of a five-pass `drop-shadow` chain that has
+   to be held alive to be composited against.
 
    The observer in `useHeroIdle` puts `hw26-hero--idle` on the hero whenever it
    leaves the viewport, and it runs on every device unconditionally — watching
@@ -1331,178 +1328,8 @@ html:not(.hw26-cursor-dom) .hw26 [role='button'] * {
    every case where the class is set, and the class was already being
    maintained everywhere. Nothing about the hero in view changes — there is no
    width at which this fires while the hero can be seen. */
-.hw26-hero--idle .hw26-hero-title,
-.hw26-hero--idle .hw26-hero-tittle {
+.hw26-hero--idle .hw26-hero-title {
   animation-play-state: paused;
-}
-
-/* The alien mark, sitting on the I of ALIEN as its tittle — the dot the
-   capital lost. Above the cutout rather than behind it, because it belongs
-   to the wordmark rather than to the room; the countdown panel is still in
-   front of both, since it sits outside the stage entirely.
-
-   Positioned from the type's own metrics rather than by eye, so it stays on
-   the stem at every size. The figures below were measured against Orbitron,
-   the display face they were set for, and want re-measuring now that the
-   face is Chakra Petch. Orbitron set its caps at 0.72em on a 1.011/0.243
-   ascent/descent, so with `line-height: 0.84` the half-leading is negative
-   and the cap top lands 0.084em below the top of the line box — which is
-   what `--hero-title-top` positions. The horizontal figure is the same
-   arithmetic across the line: A and L advance 0.836 and 0.779, the I is
-   0.214 wide with its stem inked from 0.031 to 0.184, and the letter-spacing
-   takes 0.01em back after each character. That puts the stem's centre
-   0.014em right of the line's own centre — very nearly nothing, because
-   ALIEN is close to symmetrical about its middle letter, but it is measured
-   rather than assumed.
-
-   The three values below are the tuning surface: how tall the mark is, how
-   far it floats above the cap, and any nudge off the stem. Height is capped
-   by the headroom — the cap top is only ~0.57em below the top of the art,
-   so mark plus gap has to stay inside that or the mark crops. */
-.hw26-hero-tittle {
-  --hero-tittle-h: 0.38em;
-  --hero-tittle-gap: 0.1em;
-  --hero-tittle-dx: 0.014em;
-
-  position: absolute;
-  z-index: 3;
-  font-size: var(--hero-title-fs);
-  height: var(--hero-tittle-h);
-  width: auto;
-  top: calc(
-    var(--hero-title-top) + 0.084em - var(--hero-tittle-gap) -
-      var(--hero-tittle-h)
-  );
-  left: calc(50% + var(--hero-tittle-dx));
-  translate: -50% 0;
-  pointer-events: none;
-  -webkit-user-select: none;
-  user-select: none;
-
-  /* ---- the same tube, on a replaced element ----
-
-     The mark is on the same screen as the wordmark and has to be degraded by
-     the same one, but none of the techniques the words use transfer: an `img`
-     has no pseudo-elements and no text to clip a background to. So the grille
-     and the scanlines arrive as a two-layer alpha mask — which is what a
-     shadow mask does geometrically anyway — and the optics arrive as filters.
-
-     They are on two different elements, and that is the whole reason this is a
-     span with an image in it rather than the image on its own. A mask
-     modulates everything its element paints, bloom included, so a halo
-     declared alongside the mask came out as a rectangle of striped haze the
-     size of the image box. Split across two elements, the mask stays on the
-     artwork and the light happens outside it — the same split, and the same
-     reason, as the h1 carrying the wordmark's optics.
-
-     What does *not* transfer is the colour. This is the alien, it is
-     `#00f888`, and it is the only green object in the hero; bloom in the
-     wordmark's white-and-mint would drag it toward the type. So the smear and
-     both halos are struck in its own green, and only the convergence fringes
-     stay red and cyan — misregistration is a property of the guns and not of
-     what is being drawn, so it is correct on a green source and is also what
-     keeps the mark reading as the same tube.
-
-     The two horizontal figures are identical to the wordmark's, in the same
-     `em` off the same `--hero-title-fs`, so they resolve to the same count of
-     pixels on both: a tube's convergence error and beam width do not know how
-     big the thing being drawn is. The bloom radii are the exception and are
-     pulled in hard. The mark is 0.38em tall, and a halo sized for 0.72em caps
-     would be wider than the object making it, which stops being bloom and
-     becomes a glow. */
-  height: var(--hero-tittle-h);
-  filter:
-    drop-shadow(0.014em 0 0.011em rgba(0, 248, 136, 0.34))
-    drop-shadow(-0.006em 0 0.003em rgba(255, 62, 72, 0.45))
-    drop-shadow(0.006em 0 0.003em rgba(58, 222, 255, 0.4))
-    drop-shadow(0 0 0.035em rgba(150, 255, 205, 0.5))
-    drop-shadow(0 0 0.14em rgba(0, 248, 136, 0.34));
-  animation: hw26-crt-flicker 3.1s linear infinite;
-}
-
-/* The artwork, and the only thing masked. The scanline gap is lighter here
-   than on the wordmark — 0.5 against 0.3 — because this mark is a fortieth of
-   the wordmark's area at the same scanline pitch, so the same modulation that
-   textures 148px letters turns a 56px alien into a dot-matrix sign. The grille
-   is likewise barely there: two layers intersected, both nearly opaque, and
-   between them they are a fine weave rather than a screen door. */
-.hw26-hero-tittle-img {
-  display: block;
-  height: 100%;
-  width: auto;
-  -webkit-mask-image:
-    repeating-linear-gradient(to bottom, #000 0 2px, rgba(0, 0, 0, 0.5) 2px 3px),
-    repeating-linear-gradient(
-      to right,
-      rgba(0, 0, 0, 0.9) 0 1px,
-      rgba(0, 0, 0, 0.95) 1px 2px,
-      #000 2px 3px
-    );
-  -webkit-mask-composite: source-in;
-  mask-image:
-    repeating-linear-gradient(to bottom, #000 0 2px, rgba(0, 0, 0, 0.5) 2px 3px),
-    repeating-linear-gradient(
-      to right,
-      rgba(0, 0, 0, 0.9) 0 1px,
-      rgba(0, 0, 0, 0.95) 1px 2px,
-      #000 2px 3px
-    );
-  mask-composite: intersect;
-}
-
-/* The two organizers flank the alien mark. The wrapper uses the title's
-   font-size as its coordinate system, which keeps the lockup registered to
-   the mark even when the cover-fitted artwork is heavily cropped on phones. */
-.hw26-hero-origin {
-  /* Both names hang off the mark's own edges, not off the middle of the
-     screen. The mark is 0.38em tall at a 274/379 aspect, so its half-width is
-     0.1373em of the title size, and it is centred `--hero-tittle-dx` right of
-     the line's centre — the same figures `.hw26-hero-tittle` is placed by.
-     The inset below is that half-width plus one fixed gap, so EPIKOR's right
-     edge and HACKLAB's left edge sit the same distance off the mark at every
-     width, instead of drifting with the clamp they used to be pinned by. */
-  --hero-origin-inset: calc(var(--hero-title-fs) * 0.1373 + 0.75rem);
-
-  position: absolute;
-  z-index: 3;
-  top: calc(var(--hero-title-top) - 0.206em);
-  left: 50%;
-  translate: -50% -50%;
-  width: 100%;
-  height: 1em;
-  font-size: var(--hero-title-fs);
-  color: rgba(255, 255, 255, 0.72);
-  pointer-events: none;
-  -webkit-user-select: none;
-  user-select: none;
-}
-
-.hw26-hero-origin span {
-  position: absolute;
-  top: 50%;
-  translate: 0 -50%;
-  font-family: var(--font-chakra-petch), sans-serif;
-  font-size: clamp(8px, 0.07em, 12px);
-  font-weight: 700;
-  line-height: 1;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  white-space: nowrap;
-  text-shadow: 0 0 0.8rem rgba(130, 245, 198, 0.24);
-}
-
-.hw26-hero-origin span:first-child {
-  right: calc(
-    50% - var(--hero-title-fs) * 0.014 + var(--hero-origin-inset)
-  );
-  text-align: right;
-}
-
-.hw26-hero-origin span:last-child {
-  left: calc(
-    50% + var(--hero-title-fs) * 0.014 + var(--hero-origin-inset)
-  );
-  text-align: left;
 }
 
 /* The two powering partners sit inside the countdown panel as one compact
@@ -7612,8 +7439,7 @@ html[data-theme='light'] .hw26-sponsor--static:hover {
      about what a reader who asked for stillness gets. The tube's static optics
      stay: bloom, grille, convergence and scanlines do not move, and the
      timeline's pin is declined in script by the same query. */
-  .hw26-hero-title,
-  .hw26-hero-tittle {
+  .hw26-hero-title {
     animation: none;
     opacity: 1;
   }
@@ -7730,18 +7556,6 @@ html[data-theme='light'] .hw26-sponsor--static:hover {
      be looking at a different design. */
   .hw26-hero-title {
     filter: drop-shadow(0 0 0.1em rgba(255, 255, 255, 0.38));
-  }
-
-  /* Same surgery on the alien mark, sized to the object rather than copied
-     across. The mark is 0.38em tall against the wordmark's 0.72em caps, and
-     its surviving halo is scaled to that: 0.05em, in the neighbourhood of the
-     0.035em tight bloom it already had, nudged up a little now that it is the
-     only pass left. Its green smear and its own wide 0.14em glow go for the
-     same reasons as the wordmark's — and the mark's is the version of the
-     argument that decides itself, since a mark this small next to type this
-     large has the least to show for the passes it was spending. */
-  .hw26-hero-tittle {
-    filter: drop-shadow(0 0 0.05em rgba(150, 255, 205, 0.5));
   }
 
   /* ---- 3. the flicker stops when nobody is looking at it ----
