@@ -3917,7 +3917,7 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
             though it is floating over a photograph.
 
             `z-index: 4` in the stylesheet, which is one above the hero's
-            topmost layer. The stage stacks bg 0, title 1, cutout 2, tittle 3;
+            topmost layer. The stage stacks bg 0, title 1, cutout 2;
             a control that the cutout can paint over is a control the reader
             cannot press.
 
@@ -4015,61 +4015,6 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
             sizes="(max-width: 700px) 650px, 100vw"
             src="/hero/ab-hero-fg.png"
           />
-
-          {/* The mark, worn as the tittle of ALIEN's I. Last in the stage and
-              the only thing above the cutout — it belongs to the wordmark,
-              not to the room, so nothing in the photograph crosses it. `alt`
-              is empty because it is the same name the h1 above already
-              carries, drawn rather than spelled. */}
-          {/* Wrapped, and the wrapper is not decoration. The mark wears the
-              tube's scanline and grille mask, and a mask clips and modulates
-              everything the element paints — including the phosphor bloom
-              around it, which came out as a rectangle of striped haze the
-              size of the image box. So the span carries the placement and the
-              optics and the image inside it carries the mask, which is the
-              same split the wordmark makes between the h1 and the two words.
-              See the two blocks in the stylesheet. */}
-          <span className="hw26-hero-tittle">
-            {/* `sizes` is the whole reason this mark is not a download the
-                size of the hero. With no `sizes` Next treats an intrinsically
-                sized image as a 1x/2x pair off its `width`, which rounds 274
-                up to the 384 and 640 candidates — a 640px-wide plate for a
-                mark that never paints wider than about 41px.
-
-                The real figures, from `.hw26-hero-tittle`: the mark is
-                `0.38em` tall on `--hero-title-fs` with `width: auto`, and the
-                art is 274x379, so its width is 0.38 x (274/379) = 0.2747em of
-                that size. `--hero-title-fs` is `min(16.5cqh, (100vw - 2 x
-                gutter) / 4.93)`, and on a phone the width branch always wins:
-                at 700px that is 130.6px, so the mark is 35.9px across, and
-                narrower on every smaller screen. Above 700 the `cqh` cap takes
-                over and the mark settles around 41px at 1440x900, reaching
-                about 65px on a 2560-wide display. 40px and 72px are those two
-                ceilings rounded up.
-
-                `priority` stays: the mark sits over the wordmark in the first
-                viewport, so it is fetched with the hero either way — this only
-                decides how many bytes that fetch is. */}
-            <Image
-              alt=""
-              className="hw26-hero-tittle-img"
-              height={379}
-              priority
-              quality={90}
-              sizes="(max-width: 700px) 40px, 72px"
-              src="/hero/ab-logo.png"
-              width={274}
-            />
-          </span>
-
-          <div
-            aria-label="Epikor and HackLab"
-            className="hw26-hero-origin"
-            role="img"
-          >
-            <span>Epikor</span>
-            <span>HackLab</span>
-          </div>
         </div>
 
         <div className="hw26-hero-panel">
