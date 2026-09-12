@@ -27,7 +27,7 @@ export const EVENT: HardwareEvent = {
   slug: 'ab26',
   title: 'Alien Bazaar — Warsaw 2026',
   summary:
-    'Three days of home automation at the Hacker House in Warsaw. Every team books one machine, teams wire their machines into each other, and what gets pitched to investors at the end of the build is the combined system.',
+    'Three days of home automation at Hacker Bloc in Warsaw. Twenty teams, one machine each, no set task — you decide what to build, then show it to judges and investors.',
   // 08:30 on the first day. The doors open at half past eight, which is what
   // the hero clock on the lander counts down to — it reads this field
   // directly, and the agenda page (`/agenda`, `components/agenda.tsx`) opens

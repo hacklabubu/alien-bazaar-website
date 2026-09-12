@@ -4193,7 +4193,7 @@ export function Lander({ hackathon }: { hackathon: HardwareEvent }) {
 
               <div className="hw26-brief hw26-reveal">
                 <p>
-                  Alien Bazaar is a hardware hackathon at Hacker Block, a
+                  Alien Bazaar is a hardware hackathon at Hacker Bloc, a
                   3-story hacker house in Warsaw. The idea is simple: unite
                   robots into one ecosystem and automate the house. We gather
                   the 20 best teams from across Europe and hand each one a
