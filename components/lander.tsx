@@ -1056,6 +1056,11 @@ const SMALL_SPONSORS: Partner[] = [
     href: "https://echo-systems.eu/",
     mark: "hw26-mark--echosystems",
   },
+  {
+    name: "Bednarek Studio",
+    src: "/partners/ecosystem/bednarek-studio.webp",
+    href: "https://bednarekstudio.pl/",
+  },
 ];
 
 const ECOSYSTEM_PARTNER_TBA: TbaCell = { name: "TBA", tba: true };
@@ -2427,6 +2432,7 @@ const MARK_DIMENSIONS: Record<string, [number, number]> = {
   // Ecosystem partners.
   "/partners/ecosystem/GDG.webp": [600, 154],
   "/partners/ecosystem/ai-tinkerers-poland.webp": [300, 39],
+  "/partners/ecosystem/bednarek-studio.webp": [390, 400],
   "/partners/ecosystem/eurotech.webp": [505, 191],
   "/partners/ecosystem/hackathonhub.webp": [400, 400],
   "/partners/ecosystem/hugging-face-color.svg": [95, 88],
