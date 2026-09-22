@@ -110,17 +110,17 @@ function contactHref(subject: string) {
  *
  * The closed/open split is gone and so are the two mint labels that carried
  * it. A team choosing hardware is not choosing a set of terms, it is choosing
- * between an arm, a drone, something that goes underwater, something that
- * walks and a headset — so the groups are the categories themselves, six of
- * them, each titled in the medium heading cut (`.hw26-cat`) rather than in a
- * 10px eyebrow. One `h2` still; the group titles are the `h3`s under it and
- * the entry names step down to `h4`.
+ * between an arm, a drone, something that walks and a headset — so the
+ * groups are the categories themselves, seven of them, each titled in the
+ * medium heading cut (`.hw26-cat`) rather than in a 10px eyebrow. One `h2`
+ * still; the group titles are the `h3`s under it and the entry names step
+ * down to `h4`.
  *
- * The order runs by how the machine moves: wheels, then air, then water, then
- * legs — robodogs beside the humanoids because those are the two groups that
- * walk, and a quadruped filed under "other" was the leftovers bin holding a
- * machine the reader is specifically looking for. Headsets stay last, because
- * they are the one group here that is not a machine on the floor at all.
+ * The order runs by how the machine moves: wheels, then air, then legs —
+ * robodogs beside the humanoids because those are the two groups that walk,
+ * and a quadruped filed under "other" was the leftovers bin holding a machine
+ * the reader is specifically looking for. Headsets stay last, because they
+ * are the one group here that is not a machine on the floor at all.
  *
  * That group holds the headset, and it is titled by the object and not by the
  * technology — which is the shape every other title here already has: "Robot
@@ -375,21 +375,6 @@ const RIG_GROUPS: RigGroup[] = [
         credit: {
           src: "/partners/hardware/mab.webp",
           label: "In partnership with MAB Robotics",
-        },
-      },
-    ],
-  },
-  {
-    label: "Underwater drones",
-    items: [
-      {
-        name: "Build your own",
-        units: "1x",
-        note: "Underwater drones. We provide components and tools, you design and assemble it.",
-        photo: "/hardware/underwater-drone.png",
-        credit: {
-          src: "/partners/hardware/cpsdrone.webp",
-          label: "In partnership with CPS Drone",
         },
       },
     ],
@@ -1440,7 +1425,7 @@ const FAQ: { q: string; a: ReactNode; featured?: boolean }[] = [
   },
   {
     q: "Can I book more than one hardware unit?",
-    a: "You can only book one main hardware unit: a drone, robot arm, underwater drone, robodog, quadruped robot, humanoid or headset. At the event you will be able to unlock extras such as cables, Raspberry Pis, camera modules and more.",
+    a: "You can only book one main hardware unit: a drone, robot arm, robodog, quadruped robot, humanoid or headset. At the event you will be able to unlock extras such as cables, Raspberry Pis, camera modules and more.",
   },
   {
     q: "Can I sleep at the hackathon?",

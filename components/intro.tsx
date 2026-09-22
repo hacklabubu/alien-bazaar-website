@@ -101,7 +101,7 @@ const LOG = [
   'FARM 12 NODES  Q:0',
   'WALL STOCK NOMINAL',
   'RIGS 06 TYPES  BOOKABLE',
-  'SEATS 100 / 100 HELD',
+  'SEATS 80 / 80 HELD',
 ]
 
 /** Reports down the right. Each flicks to OK on its own schedule. */
