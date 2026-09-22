@@ -37,7 +37,7 @@ export const EVENT: HardwareEvent = {
   timezone: 'Europe/Warsaw',
   location: 'Hacker Bloc powered by Epikor and Hacklab — Warsaw, Poland',
   maxTeamSize: 5,
-  capacity: 100,
+  capacity: 80,
 }
 
 /**

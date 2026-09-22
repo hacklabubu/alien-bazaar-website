@@ -664,7 +664,7 @@ html:not(.hw26-cursor-dom) .hw26 [role='button'] * {
 
    Word-spacing is opened because Square's space is narrow for a face set
    this loose, and `break-word` is the same backstop the section title
-   carries: at 390px "UNDERWATER DRONES" is the longest title here and now
+   carries: at 390px "QUADRUPED ROBOTS" is the longest title here and now
    turns at its own space onto a second line, which is a wrap and not a break
    — but the section must never be what gives the page a horizontal
    scrollbar. */

@@ -115,7 +115,7 @@ const DAYS: Day[] = [
         time: '18:00',
         dateTime: '2026-09-27T18:00+02:00',
         title: 'Afterparty',
-        body: 'Until 21:00. A DJ playing tech house and techno. There is a pool, so bring swimwear if you want to go in.',
+        body: 'Until 21:00. A DJ playing tech house and techno.',
       },
     ],
   },
