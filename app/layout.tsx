@@ -39,14 +39,27 @@ const poppins = Poppins({
   display: 'swap',
 })
 
+/**
+ * Kept short on purpose: title, one line, the card. The share image is
+ * `app/opengraph-image.tsx`; Next wires og:image from it. metadataBase makes
+ * that URL absolute — Vercel sets the production host, localhost otherwise.
+ */
+const DESCRIPTION = 'Hardware hackathon. Warsaw, 25–27 September 2026.'
+
 export const metadata: Metadata = {
+  metadataBase: new URL(
+    process.env.VERCEL_PROJECT_PRODUCTION_URL
+      ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
+      : 'http://localhost:3000',
+  ),
   title: { absolute: EVENT.title },
-  description: EVENT.summary,
+  description: DESCRIPTION,
   openGraph: {
-    title: EVENT.title,
-    description: EVENT.summary,
     type: 'website',
+    title: EVENT.title,
+    description: DESCRIPTION,
   },
+  twitter: { card: 'summary_large_image' },
 }
 
 export const viewport: Viewport = {
